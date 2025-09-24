@@ -24,7 +24,7 @@
           class="mt-4"
           :key="tableKey"
           :data="kifayahLimits"
-          :field="['nama','keterangan','tarikhMula','status','tindakan']"
+          :field="['nama','keterangan','tarikhMula','statusData','tindakan']"
           :pageSize="10"
           :showNoColumn="true"
           :options="{
@@ -32,12 +32,12 @@
             hover: true,
           }"
         >
-          <template v-slot:nama="data">{{ data.value.namaHadKifayah }}</template>
+          <template v-slot:nama="data">{{ data.value.namaMultidimensi }}</template>
           <template v-slot:keterangan="data">{{ data.value.keterangan || 'N/A' }}</template>
           <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
-          <template v-slot:status="data">
-            <rs-badge :variant="getStatusVariant(data.value.status)">
-              {{ data.value.status }}
+          <template v-slot:statusData="data">
+            <rs-badge :variant="getStatusVariant(data.value.statusData)">
+              {{ data.value.statusData }}
             </rs-badge>
           </template>
           <template v-slot:tindakan="data">
@@ -45,7 +45,7 @@
               variant="primary"
               size="sm"
               class="!px-2 !py-1"
-              @click="navigateTo(`/BF-PRF/KF/MD/01_02?id=${data.value.no}`)"
+              @click="navigateTo(`/BF-PRF/KF/MD/01_02?id=${data.value.idMultidimensi || data.value.idHadKifayah || data.value.no}`)"
               >Kemaskini
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
             </rs-button>
@@ -53,7 +53,7 @@
               variant="secondary"
               size="sm"
               class="!px-2 !py-1 ml-2"
-              @click="navigateTo({ path: '/BF-PRF/KF/MD/01_04', query: { id: data.value.no } })"
+              @click="navigateTo({ path: '/BF-PRF/KF/MD/01_04', query: { id: data.value.idMultidimensi || data.value.idHadKifayah } })"
               >Lihat
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
             </rs-button>
@@ -92,7 +92,7 @@ const kifayahLimits = ref([]);
 const defaultData = [
   // Section A: Kadar Had Kifayah Utama
   {
-    idHadKifayah: "HK001",
+    idMultidimensi: "MD001",
     namaHadKifayah: "Ketua Keluarga",
     kategori: "Utama",
     jenisIsiRumah: "Ketua Keluarga",
@@ -100,6 +100,7 @@ const defaultData = [
     kadarPercuma: 780.00,
     tarikhMula: "2025-01-01",
     status: "Aktif",
+    statusData: "Draf",
     tindakan: 1,
     keterangan: "Had kifayah untuk ketua keluarga",
   },
@@ -109,13 +110,21 @@ const defaultData = [
 const validateDataItem = (item) => {
   return {
     ...item,
+    // Normalize IDs to use idMultidimensi going forward
+    idMultidimensi: item.idMultidimensi || item.idHadKifayah || `MD${Date.now().toString().slice(-6)}`,
+    // Normalize name across forms (tambah uses namaMultidimensi)
+    namaMultidimensi: item.namaMultidimensi || item.namaHadKifayah || "",
+    // Ensure keterangan is string from localStorage
+    keterangan: typeof item.keterangan === 'string' ? item.keterangan : (item.keterangan ?? ''),
     // Ensure numeric values are valid
     kadarBerbayar: isNaN(parseFloat(item.kadarBerbayar)) ? 0 : parseFloat(item.kadarBerbayar),
     kadarPercuma: isNaN(parseFloat(item.kadarPercuma)) ? 0 : parseFloat(item.kadarPercuma),
     // Ensure date is valid
     tarikhMula: item.tarikhMula && !isNaN(new Date(item.tarikhMula).getTime()) ? item.tarikhMula : "2025-01-01",
     // Ensure status is valid
-    status: item.status || "Aktif"
+    status: item.status || "Aktif",
+    // Prefer statusData column for table; fallback to status; default to Draf
+    statusData: item.statusData || item.status || "Draf",
   };
 };
 
@@ -125,23 +134,14 @@ const loadData = () => {
     const savedData = localStorage.getItem('multidimensi');
     if (savedData) {
       const parsedData = JSON.parse(savedData);
-      // Validate and sanitize parsed data
-      const validatedData = parsedData.map(validateDataItem);
-      
-      // Merge with default data, giving priority to saved data
-      const mergedData = [...defaultData];
-      validatedData.forEach(savedItem => {
-        // Check if item already exists in default data
-        const existingIndex = mergedData.findIndex(item => item.idHadKifayah === savedItem.idHadKifayah);
-        if (existingIndex >= 0) {
-          // Replace existing item
-          mergedData[existingIndex] = validateDataItem(savedItem);
-        } else {
-          // Add new item
-          mergedData.push(validateDataItem(savedItem));
-        }
+      // Ensure statusData is sourced from localStorage entries
+      const validatedData = parsedData.map(item => {
+        const sanitized = validateDataItem(item);
+        sanitized.statusData = (item && item.statusData) ? item.statusData : (item && item.status) ? item.status : 'Draf';
+        return sanitized;
       });
-      kifayahLimits.value = assignRowNumbers(mergedData);
+      // Use saved data exclusively when present to avoid stale defaults
+      kifayahLimits.value = assignRowNumbers(validatedData);
     } else {
       kifayahLimits.value = assignRowNumbers(defaultData);
     }
@@ -174,7 +174,7 @@ const refreshTable = () => {
 
 // Ensure each row has a sequential `no` field used as ID
 const assignRowNumbers = (items) => {
-  return (items || []).map((item, index) => ({ ...item, no: index + 1 }));
+  return (items || []).map((item, index) => ({ ...item, no: item.no || index + 1 }));
 };
 
 const formatDate = (dateString) => {

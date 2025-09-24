@@ -10,8 +10,7 @@
           <h2 class="text-xl font-semibold">Maklumat Pemohon</h2>
           <rs-badge
             v-if="formData.status"
-            :variant="getStatusVariant(formData.status)"
-          >
+            :variant="getStatusVariant(formData.status)">
             {{ formData.status }}
           </rs-badge>
         </div>
@@ -76,143 +75,79 @@
         <template #body>
           <div class="space-y-6">
             <div
-              class="bg-white border border-gray-200 rounded-lg overflow-hidden"
-            >
+              class="bg-white border border-gray-200 rounded-lg overflow-hidden">
               <!-- S2: Siasatan Dilapangan -->
               <section class="p-6">
                 <h4
-                  class="text-md font-semibold text-gray-900 mb-4 flex items-center"
-                >
+                  class="text-md font-semibold text-gray-900 mb-4 flex items-center">
                   <Icon
                     name="ph:clipboard-text"
-                    class="w-5 h-5 mr-2 text-green-600"
-                  />
+                    class="w-5 h-5 mr-2 text-green-600" />
                   Siasatan Di Lapangan
                 </h4>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Summary Information -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                   <div>
-                  <!-- <label class="block text-xs uppercase tracking-wide">
-                   Jumlah Had Kifayah
-                  </label>
-                  <p class="text-gray-900 font-medium">
-                    {{ profilingData.jumlahHadKifayahSah }}
-                  </p>
-
-                  <label class="block text-xs uppercase tracking-wide mt-4">
-                    Baki Pendapatan
-                  </label>
-                  <p class="text-gray-900 font-medium">
-                    {{ profilingData.bakiHadKifayahSah }}
-                  </p> -->
-
-                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
-                    Peratusan Perbezaan
-                  </label>
-                  <p class="text-gray-900 font-medium">
-                    {{ profilingData.peratusanPerbezaan }}
-                  </p>
-                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
-                    Kategori Keluarga Asnaf
-                  </label>
-                  <p class="text-gray-900 font-medium">
-                    {{ profilingData.kategoriKeluargaAsnaf }}
-                  </p>
-                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
-                    Kategori Asnaf
-                  </label>
-                  <p class="text-gray-900 font-medium">
-                    {{ profilingData.kategoriAsnaf }}
-                  </p>
-                </div>
-                <div class="hidden lg:block"></div>
-                <div class="hidden lg:block"></div>
-                  <div>
-                    <label class="block text-xs uppercase tracking-wide font-bold">
-                      Pengenalan Id Tanggungan
+                    <label
+                      class="block text-xs uppercase tracking-wide font-bold">
+                      Peratusan Perbezaan
                     </label>
                     <p class="text-gray-900 font-medium">
-                      {{ profilingData.pengenalanIdTanggungan1 }}
-                      <br />
-                      {{ profilingData.pengenalanIdTanggungan2 }}
-                      <br />
-                      {{ profilingData.pengenalanIdTanggungan3 }}
+                      {{ profilingData.peratusanPerbezaan }}
                     </p>
                   </div>
                   <div>
-                    <label class="block text-xs uppercase tracking-wide font-bold">
-                      Kategori Tanggungan (Syor)
+                    <label
+                      class="block text-xs uppercase tracking-wide font-bold">
+                      Kategori Keluarga Asnaf
                     </label>
                     <p class="text-gray-900 font-medium">
-                      {{ profilingData.kategoriKeluargaAsnafSyor }}
-                      <br />
-                      {{ profilingData.kategoriKeluargaAsnafSyor }}
-                      <br />
-                      {{ profilingData.kategoriKeluargaAsnafSyor }}
-                    </p>
-                  </div>
-                  <!-- spacer to align like screenshot: leave empty third column on first row -->
-                  <div class="hidden lg:block"></div>
-                  <div>
-                    <label class="block text-xs uppercase tracking-wide font-bold">
-                      Pengenalan Id Asnaf/Tanggungan
-                    </label>
-                    <p class="text-gray-900 font-medium">
-                      {{ profilingData.pengenalanId }}
-                      <br />
-                      {{ profilingData.pengenalanIdTanggungan1 }}
-                      <br />
-                      {{ profilingData.pengenalanIdTanggungan2 }}
-                      <br />
-                      {{ profilingData.pengenalanIdTanggungan3 }}
+                      {{ profilingData.kategoriKeluargaAsnaf }}
                     </p>
                   </div>
                   <div>
-                    <label class="block text-xs uppercase tracking-wide font-bold">
-                      Merit Individu(Syor)
+                    <label
+                      class="block text-xs uppercase tracking-wide font-bold">
+                      Kategori Asnaf
                     </label>
                     <p class="text-gray-900 font-medium">
-                      {{ profilingData.merit }}
-                      <br />
-                      {{ profilingData.merit1 }}
-                      <br />
-                      {{ profilingData.merit2 }}
-                      <br />
-                      {{ profilingData.merit3 }}
-                    </p>
-                  </div>
-                  <div>
-                    <label class="block text-xs uppercase tracking-wide font-bold">
-                      Status Multidimensi(Syor)
-                    </label>
-                    <p class="text-gray-900 font-medium">
-                      {{ profilingData.multidimensi }}
-                      <br />
-                      {{ profilingData.multidimensi1 }}
-                      <br />
-                      {{ profilingData.multidimensi2 }}
-                      <br />
-                      {{ profilingData.multidimensi3 }}
+                      {{ profilingData.kategoriAsnaf }}
                     </p>
                   </div>
                 </div>
+
+                <!-- Table for Individual Data -->
+                <rs-table
+                  :headers="tableHeaders"
+                  :data="tableData"
+                  :classes="{
+                    table: 'min-w-full',
+                    thead: 'bg-gray-50',
+                    tbody: 'bg-white divide-y divide-gray-200',
+                    th: 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                    td: 'px-6 py-4 whitespace-nowrap text-sm text-gray-900',
+                  }" />
                 <!-- Row 3 in one column -->
                 <div class="mt-4">
-                  <label class="block text-xs uppercase tracking-wide font-bold">
+                  <label
+                    class="block text-xs uppercase tracking-wide font-bold">
                     Merit Keluarga(Syor)
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.meritKeluargaSyor }}
                   </p>
 
-                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
+                  <label
+                    class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Status Multidimensi Keluarga(Syor)
                   </label>
                   <p class="text-gray-900 font-medium">
                     {{ profilingData.statusMultidimensiKeluargaSyor }}
                   </p>
 
-                  <label class="block text-xs uppercase tracking-wide mt-4 font-bold">
+                  <label
+                    class="block text-xs uppercase tracking-wide mt-4 font-bold">
                     Quadrant Multidimensi Keluarga(Syor)
                   </label>
                   <p class="text-gray-900 font-medium">
@@ -220,14 +155,16 @@
                   </p>
                 </div>
               </section>
-              
             </div>
             <div class="md:col-span-2 flex items-end justify-start mt-4">
-                    <rs-button variant="danger" @click="handleKembali" class="px-6 py-2.5">
-                      <Icon name="ph:paper-plane-right" class="w-4 h-4 mr-2" />
-                      Kembali
-                    </rs-button>
-                  </div>
+              <rs-button
+                variant="danger"
+                @click="handleKembali"
+                class="px-6 py-2.5">
+                <Icon name="ph:paper-plane-right" class="w-4 h-4 mr-2" />
+                Kembali
+              </rs-button>
+            </div>
           </div>
         </template>
       </rs-card>
@@ -254,21 +191,17 @@
                 name="keadaanSiasatan"
                 placeholder="Pilih keadaan siasatan"
                 :options="keadaanSiasatanOptions"
-                :classes="{ input: '!py-2.5' }"
-              />
+                :classes="{ input: '!py-2.5' }" />
             </section>
 
             <section>
-              <h4 class="text-sm font-semibold text-gray-900 mb-3">
-                Kategori
-              </h4>
+              <h4 class="text-sm font-semibold text-gray-900 mb-3">Kategori</h4>
               <FormKit
                 type="select"
                 name="kategori"
                 placeholder="Pilih kategori"
                 :options="kategoriOptions"
-                :classes="{ input: '!py-2.5' }"
-              />
+                :classes="{ input: '!py-2.5' }" />
             </section>
 
             <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -279,8 +212,7 @@
                 <FormKit
                   type="date"
                   name="tarikhLawatan"
-                  :classes="{ input: '!py-2.5' }"
-                />
+                  :classes="{ input: '!py-2.5' }" />
               </div>
               <div>
                 <h4 class="text-sm font-semibold text-gray-900 mb-3">
@@ -289,8 +221,7 @@
                 <FormKit
                   type="time"
                   name="masaLawatan"
-                  :classes="{ input: '!py-2.5' }"
-                />
+                  :classes="{ input: '!py-2.5' }" />
               </div>
             </section>
 
@@ -304,19 +235,19 @@
                 placeholder="Pilih tingkah laku asnaf"
                 :options="tingkahLakuAsnafOptions"
                 :classes="{ input: '!py-2.5' }"
-                v-model="formData.tingkahLakuAsnaf"
-              />
-              
+                v-model="formData.tingkahLakuAsnaf" />
+
               <!-- Conditional textarea for "lain-lain" option -->
-              <div v-if="formData.tingkahLakuAsnaf === 'lain-lain'" class="mt-3">
+              <div
+                v-if="formData.tingkahLakuAsnaf === 'lain-lain'"
+                class="mt-3">
                 <FormKit
                   type="textarea"
                   name="tingkahLakuAsnafLain"
                   placeholder="Sila nyatakan tingkah laku asnaf..."
                   rows="3"
                   :classes="{ input: '!py-2.5' }"
-                  v-model="formData.tingkahLakuAsnafLain"
-                />
+                  v-model="formData.tingkahLakuAsnafLain" />
               </div>
             </section>
 
@@ -329,8 +260,7 @@
                 name="catatanLawatanETD"
                 placeholder="Catatan lawatan..."
                 rows="3"
-                :classes="{ input: '!py-2.5' }"
-              />
+                :classes="{ input: '!py-2.5' }" />
             </section>
 
             <section>
@@ -342,22 +272,19 @@
                 name="statusLawatan"
                 placeholder="Pilih status lawatan"
                 :options="statusLawatanOptions"
-                :classes="{ input: '!py-2.5' }"
-              />
+                :classes="{ input: '!py-2.5' }" />
               <div class="flex justify-between items-center mt-4">
                 <rs-button
                   variant="success"
                   @click="handleSimpanDrafLawatan"
-                  class="mt-4"
-                >
+                  class="mt-4">
                   <Icon name="ph:floppy-disk" class="w-4 h-4 mr-2" />
                   Simpan Draf
                 </rs-button>
                 <rs-button
                   variant="primary"
                   @click="handleStatusLawatan"
-                  class="mt-4"
-                >
+                  class="mt-4">
                   <Icon name="ph:paper-plane-right" class="w-4 h-4 mr-2" />
                   Hantar
                 </rs-button>
@@ -371,9 +298,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useToast } from "vue-toastification";
-
 
 const toast = useToast();
 
@@ -411,37 +337,86 @@ const formData = ref({
 
 /* PROFILING DATA */
 const profilingData = ref({
+  // Main applicant data
   pengenalanId: "770319035991",
   nama: "Adnan bin Abu",
   merit: "0.69",
   multidimensi: "Produktif C",
+
+  // Dependents data - structured array for better maintainability
+  dependents: [
+    {
+      pengenalanId: "801004035672",
+      nama: "ROHANA BINTI AHMAD",
+      merit: "0.64",
+      multidimensi: "Produktif C",
+    },
+    {
+      pengenalanId: "060802030272",
+      nama: "NUR NAJWA BINTI ADNAN",
+      merit: "0.38",
+      multidimensi: "Tidak Produktif",
+    },
+    {
+      pengenalanId: "091108030442",
+      nama: "NUR QISTINA BINTI ADNAN",
+      merit: "0.40",
+      multidimensi: "Tidak Produktif",
+    },
+  ],
+
+  // Family and category data
   hadKifayahSyor: "50.81",
   kategoriKeluargaAsnafSyor: "Miskin",
   kategoriAsnafSyor: "Miskin",
-  tarikhPengesyoran: new Date().toLocaleDateString("ms-MY", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }),
-  pengenalanIdTanggungan1: "801004035672",
-  pengenalanIdTanggungan2: "060802030272",
-  pengenalanIdTanggungan3: "091108030442",
-  merit1: "0.64",
-  merit2: "0.38",
-  merit3: "0.40",
-  multidimensi1: "Produktif C",
-  multidimensi2: "Tidak Produktif",
-  multidimensi3: "Tidak Produktif",
   kategoriTanggunganSyor: "Tanggungan Utama",
   meritKeluargaSyor: "0.55",
   statusMultidimensiKeluargaSyor: "Produktif C",
   quadrantMultidimensiKeluargaSyor: "Asnaf Produktif Sementara",
+
+  // Financial data
   bakiHadKifayahSah: "RM-968.00",
   peratusanPerbezaan: "50.81%",
   kategoriKeluargaAsnaf: "Miskin",
   kategoriAsnaf: "Miskin",
   jumlahHadKifayahSah: "RM1968.00",
+
+  // System data
+  tarikhPengesyoran: new Date().toLocaleDateString("ms-MY", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }),
   assignSiasatan: "",
+});
+
+/* TABLE CONFIGURATION */
+const tableHeaders = ref([
+  { key: "pengenalanId", label: "Pengenalan ID" },
+  { key: "nama", label: "Nama" },
+  { key: "kategori", label: "Kategori" },
+  { key: "meritIndividu", label: "Merit Individu" },
+  { key: "statusMultidimensi", label: "Status Multidimensi" },
+]);
+
+// Computed property for table data - reactive and follows best practices
+const tableData = computed(() => {
+  // Main applicant
+  const mainApplicant = {
+    pengenalanId: profilingData.value.pengenalanId,
+    nama: profilingData.value.nama,
+    merit: profilingData.value.merit,
+    multidimensi: profilingData.value.multidimensi,
+  };
+
+  // Combine main applicant and dependents
+  return [mainApplicant, ...profilingData.value.dependents].map((person) => ({
+    pengenalanId: person.pengenalanId,
+    nama: person.nama,
+    kategori: profilingData.value.kategoriAsnafSyor,
+    meritIndividu: person.merit,
+    statusMultidimensi: person.multidimensi,
+  }));
 });
 
 /* OPTIONS */
@@ -458,19 +433,19 @@ const keadaanSiasatanOptions = ref([
 const statusLawatanOptions = ref([
   { label: "Lengkap", value: "lengkap" },
   { label: "Tidak Lengkap", value: "tidak-lengkap" },
-  { label:"Perlukan Lawatan Semula",value:"lawatan-semula"}
+  { label: "Perlukan Lawatan Semula", value: "lawatan-semula" },
 ]);
 
 const tingkahLakuAsnafOptions = ref([
   { label: "Beremosi", value: "beremosi" },
   { label: "Baran", value: "baran" },
-  { label: "Lain-lain", value: "lain-lain" }
+  { label: "Lain-lain", value: "lain-lain" },
 ]);
 
 const kategoriOptions = ref([
   { label: "Musafir", value: "musafir" },
   { label: "Mukim", value: "mukim" },
-  { label: "Bemastautin", value: "bemastautin" }
+  { label: "Bemastautin", value: "bemastautin" },
 ]);
 
 /* HELPERS */
@@ -483,7 +458,7 @@ function getStatusVariant(status: string) {
 
 const handleStatusLawatan = () => {
   toast.success("Status lawatan telah dihantar");
-  navigateTo('/BF-PRF/AS/FR/09_senaraiTugasan');
+  navigateTo("/BF-PRF/AS/FR/09_senaraiTugasan");
 };
 
 const handleSimpanDrafLawatan = () => {
@@ -492,6 +467,6 @@ const handleSimpanDrafLawatan = () => {
 };
 
 const handleKembali = () => {
-  navigateTo('/BF-PRF/AS/FR/09_senaraiTugasan');
+  navigateTo("/BF-PRF/AS/FR/09_senaraiTugasan");
 };
 </script>

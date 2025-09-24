@@ -29,12 +29,7 @@
       <!-- Header Card -->
       <rs-card>
         <template #header>
-          <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Had Kifayah</h2>
-            <rs-button variant="secondary" @click="goBack">
-              <Icon name="mdi:arrow-left" class="mr-1" /> Kembali
-            </rs-button>
-          </div>
+          <h2 class="text-xl font-semibold">Maklumat Had Kifayah</h2>
         </template>
       </rs-card>
 
@@ -51,8 +46,8 @@
             </div>
             
             <div class="flex items-center py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Jenis Isi Rumah:</span>
-              <span class="text-sm text-gray-900">{{ selectedKifayah.jenisIsiRumah || 'N/A' }}</span>
+              <span class="text-sm font-medium text-gray-600 w-40">Keterangan:</span>
+              <span class="text-sm text-gray-900">{{ selectedKifayah.keterangan || 'N/A' }}</span>
             </div>
             
             <div class="flex items-center py-2 border-b border-gray-100">
@@ -66,16 +61,24 @@
             </div>
             
             <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Tarikh Tamat:</span>
+              <span class="text-sm text-gray-900">{{ formatDate(selectedKifayah.tarikhTamat) }}</span>
+            </div>
+            
+            <div class="flex items-center py-2 border-b border-gray-100">
               <span class="text-sm font-medium text-gray-600 w-40">Status:</span>
               <rs-badge :variant="getStatusVariant(selectedKifayah.status)">
                 {{ selectedKifayah.status }}
               </rs-badge>
             </div>
             
-            <div v-if="selectedKifayah.keterangan" class="flex items-start py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Keterangan:</span>
-              <span class="text-sm text-gray-900 flex-1">{{ selectedKifayah.keterangan }}</span>
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Status Data:</span>
+              <rs-badge :variant="getStatusVariant(selectedKifayah.statusData)">
+                {{ selectedKifayah.statusData || 'N/A' }}
+              </rs-badge>
             </div>
+            
           </div>
         </template>
       </rs-card>
@@ -100,8 +103,8 @@
               <input v-model="editForm.namaHadKifayah" type="text" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div class="flex items-center">
-              <label class="text-sm font-medium text-gray-700 w-40">Jenis Isi Rumah</label>
-              <input v-model="editForm.jenisIsiRumah" type="text" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <label class="text-sm font-medium text-gray-700 w-40">Keterangan</label>
+              <input v-model="editForm.keterangan" type="text" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div class="flex items-center">
               <label class="text-sm font-medium text-gray-700 w-40">Pelarasan (RM)</label>
@@ -112,6 +115,10 @@
               <input v-model="editForm.tarikhMula" type="date" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Tarikh Tamat</label>
+              <input v-model="editForm.tarikhTamat" type="date" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="flex items-center">
               <label class="text-sm font-medium text-gray-700 w-40">Status</label>
               <select v-model="editForm.status" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="Aktif">Aktif</option>
@@ -119,9 +126,12 @@
                 <option value="Menunggu Kelulusan">Menunggu Kelulusan</option>
               </select>
             </div>
-            <div class="flex items-start">
-              <label class="text-sm font-medium text-gray-700 w-40 mt-2">Keterangan</label>
-              <textarea v-model="editForm.keterangan" rows="3" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Status Data</label>
+              <select v-model="editForm.statusData" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="Draf">Draf</option>
+                <option value="Menunggu Kelulusan">Menunggu Kelulusan</option>
+              </select>
             </div>
           </div>
           <div class="px-6 py-4 border-t flex justify-end gap-2">
@@ -145,7 +155,7 @@
             :field="[
               'kategoriHadKifayah',
               'levelHadKifayah',
-              'bil',
+              'idLevel',
               'indicator',
               'hadKifayah',
               'statusAktif',
@@ -156,7 +166,7 @@
             :columns="[
               { key: 'kategoriHadKifayah', label: 'Kategori' },
               { key: 'levelHadKifayah', label: 'Level Had Kifayah' },
-              { key: 'bil', label: 'Bil' },
+              { key: 'idLevel', label: 'Id Level' },
               { key: 'indicator', label: 'Indicator' },
               { key: 'hadKifayah', label: 'Had Kifayah' },
               { key: 'statusAktif', label: 'Status Aktif' },
@@ -165,14 +175,13 @@
               { key: 'tindakan', label: 'Tindakan' }
             ]"
             :pageSize="10"
-            :showNoColumn="true"
             :options="{ variant: 'default', hover: true }"
           >
             <template v-slot:kategoriHadKifayah="data">
               <span class="font-medium">{{ data.value.kategoriHadKifayah }}</span>
             </template>
             <template v-slot:levelHadKifayah="data">{{ data.value.levelHadKifayah }}</template>
-            <template v-slot:bil="data">{{ data.value.bil }}</template>
+            <template v-slot:idLevel="data">{{ data.value.idLevel || data.value.bil }}</template>
             <template v-slot:indicator="data">{{ data.value.indicator }}</template>
             <template v-slot:hadKifayah="data">RM {{ formatCurrency(data.value.hadKifayah) }}</template>
             <template v-slot:statusAktif="data">
@@ -209,8 +218,8 @@
               <input v-model="categoryForm.levelHadKifayah" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div>
-              <label class="text-sm font-medium text-gray-700">Bil</label>
-              <input v-model.number="categoryForm.bil" type="number" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <label class="text-sm font-medium text-gray-700">Id Level</label>
+              <input v-model="categoryForm.idLevel" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div class="md:col-span-2">
               <div class="flex items-center justify-between">
@@ -247,6 +256,10 @@
               <label class="text-sm font-medium text-gray-700">Tarikh Mula</label>
               <input v-model="categoryForm.tarikhMula" type="date" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Tarikh Tamat</label>
+              <input v-model="categoryForm.tarikhTamat" type="date" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
           </div>
           <div class="px-6 py-4 border-t flex justify-end gap-2">
             <rs-button variant="secondary" @click="closeEditCategory">Batal</rs-button>
@@ -260,21 +273,26 @@
       <!-- Action Buttons Card -->
       <rs-card>
         <template #body>
-          <div class="flex justify-end gap-3">
-            <rs-button 
-              variant="primary" 
-              @click="navigateTo(`/BF-PRF/KF/HK/01_01/tambah_kategori?id=${selectedId}`)"
-              class="px-6 py-3"
-            >
-              <Icon name="mdi:folder-plus" class="mr-2" /> Tambah Kategori
+          <div class="flex justify-between gap-3">
+            <rs-button variant="secondary" @click="goBack" class="px-6 py-3">
+              <Icon name="mdi:arrow-left" class="mr-2" /> Kembali
             </rs-button>
-            <rs-button 
-              variant="success" 
-              @click="handleHantar"
-              class="px-6 py-3"
-            >
-              <Icon name="mdi:send" class="mr-2" /> Hantar
-            </rs-button>
+            <div class="flex gap-3">
+              <rs-button 
+                variant="primary" 
+                @click="navigateTo(`/BF-PRF/KF/HK/01_01/tambah_kategori?id=${selectedId}`)"
+                class="px-6 py-3"
+              >
+                <Icon name="mdi:folder-plus" class="mr-2" /> Tambah Kategori
+              </rs-button>
+              <rs-button 
+                variant="success" 
+                @click="handleHantar"
+                class="px-6 py-3"
+              >
+                <Icon name="mdi:send" class="mr-2" /> Hantar
+              </rs-button>
+            </div>
           </div>
         </template>
       </rs-card>
@@ -337,23 +355,25 @@ const showCategoryModal = ref(false);
 const categoryForm = ref({
   kategoriHadKifayah: '',
   levelHadKifayah: '',
-  bil: 0,
+  idLevel: '',
   indicator: '',
   hadKifayah: 0,
   statusAktif: true,
   statusData: '',
   tarikhMula: '',
+  tarikhTamat: '',
 });
 let editingCategoryIndex = -1;
 const categoryIndicators = ref([]); // array of indicator strings
 const showEditModal = ref(false);
 const editForm = ref({
   namaHadKifayah: '',
-  jenisIsiRumah: '',
+  keterangan: '',
   kadarBerbayar: 0,
   tarikhMula: '',
+  tarikhTamat: '',
   status: 'Aktif',
-  keterangan: ''
+  statusData: 'Draf'
 });
 
 // Default data (fallback if no data in localStorage)
@@ -363,10 +383,13 @@ const defaultData = [
     namaHadKifayah: "Ketua Keluarga",
     kategori: "Utama",
     jenisIsiRumah: "Ketua Keluarga",
+    keterangan: "Had kifayah untuk ketua keluarga",
     kadarBerbayar: 1215.00,
     kadarPercuma: 780.00,
     tarikhMula: "2025-01-01",
+    tarikhTamat: "2025-12-31",
     status: "Aktif",
+    statusData: "Draf",
     tindakan: 1,
   },
 ];
@@ -378,10 +401,13 @@ const validateDataItem = (item) => {
     // Ensure numeric values are valid
     kadarBerbayar: isNaN(parseFloat(item.kadarBerbayar)) ? 0 : parseFloat(item.kadarBerbayar),
     kadarPercuma: isNaN(parseFloat(item.kadarPercuma)) ? 0 : parseFloat(item.kadarPercuma),
-    // Ensure date is valid
+    // Ensure dates are valid
     tarikhMula: item.tarikhMula && !isNaN(new Date(item.tarikhMula).getTime()) ? item.tarikhMula : "2025-01-01",
+    tarikhTamat: item.tarikhTamat && !isNaN(new Date(item.tarikhTamat).getTime()) ? item.tarikhTamat : "2025-12-31",
     // Ensure status is valid
-    status: item.status || "Aktif"
+    status: item.status || "Aktif",
+    // Ensure statusData is valid
+    statusData: item.statusData || "Draf"
   };
 };
 
@@ -445,11 +471,12 @@ const loadData = () => {
         // Seed edit form with current values
         editForm.value = {
           namaHadKifayah: selectedKifayah.value.namaHadKifayah || '',
-          jenisIsiRumah: selectedKifayah.value.jenisIsiRumah || '',
+          keterangan: selectedKifayah.value.keterangan || '',
           kadarBerbayar: selectedKifayah.value.kadarBerbayar ?? 0,
           tarikhMula: selectedKifayah.value.tarikhMula || '',
+          tarikhTamat: selectedKifayah.value.tarikhTamat || '',
           status: selectedKifayah.value.status || 'Aktif',
-          keterangan: selectedKifayah.value.keterangan || ''
+          statusData: selectedKifayah.value.statusData || 'Draf'
         };
       }
     } else {
@@ -475,11 +502,12 @@ const openEditMaklumatAsas = () => {
   if (!selectedKifayah.value) return;
   editForm.value = {
     namaHadKifayah: selectedKifayah.value.namaHadKifayah || '',
-    jenisIsiRumah: selectedKifayah.value.jenisIsiRumah || '',
+    keterangan: selectedKifayah.value.keterangan || '',
     kadarBerbayar: selectedKifayah.value.kadarBerbayar ?? 0,
     tarikhMula: selectedKifayah.value.tarikhMula || '',
+    tarikhTamat: selectedKifayah.value.tarikhTamat || '',
     status: selectedKifayah.value.status || 'Aktif',
-    keterangan: selectedKifayah.value.keterangan || ''
+    statusData: selectedKifayah.value.statusData || 'Draf'
   };
   showEditModal.value = true;
 };
@@ -547,9 +575,11 @@ const handleHantar = () => {
 const openEditCategory = (row) => {
   if (!relatedCategories.value) return;
   editingCategoryIndex = relatedCategories.value.findIndex(
-    (c) => c.kategoriHadKifayah === row.kategoriHadKifayah && c.levelHadKifayah === row.levelHadKifayah && c.bil === row.bil
+    (c) => c.kategoriHadKifayah === row.kategoriHadKifayah &&
+           c.levelHadKifayah === row.levelHadKifayah &&
+           ((c.idLevel ?? c.bil) === (row.idLevel ?? row.bil))
   );
-  categoryForm.value = { ...row };
+  categoryForm.value = { ...row, idLevel: row.idLevel ?? row.bil };
   // Seed indicators array (split by comma if string)
   if (Array.isArray(row.indicator)) {
     categoryIndicators.value = [...row.indicator];
@@ -671,6 +701,8 @@ const getStatusVariant = (status) => {
       return "danger";
     case "Menunggu Kelulusan":
       return "warning";
+    case "Draf":
+      return "secondary";
     default:
       return "default";
   }

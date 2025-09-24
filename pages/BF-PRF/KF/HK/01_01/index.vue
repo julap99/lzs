@@ -29,7 +29,7 @@
           class="mt-4"
           :key="tableKey"
           :data="kifayahLimits"
-          :field="['idHadKifayah','namaHadKifayah','kadarBerbayar','tarikhMula','status','tindakan']"
+          :field="['namaHadKifayah','keterangan','tarikhMula','statusData','tindakan']"
           :pageSize="10"
           :showNoColumn="true"
           :options="{
@@ -37,13 +37,12 @@
             hover: true,
           }"
         >
-          <template v-slot:idHadKifayah="data">{{ data.value.idHadKifayah }}</template>
           <template v-slot:namaHadKifayah="data">{{ data.value.namaHadKifayah }}</template>
-          <template v-slot:kadarBerbayar="data">RM {{ formatCurrency(data.value.kadarBerbayar) }}</template>
+          <template v-slot:keterangan="data">{{ data.value.keterangan || 'N/A' }}</template>
           <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
-          <template v-slot:status="data">
-            <rs-badge :variant="getStatusVariant(data.value.status)">
-              {{ data.value.status }}
+          <template v-slot:statusData="data">
+            <rs-badge :variant="getStatusVariant(data.value.statusData)">
+              {{ data.value.statusData || 'No StatusData' }}
             </rs-badge>
           </template>
           <template v-slot:tindakan="data">
@@ -100,12 +99,14 @@ const defaultData = [
   {
     idHadKifayah: "HK001",
     namaHadKifayah: "Ketua Keluarga",
+    keterangan: "Had kifayah untuk ketua keluarga",
     kategori: "Utama",
     jenisIsiRumah: "Ketua Keluarga",
     kadarBerbayar: 1215.00,
     kadarPercuma: 780.00,
     tarikhMula: "2025-01-01",
     status: "Aktif",
+    statusData: "Draf",
     tindakan: 1,
   },
 ];
@@ -120,7 +121,9 @@ const validateDataItem = (item) => {
     // Ensure date is valid
     tarikhMula: item.tarikhMula && !isNaN(new Date(item.tarikhMula).getTime()) ? item.tarikhMula : "2025-01-01",
     // Ensure status is valid
-    status: item.status || "Aktif"
+    status: item.status || "Aktif",
+    // Ensure statusData is valid, fallback to status if not available
+    statusData: item.statusData || item.status || "Aktif"
   };
 };
 
@@ -150,6 +153,16 @@ const loadData = () => {
     } else {
       kifayahLimits.value = defaultData;
     }
+    
+    // Ensure all items have statusData field
+    kifayahLimits.value = kifayahLimits.value.map(item => {
+      const updatedItem = {
+        ...item,
+        statusData: item.statusData || item.status || "Aktif"
+      };
+      console.log('Item statusData:', updatedItem.statusData, 'Item status:', updatedItem.status);
+      return updatedItem;
+    });
   } catch (error) {
     console.error('Error loading data:', error);
     kifayahLimits.value = defaultData;
@@ -230,6 +243,8 @@ const getStatusVariant = (status) => {
       return "danger";
     case "Menunggu Kelulusan":
       return "warning";
+    case "Draf":
+      return "secondary";
     default:
       return "default";
   }

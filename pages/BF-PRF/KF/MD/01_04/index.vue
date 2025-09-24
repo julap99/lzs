@@ -48,7 +48,7 @@
           <div class="space-y-4">
             <div class="flex items-center py-2 border-b border-gray-100">
               <span class="text-sm font-medium text-gray-600 w-40">Nama:</span>
-              <span class="text-sm text-gray-900">{{ selectedKifayah.namaHadKifayah }}</span>
+              <span class="text-sm text-gray-900">{{ selectedKifayah.namaMultidimensi || selectedKifayah.namaHadKifayah }}</span>
             </div>
             
             <div class="flex items-center py-2 border-b border-gray-100">
@@ -75,43 +75,37 @@
               </rs-badge>
             </div>
             
-            <!-- Multidimensi Details -->
-            <div class="pt-4">
-              <h4 class="text-md font-semibold mb-2">Multidimensi</h4>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Kuadran:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.kuadran || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Min Merit:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.min_merit || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Max Merit:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.max_merit || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Status Multidimensi:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.status_multidimensi || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Kategori:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.kategori || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Pemberat:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.pemberat || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Skor Tertinggi:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.skor_tertinggi || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1 md:col-span-2">
-                  <span class="text-sm font-medium text-gray-600 w-40">Jadual Skor LOV:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.jadual_skor_lov || 'N/A' }}</span>
-                </div>
-              </div>
+            <!-- Kategori Multidimensi Details -->
+            <div v-if="hasKategoriData" class="pt-4">
+              <h4 class="text-md font-semibold mb-4">Kategori Multidimensi</h4>
+              <rs-table
+                class="mt-4"
+                :data="kategoriData"
+                :field="['kategori','pemberat','skor_tertinggi','jadual_skor_lov','tarikhMula','tarikhTamat','status','statusData']"
+                :pageSize="10"
+                :showNoColumn="false"
+                :options="{
+                  variant: 'default',
+                  hover: true,
+                }"
+              >
+                <template v-slot:kategori="data">{{ data.value.kategori || 'N/A' }}</template>
+                <template v-slot:pemberat="data">{{ data.value.pemberat || 'N/A' }}</template>
+                <template v-slot:skor_tertinggi="data">{{ data.value.skor_tertinggi || 'N/A' }}</template>
+                <template v-slot:jadual_skor_lov="data">{{ data.value.jadual_skor_lov || 'N/A' }}</template>
+                <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
+                <template v-slot:tarikhTamat="data">{{ formatDate(data.value.tarikhTamat) }}</template>
+                <template v-slot:status="data">
+                  <rs-badge :variant="getStatusVariant(data.value.status)">
+                    {{ data.value.status || 'N/A' }}
+                  </rs-badge>
+                </template>
+                <template v-slot:statusData="data">
+                  <rs-badge :variant="getStatusVariant(data.value.statusData)">
+                    {{ data.value.statusData || 'N/A' }}
+                  </rs-badge>
+                </template>
+              </rs-table>
             </div>
           </div>
         </template>
@@ -238,42 +232,45 @@ const error = ref(null);
 const selectedKifayah = ref(null);
 const allKifayahData = ref([]);
 
-// Computed property for kuadran data
+// Computed property for kuadran data (read from multidimensi_kuadran store by id)
 const kuadranData = computed(() => {
-  if (!selectedKifayah.value) return [];
-  
-  // Create an array with the selected kifayah data for the table
-  return [{
-    kuadran: selectedKifayah.value.kuadran || 'N/A',
-    min_merit: selectedKifayah.value.min_merit || 'N/A',
-    max_merit: selectedKifayah.value.max_merit || 'N/A',
-    status_multidimensi: selectedKifayah.value.status_multidimensi || 'N/A',
-    status_data: selectedKifayah.value.status_data || 'N/A',
-    tarikhMula: selectedKifayah.value.tarikhMula || 'N/A',
-    tarikhTamat: selectedKifayah.value.tarikhTamat || 'N/A'
-  }];
+  const id = selectedId;
+  if (!id) return [];
+  try {
+    const map = JSON.parse(localStorage.getItem('multidimensi_kuadran') || '{}');
+    const list = Array.isArray(map[id]) ? map[id] : [];
+    return list;
+  } catch (e) {
+    console.error('Error reading multidimensi_kuadran:', e);
+    return [];
+  }
 });
 
 // Computed property to check if there's actual kuadran data
-const hasKuadranData = computed(() => {
-  if (!selectedKifayah.value) return false;
-  
-  // Check if any of the kuadran fields have meaningful data (not 'N/A' or empty)
-  const hasKuadran = selectedKifayah.value.kuadran && selectedKifayah.value.kuadran !== 'N/A';
-  const hasMinMerit = selectedKifayah.value.min_merit && selectedKifayah.value.min_merit !== 'N/A';
-  const hasMaxMerit = selectedKifayah.value.max_merit && selectedKifayah.value.max_merit !== 'N/A';
-  const hasStatusMultidimensi = selectedKifayah.value.status_multidimensi && selectedKifayah.value.status_multidimensi !== 'N/A';
-  const hasStatusData = selectedKifayah.value.status_data && selectedKifayah.value.status_data !== 'N/A';
-  
-  // Return true if at least one kuadran field has data
-  return hasKuadran || hasMinMerit || hasMaxMerit || hasStatusMultidimensi || hasStatusData;
+const hasKuadranData = computed(() => Array.isArray(kuadranData.value) && kuadranData.value.length > 0);
+
+// Computed property for kategori data (read from multidimensi_kategori store by id)
+const kategoriData = computed(() => {
+  const id = selectedId;
+  if (!id) return [];
+  try {
+    const map = JSON.parse(localStorage.getItem('multidimensi_kategori') || '{}');
+    const list = Array.isArray(map[id]) ? map[id] : [];
+    return list;
+  } catch (e) {
+    console.error('Error reading multidimensi_kategori:', e);
+    return [];
+  }
 });
+
+// Computed property to check if there's actual kategori data
+const hasKategoriData = computed(() => Array.isArray(kategoriData.value) && kategoriData.value.length > 0);
 
 // Default data (fallback if no data in localStorage)
 const defaultData = [
   {
-    idHadKifayah: "HK001",
-    namaHadKifayah: "Ketua Keluarga",
+    idMultidimensi: "MD001",
+    namaMultidimensi: "Ketua Keluarga",
     kategori: "Utama",
     jenisIsiRumah: "Ketua Keluarga",
     kadarBerbayar: 1215.00,
@@ -292,6 +289,9 @@ const defaultData = [
 const validateDataItem = (item) => {
   return {
     ...item,
+    // Normalize IDs and names for multidimensi
+    idMultidimensi: item.idMultidimensi || item.idHadKifayah || `MD${Date.now().toString().slice(-6)}`,
+    namaMultidimensi: item.namaMultidimensi || item.namaHadKifayah || "",
     // Ensure numeric values are valid
     kadarBerbayar: isNaN(parseFloat(item.kadarBerbayar)) ? 0 : parseFloat(item.kadarBerbayar),
     kadarPercuma: isNaN(parseFloat(item.kadarPercuma)) ? 0 : parseFloat(item.kadarPercuma),
@@ -320,7 +320,7 @@ const loadData = () => {
       const mergedData = [...defaultData];
       validatedData.forEach(savedItem => {
         // Check if item already exists in default data
-        const existingIndex = mergedData.findIndex(item => item.idHadKifayah === savedItem.idHadKifayah);
+        const existingIndex = mergedData.findIndex(item => (item.idMultidimensi || item.idHadKifayah) === (savedItem.idMultidimensi || savedItem.idHadKifayah));
         if (existingIndex >= 0) {
           // Replace existing item
           mergedData[existingIndex] = validateDataItem(savedItem);
@@ -336,8 +336,13 @@ const loadData = () => {
     
     // Find the selected item
     if (selectedId) {
-      const numericId = Number(selectedId);
-      selectedKifayah.value = allKifayahData.value.find(item => item.no === numericId);
+      // First try match by idMultidimensi or legacy idHadKifayah
+      selectedKifayah.value = allKifayahData.value.find(item => String(item.idMultidimensi || item.idHadKifayah) === String(selectedId));
+      // Fallback: support older navigation that used row number `no`
+      if (!selectedKifayah.value) {
+        const numericId = Number(selectedId);
+        selectedKifayah.value = allKifayahData.value.find(item => item.no === numericId);
+      }
       if (!selectedKifayah.value) {
         error.value = `Rekod dengan ID "${selectedId}" tidak ditemui.`;
       }

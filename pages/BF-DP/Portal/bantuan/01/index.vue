@@ -104,7 +104,7 @@
               <!-- Content (only for Pengguna Dalam) -->
               <div v-if="selectedRole === 'pengguna-dalam'" class="ml-4 flex-1">
                 <div class="text-sm text-gray-500">
-                  {{ formatDate(step.tarikh) }}
+                  {{ formatDate(step.tarikh) }}<span v-if="step.masa"> - {{ step.masa }}</span>
                 </div>
                 <div :class="getTextClass(step.label)" class="font-bold">
                   {{ step.label }}
@@ -123,7 +123,7 @@
               </div>
               <!-- Minimal content for Pengguna Luar: date + label only -->
               <div v-else class="ml-4 flex-1">
-                <div class="text-sm text-gray-500">{{ formatDate(step.tarikh) }}</div>
+                <div class="text-sm text-gray-500">{{ formatDate(step.tarikh) }}<span v-if="step.masa"> - {{ step.masa }}</span></div>
                 <div class="font-bold text-blue-800">{{ step.label }}</div>
               </div>
             </div>
@@ -259,6 +259,7 @@ const statusTimeline = [
   {
     label: 'Permohonan Dihantar',
     tarikh: '10-06-2025',
+    masa: '08:45',
     completed: true,
     catatan: 'Permohonan diterima untuk semakan.',
     namaPegawai: 'Encik Ali',
@@ -270,6 +271,7 @@ const statusTimeline = [
   {
     label: 'Semakan Awal',
     tarikh: '11-06-2025',
+    masa: '10:20',
     completed: true,
     catatan: 'Semakan dokumen lengkap dan disahkan.',
     namaPegawai: 'Pn. Zahrah',
@@ -281,6 +283,7 @@ const statusTimeline = [
   {
     label: 'Siasatan',
     tarikh: '13-06-2025',
+    masa: '14:15',
     inProgress: true,
     catatan: 'Siasatan lapangan sedang dijalankan oleh pegawai daerah.',
     namaPegawai: 'Ustaz Hafiz',
@@ -293,6 +296,7 @@ const statusTimeline = [
     label: 'Kelulusan',
     notStarted: true,
     tarikh: '',
+    masa: '',
     catatan: 'Tiada tindakan direkodkan setakat ini.',
     namaPegawai: 'Belum Ditugaskan',
     masaBerbaki: '',
@@ -304,6 +308,7 @@ const statusTimeline = [
     label: 'Pembayaran',
     notStarted: true,
     tarikh: '',
+    masa: '',
     catatan: 'Tiada tindakan direkodkan setakat ini.',
     namaPegawai: 'Belum Ditugaskan',
     masaBerbaki: '',

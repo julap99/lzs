@@ -135,23 +135,33 @@
               </div>
 
               <!-- Action Buttons -->
-              <div class="flex justify-end space-x-4 pt-6 border-t mt-8">
+              <div class="flex justify-between pt-6 border-t mt-8">
                 <rs-button 
                   type="button" 
                   variant="secondary" 
                   @click="goBack"
                 >
-                  Batal
+                  <Icon name="mdi:arrow-left" class="mr-2" />
+                  Kembali
                 </rs-button>
-                <rs-button 
-                  btnType="submit" 
-                  variant="primary"
-                  :disabled="isSubmitting"
-                >
-                  <Icon v-if="isSubmitting" name="mdi:loading" class="animate-spin mr-2" />
-                  <Icon v-else name="material-symbols:save" class="mr-2" />
-                  {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
-                </rs-button>
+                <div class="flex space-x-4">
+                  <rs-button 
+                    type="button" 
+                    variant="secondary" 
+                    @click="goBack"
+                  >
+                    Batal
+                  </rs-button>
+                  <rs-button 
+                    btnType="submit" 
+                    variant="primary"
+                    :disabled="isSubmitting"
+                  >
+                    <Icon v-if="isSubmitting" name="mdi:loading" class="animate-spin mr-2" />
+                    <Icon v-else name="material-symbols:save" class="mr-2" />
+                    {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
+                  </rs-button>
+                </div>
               </div>
             </FormKit>
           </div>
@@ -170,13 +180,8 @@ definePageMeta({
   title: "Tambah Kategori Multidimensi",
 });
 
-// Read optional No-based id from query for navigation context
+// Get route for accessing query parameters
 const route = useRoute();
-const selectedNo = computed(() => {
-  const q = route.query?.id;
-  const n = Number(q);
-  return isNaN(n) ? null : n;
-});
 
 const breadcrumb = ref([
   {
@@ -236,8 +241,11 @@ const generateNewId = () => {
 
 // Navigation function
 const goBack = () => {
-  if (selectedNo.value !== null) {
-    navigateTo(`/BF-PRF/KF/MD/01_03?id=${selectedNo.value}`);
+  const route = useRoute();
+  const selectedId = route.query.id;
+  
+  if (selectedId) {
+    navigateTo(`/BF-PRF/KF/MD/01_04?id=${selectedId}`);
   } else {
     navigateTo('/BF-PRF/KF/MD/01_03');
   }
@@ -248,16 +256,26 @@ const handleSubmit = async (formValues) => {
   isSubmitting.value = true;
   
   try {
-    // Load existing data
-    const existingData = loadExistingData();
+    // Get the selected ID from route query
+    const route = useRoute();
+    const selectedId = route.query.id;
+    
+    if (!selectedId) {
+      alert('ID tidak ditemukan. Sila kembali dan cuba lagi.');
+      return;
+    }
+    
+    // Load existing kuadran data for this multidimensi ID
+    const existingKuadranData = JSON.parse(localStorage.getItem('multidimensi_kuadran') || '{}');
+    const kuadranList = existingKuadranData[selectedId] || [];
     
     // Generate new ID for the record
     const newId = generateNewId();
     
     // Create new record
     const newRecord = {
-      idHadKifayah: newId,
-      namaHadKifayah: "Multidimensi",
+      idMultidimensi: selectedId,
+      idKuadran: newId,
       kuadran: formValues.kuadran,
       min_merit: formValues.min_merit,
       max_merit: formValues.max_merit,
@@ -265,22 +283,23 @@ const handleSubmit = async (formValues) => {
       tarikhMula: formValues.tarikhMula,
       tarikhTamat: formValues.tarikhTamat,
       status: formValues.status,
-      tindakan: existingData.length + 1,
+      tindakan: kuadranList.length + 1,
       created_at: new Date().toISOString(),
     };
     
-    // Add new record to existing data
-    existingData.push(newRecord);
+    // Add new record to kuadran data for this multidimensi ID
+    kuadranList.push(newRecord);
+    existingKuadranData[selectedId] = kuadranList;
     
-    // Save to localStorage
-    localStorage.setItem('multidimensi', JSON.stringify(existingData));
+    // Save to localStorage under multidimensi_kuadran key
+    localStorage.setItem('multidimensi_kuadran', JSON.stringify(existingKuadranData));
     
     // Show success message
-    console.log('New record created successfully:', newRecord);
-    alert(`Data berjaya disimpan dengan ID: ${newId}`);
+    console.log('New kuadran record created successfully:', newRecord);
+    alert(`Data kuadran berjaya disimpan dengan ID: ${newId}`);
     
-    // Navigate back
-    await navigateTo('/BF-PRF/KF/MD/01_02');
+    // Navigate back to MD/01_04 to show the kuadran data
+    await navigateTo(`/BF-PRF/KF/MD/01_04?id=${selectedId}`);
     
   } catch (error) {
     console.error('Error saving data:', error);
@@ -290,18 +309,6 @@ const handleSubmit = async (formValues) => {
   }
 };
 
-// Function to load existing data from localStorage
-const loadExistingData = () => {
-  try {
-    const savedData = localStorage.getItem('multidimensi');
-    if (savedData) {
-      return JSON.parse(savedData);
-    }
-  } catch (error) {
-    console.error('Error loading existing data:', error);
-  }
-  return [];
-};
 
 // Initialize form for new record
 const initializeForm = () => {

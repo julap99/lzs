@@ -135,12 +135,12 @@ const breadcrumb = ref([
   {
     name: "Kelulusan",
     type: "parent",
-    path: "/approval",
+    path: "/BF-PRF/AS/UP/05",
   },
   {
     name: "Salinan Sebelum Kemaskini",
     type: "current",
-    path: "/approval/profile-copy",
+    path: "/BF-PRF/AS/UP/05",
   },
 ]);
 
@@ -162,7 +162,7 @@ const generatePDF = () => {
   // Basic information
   doc.setFontSize(12);
   doc.text(`Tarikh: ${new Date().toLocaleDateString("ms-MY")}`, 20, 40);
-  doc.text(`No. Kad Pengenalan: 880101121234`, 105, 40);
+  doc.text(`No. Kad Pengenalan: 770319035991`, 105, 40);
 
   // Current information section
   doc.setFont("helvetica", "bold");
@@ -171,10 +171,10 @@ const generatePDF = () => {
   doc.setFont("helvetica", "normal");
 
   const currentInfo = [
-    "Nama: AHMAD BIN ALI",
-    "Alamat: NO 12, JALAN MERAK 5, TAMAN BUKIT INDAH, 81200 JOHOR BAHRU, JOHOR",
+    "Nama: ADNAN BIN ABU",
+    "Alamat: NO 1, JALAN BUKIT INDAH 1, TAMAN BUKIT INDAH, 81200 JOHOR BAHRU, JOHOR",
     "No. Telefon: 0123456789",
-    "Emel: ahmad.ali@example.com",
+    "Emel: adnan.abu@example.com",
   ];
 
   currentInfo.forEach((item, index) => {
@@ -188,10 +188,10 @@ const generatePDF = () => {
   doc.setFont("helvetica", "normal");
 
   const approvedChanges = [
-    "Nama: AHMAD BIN ALI HAJI",
-    "Alamat: NO 15, JALAN MERAK 5, TAMAN BUKIT INDAH, 81200 JOHOR BAHRU, JOHOR",
+    "Nama: Haji ADNAN BIN ABU",
+    "Alamat: NO 1, JALAN BUKIT INDAH 1, TAMAN BUKIT INDAH, 81200 JOHOR BAHRU, JOHOR",
     "No. Telefon: 01123456789",
-    "Emel: ahmad.ali.haji@example.com",
+    "Emel: adnan.abu.haji@example.com",
   ];
 
   approvedChanges.forEach((item, index) => {

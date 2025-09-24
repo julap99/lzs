@@ -23,14 +23,14 @@
         </template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormKit type="text" label="No. Rujukan" :value="applicationData.refNumber" disabled />
-            <FormKit type="text" label="Tarikh Permohonan" :value="applicationData.applicationDate" disabled />
-            <FormKit type="text" label="Jenis Recipient" :value="applicationData.jenisRecipient" disabled />
-            <FormKit v-if="applicationData.jenisRecipient === 'Individu'" type="text" label="Nama Penuh" :value="applicationData.namaPenuh" disabled />
-            <FormKit v-if="applicationData.jenisRecipient === 'Syarikat'" type="text" label="Nama Syarikat" :value="applicationData.namaSyarikat" disabled />
-            <FormKit type="text" label="Jenis Pengenalan" :value="applicationData.jenisPengenalan" disabled />
-            <FormKit v-if="applicationData.jenisPengenalan !== 'ID Syarikat'" type="text" label="ID Pengenalan" :value="applicationData.idPengenalan" disabled />
-            <FormKit v-if="applicationData.jenisPengenalan === 'ID Syarikat'" type="text" label="ID Syarikat" :value="applicationData.idSyarikat" disabled />
+            <FormKit type="text" label="No. Rujukan" v-model="applicationData.refNumber" readonly />
+            <FormKit type="text" label="Tarikh Permohonan" v-model="applicationData.applicationDate" readonly />
+            <FormKit type="text" label="Jenis Recipient" v-model="applicationData.jenisRecipient" readonly />
+            <FormKit v-if="applicationData.jenisRecipient === 'Individu'" type="text" label="Nama Penuh" v-model="applicationData.namaPenuh" readonly />
+            <FormKit v-if="applicationData.jenisRecipient === 'Syarikat'" type="text" label="Nama Syarikat" v-model="applicationData.namaSyarikat" readonly />
+            <FormKit type="text" label="Jenis Pengenalan" v-model="applicationData.jenisPengenalan" readonly />
+            <FormKit v-if="applicationData.jenisPengenalan !== 'ID Syarikat'" type="text" label="ID Pengenalan" v-model="applicationData.idPengenalan" readonly />
+            <FormKit v-if="applicationData.jenisPengenalan === 'ID Syarikat'" type="text" label="ID Syarikat" v-model="applicationData.idSyarikat" readonly />
           </div>
         </template>
       </rs-card>
@@ -42,9 +42,9 @@
         </template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormKit type="text" label="Nama Bank" :value="applicationData.namaBank" disabled />
-            <FormKit type="text" label="No Akaun Bank" :value="applicationData.noAkaunBank" disabled />
-            <FormKit type="text" label="Penama Akaun Bank" :value="applicationData.penamaAkaunBank" disabled />
+            <FormKit type="text" label="Nama Bank" v-model="applicationData.namaBank" readonly />
+            <FormKit type="text" label="No Akaun Bank" v-model="applicationData.noAkaunBank" readonly />
+            <FormKit type="text" label="Penama Akaun Bank" v-model="applicationData.penamaAkaunBank" readonly />
           </div>
         </template>
       </rs-card>
@@ -135,7 +135,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useToast } from 'vue-toastification'
 
@@ -169,7 +169,7 @@ const applicationData = ref({
   documents: [],
 })
 
-const dataset = {
+const mockData = {
   'RE-202507-0011': {
     refNumber: 'RE-202507-0011',
     applicationDate: '23/7/2025',
@@ -177,7 +177,7 @@ const dataset = {
     jenisRecipient: 'Individu',
     namaPenuh: 'Ahmad Bin Abdullah',
     jenisPengenalan: 'MyKad',
-    idPengenalan: '880101-12-3456',
+    idPengenalan: '880101123456',
     namaBank: 'Maybank',
     noAkaunBank: '1234567890123456',
     penamaAkaunBank: 'Ahmad Bin Abdullah',
@@ -193,15 +193,47 @@ const dataset = {
     applicationDate: '15/6/2025',
     status: 'Disahkan',
     jenisRecipient: 'Syarikat',
-    namaSyarikat: 'Pusat Dialisis Al-Falah Sdn Bhd',
+    namaSyarikat: 'Pusat Dialisis As-Salam Shah Alam',
     jenisPengenalan: 'ID Syarikat',
-    idSyarikat: '201801023456',
+    idSyarikat: 'PPM-2021-015',
     namaBank: 'Public Bank',
     noAkaunBank: '9876543210',
-    penamaAkaunBank: 'Pusat Dialisis Al-Falah Sdn Bhd',
+    penamaAkaunBank: 'Pusat Dialisis As-Salam Shah Alam',
     documents: [
-      { name: 'Sijil SSM', filename: 'sijil_ssm_2025.pdf', size: '1.2 MB' },
-      { name: 'Dokumen Bank', filename: 'bank_confirmation_2025.pdf', size: '0.9 MB' },
+      { name: 'Sijil SSM', filename: 'sijil_ssm_dialisis.pdf', size: '1.2 MB' },
+      { name: 'Dokumen Bank', filename: 'bank_confirmation_dialisis.pdf', size: '0.9 MB' },
+    ],
+  },
+  'RE-202507-0014': {
+    refNumber: 'RE-202507-0014',
+    applicationDate: '30/7/2025',
+    status: 'Perlu Pembetulan',
+    jenisRecipient: 'Syarikat',
+    namaSyarikat: 'Klinik Kesihatan Al-Ikhlas',
+    jenisPengenalan: 'ID Syarikat',
+    idSyarikat: 'PPM-2022-008',
+    namaBank: 'CIMB Bank',
+    noAkaunBank: '8765432109876',
+    penamaAkaunBank: 'Klinik Kesihatan Al-Ikhlas',
+    documents: [
+      { name: 'Sijil SSM', filename: 'sijil_ssm_klinik.pdf', size: '1.2 MB' },
+      { name: 'Dokumen Bank', filename: 'bank_confirmation_klinik.pdf', size: '0.9 MB' },
+    ],
+  },
+  'RE-202505-0016': {
+    refNumber: 'RE-202505-0016',
+    applicationDate: '25/5/2025',
+    status: 'Tidak Sah',
+    jenisRecipient: 'Syarikat',
+    namaSyarikat: 'Pembekal Makanan Halal Al-Amin Sdn Bhd',
+    jenisPengenalan: 'ID Syarikat',
+    idSyarikat: 'PPM-2022-008',
+    namaBank: 'Bank Islam',
+    noAkaunBank: '7654321098765',
+    penamaAkaunBank: 'Pembekal Makanan Halal Al-Amin Sdn Bhd',
+    documents: [
+      { name: 'Sijil SSM', filename: 'sijil_ssm_pembekal.pdf', size: '1.2 MB' },
+      { name: 'Dokumen Bank', filename: 'bank_confirmation_pembekal.pdf', size: '0.9 MB' },
     ],
   },
 }
@@ -237,12 +269,24 @@ const handleApprovalSubmit = async () => {
 
 const handleBack = () => navigateTo('/BF-PRF/TP/PP')
 
-onMounted(() => {
+const loadApplicationData = () => {
   const id = route.params.id
-  if (dataset[id]) {
-    applicationData.value = { ...applicationData.value, ...dataset[id] }
+  if (mockData[id]) {
+    // Direct assignment to ensure data is loaded
+    Object.assign(applicationData.value, mockData[id])
   } else {
     applicationData.value.refNumber = id
+  }
+}
+
+onMounted(() => {
+  loadApplicationData()
+})
+
+// Watch for route changes
+watch(() => route.params.id, (newId) => {
+  if (newId) {
+    loadApplicationData()
   }
 })
 </script>

@@ -29,12 +29,7 @@
       <!-- Header Card -->
       <rs-card>
         <template #header>
-          <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Had Kifayah</h2>
-            <rs-button variant="secondary" @click="goBack">
-              <Icon name="mdi:arrow-left" class="mr-1" /> Kembali
-            </rs-button>
-          </div>
+          <h2 class="text-xl font-semibold">Maklumat Had Kifayah</h2>
         </template>
       </rs-card>
 
@@ -51,8 +46,8 @@
             </div>
             
             <div class="flex items-center py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Jenis Isi Rumah:</span>
-              <span class="text-sm text-gray-900">{{ selectedKifayah.jenisIsiRumah || 'N/A' }}</span>
+              <span class="text-sm font-medium text-gray-600 w-40">Keterangan:</span>
+              <span class="text-sm text-gray-900">{{ selectedKifayah.keterangan || 'N/A' }}</span>
             </div>
             
             <div class="flex items-center py-2 border-b border-gray-100">
@@ -72,10 +67,6 @@
               </rs-badge>
             </div>
             
-            <div v-if="selectedKifayah.keterangan" class="flex items-start py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Keterangan:</span>
-              <span class="text-sm text-gray-900 flex-1">{{ selectedKifayah.keterangan }}</span>
-            </div>
           </div>
         </template>
       </rs-card>
@@ -92,20 +83,21 @@
             :field="[
               'kategoriHadKifayah',
               'levelHadKifayah',
-              'bil',
+              'idLevel',
               'indicator',
               'hadKifayah',
               'statusAktif',
               'statusData',
-              'tarikhMula'
+              'tarikhMula',
+              'tarikhTamat'
             ]"
             :pageSize="10"
-            :showNoColumn="true"
+            :showNoColumn="false"
             :options="{ variant: 'default', hover: true }"
           >
             <template v-slot:kategoriHadKifayah="data">{{ data.value.kategoriHadKifayah }}</template>
             <template v-slot:levelHadKifayah="data">{{ data.value.levelHadKifayah }}</template>
-            <template v-slot:bil="data">{{ data.value.bil }}</template>
+            <template v-slot:idLevel="data">{{ data.value.idLevel }}</template>
             <template v-slot:indicator="data">{{ data.value.indicator }}</template>
             <template v-slot:hadKifayah="data">RM {{ formatCurrency(data.value.hadKifayah) }}</template>
             <template v-slot:statusAktif="data">
@@ -115,6 +107,7 @@
             </template>
             <template v-slot:statusData="data">{{ data.value.statusData }}</template>
             <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
+            <template v-slot:tarikhTamat="data">{{ formatDate(data.value.tarikhTamat) }}</template>
           </rs-table>
         </template>
       </rs-card>
@@ -129,6 +122,17 @@
               class="px-6 py-3"
             >
               <Icon name="mdi:folder-plus" class="mr-2" /> Tambah Kategori
+            </rs-button>
+          </div>
+        </template>
+      </rs-card>
+
+      <!-- Back Button -->
+      <rs-card>
+        <template #body>
+          <div class="flex justify-start">
+            <rs-button variant="secondary" @click="goBack">
+              <Icon name="mdi:arrow-left" class="mr-1" /> Kembali
             </rs-button>
           </div>
         </template>
@@ -196,6 +200,7 @@ const defaultData = [
     namaHadKifayah: "Ketua Keluarga",
     kategori: "Utama",
     jenisIsiRumah: "Ketua Keluarga",
+    keterangan: "Had kifayah untuk ketua keluarga",
     kadarBerbayar: 1215.00,
     kadarPercuma: 780.00,
     tarikhMula: "2025-01-01",
@@ -214,7 +219,25 @@ const validateDataItem = (item) => {
     // Ensure date is valid
     tarikhMula: item.tarikhMula && !isNaN(new Date(item.tarikhMula).getTime()) ? item.tarikhMula : "2025-01-01",
     // Ensure status is valid
-    status: item.status || "Aktif"
+    status: item.status || "Aktif",
+    // Ensure keterangan is valid
+    keterangan: item.keterangan || item.jenisIsiRumah || ''
+  };
+};
+
+// Function to validate and sanitize category data item
+const validateCategoryItem = (item) => {
+  return {
+    ...item,
+    // Ensure numeric values are valid
+    hadKifayah: isNaN(parseFloat(item.hadKifayah)) ? 0 : parseFloat(item.hadKifayah),
+    bil: item.bil || item.idLevel || '',
+    // Ensure dates are valid
+    tarikhMula: item.tarikhMula && !isNaN(new Date(item.tarikhMula).getTime()) ? item.tarikhMula : "2025-01-01",
+    tarikhTamat: item.tarikhTamat && !isNaN(new Date(item.tarikhTamat).getTime()) ? item.tarikhTamat : "",
+    // Ensure status values are valid
+    statusAktif: typeof item.statusAktif === 'boolean' ? item.statusAktif : (item.statusAktif === 'true' || item.statusAktif === true),
+    statusData: item.statusData || "Aktif"
   };
 };
 
@@ -224,10 +247,12 @@ const loadRelatedCategories = () => {
     const savedCategories = localStorage.getItem('kifayahCategories');
     if (savedCategories && selectedId) {
       const allCategories = JSON.parse(savedCategories);
-      // Filter categories that belong to the selected Had Kifayah
-      relatedCategories.value = allCategories.filter(category => 
+      // Filter categories that belong to the selected Had Kifayah and validate data
+      const filteredCategories = allCategories.filter(category => 
         category.idHadKifayah === selectedId
       );
+      // Validate and sanitize each category item
+      relatedCategories.value = filteredCategories.map(validateCategoryItem);
     } else {
       relatedCategories.value = [];
     }

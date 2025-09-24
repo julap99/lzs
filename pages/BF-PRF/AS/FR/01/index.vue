@@ -84,8 +84,52 @@
                   <p class="mt-1 text-xs text-gray-500">Pilih kariah untuk menapis hasil carian mengikut lokasi</p>
                 </div>
 
-                <!-- Bank Account Field -->
+                <!-- Phone Field -->
                 <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center">
+                      <Icon name="mdi:phone" size="1.2rem" class="text-blue-600 mr-2" />
+                      <label class="text-sm font-medium text-gray-700">No Telefon</label>
+                    </div>
+                    <div v-if="validationErrors.searchPhone" class="text-xs text-red-500">
+                      {{ validationErrors.searchPhone }}
+                    </div>
+                  </div>
+                  <FormKit
+                    type="text"
+                    name="searchPhone"
+                    v-model="formData.searchPhone"
+                    placeholder="Contoh: 0123456789"
+                    input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    @input="debouncedValidateField('searchPhone')"
+                  />
+                  <p class="mt-1 text-xs text-gray-500">Boleh masukkan sebahagian atau penuh nombor telefon</p>
+                </div>
+
+                <!-- Address Field -->
+                <div class>
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center">
+                      <Icon name="mdi:home-map-marker" size="1.2rem" class="text-blue-600 mr-2" />
+                      <label class="text-sm font-medium text-gray-700">Alamat</label>
+                    </div>
+                    <div v-if="validationErrors.searchAddress" class="text-xs text-red-500">
+                      {{ validationErrors.searchAddress }}
+                    </div>
+                  </div>
+                  <FormKit
+                    type="text"
+                    name="searchAddress"
+                    v-model="formData.searchAddress"
+                    placeholder="Masukkan alamat (sebahagian atau penuh)"
+                    input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    @input="debouncedValidateField('searchAddress')"
+                  />
+                  <p class="mt-1 text-xs text-gray-500">Padankan alamat separa dibenarkan</p>
+                </div>
+
+                <!-- Bank Account Field -->
+                <!-- <div>
                   <div class="flex items-center justify-between mb-2">
                     <div class="flex items-center">
                       <Icon name="mdi:bank" size="1.2rem" class="text-blue-600 mr-2" />
@@ -104,7 +148,7 @@
                     @input="debouncedValidateField('searchBankAccount')"
                   />
                   <p class="mt-1 text-xs text-gray-500">Cari dengan nombor akaun bank yang tepat (8-20 digit)</p>
-                </div>
+                </div> -->
               </div>
 
               <!-- ID Type and ID Number Fields -->
@@ -428,7 +472,9 @@
                     <div class="text-sm text-blue-700 space-y-1">
                       <p v-if="formData.searchName">• Nama: "{{ formData.searchName }}"</p>
                       <p v-if="formData.searchKariah">• Kariah: "{{ formData.searchKariah }}"</p>
+                      <p v-if="formData.searchAddress">• Alamat: "{{ formData.searchAddress }}"</p>
                       <p v-if="formData.searchBankAccount">• Akaun Bank: "{{ formData.searchBankAccount }}"</p>
+                      <p v-if="formData.searchPhone">• Telefon: "{{ formData.searchPhone }}"</p>
                       <p v-if="formData.idNumber">• ID: "{{ formData.idNumber }}"</p>
                     </div>
                   </div>
@@ -500,6 +546,8 @@ const validationErrors = ref({
   searchName: '',
   searchKariah: '',
   searchBankAccount: '',
+  searchPhone: '',
+  searchAddress: '',
   idType: '',
   idNumber: ''
 });
@@ -509,12 +557,12 @@ const breadcrumb = ref([
   {
     name: "Profiling",
     type: "link",
-    path: "/BF-PRF",
+    path: "/BF-PRF/AS/FR/01",
   },
   {
     name: "Asnaf",
     type: "link",
-    path: "/BF-PRF/AS",
+    path: "/BF-PRF/AS/FR/01",
   },
   {
     name: "Carian Profil",
@@ -556,6 +604,8 @@ const formData = ref({
   searchName: "",
   searchKariah: "",
   searchBankAccount: "",
+  searchPhone: "",
+  searchAddress: "",
   idType: "",
   idNumber: "",
 });
@@ -834,15 +884,19 @@ const isFormValid = computed(() => {
   const hasSearchName = formData.value.searchName.trim() !== '';
   const hasSearchKariah = formData.value.searchKariah !== '';
   const hasSearchBankAccount = formData.value.searchBankAccount.trim() !== '';
+  const hasSearchPhone = formData.value.searchPhone.trim() !== '';
+  const hasSearchAddress = formData.value.searchAddress.trim() !== '';
   const hasIdType = formData.value.idType !== '';
   const hasIdNumber = formData.value.idNumber.trim() !== '';
   
   // At least one field must be filled
-  const hasAtLeastOneField = hasSearchName || hasSearchKariah || hasSearchBankAccount || hasIdType || hasIdNumber;
+  const hasAtLeastOneField = hasSearchName || hasSearchKariah || hasSearchBankAccount || hasSearchPhone || hasSearchAddress || hasIdType || hasIdNumber;
   
   // Check for critical validation errors (only if they are non-empty strings)
   const hasCriticalErrors = (validationErrors.value.searchName && validationErrors.value.searchName.trim() !== '') || 
                            (validationErrors.value.searchBankAccount && validationErrors.value.searchBankAccount.trim() !== '') || 
+                           (validationErrors.value.searchPhone && validationErrors.value.searchPhone.trim() !== '') || 
+                           (validationErrors.value.searchAddress && validationErrors.value.searchAddress.trim() !== '') || 
                            (validationErrors.value.idNumber && validationErrors.value.idNumber.trim() !== '');
   
   return hasAtLeastOneField && !hasCriticalErrors;
@@ -895,6 +949,8 @@ const hasSearchCriteria = computed(() => {
   return formData.value.searchName.trim() !== '' ||
          formData.value.searchKariah !== '' ||
          formData.value.searchBankAccount.trim() !== '' ||
+         formData.value.searchPhone.trim() !== '' ||
+         formData.value.searchAddress.trim() !== '' ||
          formData.value.idNumber.trim() !== '';
 });
 
@@ -903,6 +959,8 @@ const searchCriteriaText = computed(() => {
   if (formData.value.searchName.trim()) criteria.push(`Nama: "${formData.value.searchName}"`);
   if (formData.value.searchKariah) criteria.push(`Kariah: "${formData.value.searchKariah}"`);
   if (formData.value.searchBankAccount.trim()) criteria.push(`Akaun Bank: "${formData.value.searchBankAccount}"`);
+  if (formData.value.searchPhone.trim()) criteria.push(`Telefon: "${formData.value.searchPhone}"`);
+  if (formData.value.searchAddress.trim()) criteria.push(`Alamat: "${formData.value.searchAddress}"`);
   if (formData.value.idNumber.trim()) criteria.push(`ID: "${formData.value.idNumber}"`);
   return criteria.join(', ');
 });
@@ -948,6 +1006,28 @@ const validateField = (fieldName) => {
         validationErrors.value.searchBankAccount = 'Nombor akaun bank mesti 8-20 digit';
       } else {
         validationErrors.value.searchBankAccount = '';
+      }
+      break;
+    
+    case 'searchPhone':
+      if (value.trim() === '') {
+        validationErrors.value.searchPhone = '';
+      } else if (!/^[0-9\-\s+()]+$/.test(value)) {
+        validationErrors.value.searchPhone = 'Nombor telefon hanya boleh mengandungi digit dan - + ( )';
+      } else if (value.replace(/[^0-9]/g, '').length < 7) {
+        validationErrors.value.searchPhone = 'Nombor telefon terlalu pendek';
+      } else {
+        validationErrors.value.searchPhone = '';
+      }
+      break;
+
+    case 'searchAddress':
+      if (value.trim() === '') {
+        validationErrors.value.searchAddress = '';
+      } else if (value.length > 200) {
+        validationErrors.value.searchAddress = 'Alamat terlalu panjang (maksimum 200 aksara)';
+      } else {
+        validationErrors.value.searchAddress = '';
       }
       break;
       
@@ -999,6 +1079,8 @@ const resetForm = () => {
   formData.value.searchName = "";
   formData.value.searchKariah = "";
   formData.value.searchBankAccount = "";
+  formData.value.searchPhone = "";
+  formData.value.searchAddress = "";
   formData.value.idType = "";
   formData.value.idNumber = "";
   searchResults.value = [];
@@ -1010,6 +1092,8 @@ const resetForm = () => {
     searchName: '',
     searchKariah: '',
     searchBankAccount: '',
+    searchPhone: '',
+    searchAddress: '',
     idType: '',
     idNumber: ''
   };
@@ -1022,6 +1106,8 @@ const validateAndSearch = () => {
   validateField('searchName');
   validateField('searchKariah');
   validateField('searchBankAccount');
+  validateField('searchPhone');
+  validateField('searchAddress');
   validateField('idType');
   validateField('idNumber');
   
@@ -1029,11 +1115,13 @@ const validateAndSearch = () => {
   const hasSearchName = formData.value.searchName.trim() !== '';
   const hasSearchKariah = formData.value.searchKariah !== '';
   const hasSearchBankAccount = formData.value.searchBankAccount.trim() !== '';
+  const hasSearchPhone = formData.value.searchPhone.trim() !== '';
+  const hasSearchAddress = formData.value.searchAddress.trim() !== '';
   const hasIdNumber = formData.value.idNumber.trim() !== '';
   const hasIdType = formData.value.idType !== '';
   
   // At least one field must be filled
-  if (!hasSearchName && !hasSearchKariah && !hasSearchBankAccount && !hasIdNumber && !hasIdType) {
+  if (!hasSearchName && !hasSearchKariah && !hasSearchBankAccount && !hasSearchPhone && !hasSearchAddress && !hasIdNumber && !hasIdType) {
     errorMessage.value = 'Sila isi sekurang-kurangnya satu maklumat untuk carian';
     return;
   }
@@ -1042,6 +1130,8 @@ const validateAndSearch = () => {
   const criticalErrors = [];
   if (validationErrors.value.searchName) criticalErrors.push(validationErrors.value.searchName);
   if (validationErrors.value.searchBankAccount) criticalErrors.push(validationErrors.value.searchBankAccount);
+  if (validationErrors.value.searchPhone) criticalErrors.push(validationErrors.value.searchPhone);
+  if (validationErrors.value.searchAddress) criticalErrors.push(validationErrors.value.searchAddress);
   if (validationErrors.value.idNumber) criticalErrors.push(validationErrors.value.idNumber);
   
   if (criticalErrors.length > 0) {
@@ -1069,6 +1159,8 @@ const performFlexibleSearch = async () => {
     const searchName = sanitizeInput(formData.value.searchName).toLowerCase();
     const searchKariah = formData.value.searchKariah;
     const searchBankAccount = sanitizeInput(formData.value.searchBankAccount);
+    const searchPhone = sanitizeInput(formData.value.searchPhone).toLowerCase();
+    const searchAddress = sanitizeInput(formData.value.searchAddress).toLowerCase();
     const idNumber = sanitizeInput(formData.value.idNumber);
     const idType = formData.value.idType;
     
@@ -1118,6 +1210,24 @@ const performFlexibleSearch = async () => {
       if (searchBankAccount) {
         const bankMatch = profile.bankAccount === searchBankAccount;
         match = match && bankMatch;
+      }
+
+      // Check phone (partial match)
+      if (searchPhone) {
+        const phoneNormalized = (profile.phone || '').toLowerCase();
+        const phoneMatch = phoneNormalized.includes(searchPhone.replace(/\s/g, ''));
+        match = match && phoneMatch;
+      }
+
+      // Check address (partial). Mock does not include address; fallback using name/kariah heuristics
+      if (searchAddress) {
+        const addressFields = [
+          (profile.address || '').toLowerCase(),
+          (profile.kariah || '').toLowerCase(),
+          (profile.name || '').toLowerCase()
+        ];
+        const addressMatch = addressFields.some(f => f.includes(searchAddress));
+        match = match && addressMatch;
       }
       
       // Check ID number (exact match)

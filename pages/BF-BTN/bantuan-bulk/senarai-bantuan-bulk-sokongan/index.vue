@@ -64,19 +64,33 @@
             </rs-badge>
           </template>
 
-          <template v-slot:tindakan="{ text }">
-            <div class="flex justify-center items-center gap-2">
-              <rs-button
-                variant="primary"
-                class="p-1 flex gap-2"
+          <template v-slot:amaun="{ text }">
+            {{ formatCurrency(text) }}
+          </template>
+
+          <template v-slot:tindakan="{ text, index}">
+            <div class="relative flex items-center justify-center" @mouseenter="tooltips['view'+index] = true" @mouseleave="tooltips['view'+index] = false">
+              <rs-button 
+                variant="info-text" 
+                class="p-1 w-8 h-8"
                 @click="handleProses(text)"
               >
-                <Icon name="ph:eye" class="w-4 h-4" />
-                Lihat
+                <Icon name="ic:outline-visibility" size="18" />
               </rs-button>
+              <transition name="tooltip">
+                <span v-if="tooltips['view'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
+                  Lihat
+                </span>
+              </transition>
             </div>
           </template>
         </rs-table>
+
+        <!-- Total Amount -->
+        <div class="flex justify-end text-sm text-gray-700 mt-2">
+          <div class="font-medium">Jumlah Amaun:&nbsp;</div>
+          <div>{{ formatCurrency(totalAmount) }}</div>
+        </div>
 
         <!-- Pagination -->
         <div class="flex items-center justify-between px-5 mt-4">
@@ -161,13 +175,18 @@ const columns = [
     sortable: true,
   },
   {
-    key: "Aid",
+    key: "aid",
     label: "Aid",
     sortable: true,
   },
   {
     key: "aidProduct",
     label: "Aid Product",
+    sortable: true,
+  },
+  {
+    key: "amaun",
+    label: "Amaun",
     sortable: true,
   },
   {
@@ -185,7 +204,8 @@ const columns = [
 // Options for filters
 const statusOptions = [
   { label: "Semua Status", value: "" },
-  { label: "Dalam Tindakan", value: "Dalam Tindakan" },
+  { label: "Dalam Proses", value: "Dalam Proses" },
+  { label: "Lulus", value: "Lulus" },
   { label: "Selesai", value: "Selesai" },
   { label: "Ditolak", value: "Ditolak" },
 ];
@@ -197,38 +217,38 @@ const filters = ref({
 });
 const currentPage = ref(1);
 const pageSize = ref(10);
-
+const tooltips = ref({});
 // Mock data - would be replaced with API call
 const bantuanBulkList = ref([
+  {
+    kodBP: "BP-2025-01617",
+    tajuk: "TUNTUTAN KFAM APRIL 2025 - PELAJAR",
+    aid: "(HQ) ELAUN KEHADIRAN KELAS AGAM ASAS (MUALLAF)",
+    aidProduct: "(HQ) ELAUN KEHADIRAN KELAS AGAM ASAS (MUALLAF)",
+    amaun: 44390.00,
+    tarikhHantar: '04/05/2025',
+    status: "Lulus",
+    tindakan: "BP-2025-01617",
+  },
+  {
+    kodBP: "BP-2025-01589",
+    tajuk: "TUNTUTAN KFAM APRIL 2025 - GURU",
+    aid: "(HQ) ELAUN GURU PEMBIMBING ASNAF (MUALLAF)",
+    aidProduct: "(HQ) ELAUN GURU PEMBIMBING ASNAF (MUALLAF)",
+    amaun: 54710.00,
+    tarikhHantar: '30/04/2025',
+    status: "Lulus",
+    tindakan: "BP-2025-01589",
+  },
   {
     kodBP: "BP-2025-00001",
     tajuk: "Wang Saku Fakir Jan 2025",
     aid: "B314 - Bantuan Keperluan Pendidikan IPT (Fakir)",
     aidProduct: "(HQ) KPIPT (Fakir) - Bantuan Wang Saku",
-    jumlahAmaun: 'RM20,000.00',
+    amaun: 20000.00,
     tarikhHantar: '03/03/2025',
-    status: "Dalam Tindakan",
+    status: "Dalam Proses",
     tindakan: "BP-2025-00001",
-  },
-  {
-    kodBP: "BP-2025-00002",
-    tajuk: "Wang Saku Fakir Feb 2025",
-    aid: "B314 - Bantuan Keperluan Pendidikan IPT (Fakir)",
-    aidProduct: "(HQ) KPIPT (Fakir) - Bantuan Wang Saku",
-    jumlahAmaun: 'RM23,000.00',
-    tarikhHantar: '02/03/2025',
-    status: "Dalam Tindakan",
-    tindakan: "BP-2025-00002",
-  },
-  {
-    kodBP: "BP-2025-00004",
-    tajuk: "Wang Saku Fakir Mac 2025",
-    aid: "B314 - Bantuan Keperluan Pendidikan IPT (Fakir)",
-    aidProduct: "(HQ) KPIPT (Fakir) - Bantuan Wang Saku",
-    jumlahAmaun: 'RM30,000.00',
-    tarikhHantar: '01/03/2025',
-    status: "Dalam Tindakan",
-    tindakan: "BP-2025-00004",
   },
 ]);
 
@@ -273,6 +293,13 @@ const paginationEnd = computed(() => {
   return Math.min(currentPage.value * pageSize.value, totalBantuanBulk.value);
 });
 
+const totalAmount = computed(() => {
+  return bantuanBulkList.value.reduce(
+    (sum, item) => sum + (parseFloat(item.amaun) || 0),
+    0
+  );
+});
+
 // Methods
 const handleProses = (kodBP) => {
   navigateTo(`/BF-BTN/bantuan-bulk/senarai-bantuan-bulk-sokongan/${kodBP}`);
@@ -280,11 +307,23 @@ const handleProses = (kodBP) => {
 
 const getStatusVariant = (status) => {
   const variants = {
-    "Dalam Tindakan": "warning",
+    "Dalam Proses": "warning",
+    "Lulus": "success",
     "Selesai": "success",
     "Ditolak": "danger",
   };
   return variants[status] || "default";
+};
+
+// Currency display helper
+const formatCurrency = (n) => {
+  const num = parseFloat(n);
+  if (isNaN(num) || num === null || num === undefined) return 'RM0.00';
+  return new Intl.NumberFormat("ms-MY", {
+    style: 'currency',
+    currency: 'MYR',
+    minimumFractionDigits: 2,
+  }).format(num);
 };
 </script>
 

@@ -1,3 +1,5 @@
+																	  
+
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
@@ -43,6 +45,18 @@
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1"
+								
+				 
+																  
+					
+				   
+																		   
+								
+				 
+																  
+				  
+				   
+																		   
                   >Jenis Pengenalan</label
                 >
                 <p class="text-gray-900">{{ formData.jenisPengenalan }}</p>
@@ -103,449 +117,183 @@
             <rs-tab variant="primary" type="card">
               <rs-tab-item title="Profiling" active>
                 <!-- Profiling Tab Content -->
-
-                <FormKit
-                  type="form"
-                  :actions="false"
-                  @submit="handleProfilingSubmit"
-                  v-model="profilingData"
-                  class="divide-y divide-gray-200"
-                >
-                  <!-- Section 1: Search & Basic Info -->
-                  <div class="p-6 bg-gray-50">
-                    <h4
-                      class="text-md font-semibold text-gray-900 mb-4 flex items-center"
-                    >
-                      <Icon
-                        name="ph:magnifying-glass"
-                        class="w-5 h-5 mr-2 text-blue-600"
-                      />
-                      Carian Maklumat
-                    </h4>
-                    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                      <!-- Pengenalan ID with Search -->
-                      <div class="lg:col-span-2">
-                        <div class="flex gap-3">
-                          <FormKit
-                            type="text"
-                            name="pengenalanId"
-                            label="Pengenalan ID"
-                            placeholder="Masukkan nombor pengenalan"
-                            :classes="{
-                              outer: 'flex-1',
-                              input: '!py-2.5',
-                              label: 'text-sm font-medium text-gray-700',
-                            }"
-                          />
-                          <rs-button
-                            variant="primary"
-                            class="mt-7 px-6 h-fit"
-                            @click="searchPengenalanId"
-                            :loading="searchingId"
-                          >
-                            <Icon
-                              name="ph:magnifying-glass"
-                              class="w-4 h-4 mr-1"
-                            />
-                            Cari
-                          </rs-button>
-                        </div>
-                      </div>
-
-                      <!-- Nama -->
-                      <div class="lg:col-span-2">
-                        <FormKit
-                          type="text"
-                          name="nama"
-                          label="Nama Penuh"
-                          placeholder="Nama akan dipaparkan setelah carian"
-                          :classes="{
-                            input: '!py-2.5',
-                            label: 'text-sm font-medium text-gray-700',
-                          }"
-                          :disabled="!profilingData.pengenalanId"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Section 2: Maklumat Syor -->
-                  <div class="p-6">
-                    <h4
-                      class="text-md font-semibold text-gray-900 mb-4 flex items-center"
-                    >
-                      <Icon
-                        name="ph:clipboard-text"
-                        class="w-5 h-5 mr-2 text-green-600"
-                      />
-                      Maklumat Syor
-                    </h4>
-                    <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
-                      <!-- Left Column - Syor -->
-                      <div class="space-y-4">
-                        <FormKit
-                          type="number"
-                          name="hadKifayahSyor"
-                          :value="50"
-                          label="%Had Kifayah (Syor)"
-                          placeholder="0"
-                          :classes="{
-                            input: '!py-2.5',
-                            label: 'text-sm font-medium text-gray-700',
-                          }"
-                          min="0"
-                          max="100"
-                          step="0.01"
-                        />
-
-                        <FormKit
-                          type="text"
-                          name="kategoriKeluargaAsnafSyor"
-                          label="Kategori Keluarga Asnaf (Syor)"
-                          placeholder="Kategori keluarga"
-                          :classes="{
-                            input: '!py-2.5',
-                            label: 'text-sm font-medium text-gray-700',
-                          }"
-                        />
-
-                        <FormKit
-                          type="text"
-                          name="kategoriAsnafSyor"
-                          label="Kategori Asnaf (Syor)"
-                          placeholder="Kategori asnaf"
-                          :classes="{
-                            input: '!py-2.5',
-                            label: 'text-sm font-medium text-gray-700',
-                          }"
-                        />
-
-                        <FormKit
-                          type="date"
-                          name="tarikhPengesyoran"
-                          label="Tarikh Pengesyoran"
-                          :classes="{
-                            input: '!py-2.5',
-                            label: 'text-sm font-medium text-gray-700',
-                          }"
-                        />
-                      </div>
-
-                      <!-- Right Column - Tanggungan Syor -->
-                      <div class="space-y-4">
-                        <FormKit
-                          type="text"
-                          name="kategoriTanggunganSyor"
-                          label="Kategori Tanggungan (Syor)"
-                          placeholder="Kategori tanggungan"
-                          :classes="{
-                            input: '!py-2.5',
-                            label: 'text-sm font-medium text-gray-700',
-                          }"
-                        />
-
-                        <!-- Pengenalan ID Tanggungan Group -->
-                        <div class="bg-gray-50 p-4 rounded-lg border">
-                          <label
-                            class="block text-sm font-medium text-gray-700 mb-3"
-                          >
-                            Pengenalan ID Tanggungan
-                          </label>
-                          <div class="space-y-3">
-                            <FormKit
-                              type="text"
-                              name="pengenalanIdTanggungan1"
-                              placeholder="ID Tanggungan 1"
-                              :classes="{
-                                outer: 'mb-0',
-                                input: '!py-2 text-sm',
-                              }"
-                            />
-                            <FormKit
-                              type="text"
-                              name="pengenalanIdTanggungan2"
-                              placeholder="ID Tanggungan 2"
-                              :classes="{
-                                outer: 'mb-0',
-                                input: '!py-2 text-sm',
-                              }"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Section 3: Assignment -->
-                  <div class="p-6 bg-amber-50">
-                    <h4
-                      class="text-md font-semibold text-gray-900 mb-4 flex items-center"
-                    >
-                      <Icon
-                        name="ph:user-gear"
-                        class="w-5 h-5 mr-2 text-amber-600"
-                      />
-                      Tugasan Siasatan
-                    </h4>
-                    <FormKit
-                      type="select"
-                      name="assignSiasatan"
-                      label="Assign Siasatan"
-                      :options="assignSiasatanOptions"
-                      placeholder="Pilih petugas siasatan"
-                      :classes="{
-                        input: '!py-2.5',
-                        label: 'text-sm font-medium text-gray-700',
-                      }"
-                    />
-                  </div>
-
-                  <!-- Section 4: Maklumat Disahkan -->
-                  <div class="p-6">
-                    <h4
-                      class="text-md font-semibold text-gray-900 mb-4 flex items-center"
-                    >
-                      <Icon
-                        name="ph:check-circle"
-                        class="w-5 h-5 mr-2 text-blue-600"
-                      />
-                      Maklumat Disahkan
-                    </h4>
-                    <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
-                      <!-- Left Column - Sah -->
-                      <div class="space-y-4">
-                        <FormKit
-                          type="number"
-                          name="hadKifayahSah"
-                          label="%Had Kifayah (Sah)"
-                          placeholder="0"
-                          :classes="{
-                            input: '!py-2.5',
-                            label: 'text-sm font-medium text-gray-700',
-                          }"
-                          min="0"
-                          max="100"
-                          step="0.01"
-                        />
-
-                        <FormKit
-                          type="text"
-                          name="kategoriKeluargaAsnafSah"
-                          label="Kategori Keluarga Asnaf (Sah)"
-                          placeholder="Kategori keluarga disahkan"
-                          :classes="{
-                            input: '!py-2.5',
-                            label: 'text-sm font-medium text-gray-700',
-                          }"
-                        />
-
-                        <FormKit
-                          type="text"
-                          name="kategoriAsnafSah"
-                          label="Kategori Asnaf (Sah)"
-                          placeholder="Kategori asnaf disahkan"
-                          :classes="{
-                            input: '!py-2.5',
-                            label: 'text-sm font-medium text-gray-700',
-                          }"
-                        />
-                      </div>
-
-                      <!-- Right Column - Tanggungan Sah -->
-                      <div class="space-y-4">
-                        <!-- Pengenalan ID Tanggungan (Sah) -->
-                        <div
-                          class="bg-blue-50 p-4 rounded-lg border border-blue-200"
+				<div class="p-6">
+                  <rs-table
+                    :data="profilingFilteredApplications"
+                    :columns="profilingColumns"
+                    :pageSize="pageSize"
+                    :showNoColumn="true"
+                    :options="{
+                      variant: 'default',
+                      hover: true,
+                      striped: true,
+                    }"
+                    :options-advanced="{
+                      sortable: true,
+                      filterable: false,
+                    }"
+                    advanced
+                  >
+                    <template #header-tindakan>
+                      <div class="text-center w-full">Aksi</div>
+                    </template>
+                    <template v-slot:status="{ text }">
+                      <rs-badge :variant="getProfilingStatusVariant(text)">
+                        {{ text }}
+                      </rs-badge>
+                    </template>
+                    <template v-slot:tindakan="{ value }">
+                      <div class="flex justify-center items-center gap-2">
+                        <rs-button
+                          variant="primary"
+                          class="p-1 flex gap-2"
+                          @click="profilingHandleReview(value.status)"
                         >
-                          <label
-                            class="block text-sm font-medium text-gray-700 mb-3"
-                          >
-                            Pengenalan ID Tanggungan (Sah)
-                          </label>
-                          <div class="space-y-3">
-                            <FormKit
-                              type="text"
-                              name="pengenalanIdTanggunganSah1"
-                              placeholder="ID Tanggungan Sah 1"
-                              :classes="{
-                                outer: 'mb-0',
-                                input: '!py-2 text-sm',
-                              }"
-                            />
-                            <FormKit
-                              type="text"
-                              name="pengenalanIdTanggunganSah2"
-                              placeholder="ID Tanggungan Sah 2"
-                              :classes="{
-                                outer: 'mb-0',
-                                input: '!py-2 text-sm',
-                              }"
-                            />
-                          </div>
-                        </div>
-
-                        <!-- Kategori Tanggungan (Sah) -->
-                        <div
-                          class="bg-blue-50 p-4 rounded-lg border border-blue-200"
-                        >
-                          <label
-                            class="block text-sm font-medium text-gray-700 mb-3"
-                          >
-                            Kategori Tanggungan (Sah)
-                          </label>
-                          <div class="space-y-3">
-                            <FormKit
-                              type="text"
-                              name="kategoriTanggunganSah1"
-                              placeholder="Kategori Tanggungan Sah 1"
-                              :classes="{
-                                outer: 'mb-0',
-                                input: '!py-2 text-sm',
-                              }"
-                            />
-                            <FormKit
-                              type="text"
-                              name="kategoriTanggunganSah2"
-                              placeholder="Kategori Tanggungan Sah 2"
-                              :classes="{
-                                outer: 'mb-0',
-                                input: '!py-2 text-sm',
-                              }"
-                            />
-                          </div>
-                        </div>
+                          Semak
+                        </rs-button>
                       </div>
-                    </div>
+                    </template>
+                  </rs-table>
 
-                    <!-- Pelarasan (Sah) -->
-                    <div class="mt-6">
-                      <label
-                        class="block text-sm font-medium text-gray-700 mb-3"
-                      >
-                        Pelarasan (Sah)
-                      </label>
-                      <div
-                        class="bg-gray-50 border border-gray-200 rounded-lg p-4"
-                      >
-                        <div class="grid grid-cols-3 gap-4 text-center">
-                          <div class="flex flex-col items-center">
-                            <Icon
-                              name="ph:x-circle"
-                              class="w-6 h-6 text-red-500 mb-2"
-                            />
-                            <span class="text-sm font-medium text-gray-700"
-                              >Status 1</span
-                            >
-                            <span class="text-sm text-red-600 font-medium"
-                              >FALSE</span
-                            >
-                          </div>
-                          <div class="flex flex-col items-center">
-                            <Icon
-                              name="ph:x-circle"
-                              class="w-6 h-6 text-red-500 mb-2"
-                            />
-                            <span class="text-sm font-medium text-gray-700"
-                              >Status 2</span
-                            >
-                            <span class="text-sm text-red-600 font-medium"
-                              >FALSE</span
-                            >
-                          </div>
-                          <div class="flex flex-col items-center">
-                            <Icon
-                              name="ph:x-circle"
-                              class="w-6 h-6 text-red-500 mb-2"
-                            />
-                            <span class="text-sm font-medium text-gray-700"
-                              >Status 3</span
-                            >
-                            <span class="text-sm text-red-600 font-medium"
-                              >FALSE</span
-                            >
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Section 5: Komen & Tarikh -->
-                  <div class="p-6 bg-gray-50">
-                    <h4
-                      class="text-md font-semibold text-gray-900 mb-4 flex items-center"
-                    >
-                      <Icon
-                        name="ph:note"
-                        class="w-5 h-5 mr-2 text-purple-600"
-                      />
-                      Komen & Finalisasi
-                    </h4>
-                    <div class="space-y-4">
-                      <!-- Komen Pengesahan -->
+                  <!-- Pagination -->
+                  <div class="flex items-center justify-between px-5 mt-4">
+                    <div class="flex items-center gap-2">
+                      <span class="text-sm text-gray-700">Baris per halaman:</span>
                       <FormKit
-                        type="textarea"
-                        name="komenPengesahan"
-                        label="Komen Pengesahan"
-                        rows="4"
-                        placeholder="Masukkan komen pengesahan..."
+                        v-model="pageSize"
+                        type="select"
+                        :options="[10, 25, 50]"
                         :classes="{
-                          input: '!py-3',
-                          label: 'text-sm font-medium text-gray-700',
+                          wrapper: 'w-20',
+                          outer: 'mb-0',
+                          input: '!rounded-lg',
                         }"
                       />
-
-                      <!-- Tarikh Pengesyoran (Bottom) -->
-                      <div class="max-w-md">
-                        <FormKit
-                          type="date"
-                          name="tarikhPengesyoranBottom"
-                          label="Tarikh Pengesyoran Akhir"
-                          :classes="{
-                            input: '!py-2.5',
-                            label: 'text-sm font-medium text-gray-700',
-                          }"
-                        />
-                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-sm text-gray-700">
+                        Menunjukkan {{ profilingPaginationStart }} hingga
+                        {{ profilingPaginationEnd }} daripada {{ profilingTotalApplications }} entri
+                      </span>
                     </div>
                   </div>
+                </div>		   
+														 
+											   
+										
+										
+							   
+										 
+								  
+									
+					  
+										
+									 
+										
+					  
+							
+				   
+											   
+																
+							   
+													   
+																		   
+								  
+								 
+							   
+														  
+																		  
+								  
+										   
+												
+																	  
+						 
+							   
+									
+							
+							   
+							 
 
-                  <!-- Action Buttons -->
-                  <div class="p-6 bg-white border-t border-gray-200">
-                    <div class="flex flex-col sm:flex-row gap-4 justify-end">
-                      <rs-button
-                        variant="secondary"
-                        @click="resetProfilingForm"
-                        class="flex items-center justify-center px-6 py-2.5"
-                      >
-                        <Icon name="ph:arrow-clockwise" class="w-4 h-4 mr-2" />
-                        Reset
-                      </rs-button>
-                      <rs-button
-                        variant="primary-outline"
-                        @click="saveProfilingDraft"
-                        :loading="savingDraft"
-                        class="flex items-center justify-center px-6 py-2.5"
-                      >
-                        <Icon name="ph:floppy-disk" class="w-4 h-4 mr-2" />
-                        Simpan Draf
-                      </rs-button>
-                      <rs-button
-                        variant="primary"
-                        @click="submitProfiling"
-                        :loading="submittingProfile"
-                        :disabled="!isProfilingFormValid"
-                        class="flex items-center justify-center px-6 py-2.5"
-                      >
-                        <Icon name="ph:check-circle" class="w-4 h-4 mr-2" />
-                        Sahkan & Simpan
-                      </rs-button>
-                    </div>
-                  </div>
-                </FormKit>
+                
+																		   
+														 
+																				   
+							  
+										  
+									 
+											   
+								   
+										  
+										
+											   
+						  
+						
+						  
+														 
+														  
+																		 
+																									
+							 
+						  
+						
+					  
               </rs-tab-item>
 
               <rs-tab-item title="Bantuan">
                 <rs-tab variant="secondary" type="border">
+												   
+												 
+							 
+																																																						
+					   
+							 
+											
+													  
+										  
+								 
+										   
+									  
+									
+						
+										  
+									   
+										  
+						
+							  
+					 
+													   
+																		 
+								  
+										   
+												   
+														 
+											  
+							
+																  
+						  
+								 
+																  
+												
+					   
+														 
+																  
+												
+						 
+								 
+																  
+								
+										 
+														
+											
+						  
+								 
+							   
+								   
+
+												  
+																	 
+						
+								
 
                   <rs-tab-item title="Bantuan daripada Agensi">
                     <!-- Bantuan daripada Agensi Sub-tab Content -->
@@ -602,6 +350,107 @@
                       </template>
                     </rs-table>
                   </rs-tab-item>
+
+														 
+										   
+																			 
+											 
+																		
+														  
+							 
+																		
+																		
+							 
+
+								 
+													   
+													 
+											  
+									 
+											   
+										  
+										
+							
+											  
+										   
+											  
+							
+								  
+						 
+														   
+																			 
+									  
+											   
+															
+																  
+												  
+								
+																	  
+						
+									 
+																	  
+									
+											 
+															
+												
+							  
+									 
+								   
+
+													  
+																		 
+							  
+						
+					  
+				
+									   
+
+																		   
+										   
+																	  
+																	  
+						   
+
+							   
+												 
+													
+											
+								   
+											 
+										
+									  
+						  
+											
+										 
+											
+						  
+								
+					   
+													   
+																		   
+									
+											 
+														   
+																 
+												
+							  
+																	
+						
+								   
+																  
+								  
+										   
+														
+											  
+							
+								   
+								 
+
+													
+																	   
+							
+						  
+								
 
                   <rs-tab-item title="Bantuan Baru">
                     <rs-table
@@ -700,6 +549,16 @@
                 <div class="bg-gray-50 p-4 rounded-lg">
                   <h3 class="text-sm font-medium text-gray-700 mb-3">
                     Ringkasan Kelulusan
+								 
+										  
+										   
+													 
+												
+										 
+										   
+																			  
+					  
+					
                   </h3>
                   <ul class="text-sm space-y-1 text-gray-600">
                     <li>• No Bantuan: NAS-2025-000001</li>
@@ -719,10 +578,273 @@
                   <!-- <p class="text-sm text-gray-600 mt-3">
                     Registrasi dibuut berdasarkan profil asnaf
                   </p> -->
+							
+								 
+										
+										  
+																	   
+											 
+															
+						
+											
+					  
                 </div>
 
             
+					  
 
+											  
+						  
+								 
+												  
+													 
+															 
+																	 
+										   
+																	   
+					  
+					
+					
+
+
+											   
+						  
+						  
+								   
+											   
+												  
+							
+											   
+							   
+									 
+					  
+					
+						  
+
+																								  
+											  
+																			  
+											  
+						  
+
+												  
+									 
+											
+						
+											   
+									   
+										
+													
+																																																																		   
+					 
+											 
+						   
+										  
+																																						  
+						
+							 
+														   
+								 
+																				   
+														  
+							 
+														
+							  
+																
+																  
+							  
+							  
+							  
+							  
+
+											  
+						  
+										
+								 
+									  
+							  
+													 
+									
+					  
+
+											
+																			
+						  
+																   
+									
+																			  
+					   
+																			
+																			
+											 
+								   
+																
+														 
+								   
+							  
+																		 
+							  
+																							
+																	   
+								 
+							
+						  
+						
+
+												  
+						
+													  
+																								 
+					 
+						  
+																
+									
+																																									  
+					   
+											  
+																		
+							  
+											
+														
+																			 
+														
+							
+
+												  
+							  
+																																								 
+						   
+								
+																												  
+							 
+						   
+																 
+																																		   
+								   
+											   
+							   
+																	  
+							 
+									 
+																
+																																		  
+											 
+											 
+							   
+																		
+									   
+							  
+							  
+
+													
+							  
+												
+																											
+						   
+								 
+											   
+																		
+							  
+							  
+							  
+
+										   
+												   
+											
+																		 
+								 
+																		   
+													 
+							 
+												  
+								   
+																	 
+															  
+								   
+							  
+
+												
+								  
+									   
+														   
+												   
+															  
+									   
+											
+																	  
+							  
+							
+							
+						  
+					  
+
+													 
+						
+														
+																																						   
+					 
+						  
+																														 
+					   
+												 
+						 
+										   
+																		
+							
+												   
+														 
+							  
+																
+															   
+					  
+					  
+					
+						  
+						
+					  
+
+											
+					 
+					  
+								   
+											
+											
+							
+											   
+							   
+									 
+					  
+					
+					  
+
+						  
+						
+								 
+										 
+										   
+													
+												
+										 
+										   
+																			  
+					  
+					
+						  
+
+									   
+						  
+						
+							 
+										
+										  
+												   
+												
+										 
+										   
+															
+					  
+					
+						  
 
                 <!-- Action Buttons -->
                 <div
@@ -742,8 +864,19 @@
                   <rs-button
                     variant="danger"
                     @click="handleKembali"
+																   
+																	
                     class="flex-1 !py-3 text-sm font-medium"
                   >
+																			
+								
+						  
+
+						
+								
+										  
+															
+			   
                     <Icon name="ph:arrow-left" class="w-5 h-5 mr-2" />
                     Kembali
                   </rs-button>
@@ -872,15 +1005,200 @@ const breadcrumb = ref([
   },
 ]);
 
+								  
+						 
+					
+						   
+							   
+								
+																 
+							  
+							 
+							 
+								 
+							
+							 
+							
+							
+												
+							 
+
+						   
+						  
+					  
+					
+																																																												 
+					   
+	
+					
+						   
+							   
+							  
+															  
+							   
+					   
+							 
+								 
+							
+								   
+							 
+							 
+										  
+							 
+
+						   
+						  
+					  
+					
+																																													  
+					   
+   
+  
+
+						  
+							   
+					
+															 
+								 
+								
+									
+														
+						
+					  
+					
+										 
+																																																												 
+					 
+						  
+					  
+							 
+	   
+				   
+															
+								 
+						   
+					 
+	   
+	 
+	
+					
+											  
+									
+							  
+											  
+															   
+						
+					  
+					
+										 
+																																													  
+					 
+						  
+					  
+							 
+	   
+				   
+																			  
+								 
+						   
+					 
+		
+	   
+				   
+																					
+								 
+						   
+					 
+	   
+	 
+   
+  
+
+// Load applicant data based on ID
+const loadApplicantData = (applicantId) => {
+  const applicantDatabase = {
+    "btn-001": {
+      nama: "Ahmad bin Hassan",
+      alamat: "No. 123, Jalan Merdeka, Taman Seri Jaya, 43000 Kajang, Selangor",
+      jenisPengenalan: "MyKad",
+      noPengenalan: "880701121234",
+      noTelefon: "0123456789",
+      email: "ahmad.hassan@gmail.com",
+      statusKeluarga: "Fakir",
+      statusIndividu: "Fakir",
+      statusMultidimensi: "Asnaf Tidak Produktif",
+      status: "Dalam Siasatan",
+    },
+    "btn-002": {
+      nama: "Muhammad Farhan bin Fitri",
+      alamat: "No. 789, Jalan Pendidikan, Taman Ilmu, 50000 Kuala Lumpur",
+      jenisPengenalan: "MyKad",
+      noPengenalan: "970707077788",
+      noTelefon: "0134567890",
+      email: "muhammad.farhan@gmail.com",
+      statusKeluarga: "Fakir",
+      statusIndividu: "Fakir",
+      statusMultidimensi: "Asnaf Tidak Produktif",
+      status: "Dalam Siasatan",
+    },
+    "btn-003": {
+      nama: "Alia Natasha binti Hussain",
+      alamat: "No. 456, Jalan Harmoni, Taman Seri Kembangan, 43300 Seri Kembangan, Selangor",
+      jenisPengenalan: "MyKad",
+      noPengenalan: "971207020568",
+      noTelefon: "0198765432",
+      email: "alia.natasha@gmail.com",
+      statusKeluarga: "Fakir",
+      statusIndividu: "Fakir",
+      statusMultidimensi: "Asnaf Tidak Produktif",
+      status: "Dalam Siasatan",
+    }
+  };
+
+  return applicantDatabase[applicantId] || applicantDatabase["btn-003"]; // Default to Alia if not found
+};
+
+// Load investigation data based on ID
+const loadInvestigationData = (applicantId) => {
+  const investigationDatabase = {
+    "btn-001": {
+      jenisPekerjaan: "Tidak Bekerja",
+      statusKediaman: "Rumah Sendiri",
+      jumlahBayaranRumah: "RM0",
+      bilTanggungan: "2 Orang (Isteri dan Anak)",
+      statusTanggungan: "Isteri tidak bekerja, Anak masih sekolah",
+      catatanPenilianAwal: "Pemohon memerlukan bantuan binaan rumah kerana rumah sedia ada dalam keadaan uzur dan tidak selamat untuk didiami",
+    },
+    "btn-002": {
+      jenisPekerjaan: "Pelajar",
+      statusKediaman: "Asrama",
+      jumlahBayaranRumah: "RM0",
+      bilTanggungan: "Tidak ada",
+      statusTanggungan: "Pelajar IPT",
+      catatanPenilianAwal: "Pemohon Muhammad Farhan adalah pelajar IPT yang memerlukan bantuan dermasiswa untuk menampung kos pengajian dan kehidupan di asrama",
+    },
+    "btn-003": {
+      jenisPekerjaan: "Tidak Bekerja",
+      statusKediaman: "Rumah Sewa",
+      jumlahBayaranRumah: "RM800",
+      bilTanggungan: "1 Orang (Ibu)",
+      statusTanggungan: "Tidak Bekerja, Bergantung kepada anak",
+      catatanPenilianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
+    }
+  };
+
+  return investigationDatabase[applicantId] || investigationDatabase["btn-003"]; // Default to Alia if not found
+};
+
 // Form data
 const formData = ref({
-  // Personal Information
-  nama: "Mohd Rosli bin Saad",
-  alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
+  // Personal Information - will be loaded dynamically
+  nama: "",
+  alamat: "",
   jenisPengenalan: "MyKad",
-  noPengenalan: "810101121234",
-  noTelefon: "0123456789",
-  email: "rosli@gmail.com",
+  noPengenalan: "",
+  noTelefon: "",
+  email: "",
   statusKeluarga: "Fakir",
   statusIndividu: "Fakir",
   statusMultidimensi: "Asnaf Tidak Produktif",
@@ -894,17 +1212,17 @@ const formData = ref({
   gambarLokasi: null,
 });
 
-// Investigation form data
+// Investigation form data - will be loaded dynamically
 const investigationData = ref({
-  jenisPekerjaan: "Bekerja sebagai tukang sapu di sekolah",
-  statusKediaman: "Rumah Sewa",
-  jumlahBayaranRumah: "RM500",
-  bilTanggungan: "2 Orang (Anak)",
-  statusTanggungan: "Masih Bersekolah, Tidak Bekerja",
+  jenisPekerjaan: "",
+  statusKediaman: "",
+  jumlahBayaranRumah: "",
+  bilTanggungan: "",
+  statusTanggungan: "",
   keadaanSiasatan: "",
   tarikhLawatan: "",
   masaLawatan: "",
-  catatanPenilianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
+  catatanPenilianAwal: "",
   gambarLokasi: [],
   catatanLawatanETD: "",
   statusLawatan: "",
@@ -951,6 +1269,130 @@ const submittingProfile = ref(false);
 const currentPage = ref(1);
 const pageSize = ref(10);
 
+// Profiling tab datatable state
+const profilingColumns = [
+  { key: "noRujukan", label: "No ID Pengenalan", sortable: true },
+  { key: "namaPemohon", label: "Nama Pemohon", sortable: true },
+  { key: "status", label: "Status Permohonan", sortable: true },
+  { key: "tindakan", label: "Aksi", sortable: false },
+];
+
+const profilingApplications = ref([
+  {
+    noRujukan: "770319035991",
+    namaPemohon: "ADNAN BIN ABU",
+    status: "Menunggu Pengesahan",
+    tarikhTerima: "2024-03-20",
+    namaPegawai: "Siti binti Ali",
+  },
+  {
+    noRujukan: "091108030442",
+    namaPemohon: "NUR QISTINA BINTI ADNAN",
+    status: "Dalam Semakan",
+    tarikhTerima: "2024-03-19",
+    namaPegawai: "Aminah binti Hassan",
+  },
+]);
+
+const profilingFilteredApplications = computed(() => {
+  const mapped = profilingApplications.value.map((app) => ({
+    noRujukan: app.noRujukan,
+    namaPemohon: app.namaPemohon,
+    status: app.status,
+    tindakan: { status: app.status },
+  }));
+
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return mapped.slice(start, end);
+});
+
+const profilingTotalApplications = computed(() => profilingApplications.value.length);
+const profilingPaginationStart = computed(() => (currentPage.value - 1) * pageSize.value + 1);
+const profilingPaginationEnd = computed(() => Math.min(currentPage.value * pageSize.value, profilingTotalApplications.value));
+
+const profilingHandleReview = (status) => {
+  if (status === "Dalam Semakan") {
+    navigateTo(`/BF-PRF/AS/FR/07_01`);
+  } else if (status === "Menunggu Pengesahan") {
+    navigateTo(`/BF-PRF/AS/FR/07_01_copy`);
+  }
+};
+
+const getProfilingStatusVariant = (status) => {
+  const variants = {
+    baru: "info",
+    "tidak lengkap": "danger",
+    "untuk siasatan": "secondary",
+    "menunggu siasatan": "warning",
+    "selesai siasatan": "success",
+    "menunggu pengesahan": "info",
+    "dalam semakan": "secondary",
+  };
+  return variants[status.toLowerCase()] || "default";
+};								
+						  
+																  
+																
+																
+													  
+  
+
+								   
+   
+							  
+								 
+								  
+							   
+								  
+	
+   
+							  
+										   
+							
+							   
+									   
+	
+   
+
+													  
+															
+							 
+								 
+					   
+									 
+	  
+
+														 
+									 
+								  
+   
+
+																					  
+																							  
+																															  
+
+										   
+								   
+									  
+												
+										   
+   
+  
+
+											   
+					
+				 
+							  
+								  
+								   
+								  
+								  
+								 
+	
+													 
+  
+
 // Dropdown options
 const keadaanSiasatanOptions = [
   { label: "Boleh ditemui", value: "boleh_ditemui" },
@@ -958,6 +1400,17 @@ const keadaanSiasatanOptions = [
   { label: "Alamat tidak tepat", value: "alamat_tidak_tepat" },
   { label: "Berpindah alamat", value: "berpindah_alamat" },
 ];
+
+							   
+												  
+								 
+  
+
+				   
+										
+											 
+								 
+  
 
 const statusLawatanOptions = [
   { label: "Lengkap", value: "lengkap" },
@@ -970,6 +1423,11 @@ const assignSiasatanOptions = [
   { label: "PAK+", value: "pak_plus" },
   { label: "Pegawai LZS", value: "pegawai_lzs" },
 ];
+
+																		 
+										  
+																
+   
 
 // Table columns for assistance applications
 const assistanceColumns = [
@@ -1062,6 +1520,16 @@ if (route.params.id === "btn-002") {
       actions: "/BF-BTN/tugasan/bantuan/kelulusan/pendidikan/B307",
     }
   );
+}
+
+// Tambah bantuan untuk Alia Natasha binti Hussain (btn-003)
+if (route.params.id === "btn-003") {
+  assistanceApplications.value.push({
+    jenisBantuan: "B300 - Bantuan Sewa Rumah (Fakir)",
+    status: "Perlu Diproses",
+    sla: "2 hari lagi",
+    actions: "/BF-BTN/tugasan/bantuan/kelulusan/sewarumah/B300",
+  });
 }
 
 const existingAssistance = ref([
@@ -1299,11 +1767,17 @@ const getAssistanceStatusVariant = (status) => {
 // Computed property for form validation
 const canSubmitForApproval = computed(() => {
   return (
+  
     investigationData.value.keadaanSiasatan &&
+			
+					   
     investigationData.value.tarikhLawatan &&
     investigationData.value.masaLawatan &&
     investigationData.value.statusLawatan
   );
+   
+  
+						
 });
 
 // Computed property for profiling form validation
@@ -1583,6 +2057,38 @@ const submitProfiling = async () => {
     submittingProfile.value = false;
   }
 };
+
+									 
+				 
+																				  
+											
+															   
+  
+			   
+										  
+   
+  
+							
+																
+	
+											   
+													 
+																				
+	 
+// Initialize applicant data based on route parameter
+const currentApplicantId = route.params.id;
+const applicantInfo = loadApplicantData(currentApplicantId);
+const investigationInfo = loadInvestigationData(currentApplicantId);
+
+// Load the applicant data into formData
+Object.assign(formData.value, applicantInfo);
+
+// Load the investigation data into investigationData
+Object.assign(investigationData.value, investigationInfo);
+
+console.log("Loaded applicant data for:", currentApplicantId, applicantInfo);
+console.log("Loaded investigation data for:", currentApplicantId, investigationInfo);
+   
 </script>
 
 <style lang="scss" scoped>

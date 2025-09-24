@@ -118,7 +118,7 @@
               </h3> -->
 
               <!-- Simulasi Peranan -->
-              <div class="mb-4 flex items-center gap-3">
+              <!-- <div class="mb-4 flex items-center gap-3">
                 <label class="text-sm text-gray-700 font-medium"
                   >Simulasi Peranan</label
                 >
@@ -133,7 +133,7 @@
                   }"
                   @change="onChangeSimulasiPeranan"
                 />
-              </div>
+              </div> -->
 
               <!-- Sub-tabs for Bantuan -->
               <rs-tab variant="secondary" type="border" class="mb-6">
@@ -1035,6 +1035,7 @@ const applications = ref([
     namaPegawai: "Aminah binti Hassan",
     tindakan: "NAS-2025-0002",
   },
+  
 ]);
 
 // Mock data for Siasatan tab - would be replaced with API call
@@ -1057,6 +1058,26 @@ const siasatanData = ref([
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 2",
     noRujukan: "NAS-2025-0002",
     tindakan: "bantuan/siasatan/siasatan-eoad/NAS-2025-0002",
+  },
+  {
+    pemohon: "Mohd Amin bin Mohd Ali (650101-01-1234)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    jenistugasan: "Bantuan ",
+    noRujukan: "NAS-2025-0003",
+    tindakan: "bantuan/siasatan/siasatan-eoad/NAS-2025-0003",
+  },
+  {
+    pemohon: "Amirul Hakim bin Zainuddin (791230-10-4321)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    jenistugasan: "Bantuan ",
+    noRujukan: "NAS-2025-0004",
+    tindakan: "bantuan/siasatan/siasatan-eoad/NAS-2025-0004",
   },
 ]);
 
@@ -1093,6 +1114,33 @@ const semakanData = ref([
     noRujukan: "NAS-2025-0001",
     tindakan: "bantuan/semakan/NAS-2025-0001",
   },
+  {
+    pemohon: "Amirul Hakim bin Zainuddin (791230-10-4321)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0004",
+    tindakan: "bantuan/semakan/NAS-2025-0004",
+  },
+  {
+    pemohon: "Mohd Amin bin Mohd Ali (650101-01-1234)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0003",
+    tindakan: "bantuan/semakan/NAS-2025-0003",
+  },
+  {
+    pemohon: "Maryam binti Abdullah (920815-08-2567)",
+    kariah: "Masjid An-Nur",
+    daerah: "Shah Alam",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0005",
+    tindakan: "bantuan/semakan/NAS-2025-0005",
+  },
 ]);
 
 // Mock data for Sokongan sub-tab (own dataset, same format)
@@ -1128,6 +1176,15 @@ const kelulusanData = ref([
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     noRujukan: "NAS-2025-0402",
     tindakan: "bantuan/kelulusan/siasatan-eoad/btn-002",
+  },
+  {
+    pemohon: "Alia Natasha binti Hussain (971207-02-0568)",
+    kariah: "Masjid As-Salam",
+    daerah: "Seri Kembangan",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0403",
+    tindakan: "bantuan/kelulusan/siasatan-eoad/btn-003",
   },
 ]);
 

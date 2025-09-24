@@ -205,20 +205,20 @@ const breadcrumb = ref([
 
 // Application data (mock data - in real implementation this would be fetched from API)
 const applicationData = ref({
-  refNumber: 'PB-240511',
+  refNumber: 'CB-240501',
   applicationDate: '25 Jun 2025',
   status: 'Menunggu Pengesahan',
-  namaCawangan: 'Cawangan Seri Damai',
-  namaHQ: 'Yayasan Insan Malaysia',
-  pengurusCawangan: 'Ahmad Bin Hassan',
-  daerah: 'Kuala Lumpur',
-  emel: 'cawangan.serindamai@yayasaninsan.org.my',
-  noTelefon: '03-9876 5432',
+  namaCawangan: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Petaling Jaya',
+  namaHQ: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
+  pengurusCawangan: 'Ustaz Ibrahim bin Yusof',
+  daerah: 'Petaling',
+  emel: 'ibrahim@masjid-pj-selangor.gov.my',
+  noTelefon: '03-22345678',
   alamat: {
-    jalan: 'No. 123, Jalan Seri Damai 1/2',
-    poskod: '53100',
-    bandar: 'Kuala Lumpur',
-    negeri: 'Kuala Lumpur'
+    jalan: 'No. 88, Jalan Masjid PJ',
+    poskod: '46000',
+    bandar: 'Petaling Jaya',
+    negeri: 'Selangor'
   },
   documents: [
     { id: 1, name: 'Surat Sokongan HQ', size: '2.3 MB' },

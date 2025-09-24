@@ -23,8 +23,8 @@
           <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Permohonan</h3>
           <div class="mb-8 p-6 border border-gray-200 rounded-lg">
             <div class="grid grid-cols-2 gap-4">
-              <FormKit type="text" label="Tarikh Permohonan" :value="applicationData.applicationDate" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Jenis Organisasi" :value="applicationData.organizationType" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Tarikh Permohonan" v-model="applicationData.applicationDate" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Jenis Organisasi" v-model="applicationData.organizationType" readonly :classes="{ input: '!py-2' }" />
             </div>
           </div>
 
@@ -32,9 +32,9 @@
           <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Organisasi</h3>
           <div class="mb-8 p-6 border border-gray-200 rounded-lg">
             <div class="grid grid-cols-2 gap-4">
-              <FormKit type="text" label="Nama Organisasi" :value="applicationData.organizationName" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="No. Pendaftaran" :value="applicationData.registrationNumber" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Email" :value="applicationData.email" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Nama Organisasi" v-model="applicationData.organizationName" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="No. Pendaftaran" v-model="applicationData.registrationNumber" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Email" v-model="applicationData.email" readonly :classes="{ input: '!py-2' }" />
             </div>
           </div>
 
@@ -42,12 +42,12 @@
           <h3 class="text-lg font-semibold mb-4 text-gray-900">Alamat</h3>
           <div class="mb-8 p-6 border border-gray-200 rounded-lg">
             <div class="grid grid-cols-2 gap-4">
-              <FormKit type="text" label="Alamat 1" :value="applicationData.addressLine1" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Negeri" :value="applicationData.state" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Alamat 2" :value="applicationData.addressLine2" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Bandar" :value="applicationData.city" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Alamat 3" :value="applicationData.addressLine3" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Poskod" :value="applicationData.postcode" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Alamat 1" v-model="applicationData.addressLine1" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Negeri" v-model="applicationData.state" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Alamat 2" v-model="applicationData.addressLine2" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Bandar" v-model="applicationData.city" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Alamat 3" v-model="applicationData.addressLine3" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Poskod" v-model="applicationData.postcode" readonly :classes="{ input: '!py-2' }" />
             </div>
           </div>
 
@@ -55,9 +55,9 @@
           <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Pegawai Dihubungi</h3>
           <div class="mb-8 p-6 border border-gray-200 rounded-lg">
             <div class="grid grid-cols-2 gap-4">
-              <FormKit type="text" label="Nama Pegawai" :value="applicationData.contactPerson" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Telefon" :value="applicationData.contactPhone" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Email" :value="applicationData.contactEmail" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Nama Pegawai" v-model="applicationData.contactPerson" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Telefon" v-model="applicationData.contactPhone" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Email" v-model="applicationData.contactEmail" readonly :classes="{ input: '!py-2' }" />
             </div>
           </div>
 
@@ -65,10 +65,10 @@
           <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Bank</h3>
           <div class="mb-8 p-6 border border-gray-200 rounded-lg">
             <div class="grid grid-cols-2 gap-4">
-              <FormKit type="text" label="Nama Bank" :value="applicationData.bankName" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Nombor Akaun Bank" :value="applicationData.bankAccountNumber" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Penama Akaun Bank" :value="applicationData.penamaBank" readonly :classes="{ input: '!py-2' }" />
-              <FormKit type="text" label="Kaedah Pembayaran" :value="applicationData.paymentMethod" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Nama Bank" v-model="applicationData.bankName" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Nombor Akaun Bank" v-model="applicationData.bankAccountNumber" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Penama Akaun Bank" v-model="applicationData.penamaBank" readonly :classes="{ input: '!py-2' }" />
+              <FormKit type="text" label="Kaedah Pembayaran" v-model="applicationData.paymentMethod" readonly :classes="{ input: '!py-2' }" />
             </div>
           </div>
 
@@ -179,7 +179,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
 
@@ -225,28 +225,28 @@ const dataset = {
   'ORG-202507-0001': {
     refNumber: 'ORG-202507-0001',
     applicationDate: '23/7/2025',
-    status: 'Menunggu Pengesahan',
-    organizationType: 'Swasta',
-    organizationName: 'Syarikat Teknologi Maju Sdn Bhd',
-    registrationNumber: '200301012345',
-    email: 'admin@tekmas.com.my',
-    addressLine1: 'No. 123, Jalan Teknologi 3/5',
-    addressLine2: 'Tingkat 5, Blok A',
-    addressLine3: 'Taman Teknologi Malaysia',
-    city: 'Cyberjaya',
-    postcode: '63000',
+    status: 'Disahkan',
+    organizationType: 'Masjid',
+    organizationName: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
+    registrationNumber: 'PPM-2021-001',
+    email: 'admin@masjid-selangor.gov.my',
+    addressLine1: 'No. 1, Jalan Masjid',
+    addressLine2: 'Seksyen 14',
+    addressLine3: '',
+    city: 'Shah Alam',
+    postcode: '40000',
     state: 'Selangor',
-    contactPerson: 'Ahmad Bin Abdullah',
-    contactPhone: '012-3456789',
-    contactEmail: 'ahmad@tekmas.com.my',
-    bankName: 'CIMB Bank',
-    bankAccountNumber: '8001234567890',
-    penamaBank: 'Syarikat Teknologi Maju Sdn Bhd',
+    contactPerson: 'Ustaz Ahmad bin Hassan',
+    contactPhone: '03-55123456',
+    contactEmail: 'ahmad.hassan@masjid-selangor.gov.my',
+    bankName: 'Bank Islam',
+    bankAccountNumber: '1234567890123456',
+    penamaBank: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
     paymentMethod: 'Bank Transfer',
     documents: [
-      { name: 'Sijil Pendaftaran Syarikat', filename: 'sijil_pendaftaran_ssm.pdf', size: '2.4 MB' },
+      { name: 'Sijil Pendaftaran Masjid', filename: 'sijil_pendaftaran_masjid.pdf', size: '2.4 MB' },
       { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan_kuasa.pdf', size: '1.8 MB' },
-      { name: 'Laporan Tahunan', filename: 'laporan_tahunan_teknologi_maju_2025.pdf', size: '5.2 MB' },
+      { name: 'Laporan Tahunan', filename: 'laporan_tahunan_masjid_2025.pdf', size: '5.2 MB' },
       { name: 'Penyata Bank', filename: 'penyata_bank_disember_2024.pdf', size: '1.1 MB' },
     ],
   },
@@ -254,27 +254,108 @@ const dataset = {
     refNumber: 'ORG-202506-0002',
     applicationDate: '15/6/2025',
     status: 'Disahkan',
-    organizationType: 'NGO',
-    organizationName: 'Pertubuhan Amal Iman Malaysia',
-    registrationNumber: 'PPM-2023-001',
-    email: 'info@amaliman.org',
-    addressLine1: 'No. 456, Jalan Amal 2/3',
-    addressLine2: 'Taman Amal Jaya',
+    organizationType: 'Masjid',
+    organizationName: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Petaling Jaya',
+    registrationNumber: 'PPM-2021-002',
+    email: 'info@masjid-pj-selangor.gov.my',
+    addressLine1: 'No. 88, Jalan Masjid PJ',
+    addressLine2: 'Taman Masjid Jaya',
     addressLine3: '',
+    city: 'Petaling Jaya',
+    postcode: '46000',
+    state: 'Selangor',
+    contactPerson: 'Ustaz Ibrahim bin Yusof',
+    contactPhone: '03-22345678',
+    contactEmail: 'ibrahim@masjid-pj-selangor.gov.my',
+    bankName: 'Maybank',
+    bankAccountNumber: '5123456789012',
+    penamaBank: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan PJ',
+    paymentMethod: 'Bank Transfer',
+    documents: [
+      { name: 'Sijil Pendaftaran Cawangan', filename: 'sijil_cawangan_2023.pdf', size: '2.0 MB' },
+      { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan_2025.pdf', size: '1.5 MB' },
+      { name: 'Surat Pengesahan Bank', filename: 'bank_confirmation_letter.pdf', size: '0.9 MB' },
+    ],
+  },
+  'ORG-202505-0003': {
+    refNumber: 'ORG-202505-0003',
+    applicationDate: '8/5/2025',
+    status: 'Menunggu Pengesahan',
+    organizationType: 'Masjid',
+    organizationName: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Klang',
+    registrationNumber: 'PPM-2021-003',
+    email: 'info@masjid-klang-selangor.gov.my',
+    addressLine1: 'No. 15, Jalan Masjid Klang',
+    addressLine2: 'Taman Masjid Klang',
+    addressLine3: 'Seksyen 5',
+    city: 'Klang',
+    postcode: '41000',
+    state: 'Selangor',
+    contactPerson: 'Dr. Ahmad Fauzi bin Abdul Rahman',
+    contactPhone: '03-33456789',
+    contactEmail: 'fauzi@masjid-klang-selangor.gov.my',
+    bankName: 'Bank Islam',
+    bankAccountNumber: '2098765432109',
+    penamaBank: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Klang',
+    paymentMethod: 'Bank Transfer',
+    documents: [
+      { name: 'Sijil Pendaftaran Cawangan', filename: 'sijil_cawangan_klang.pdf', size: '2.0 MB' },
+      { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan_klang.pdf', size: '1.5 MB' },
+      { name: 'Surat Pengesahan Bank', filename: 'bank_confirmation_klang.pdf', size: '0.9 MB' },
+    ],
+  },
+  'ORG-202506-0005': {
+    refNumber: 'ORG-202506-0005',
+    applicationDate: '12/6/2025',
+    status: 'Tidak Sah',
+    organizationType: 'NGO',
+    organizationName: 'Pertubuhan Kebajikan Islam Selangor',
+    registrationNumber: 'PPM-2022-001',
+    email: 'info@pki-selangor.org.my',
+    addressLine1: 'No. 77, Jalan Kebajikan 2/4',
+    addressLine2: 'Pusat Kebajikan Islam',
+    addressLine3: 'Tingkat 15',
+    city: 'Puchong',
+    postcode: '47100',
+    state: 'Selangor',
+    contactPerson: 'Azman bin Abdullah',
+    contactPhone: '03-21234567',
+    contactEmail: 'azman@pki-selangor.org.my',
+    bankName: 'Public Bank',
+    bankAccountNumber: '4567890123456',
+    penamaBank: 'Pertubuhan Kebajikan Islam Selangor',
+    paymentMethod: 'Bank Transfer',
+    documents: [
+      { name: 'Sijil Pendaftaran NGO', filename: 'sijil_ngo_2022.pdf', size: '2.0 MB' },
+      { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan_ngo.pdf', size: '1.5 MB' },
+      { name: 'Surat Pengesahan Bank', filename: 'bank_confirmation_ngo.pdf', size: '0.9 MB' },
+    ],
+  },
+  'ORG-202508-0008': {
+    refNumber: 'ORG-202508-0008',
+    applicationDate: '05/8/2025',
+    status: 'Dalam Pembetulan',
+    organizationType: 'Kesihatan',
+    organizationName: 'Pusat Dialisis As-Salam Shah Alam',
+    registrationNumber: 'PPM-2021-015',
+    email: 'info@dialisis-as-salam-selangor.gov.my',
+    addressLine1: 'No. 88, Jalan Kesihatan 2/1',
+    addressLine2: 'Taman Kesihatan Jaya',
+    addressLine3: 'Seksyen 2',
     city: 'Shah Alam',
     postcode: '40000',
     state: 'Selangor',
-    contactPerson: 'Ustaz Mohd Zaki',
-    contactPhone: '03-98765432',
-    contactEmail: 'zaki@amaliman.org',
-    bankName: 'Maybank',
-    bankAccountNumber: '5123456789012',
-    penamaBank: 'Pertubuhan Amal Iman Malaysia',
+    contactPerson: 'Dato Dr. Siti Aisyah binti Hassan',
+    contactPhone: '03-55123456',
+    contactEmail: 'aisyah@dialisis-as-salam-selangor.gov.my',
+    bankName: 'Bank Islam',
+    bankAccountNumber: '1234567890123',
+    penamaBank: 'Pusat Dialisis As-Salam Shah Alam',
     paymentMethod: 'Bank Transfer',
     documents: [
-      { name: 'Sijil Pendaftaran ROS', filename: 'sijil_ros_2023.pdf', size: '2.0 MB' },
-      { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan_2025.pdf', size: '1.5 MB' },
-      { name: 'Surat Pengesahan Bank', filename: 'bank_confirmation_letter.pdf', size: '0.9 MB' },
+      { name: 'Sijil Pendaftaran Kesihatan', filename: 'sijil_kesihatan_2021.pdf', size: '2.0 MB' },
+      { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan_kesihatan.pdf', size: '1.5 MB' },
+      { name: 'Surat Pengesahan Bank', filename: 'bank_confirmation_kesihatan.pdf', size: '0.9 MB' },
     ],
   },
 };
@@ -335,13 +416,26 @@ const handleView = (doc) => {
   toast.success(`Melihat dokumen ${doc.name}`);
 };
 
-onMounted(() => {
+const loadApplicationData = () => {
   const id = route.params.id;
+  
   if (dataset[id]) {
-    applicationData.value = { ...applicationData.value, ...dataset[id] };
+    // Direct assignment to ensure data is loaded
+    Object.assign(applicationData.value, dataset[id]);
   } else {
     // Fallback minimal mock using id
     applicationData.value.refNumber = id;
+  }
+};
+
+onMounted(() => {
+  loadApplicationData();
+});
+
+// Watch for route changes
+watch(() => route.params.id, (newId) => {
+  if (newId) {
+    loadApplicationData();
   }
 });
 </script>

@@ -346,38 +346,38 @@ const loadCawanganData = (id) => {
   const dataset = {
     'CB-240501': {
       noRujukan: 'CB-240501',
-      namaCawangan: 'Institut Latihan Kemahiran Malaysia - Cawangan Shah Alam',
-      namaHQ: 'ILKM Shah Alam',
-      jenisOrganisasi: 'Institut',
-      noPendaftaran: 'ILKM-2023-012',
+      namaCawangan: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Petaling Jaya',
+      namaHQ: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
+      jenisOrganisasi: 'Masjid',
+      noPendaftaran: 'PPM-2021-002',
       statusPendaftaran: 'Berdaftar',
-      kariah: 'MASJID SHAH ALAM',
-      zone: 'Zon Selangor',
+      kariah: 'MASJID SULTAN SALAHUDDIN ABDUL AZIZ SHAH - CAWANGAN PJ',
+      zone: 'Zon B',
       alamat: {
-        addressLine1: 'No. 321, Jalan Kemahiran 4/1',
-        addressLine2: 'Taman Kemahiran Jaya',
+        addressLine1: 'No. 88, Jalan Masjid PJ',
+        addressLine2: 'Taman Masjid Jaya',
         addressLine3: '',
-        postcode: '40000',
-        city: 'Shah Alam',
+        postcode: '46000',
+        city: 'Petaling Jaya',
         district: 'Petaling',
         state: 'Selangor'
       },
       wakil: [
         {
-          name: 'Encik Mohd Rashid bin Hassan',
-          ic: '700301067890',
-          phoneNumber: '03-55567890',
-          email: 'rashid@ilkm.gov.my'
+          name: 'Ustaz Ibrahim bin Yusof',
+          ic: '730505045678',
+          phoneNumber: '03-22345678',
+          email: 'ibrahim@masjid-pj-selangor.gov.my'
         }
       ],
       bank: {
         bankSameAsHQ: 'tidak',
-        bankName: 'RHB Bank',
-        bankAccountNumber: '3456789012345',
-        penamaBank: 'Institut Latihan Kemahiran Malaysia',
+        bankName: 'Maybank',
+        bankAccountNumber: '5123456789012',
+        penamaBank: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan PJ',
         paymentMethod: 'Bank Transfer'
       },
-      registrationCertificate: { name: 'sijil_ilkm_2023.pdf' },
+      registrationCertificate: { name: 'sijil_masjid_pj_2021.pdf' },
       appointmentLetter: { name: 'surat_cawangan_2025.pdf' },
       bankProof: { name: 'bank_verification_2025.pdf' },
       additionalDocuments: null,
@@ -386,17 +386,17 @@ const loadCawanganData = (id) => {
     },
     'CB-240502': {
       noRujukan: 'CB-240502',
-      namaCawangan: 'Pertubuhan Amal Iman Malaysia - Cawangan Klang',
-      namaHQ: 'Pertubuhan Amal Iman Malaysia',
-      jenisOrganisasi: 'NGO',
-      noPendaftaran: 'PPM-2023-001',
+      namaCawangan: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Klang',
+      namaHQ: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
+      jenisOrganisasi: 'Masjid',
+      noPendaftaran: 'PPM-2021-003',
       statusPendaftaran: 'Berdaftar',
-      kariah: 'MASJID KLANG',
-      zone: 'Zon Klang',
+      kariah: 'MASJID SULTAN SALAHUDDIN ABDUL AZIZ SHAH - CAWANGAN KLANG',
+      zone: 'Zon C',
       alamat: {
-        addressLine1: 'No. 789, Jalan Amal 3/2',
-        addressLine2: 'Taman Amal Klang',
-        addressLine3: '',
+        addressLine1: 'No. 15, Jalan Masjid Klang',
+        addressLine2: 'Taman Masjid Klang',
+        addressLine3: 'Seksyen 5',
         postcode: '41000',
         city: 'Klang',
         district: 'Klang',
@@ -404,39 +404,39 @@ const loadCawanganData = (id) => {
       },
       wakil: [
         {
-          name: 'Ustazah Siti Aisyah binti Mohd',
-          ic: '820315234567',
-          phoneNumber: '03-55551234',
-          email: 'aisyah@amaliman.org'
+          name: 'Dr. Ahmad Fauzi bin Abdul Rahman',
+          ic: '650815056789',
+          phoneNumber: '03-33456789',
+          email: 'fauzi@masjid-klang-selangor.gov.my'
         }
       ],
       bank: {
-        bankSameAsHQ: 'ya',
-        bankName: 'Maybank',
-        bankAccountNumber: '5123456789012',
-        penamaBank: 'Pertubuhan Amal Iman Malaysia',
+        bankSameAsHQ: 'tidak',
+        bankName: 'Bank Islam',
+        bankAccountNumber: '2098765432109',
+        penamaBank: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Klang',
         paymentMethod: 'Bank Transfer'
       },
-      registrationCertificate: { name: 'sijil_ros_2023.pdf' },
+      registrationCertificate: { name: 'sijil_masjid_klang_2021.pdf' },
       appointmentLetter: { name: 'surat_cawangan_2025.pdf' },
-      bankProof: null,
+      bankProof: { name: 'bank_letter_2025.pdf' },
       additionalDocuments: null,
       status: 'Disahkan',
       tarikhPermohonan: '15/6/2025'
     },
     'CB-240503': {
       noRujukan: 'CB-240503',
-      namaCawangan: 'Sekolah Menengah Tahfiz Al-Amin - Cawangan Kajang',
-      namaHQ: 'Sekolah Menengah Tahfiz Al-Amin',
-      jenisOrganisasi: 'IPT',
-      noPendaftaran: 'IPT-2023-045',
+      namaCawangan: 'Pertubuhan Kebajikan Islam Selangor - Cawangan Kajang',
+      namaHQ: 'Pertubuhan Kebajikan Islam Selangor',
+      jenisOrganisasi: 'NGO',
+      noPendaftaran: 'PPM-2022-001',
       statusPendaftaran: 'Berdaftar',
-      kariah: 'MASJID AL-AMIN',
+      kariah: 'MASJID KAJANG',
       zone: 'Zon Kajang',
       alamat: {
-        addressLine1: 'Lot 456, Jalan Pendidikan 3/1',
-        addressLine2: 'Taman Pendidikan Islam',
-        addressLine3: '',
+        addressLine1: 'No. 77, Jalan Kebajikan 2/4',
+        addressLine2: 'Pusat Kebajikan Islam',
+        addressLine3: 'Tingkat 15',
         postcode: '43000',
         city: 'Kajang',
         district: 'Hulu Langat',
@@ -444,38 +444,38 @@ const loadCawanganData = (id) => {
       },
       wakil: [
         {
-          name: 'Ustaz Mohd Fikri bin Omar',
-          ic: '850610089012',
-          phoneNumber: '03-80123456',
-          email: 'fikri@tahfizalamin.edu.my'
+          name: 'Azman bin Abdullah',
+          ic: '680220078901',
+          phoneNumber: '03-21234567',
+          email: 'azman@pki-selangor.org.my'
         }
       ],
       bank: {
         bankSameAsHQ: 'tidak',
-        bankName: 'Bank Islam',
-        bankAccountNumber: '2098765432109',
-        penamaBank: 'Sekolah Menengah Tahfiz Al-Amin',
+        bankName: 'Public Bank',
+        bankAccountNumber: '4567890123456',
+        penamaBank: 'Pertubuhan Kebajikan Islam Selangor',
         paymentMethod: 'Bank Transfer'
       },
-      registrationCertificate: { name: 'sijil_moe_2023.pdf' },
+      registrationCertificate: { name: 'sijil_ros_2022.pdf' },
       appointmentLetter: { name: 'surat_cawangan_2025.pdf' },
       bankProof: { name: 'bank_letter_2025.pdf' },
       additionalDocuments: null,
-      status: 'Perlu Pembetulan',
+      status: 'Ditolak',
       tarikhPermohonan: '8/5/2025'
     },
     'CB-240504': {
       noRujukan: 'CB-240504',
-      namaCawangan: 'Syarikat Teknologi Maju Sdn Bhd - Cawangan Cyberjaya',
-      namaHQ: 'Syarikat Teknologi Maju Sdn Bhd',
-      jenisOrganisasi: 'Swasta',
-      noPendaftaran: '123456-A',
+      namaCawangan: 'Rumah Anak Yatim Darul Ehsan - Cawangan Cyberjaya',
+      namaHQ: 'Rumah Anak Yatim Darul Ehsan',
+      jenisOrganisasi: 'NGO',
+      noPendaftaran: 'PPM-2022-002',
       statusPendaftaran: 'Berdaftar',
       kariah: 'MASJID CYBERJAYA',
       zone: 'Zon Cyberjaya',
       alamat: {
-        addressLine1: 'No. 123, Jalan Teknologi 3/1',
-        addressLine2: 'Taman Teknologi Malaysia',
+        addressLine1: 'No. 33, Jalan Anak Yatim 4/2',
+        addressLine2: 'Taman Anak Yatim Cemerlang',
         addressLine3: '',
         postcode: '63000',
         city: 'Cyberjaya',
@@ -484,24 +484,24 @@ const loadCawanganData = (id) => {
       },
       wakil: [
         {
-          name: 'Encik Ahmad bin Abdullah',
-          ic: '800123456789',
-          phoneNumber: '03-12345678',
-          email: 'ahmad@teknologimaju.com'
+          name: 'Saudara Fikri bin Omar',
+          ic: '850610089012',
+          phoneNumber: '03-80123456',
+          email: 'fikri@ray-selangor.org.my'
         }
       ],
       bank: {
-        bankSameAsHQ: 'ya',
-        bankName: 'CIMB Bank',
-        bankAccountNumber: '8001234567890',
-        penamaBank: 'Syarikat Teknologi Maju Sdn Bhd',
+        bankSameAsHQ: 'tidak',
+        bankName: 'AmBank',
+        bankAccountNumber: '6789012345678',
+        penamaBank: 'Rumah Anak Yatim Darul Ehsan',
         paymentMethod: 'Bank Transfer'
       },
-      registrationCertificate: { name: 'sijil_ssm_2025.pdf' },
+      registrationCertificate: { name: 'sijil_ros_2022.pdf' },
       appointmentLetter: { name: 'surat_cawangan_2025.pdf' },
-      bankProof: null,
+      bankProof: { name: 'bank_letter_2025.pdf' },
       additionalDocuments: null,
-      status: 'Tidak Sah',
+      status: 'Menunggu Pengesahan',
       tarikhPermohonan: '12/6/2025'
     }
   }

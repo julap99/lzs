@@ -1,3 +1,5 @@
+																	  
+
 <template>
   <div>
       <LayoutsBreadcrumb :items="breadcrumb" />
@@ -114,7 +116,8 @@
             <!-- Main Tabs -->
             <rs-tab variant="primary" type="card">
               <rs-tab-item title="Profiling" active>
-                <div class="p-6">
+                <!-- Profiling Tab Content -->
+				<div class="p-6">
                   <rs-table
                     :data="profilingFilteredApplications"
                     :columns="profilingColumns"
@@ -174,7 +177,9 @@
                       </span>
                     </div>
                   </div>
-                </div>
+                </div>		   
+
+                
               </rs-tab-item>
 
               <rs-tab-item title="Bantuan">
@@ -229,13 +234,9 @@
                     <!-- </div> -->
 
                     <div class="flex justify-end">
-                      <rs-button variant="primary">Sahkan</rs-button>
+                      <rs-button variant="primary" @click="confirmRecommendedAid">Sahkan</rs-button>
                   </div>
-                  </rs-tab-item>
-
-                  
-
-                  
+                  </rs-tab-item> 
 
                   <rs-tab-item title="Perubahan Bantuan">
                     <div class="space-y-8">
@@ -284,7 +285,7 @@
                         </rs-table>
 
                         <div class="flex justify-end">
-                          <rs-button variant="primary">Sahkan</rs-button>
+                          <rs-button variant="primary" @click="confirmPerubahanAid">Sahkan</rs-button>
                         </div>
                   </div>
                 </div>
@@ -332,8 +333,17 @@
                         </template>
                       </rs-table>
 
+                      <div v-if="anyPembatalanSelected" class="mt-4">
+                        <FormKit
+                          type="textarea"
+                          label="Justifikasi Pembatalan"
+                          placeholder="Nyatakan justifikasi pembatalan..."
+                          v-model="justifikasiPembatalan"
+                        />
+                      </div>
+
                       <div class="flex justify-end">
-                        <rs-button variant="primary">Sahkan</rs-button>
+                        <rs-button variant="primary" :disabled="!canConfirmPembatalan">Sahkan</rs-button>
                       </div>
                     </div>
                   </rs-tab-item>
@@ -975,7 +985,55 @@ const mockByNoBantuan = {
     masaLawatan: "",
     catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
     gambarLokasi: null,
-  }
+  },
+  "NAS-2025-0003": {
+    // Personal Information
+    noBantuan: "NAS-2025-0001",
+    nama: "Mohd Amin bin Ali",
+    alamat: "Jalan Rajawali, Kampung Bukit Kuching, 45800 Jeram",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    jenisPengenalan: "MyKad",
+    noPengenalan: "650101121234",
+    noTelefon: "0193456789",
+    email: "amin@gmail.com",
+    statusKeluarga: "Fakir",
+    statusIndividu: "Fakir",
+    statusMultidimensi: "Asnaf Tidak Produktif",
+    status: "Dalam Siasatan",
+
+    // Investigation fields
+    keputusanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai pembayaran rumah sewa bulanan yang tidak mampu dibayarnya. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
+    gambarLokasi: null,
+  },
+  
+  "NAS-2025-0004": {
+    // Personal Information
+    noBantuan: "NAS-2025-0004",
+    nama: "Amirul Hakim bin Zainuddin",
+    alamat: "Jalan Rajawali, Kampung Bukit Kuching, 45800 Jeram",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    jenisPengenalan: "MyKad",
+    noPengenalan: "791230104321",
+    noTelefon: "0193456789",
+    email: "hakim@gmail.com",
+    statusKeluarga: "Fakir",
+    statusIndividu: "Fakir",
+    statusMultidimensi: "Asnaf Tidak Produktif",
+    status: "Dalam Siasatan",
+
+    // Investigation fields
+    keputusanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai keadaan kesihatannya yang mengalami sakit buah pinggang dan memerlukan rawatan dialisis. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
+    gambarLokasi: null,
+  },
+  
 };
 
 // Mock investigation data
@@ -1021,7 +1079,7 @@ const mockInvestigationData = {
     assistanceApplications: [
       {
         id: "B300",
-        jenisBantuan: "B300 - (HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+        jenisBantuan: "B300 - (HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA} (FAKIR)",
         status: "Perlu Diproses",
         sla: "5 hari lagi",
         actions: "/",
@@ -1033,6 +1091,68 @@ const mockInvestigationData = {
         sla: "2 hari lagi",
         actions: "/",
       }
+    ]
+  },
+   "NAS-2025-0003": {
+    jenisPekerjaan: "Pesara guru",
+    statusKediaman: "Rumah Sendiri",
+    jumlahBayaranRumah: "RM0",
+    bilTanggungan: "3 Orang (2 Anak + Isteri )",
+    statusTanggungan: "Anak sakit kronik , Isteri tidak bekerja",
+    keadaanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    StatusPengesahanLawatan: "belum_sah",
+    catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
+    gambarLokasi: [],
+    catatanLawatanETD: "",
+    statusLawatan: "",
+    assistanceApplications: [
+      {
+        id: "B112",
+        jenisBantuan: "B112 - Bantuan Sewaan/Ansuran Rumah (Fakir)",
+        status: "Perlu Diproses",
+        sla: "5 hari lagi",
+        actions: "/",
+      },
+      // {
+      //   id: "B307",
+      //   jenisBantuan: "B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
+      //   status: "Perlu Diproses",
+      //   sla: "2 hari lagi",
+      //   actions: "/",
+      // }
+    ]
+  },
+   "NAS-2025-0004": {
+    jenisPekerjaan: "Pesara guru",
+    statusKediaman: "Rumah Sendiri",
+    jumlahBayaranRumah: "RM0",
+    bilTanggungan: "3 Orang (2 Anak + Isteri )",
+    statusTanggungan: "Anak sakit kronik , Isteri tidak bekerja",
+    keadaanSiasatan: "",
+    tarikhLawatan: "",
+    masaLawatan: "",
+    StatusPengesahanLawatan: "belum_sah",
+    catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
+    gambarLokasi: [],
+    catatanLawatanETD: "",
+    statusLawatan: "",
+    assistanceApplications: [
+      {
+        id: "B103",
+        jenisBantuan: "B103 - Bantuan Perubatan Dialisis (Fakir)",
+        status: "Perlu Diproses",
+        sla: "5 hari lagi",
+        actions: "/",
+      },
+      // {
+      //   id: "B307",
+      //   jenisBantuan: "B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
+      //   status: "Perlu Diproses",
+      //   sla: "2 hari lagi",
+      //   actions: "/",
+      // }
     ]
   }
 };
@@ -1181,7 +1301,7 @@ const getProfilingStatusVariant = (status) => {
     "dalam semakan": "secondary",
   };
   return variants[status.toLowerCase()] || "default";
-};
+};								
 
 // Dropdown options
 const keadaanSiasatanOptions = [
@@ -1317,6 +1437,68 @@ const otherAgencyAssistance = ref([
   },
 ]);
 
+// Track last fetch date for "Bantuan daripada Agensi"
+const lastOtherAgencyFetchAt = ref(new Date());
+
+// Initialize last fetch date based on current data
+const initializeLastOtherAgencyFetchAt = () => {
+  try {
+    const dates = otherAgencyAssistance.value
+      .map(item => new Date(item.tarikhDiperoleh))
+      .filter(d => !isNaN(d.getTime()));
+    if (dates.length > 0) {
+      lastOtherAgencyFetchAt.value = new Date(Math.max(...dates.map(d => d.getTime())));
+    }
+  } catch (e) {
+    // fallback to now
+    lastOtherAgencyFetchAt.value = new Date();
+  }
+};
+initializeLastOtherAgencyFetchAt();
+
+// Local datetime formatter (DD-MM-YYYY HH:MM)
+const formatDateTimeLocal = (date) => {
+  const d = date instanceof Date ? date : new Date(date);
+  if (isNaN(d.getTime())) return '';
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const yyyy = d.getFullYear();
+  const hh = String(d.getHours()).padStart(2, '0');
+  const min = String(d.getMinutes()).padStart(2, '0');
+  return `${dd}-${mm}-${yyyy} ${hh}:${min}`;
+};
+
+// Update table with latest mock data for "Bantuan daripada Agensi"
+const getLatestOtherAgencyAssistance = () => {
+  otherAgencyAssistance.value = [
+    {
+      namaBantuan: "Program Kasih Siswa (dKasih)",
+      jumlah: "1,500",
+      kekerapan: "One-off",
+      tahun: "2025",
+      tarikhDiperoleh: "9/22/2025",
+      dataDaripada: "ICU",
+    },
+    {
+      namaBantuan: "Sumbangan Asas Rahmah (SARA)",
+      jumlah: "2,400",
+      kekerapan: "Berkala",
+      tahun: "2025",
+      tarikhDiperoleh: "9/22/2025",
+      dataDaripada: "ICU",
+    },
+    {
+      namaBantuan: "Bantuan Prihatin Rakyat (BPR)",
+      jumlah: "1,000",
+      kekerapan: "One-off",
+      tahun: "2025",
+      tarikhDiperoleh: "9/22/2025",
+      dataDaripada: "JPM",
+    },
+  ];
+  lastOtherAgencyFetchAt.value = new Date();
+};
+
 // Recommended Aid data (Syor)
 const recommendedAid = ref([
   {
@@ -1356,6 +1538,23 @@ const recommendedAid = ref([
   },
 ]);
 
+// Move selected Syor items to Bantuan Baru and remove from Syor
+const confirmRecommendedAid = () => {
+  const selected = recommendedAid.value.filter(r => r.terimaCadangan);
+  if (selected.length === 0) return;
+
+  const newApps = selected.map(r => ({
+    id: r.aid?.match(/\[(.*?)\]/)?.[1] || r.aid || `NEW-${Date.now()}`,
+    jenisBantuan: r.aidProduct || r.aid || 'Bantuan Baharu',
+    status: 'Perlu Diproses',
+    sla: '-'
+  }));
+
+  assistanceApplications.value = [...assistanceApplications.value, ...newApps];
+  recommendedAid.value = recommendedAid.value.filter(r => !r.terimaCadangan);
+  selectAllSyor.value = false;
+};
+
 const selectAllSyor = ref(false);
 
 // Perubahan Bantuan - mock data
@@ -1376,57 +1575,57 @@ const bantuanPerubahanKadar = ref([
     terimaCadangan: false,
   },
   {
-    aid: "[B601] BANTUAN PENDIDIKAN (FISABILILLAH)",
-    aidProduct: "BANTUAN PENDIDIKAN (FISABILILLAH)",
-    productPackage: "(EFT) YURAN PENDIDIKAN (FISABILILLAH)",
-    entitlementProduct: "(EFT) YURAN PENDIDIKAN TINGGI (FISABILILLAH)",
+    aid: "[B601] BANTUAN PENDIDIKAN (FAKIR)",
+    aidProduct: "BANTUAN PENDIDIKAN (FAKIR)",
+    productPackage: "(EFT) YURAN PENDIDIKAN (FAKIR)",
+    entitlementProduct: "(EFT) YURAN PENDIDIKAN TINGGI (FAKIR)",
     terimaCadangan: false,
   },
-  {
-    aid: "[B503] BANTUAN MAKANAN BULANAN (FAKIR)",
-    aidProduct: "MAKANAN BULANAN (FAKIR)",
-    productPackage: "(VCASH) BANTUAN BULANAN (FAKIR)",
-    entitlementProduct: "(VCASH) BANTUAN BULANAN KELUARGA (FAKIR)",
-    terimaCadangan: false,
-  },
-  {
-    aid: "[B701] BANTUAN BENCANA (MISKIN)",
-    aidProduct: "BANTUAN BENCANA (MISKIN)",
-    productPackage: "(CASH) BANTUAN SEGERA (MISKIN)",
-    entitlementProduct: "(CASH) BENCANA ALAM (MISKIN)",
-    terimaCadangan: false,
-  },
+  // {
+  //   aid: "[B503] BANTUAN MAKANAN BULANAN (FAKIR)",
+  //   aidProduct: "MAKANAN BULANAN (FAKIR)",
+  //   productPackage: "(VCASH) BANTUAN BULANAN (FAKIR)",
+  //   entitlementProduct: "(VCASH) BANTUAN BULANAN KELUARGA (FAKIR)",
+  //   terimaCadangan: false,
+  // },
+  // {
+  //   aid: "[B701] BANTUAN BENCANA (FAKIR)",
+  //   aidProduct: "BANTUAN BENCANA (FAKIR)",
+  //   productPackage: "(CASH) BANTUAN SEGERA (FAKIR)",
+  //   entitlementProduct: "(CASH) BENCANA ALAM (FAKIR)",
+  //   terimaCadangan: false,
+  // },
 ]);
 
 const bantuanPembatalan = ref([
   {
-    aid: "[B601] BANTUAN PENDIDIKAN (FISABILILLAH)",
-    aidProduct: "BANTUAN PENDIDIKAN (FISABILILLAH)",
-    productPackage: "(EFT) YURAN PENDIDIKAN (FISABILILLAH)",
-    entitlementProduct: "(EFT) YURAN PENDIDIKAN TINGGI (FISABILILLAH)",
+    aid: "[B601] BANTUAN PENDIDIKAN (MISKIN)",
+    aidProduct: "BANTUAN PENDIDIKAN (MISKIN)",
+    productPackage: "(EFT) YURAN PENDIDIKAN (MISKIN)",
+    entitlementProduct: "(EFT) YURAN PENDIDIKAN TINGGI (MISKIN)",
     batalBantuan: false,
   },
   {
-    aid: "[B503] BANTUAN MAKANAN BULANAN (FAKIR)",
-    aidProduct: "BANTUAN MAKANAN BULANAN (FAKIR)",
-    productPackage: "(VCASH) BANTUAN BULANAN (FAKIR)",
-    entitlementProduct: "(VCASH) BANTUAN BULANAN KELUARGA (FAKIR)",
+    aid: "[B503] BANTUAN MAKANAN BULANAN (MISKIN)",
+    aidProduct: "BANTUAN MAKANAN BULANAN (MISKIN)",
+    productPackage: "(VCASH) BANTUAN BULANAN (MISKIN)",
+    entitlementProduct: "(VCASH) BANTUAN BULANAN KELUARGA (MISKIN)",
     batalBantuan: false,
   },
   {
-    aid: "[B304] BANTUAN KEPERLUAN HIDUP (GHARIMIN)",
-    aidProduct: "BANTUAN KEPERLUAN HIDUP (GHARIMIN)",
-    productPackage: "(VCASH) BANTUAN BULANAN (GHARIMIN)",
-    entitlementProduct: "(VCASH) BAYARAN BULANAN KELUARGA (GHARIMIN)",
+    aid: "[B304] BANTUAN KEPERLUAN HIDUP (MISKIN)",
+    aidProduct: "BANTUAN KEPERLUAN HIDUP (MISKIN)",
+    productPackage: "(VCASH) BANTUAN BULANAN (MISKIN)",
+    entitlementProduct: "(VCASH) BAYARAN BULANAN KELUARGA (MISKIN)",
     batalBantuan: false,
   },
-  {
-    aid: "[B701] BANTUAN BENCANA (MISKIN)",
-    aidProduct: "BANTUAN BENCANA (MISKIN)",
-    productPackage: "(CASH) BANTUAN SEGERA (MISKIN)",
-    entitlementProduct: "(CASH) BENCANA ALAM (MISKIN)",
-    batalBantuan: false,
-  },
+  // {
+  //   aid: "[B701] BANTUAN BENCANA (MISKIN)",
+  //   aidProduct: "BANTUAN BENCANA (MISKIN)",
+  //   productPackage: "(CASH) BANTUAN SEGERA (MISKIN)",
+  //   entitlementProduct: "(CASH) BENCANA ALAM (MISKIN)",
+  //   batalBantuan: false,
+  // },
   {
     aid: "[B205] BANTUAN PERUBATAN DIALISIS (MISKIN)",
     aidProduct: "BANTUAN PERUBATAN DIALISIS (MISKIN)",
@@ -1435,6 +1634,19 @@ const bantuanPembatalan = ref([
     batalBantuan: false,
   },
 ]);
+
+// Textarea model for pembatalan justification
+const justifikasiPembatalan = ref("");
+
+// Show textarea only when there is at least one checked cancellation
+const anyPembatalanSelected = computed(() =>
+  bantuanPembatalan.value.some((row) => row.batalBantuan)
+);
+
+// Enable Sahkan only when at least one selected and justification filled
+const canConfirmPembatalan = computed(() => {
+  return anyPembatalanSelected.value && String(justifikasiPembatalan.value).trim().length > 0;
+});
 
 const selectAllPerubahan = ref(false);
 const selectAllPembatalan = ref(false);
@@ -1493,6 +1705,23 @@ const toggleSelectAllPerubahan = () => {
   bantuanPerubahanKadar.value.forEach((row) => {
     row.terimaCadangan = selectAllPerubahan.value;
   });
+};
+
+// Move selected Perubahan items to Bantuan Baru and remove from Perubahan list
+const confirmPerubahanAid = () => {
+  const selected = bantuanPerubahanKadar.value.filter(r => r.terimaCadangan);
+  if (selected.length === 0) return;
+
+  const newApps = selected.map(r => ({
+    id: r.aid?.match(/\[(.*?)\]/)?.[1] || r.aid || `NEW-${Date.now()}`,
+    jenisBantuan: r.aidProduct || r.aid || 'Bantuan Baharu',
+    status: 'Perlu Diproses',
+    sla: '-'
+  }));
+
+  assistanceApplications.value = [...assistanceApplications.value, ...newApps];
+  bantuanPerubahanKadar.value = bantuanPerubahanKadar.value.filter(r => !r.terimaCadangan);
+  selectAllPerubahan.value = false;
 };
 
 const toggleSelectAllPembatalan = () => {
