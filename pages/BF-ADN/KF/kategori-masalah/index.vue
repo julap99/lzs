@@ -1,10 +1,7 @@
 <template>
   <div>
-    <div>
-      <layouts-breadcrumb :items="breadcrumb" />
-    </div>
+    <layouts-breadcrumb :items="breadcrumb" />
 
-    <!-- Senarai Kategori Masalah -->
     <rs-card class="mt-4">
       <template #header>
         <div class="flex items-center justify-between">
@@ -12,7 +9,8 @@
             <Icon name="ic:outline-table-view" class="mr-2" />
             Senarai Kategori Masalah
           </div>
-          <!-- Button Tambah Kategori di kanan header card -->
+
+          <!-- Tambah: buka modal -->
           <rs-button variant="primary" @click="openAddModal">
             + Tambah Kategori
           </rs-button>
@@ -20,8 +18,19 @@
       </template>
 
       <template #body>
+        <!-- Penapis ringkas -->
+        <div class="flex items-center gap-3 mb-3">
+          <label class="font-medium">Tapis Mengikut Tahap Aduan:</label>
+          <select v-model="filterTahap" class="rs-input w-64">
+            <option value="">-- Semua Kelas --</option>
+            <option value="Merah">Merah</option>
+            <option value="Kuning">Kuning</option>
+            <option value="Hijau">Hijau</option>
+          </select>
+        </div>
+
         <rs-table
-          :data="rows"
+          :data="rowsForTable"
           :columns="tableColumns"
           :advanced="true"
           :showSearch="true"
@@ -31,39 +40,35 @@
           :sort="tableSort"
           class="table-wrapper"
         >
-          <!-- Header custom untuk kolum Tindakan (left-align + padding match) -->
+          <!-- Header kolum Tindakan -->
           <template #header.tindakan>
-            <div class="w-full text-left pl-4">Tindakan</div>
+            <div class="w-full text-center">Tindakan</div>
           </template>
 
-          <!-- ID -->
-          <template #id="{ text }">
-            <span class="!text-xs !px-3 !py-1 !rounded-full">
-              {{ text }}
-            </span>
-          </template>
-
-          <!-- Tahap Aduan -->
-          <template #tahapAduan="{ text }">
+          <!-- Badge Tahap -->
+          <template #tahap="{ text }">
             <rs-badge :variant="getTahapVariant(text)" class="!text-xs !px-3 !py-1 !rounded-full">
               {{ text }}
             </rs-badge>
           </template>
 
-          <!-- Status -->
+          <!-- Badge Status -->
           <template #status="{ text }">
             <rs-badge :variant="getStatusVariant(text)" class="!text-xs !px-3 !py-1 !rounded-full">
               {{ text }}
             </rs-badge>
           </template>
 
-          <!-- Tindakan (left-align + Kemaskini dahulu + padding match header) -->
-          <template #tindakan="{ row }">
-            <div class="flex items-center justify-start gap-3 min-w-[220px] whitespace-nowrap pl-4 text-left">
-              <rs-button variant="secondary" @click="openUpdateModal(row)">Kemaskini</rs-button>
+          <!-- Tindakan: Kemaskini (modal) & Lihat (route) -->
+          <template #tindakan="{ text }">
+            <div class="w-full text-center flex items-center justify-center gap-2">
+              <rs-button class="rs-btn rs-btn-light !text-xs" @click="openEditModal(text)">
+                Kemaskini
+              </rs-button>
               <button
-                @click="openView(row)"
-                class="inline-flex items-center text-blue-600 hover:text-blue-900"
+                @click="openView(text)"
+                class="rs-btn rs-btn-light !text-xs flex items-center gap-1 text-blue-600 hover:text-blue-900"
+                aria-label="Lihat kategori"
               >
                 <Icon name="ic:outline-remove-red-eye" class="mr-1" size="16" />
                 Lihat
@@ -74,160 +79,70 @@
       </template>
     </rs-card>
 
-    <!-- Modal Tambah Kategori -->
-    <rs-modal v-model="showAddModal" size="lg">
-      <template #header>
-        <h3 class="text-lg font-semibold">Tambah Kategori Masalah</h3>
-      </template>
-
-      <template #body>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormKit
-            type="select"
-            label="Tahap Aduan"
-            v-model="newCategory.tahapAduan"
-            :options="[
-              { value: '', label: '-- Sila Pilih --' },
-              { value: 'Merah', label: 'Merah' },
-              { value: 'Kuning', label: 'Kuning' },
-              { value: 'Hijau', label: 'Hijau' }
-            ]"
-            validation="required"
-            validation-visibility="submit"
-            :classes="fkClasses"
-          />
-
-          <FormKit
-            type="text"
-            label="Nama Kategori Masalah"
-            v-model="newCategory.namaMasalah"
-            placeholder="Contoh: Tiada Tempat Tinggal"
-            validation="required"
-            validation-visibility="submit"
-            :classes="fkClasses"
-          />
-
-          <FormKit
-            type="date"
-            label="Tarikh Mula Kuasa"
-            v-model="newCategory.tarikhKuatKuasa"
-            placeholder="dd/mm/yyyy"
-            validation="required"
-            validation-visibility="submit"
-            :classes="fkClasses"
-          />
-
-          <FormKit
-            type="select"
-            label="Status Konfigurasi"
-            v-model="newCategory.status"
-            :options="[
-              { value: 'Aktif', label: 'Aktif' },
-              { value: 'Tidak Aktif', label: 'Tidak Aktif' }
-            ]"
-            validation="required"
-            validation-visibility="submit"
-            :classes="fkClasses"
-          />
-
-          <div class="md:col-span-2">
-            <FormKit
-              type="textarea"
-              label="Catatan Permohonan"
-              v-model="newCategory.catatan"
-              placeholder="Nyatakan tujuan atau sebab tambah kategori"
-              :classes="fkClasses"
-            />
+    <!-- MODAL: TAMBAH -->
+    <rs-modal v-model="showAdd" title="Tambah Kategori Masalah" size="lg">
+      <form @submit.prevent="saveAdd">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="rs-label">Tahap Aduan</label>
+            <select v-model="formAdd.tahap" class="rs-input w-full" required>
+              <option disabled value="">-- Pilih --</option>
+              <option>Merah</option>
+              <option>Kuning</option>
+              <option>Hijau</option>
+            </select>
+          </div>
+          <div>
+            <label class="rs-label">Status</label>
+            <select v-model="formAdd.status" class="rs-input w-full" required>
+              <option>Aktif</option>
+              <option>Tidak Aktif</option>
+            </select>
+          </div>
+          <div class="col-span-2">
+            <label class="rs-label">Nama Kategori Masalah</label>
+            <input v-model.trim="formAdd.nama" class="rs-input w-full" required />
           </div>
         </div>
-      </template>
-
+      </form>
+      <!-- footer pada aras rs-modal -->
       <template #footer>
-        <div class="flex justify-between w-full">
-          <rs-button variant="secondary" @click="resetAddForm">Set Semula</rs-button>
-          <div class="flex gap-2">
-            <rs-button variant="secondary" @click="showAddModal = false">Tutup</rs-button>
-            <rs-button variant="primary" @click="addCategory" :disabled="!isAddReady">
-              Hantar Permohonan
-            </rs-button>
-          </div>
+        <div class="flex justify-end gap-2">
+          <rs-button variant="light" @click="showAdd=false">Tutup</rs-button>
+          <rs-button variant="primary" @click="saveAdd">Simpan</rs-button>
         </div>
       </template>
     </rs-modal>
 
-    <!-- Modal Kemaskini Kategori -->
-    <rs-modal v-model="showUpdateModal" size="lg">
-      <template #header>
-        <h3 class="text-lg font-semibold">Kemaskini Kategori Masalah</h3>
-      </template>
-
-      <template #body>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormKit
-            type="select"
-            label="Tahap Aduan"
-            v-model="editCategory.tahapAduan"
-            :options="[
-              { value: 'Merah', label: 'Merah' },
-              { value: 'Kuning', label: 'Kuning' },
-              { value: 'Hijau', label: 'Hijau' }
-            ]"
-            validation="required"
-            validation-visibility="submit"
-            :classes="fkClasses"
-          />
-
-          <FormKit
-            type="text"
-            label="Nama Kategori Masalah"
-            v-model="editCategory.namaMasalah"
-            validation="required"
-            validation-visibility="submit"
-            :classes="fkClasses"
-          />
-
-          <FormKit
-            type="date"
-            label="Tarikh Mula Kuasa"
-            v-model="editCategory.tarikhKuatKuasa"
-            validation="required"
-            validation-visibility="submit"
-            :classes="fkClasses"
-          />
-
-          <FormKit
-            type="select"
-            label="Status Konfigurasi"
-            v-model="editCategory.status"
-            :options="[
-              { value: 'Aktif', label: 'Aktif' },
-              { value: 'Tidak Aktif', label: 'Tidak Aktif' }
-            ]"
-            validation="required"
-            validation-visibility="submit"
-            :classes="fkClasses"
-          />
-
-          <div class="md:col-span-2">
-            <FormKit
-              type="textarea"
-              label="Catatan Permohonan"
-              v-model="editCategory.catatan"
-              :classes="fkClasses"
-            />
+    <!-- MODAL: KEMASKINI (papar id) -->
+    <rs-modal v-model="showEdit" :title="`Kemaskini Kategori #${editId ?? '-'}`" size="lg">
+      <form @submit.prevent="saveEdit">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="rs-label">Tahap Aduan</label>
+            <select v-model="formEdit.tahap" class="rs-input w-full" required>
+              <option>Merah</option>
+              <option>Kuning</option>
+              <option>Hijau</option>
+            </select>
+          </div>
+          <div>
+            <label class="rs-label">Status</label>
+            <select v-model="formEdit.status" class="rs-input w-full" required>
+              <option>Aktif</option>
+              <option>Tidak Aktif</option>
+            </select>
+          </div>
+          <div class="col-span-2">
+            <label class="rs-label">Nama Kategori Masalah</label>
+            <input v-model.trim="formEdit.nama" class="rs-input w-full" required />
           </div>
         </div>
-      </template>
-
+      </form>
       <template #footer>
-        <div class="flex justify-between w-full">
-          <rs-button variant="secondary" @click="resetUpdateForm">Set Semula</rs-button>
-          <div class="flex gap-2">
-            <rs-button variant="secondary" @click="showUpdateModal = false">Tutup</rs-button>
-            <rs-button variant="primary" @click="updateCategory" :disabled="!isUpdateReady">
-              Kemaskini
-            </rs-button>
-          </div>
+        <div class="flex justify-end gap-2">
+          <rs-button variant="light" @click="showEdit=false">Tutup</rs-button>
+          <rs-button variant="primary" @click="saveEdit">Simpan</rs-button>
         </div>
       </template>
     </rs-modal>
@@ -245,156 +160,114 @@ const breadcrumb = [
   { name: 'Senarai Kategori Masalah', type: 'text', path: '/BF-ADN/KF/kategori-masalah' },
 ]
 
-/** Data contoh */
-const categories = ref([
-  { id: 1, tahapAduan: 'Hijau', namaMasalah: 'Masalah Sosial Am', status: 'Tidak Aktif' },
-  { id: 2, tahapAduan: 'Kuning', namaMasalah: 'Kurang Sumber Pendapatan', status: 'Aktif' },
-  { id: 3, tahapAduan: 'Merah', namaMasalah: 'Tiada Tempat Tinggal', status: 'Aktif' },
+/** DATA MOCKUP (id = kolum No) */
+const list = ref([
+  { id: 1, tahap: 'Merah',  nama: 'Tiada Tempat Tinggal',     status: 'Aktif' },
+  { id: 2, tahap: 'Kuning', nama: 'Kurang Sumber Pendapatan', status: 'Aktif' },
+  { id: 3, tahap: 'Hijau',  nama: 'Masalah Sosial Am',        status: 'Tidak Aktif' },
 ])
 
-// rows dengan field 'tindakan' supaya kolum tak hilang bila slot digunakan
-const rows = computed(() => {
-  return categories.value
+/** Penapis */
+const filterTahap = ref('')
+
+/** Table mapping */
+const rowsForTable = computed(() => {
+  return list.value
+    .filter(r => (filterTahap.value ? r.tahap === filterTahap.value : true))
     .slice()
     .sort((a, b) => a.id - b.id)
-    .map(r => ({ ...r, tindakan: true }))
+    .map(r => ({
+      id: r.id,           // dipaparkan sebagai No & digunakan sebagai ID
+      tahap: r.tahap,
+      nama: r.nama,
+      status: r.status,
+      tindakan: r.id,     // slot tindakan akan terima 'id' ini
+    }))
 })
 
-/** Definisi kolum */
 const tableColumns = [
-  { key: 'id',          label: 'ID',                     sortable: true },
-  { key: 'tahapAduan',  label: 'Tahap Aduan',            sortable: true },
-  { key: 'namaMasalah', label: 'Nama Kategori Masalah',  sortable: true },
-  { key: 'status',      label: 'Status',                 sortable: true },
-  { key: 'tindakan',    label: 'Tindakan',               sortable: false },
+  { key: 'id',       label: 'No',                    sortable: true },
+  { key: 'tahap',    label: 'Tahap Aduan',           sortable: false },
+  { key: 'nama',     label: 'Nama Kategori Masalah', sortable: false },
+  { key: 'status',   label: 'Status',                sortable: false },
+  { key: 'tindakan', label: 'Tindakan',              sortable: false },
 ]
 const tableSort = { column: 'id', direction: 'asc' }
 
-/** Badge helpers */
-function getTahapVariant(t) {
-  if (t === 'Merah')  return 'danger'
-  if (t === 'Kuning') return 'warning'
-  if (t === 'Hijau')  return 'success'
-  return 'secondary'
-}
-function getStatusVariant(s) {
-  if (s === 'Aktif') return 'success'
-  if (s === 'Tidak Aktif') return 'danger'
-  return 'secondary'
+/** Badges */
+function getStatusVariant(s){ return s === 'Aktif' ? 'success' : 'danger' }
+function getTahapVariant(s){ return s === 'Merah' ? 'danger' : s === 'Kuning' ? 'warning' : 'success' }
+
+/** ======= MODALS & ACTIONS ======= */
+const showAdd  = ref(false)
+const showEdit = ref(false)
+const editId   = ref(null)
+
+const formAdd  = ref({ tahap: '', status: 'Aktif', nama: '' })
+const formEdit = ref({ tahap: 'Merah', status: 'Aktif', nama: '' })
+
+function openAddModal(){
+  formAdd.value = { tahap: '', status: 'Aktif', nama: '' }
+  showAdd.value = true
 }
 
-/** ==== Navigation untuk Lihat ==== */
-function openView(row) {
-  const id = row?.id ?? row?.original?.id ?? row?.data?.id
-  if (!id) return
+function openEditModal(idCell){
+  const id = toId(idCell)
+  const row = list.value.find(x => x.id === id)
+  if(!row) return
+  editId.value = id
+  formEdit.value = { tahap: row.tahap, status: row.status, nama: row.nama }
+  showEdit.value = true
+}
+
+function saveAdd(){
+  if(!formAdd.value.nama || !formAdd.value.tahap) return
+  const nextId = Math.max(0, ...list.value.map(x => x.id)) + 1
+  list.value.push({ id: nextId, ...formAdd.value })
+  showAdd.value = false
+  // TODO: panggil API create di sini
+}
+
+function saveEdit(){
+  const idx = list.value.findIndex(x => x.id === editId.value)
+  if(idx !== -1){
+    list.value[idx] = { id: editId.value, ...formEdit.value }
+  }
+  showEdit.value = false
+  // TODO: panggil API update di sini (guna editId.value)
+}
+
+/** Lihat → navigate ke ADN-PK-KT-01-3?id=<id> */
+function openView(idCell){
+  const id = toId(idCell)
+  if(!id) return
   router.push({
     path: '/BF-ADN/KF/kategori-masalah/ADN-PK-KT-01-3',
-    query: { kategoriId: String(id) },
+    query: { id: String(id) },
   })
 }
 
-
-/** ==== Modal Tambah ==== */
-const showAddModal = ref(false)
-const newCategory = ref({
-  tahapAduan: '',
-  namaMasalah: '',
-  tarikhKuatKuasa: '',
-  status: 'Aktif',
-  catatan: ''
-})
-
-const fkClasses = {
-  outer: 'space-y-1',
-  label: '!text-sm !font-medium',
-  input: '!rounded-md',
-  help: '!text-xs',
-  message: '!text-xs !text-red-600'
+/** util: extract nombor dari cell */
+function toId(v){
+  const m = String(v ?? '').match(/\d+/)
+  const n = m ? Number(m[0]) : NaN
+  return Number.isFinite(n) && n > 0 ? n : 0
 }
-
-function openAddModal() {
-  showAddModal.value = true
-}
-
-function resetAddForm() {
-  newCategory.value = {
-    tahapAduan: '',
-    namaMasalah: '',
-    tarikhKuatKuasa: '',
-    status: '',
-    catatan: ''
-  }
-}
-
-function addCategory() {
-  const newId = categories.value.length + 1
-  categories.value.push({
-    id: newId,
-    ...newCategory.value,
-    status: 'Menunggu Kelulusan',
-    tahapAduan: newCategory.value.tahapAduan || 'Merah',
-    tindakan: true,
-  })
-  resetAddForm()
-  showAddModal.value = false
-}
-
-/** ==== Modal Kemaskini ==== */
-const showUpdateModal = ref(false)
-const editCategory = ref({
-  id: null,
-  tahapAduan: '',
-  namaMasalah: '',
-  tarikhKuatKuasa: '',
-  status: '',
-  catatan: ''
-})
-
-function openUpdateModal(row) {
-  // salin data sedia ada untuk diedit
-  editCategory.value = {
-    id: row?.id ?? null,
-    tahapAduan: row?.tahapAduan ?? '',
-    namaMasalah: row?.namaMasalah ?? '',
-    tarikhKuatKuasa: row?.tarikhKuatKuasa ?? '',
-    status: row?.status ?? '',
-    catatan: row?.catatan ?? ''
-  }
-  showUpdateModal.value = true
-}
-
-function resetUpdateForm() {
-  editCategory.value = {
-    id: null,
-    tahapAduan: '',
-    namaMasalah: '',
-    tarikhKuatKuasa: '',
-    status: '',
-    catatan: ''
-  }
-}
-
-function updateCategory() {
-  const idx = categories.value.findIndex(c => c.id === editCategory.value.id)
-  if (idx > -1) categories.value[idx] = { ...categories.value[idx], ...editCategory.value }
-  showUpdateModal.value = false
-}
-
-/** Enable button TAMBAH bila semua medan terisi */
-const isAddReady = computed(() =>
-  !!newCategory.value.tahapAduan &&
-  !!newCategory.value.namaMasalah?.trim() &&
-  !!newCategory.value.tarikhKuatKuasa &&
-  !!newCategory.value.status &&
-  !!newCategory.value.catatan?.trim()
-)
-
-/** Enable button KEMASKINI bila semua medan terisi */
-const isUpdateReady = computed(() =>
-  !!editCategory.value.tahapAduan &&
-  !!editCategory.value.namaMasalah?.trim() &&
-  !!editCategory.value.tarikhKuatKuasa &&
-  !!editCategory.value.status &&
-  !!editCategory.value.catatan?.trim()
-)
 </script>
+
+<style scoped>
+/* Pusatkan kolum Tindakan */
+:deep(.table-wrapper table thead th:last-child),
+:deep(.table-wrapper table tbody td:last-child){
+  text-align:center;
+  padding-right:0;
+}
+.rs-input{
+  display:inline-block;
+  border:1px solid #dcdfe6;
+  border-radius:6px;
+  padding:6px 10px;
+  background:#fff;
+}
+.rs-label{ display:block; margin-bottom:6px; font-weight:600; }
+</style>
