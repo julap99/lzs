@@ -354,27 +354,7 @@ export default [
             title: "Senarai Permohonan Kelulusan Kawalan Validasi",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-ADN/KF/senarai-permohonan-kelulusan-kawalan-validasi",
-          }
-        ],
-        meta: {},
-      },
-      {
-        title: "Laporan",
-        icon: "iconamoon:file-document",
-        path: "/BF-ADN/laporan",
-        child: [
-          {
-            title: "Laporan Status Aduan",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-ADN/laporan/laporan-status-aduan",
-          }
-        ],
-      },
-      {
-        title: "Mengurus Konfigurasi",
-        icon: "iconamoon:arrow-right-2-duotone",
-        path: "/BF-ADN/laporan/mengurus-konfigurasi",
-        child: [
+          },
           {
             title: "Senarai SLA",
             icon: "iconamoon:file-document",
@@ -416,10 +396,44 @@ export default [
             path: "/BF-ADN/PK/KT/02/03",
             child: [],
             meta: {},
+          },
+          {
+          title: "Senarai Konfigurasi Penutupan Aduan",
+            icon: "iconamoon:file-document",
+            path: "/BF-ADN/PK/KP/01/01",
+            child: [],
+            meta: {},
+          },
+          {
+          title: "Butiran Konfigurasi Penutupan Aduan",
+            icon: "iconamoon:file-document",
+            path: "/BF-ADN/PK/KP/01/03",
+            child: [],
+            meta: {},
+          },
+          {
+          title: "Senarai Permohonan Kelulusan Konfigurasi Penutupan Aduan",
+            icon: "iconamoon:file-document",
+            path: "/BF-ADN/PK/KP/02/01",
+            child: [],
+            meta: {},
           }
         ],
         meta: {},
       },
+      {
+        title: "Laporan",
+        icon: "iconamoon:file-document",
+        path: "/BF-ADN/laporan",
+        child: [
+          {
+            title: "Laporan Status Aduan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-ADN/laporan/laporan-status-aduan",
+          }
+        ],
+      }
+      
 
 
     ],
@@ -947,7 +961,7 @@ export default [
                 ],
                 meta: {},
               },
-               {
+              {
                 title: "Pelulus",
                 icon: "iconamoon:arrow-right-2-duotone",
                 path: "/BF-PRF/KF/SHI/02_01",
