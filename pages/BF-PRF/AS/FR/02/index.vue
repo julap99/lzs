@@ -530,7 +530,6 @@ const breadcrumb = ref([
 // ============================================================================
 // SECTION & STEP MANAGEMENT
 // ============================================================================
-const processing = ref(false);
 const currentSection = ref(1);
 
 // Section A - Main Form Steps
@@ -2050,8 +2049,7 @@ const nextStepB = () => {
   if (nextStep <= totalStepsB) {
     currentStepB.value = nextStep;
   } else {
-    // All steps completed, submit form
-    submitForm();
+    // All steps completed, go to next section
   }
 };
 
@@ -2274,13 +2272,6 @@ const addTanggungan = (showNotification = true) => {
   // Update formData.tanggungan array
   formData.value.tanggungan = tanggunganList.value;
 
-  // Log to console for debugging
-  console.log(
-    `Tanggungan ${tanggunganList.value.length} ditambah:`,
-    newTanggungan
-  );
-  console.log("Total tanggungan sekarang:", tanggunganList.value.length);
-
   // Only show notification if requested
   if (showNotification) {
     toast.success(`Tanggungan ${tanggunganList.value.length} berjaya ditambah`);
@@ -2295,29 +2286,9 @@ const selectTanggungan = (index) => {
       ...currentTanggungan,
     };
     formData.value.tanggungan = tanggunganList.value;
-    console.log(
-      "Saved data for Tanggungan",
-      currentTanggunganIndex.value + 1,
-      "before switching"
-    );
   }
-
   currentTanggunganIndex.value = index;
   currentStepB.value = 1;
-
-  // Debug: Log the selected tanggungan data
-  const selectedTanggungan = getCurrentTanggungan();
-  console.log("Selected Tanggungan:", selectedTanggungan);
-  console.log("Selected Tanggungan Name:", selectedTanggungan?.nama_tanggungan);
-  console.log(
-    "Selected Tanggungan Relationship:",
-    selectedTanggungan?.hubungan_pemohon
-  );
-  console.log("Selected Tanggungan Age:", selectedTanggungan?.umur_tanggungan);
-  console.log(
-    "Selected Tanggungan Birth Date:",
-    selectedTanggungan?.tarikh_lahir_tanggungan
-  );
 };
 
 // Helper functions for simplified interface
@@ -2329,14 +2300,6 @@ const isTanggunganComplete = (tanggungan) => {
     tanggungan.jantina_tanggungan &&
     tanggungan.tarikh_lahir_tanggungan
   );
-};
-
-const getCompletedCount = () => {
-  return tanggunganList.value.filter((t) => isTanggunganComplete(t)).length;
-};
-
-const getIncompleteCount = () => {
-  return tanggunganList.value.filter((t) => !isTanggunganComplete(t)).length;
 };
 
 const getCurrentTanggungan = () => {
@@ -2524,20 +2487,6 @@ onMounted(() => {
     status_pekerjaan: "bekerja",
     jenis_pekerjaan: "Berniaga",
     sektor_pekerjaan: "Kerja Sendiri",
-    // lain_lain_sektor: "",
-    // no_telefon_pejabat: "038881234",
-    // nama_majikan: "Syarikat Pengangkutan Maju Sdn Bhd",
-    // no_telefon_majikan: "038881234",
-    // alamat_majikan_1: "Lot 123, Kawasan Perindustrian Bangi",
-    // alamat_majikan_2: "Seksyen 15, Bandar Baru Bangi",
-    // alamat_majikan_3: "",
-    // bandar_majikan: "Bangi",
-    // poskod_majikan: "43000",
-    // daerah_majikan: "Hulu Langat",
-    // negeri_majikan: "Selangor",
-    // negara_majikan: "Malaysia",
-    // jawatan: "Pemandu Lori",
-    // status_jawatan: "Tetap",
     pendapatan_kasar: "1000.00",
     pengesahan_pendapatan: [],
     sumber_pendapatan: ["Lain-lain"],
@@ -3027,20 +2976,6 @@ onMounted(() => {
 
       // Set flag to false after mock data initialization is complete
       isInitializingMockData.value = false;
-
-      console.log("Mock data loaded for 3 tanggungan:", tanggunganList.value);
-      console.log(
-        "Rohana relationship:",
-        tanggunganList.value[0]?.hubungan_pemohon
-      );
-      console.log(
-        "Najwa relationship:",
-        tanggunganList.value[1]?.hubungan_pemohon
-      );
-      console.log(
-        "Qistina relationship:",
-        tanggunganList.value[2]?.hubungan_pemohon
-      );
     }
   }
 });
@@ -3074,25 +3009,6 @@ const goToStepB = (stepNumber) => {
 // ============================================================================
 // FORM SUBMISSION FUNCTIONS
 // ============================================================================
-const submitForm = () => {
-  // Save current tanggungan data before submission
-  if (getCurrentTanggungan()) {
-    const currentTanggungan = getCurrentTanggungan();
-    tanggunganList.value[currentTanggunganIndex.value] = {
-      ...currentTanggungan,
-    };
-    formData.value.tanggungan = tanggunganList.value;
-  }
-
-  // Log summary of all tanggungan
-  console.log(
-    `Form submitted with ${tanggunganList.value.length} tanggungan:`,
-    tanggunganList.value
-  );
-
-  processing.value = true;
-  navigateTo(`/BF-PRF/AS/FR/03`);
-};
 
 const handleSubmit = async () => {
   try {
@@ -3105,126 +3021,94 @@ const handleSubmit = async () => {
   }
 };
 
-const handleSave = async () => {
-  try {
-    console.log("Form saved:", formData.value);
-    toast.success("Permohonan berjaya disimpan");
-  } catch (error) {
-    toast.error("Ralat! Permohonan tidak berjaya disimpan");
-    console.error("Save error:", error);
-  }
-};
-
 // ============================================================================
 // STEP SAVE FUNCTIONS - SECTION A
 // ============================================================================
 const handleSaveStepA1 = async () => {
   try {
-    console.log("Step A1 saved:", formData.value);
     toast.success("Maklumat Peribadi berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step A1 error:", error);
   }
 };
 
 const handleSaveStepA2 = async () => {
   try {
-    console.log("Step A2 saved:", formData.value);
     toast.success("Maklumat Alamat berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step A2 error:", error);
   }
 };
 
 const handleSaveStepA3 = async () => {
   try {
-    console.log("Step A3 saved:", formData.value);
     toast.success("Maklumat Pendidikan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step A3 error:", error);
   }
 };
 
 const handleSaveStepA4 = async () => {
   try {
-    console.log("Step A4 saved:", formData.value);
     toast.success("Maklumat Pengislaman berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step A4 error:", error);
   }
 };
 
 const handleSaveStepA5 = async () => {
   try {
-    console.log("Step A5 saved:", formData.value);
     toast.success("Maklumat Perbankan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step A5 error:", error);
   }
 };
 
 const handleSaveStepA6 = async () => {
   try {
-    console.log("Step A6 saved:", formData.value);
     toast.success("Maklumat Kesihatan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step A6 error:", error);
   }
 };
 
 const handleSaveStepA7 = async () => {
   try {
-    console.log("Step A7 saved:", formData.value);
     toast.success("Maklumat Kemahiran berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step A7 error:", error);
   }
 };
 
 const handleSaveStepA8 = async () => {
   try {
-    console.log("Step A8 saved:", formData.value);
     toast.success("Maklumat Pinjaman Harta berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step A8 error:", error);
   }
 };
 
 const handleSaveStepA9 = async () => {
   try {
-    console.log("Step A9 saved:", formData.value);
     toast.success("Maklumat Pemilikan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step A9 error:", error);
   }
 };
 
 const handleSaveStepA10 = async () => {
   try {
-    console.log("Step A10 saved:", formData.value);
     toast.success("Maklumat Pekerjaan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step A10 error:", error);
   }
 };
 
 const handleSaveStepA11 = async () => {
   try {
-    console.log("Step A11 saved:", formData.value);
     toast.success("Maklumat Pendapatan & Perbelanjaan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step A11 error:", error);
   }
 };
 
@@ -3233,148 +3117,105 @@ const handleSaveStepA11 = async () => {
 // ============================================================================
 const handleSaveStepB1 = async () => {
   try {
-    // Save current tanggungan data before saving
-    if (getCurrentTanggungan()) {
-      const currentTanggungan = getCurrentTanggungan();
-      // Update the tanggunganList with current form data
-      tanggunganList.value[currentTanggunganIndex.value] = {
-        ...currentTanggungan,
-      };
-      formData.value.tanggungan = tanggunganList.value;
-
-      console.log(
-        "Step B1 saved for Tanggungan",
-        currentTanggunganIndex.value + 1,
-        ":",
-        currentTanggungan
-      );
-      console.log("Updated tanggunganList:", tanggunganList.value);
-    }
-
     toast.success("Maklumat Peribadi Tanggungan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step B1 error:", error);
   }
 };
 
 const handleSaveStepB2 = async () => {
   try {
-    console.log("Step B2 saved:", formData.value);
     toast.success("Maklumat Pengislaman Tanggungan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step B2 error:", error);
   }
 };
 
 const handleSaveStepB3 = async () => {
   try {
-    console.log("Step B3 saved:", formData.value);
     toast.success("Maklumat Perbankan Tanggungan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step B3 error:", error);
   }
 };
 
 const handleSaveStepB4 = async () => {
   try {
-    console.log("Step B4 saved:", formData.value);
     toast.success("Maklumat Pendidikan Tanggungan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step B4 error:", error);
   }
 };
 
 const handleSaveStepB5 = async () => {
   try {
-    console.log("Step B5 saved:", formData.value);
     toast.success("Maklumat Kesihatan Tanggungan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step B5 error:", error);
   }
 };
 
 const handleSaveStepB6 = async () => {
   try {
-    console.log("Step B6 saved:", formData.value);
     toast.success("Maklumat Kemahiran Tanggungan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step B6 error:", error);
   }
 };
 
 const handleSaveStepB7 = async () => {
   try {
-    console.log("Step B7 saved:", formData.value);
     toast.success("Maklumat Pekerjaan Tanggungan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step B7 error:", error);
   }
 };
 
 const handleSaveStepB8 = async () => {
   try {
-    console.log("Step B8 saved:", formData.value);
     toast.success("Maklumat Pemilikan Aset berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step B8 error:", error);
   }
 };
 
 const handleSaveStepB9 = async () => {
   try {
-    console.log("Step B9 saved:", formData.value);
     toast.success("Maklumat Pinjaman Harta berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step B9 error:", error);
   }
 };
 
 const handleSaveStepB10 = async () => {
   try {
-    console.log("Step B10 saved:", formData.value);
     toast.success("Maklumat Pengesahan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step B10 error:", error);
   }
 };
 
 const handleSaveStepB11 = async () => {
   try {
-    console.log("Step B11 saved:", formData.value);
     toast.success("Maklumat Pengesahan Pendapatan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step B11 error:", error);
   }
 };
 
 const handleSaveStepB12 = async () => {
   try {
-    console.log("Step B12 saved:", formData.value);
     toast.success("Maklumat Pengesahan Bermastautin berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step B12 error:", error);
   }
 };
 
 const handleSaveStepB13 = async () => {
   try {
-    console.log("Step B13 saved:", formData.value);
     toast.success("Maklumat Pegawai Pendaftar berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step B13 error:", error);
   }
 };
 
