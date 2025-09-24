@@ -1,12 +1,18 @@
 <template>
   <div>
     <layouts-breadcrumb :items="breadcrumb" />
-
- 
-
+    
     <!-- Report Header Section -->
     <rs-card class="mb-6">
       <template #body>
+
+        <div class="flex justify-end gap-2">
+            <rs-button variant="primary" @click="downloadPDF">
+              <Icon name="ic:baseline-download" class="w-4 h-4 mr-2" />
+              Muat Turun Borang (PDF)
+            </rs-button>
+        </div>
+
         <div class="space-y-4">
           <!-- Logo LZS -->
           <div class="flex justify-start">
@@ -69,7 +75,6 @@
             <input v-model="formData.telefonRumah" type="text" class="form-input w-full p-2 border rounded" />
           </div>
 
-
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Tempoh Masa Telah Menetap (Tahun/Bulan/Hari):</label>
             <input v-model="formData.tempohMasaMenetap" type="text" class="form-input w-full p-2 border rounded" />
@@ -106,31 +111,18 @@
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Tandatangan, Cop Rasmi, Nama & Alamat Pegawai Yang Mengesahkan:</label>
-            <input v-model="formData.tandatangan" type="text" class="form-input w-full p-2 border rounded" />
+            <textarea v-model="formData.tandatangan" class="form-input w-full p-2 border rounded h-32" placeholder="Masukkan tandatangan, cop rasmi, nama dan alamat pegawai yang mengesahkan"></textarea>
           </div>
+
         </div>
       </template>
     </rs-card>
-
-    <!-- Footer with buttons -->
-    <rs-modal v-model="showSurat" title="Surat Pengesahan Permastautin">
-      <template #footer>
-        <div class="flex justify-end gap-2">
-          <rs-button variant="secondary-outline" @click="showSurat = false">
-            Tutup
-          </rs-button>
-          <rs-button variant="primary" @click="downloadSuratTawaran">
-            <Icon name="ic:baseline-download" class="w-4 h-4 mr-2" />
-            Muat Turun
-          </rs-button>
-        </div>
-      </template>
-    </rs-modal>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { jsPDF } from 'jspdf'
 
 definePageMeta({ title: 'Surat Pengesahan Permastautin' })
 
@@ -159,9 +151,29 @@ const formData = ref({
 
 const showSurat = ref(false)
 
-const downloadSuratTawaran = () => {
-  // Functionality to download Surat Tawaran
-  alert('Muat turun Surat Pengesahan Permastautin...')
-  showSurat.value = false
+// Function to download PDF
+const downloadPDF = () => {
+  const doc = new jsPDF()
+  
+  // Add Logo
+  const logo = 'https://www.zakatselangor.com.my/wp-content/uploads/2018/10/lzs-logo.png'
+  doc.addImage(logo, 'PNG', 10, 10, 50, 20)  // Adjust position and size
+  
+  // Add Title and Other Content
+  doc.setFontSize(16)
+  doc.text('Surat Pengesahan Permastautin', 10, 40)
+
+  // Example of adding form content
+  doc.setFontSize(12)
+  doc.text(`Nama Pemohon: ${formData.value.namaPemohon}`, 10, 50)
+  doc.text(`No Kad Pengenalan: ${formData.value.noKP}`, 10, 60)
+  doc.text(`Alamat Tempat Tinggal Sekarang: ${formData.value.alamatSekarang}`, 10, 70)
+  doc.text(`No Telefon (HP): ${formData.value.telefon}`, 10, 80)
+  doc.text(`Tempoh Masa Telah Menetap: ${formData.value.tempohMasaMenetap}`, 10, 90)
+
+  // Add more fields as needed from formData
+  
+  // Save the PDF
+  doc.save('surat-pengesahan-permastautin.pdf')
 }
 </script>

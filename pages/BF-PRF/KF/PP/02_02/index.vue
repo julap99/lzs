@@ -95,15 +95,6 @@
             <rs-button variant="secondary" @click="goBack" class="px-6 py-3">
               <Icon name="mdi:arrow-left" class="mr-2" /> Kembali
             </rs-button>
-            <div class="flex gap-3">
-              <rs-button 
-                variant="primary" 
-                @click="navigateTo(`/BF-PRF/KF/PP/02_03?id=${selectedId}`)"
-                class="px-6 py-3"
-              >
-                <Icon name="mdi:check-decagram" class="mr-2" /> Pergi Kelulusan
-              </rs-button>
-            </div>
           </div>
         </template>
       </rs-card>
