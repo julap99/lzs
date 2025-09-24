@@ -186,7 +186,7 @@ const loading = ref(true);
 const error = ref(null);
 const selectedRecord = ref(null);
 const approvalForm = ref({
-  statusKelulusan: 'Lulus',
+  statusKelulusan: '',
   catatan: '',
   tarikhLulus: '',
   namaPelulus: '',

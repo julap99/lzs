@@ -846,7 +846,7 @@ export default [
     description: "Profiling",
     child: [
       {
-        title: "Konfigurasi New",
+        title: "Konfigurasi",
         icon: "iconamoon:component-fill",
         child: [
           {
@@ -988,7 +988,7 @@ export default [
         ],
         meta: {},
       },
-      {
+      /*{
         title: "Konfigurasi",
         icon: "iconamoon:component-fill",
         child: [
@@ -1078,7 +1078,7 @@ export default [
           },
         ],
         meta: {},
-      },
+      },*/
       {
         title: "Asnaf",
         icon: "iconamoon:component-fill",

@@ -34,20 +34,12 @@
       </rs-card>
 
       <!-- Action Buttons Below Title Card -->
-      <div class="flex justify-end gap-3">
-        <rs-button
-          variant="primary"
-          @click="navigateTo(`/BF-PRF/KF/MD/01_03?id=${selectedId}`)"
-          class="px-6 py-3"
-        >
-          <Icon name="mdi:folder-plus" class="mr-2" /> Tambah Kategori Multidimensi
-        </rs-button>
-        <rs-button
-          variant="secondary"
-          @click="navigateTo(`/BF-PRF/KF/MD/01_06?id=${selectedId}`)"
-          class="px-6 py-3"
-        >
-          <Icon name="mdi:chart-box" class="mr-2" /> Kuadran
+      <div class="flex justify-end gap-3"></div>
+
+      <!-- Toolbar Above Maklumat Multidimensi Section -->
+      <div class="flex justify-end">
+        <rs-button variant="primary" class="px-6 py-3" @click="openEditMaklumatAsas">
+          <Icon name="mdi:pencil" class="mr-2" /> Kemaskini Maklumat
         </rs-button>
       </div>
 
@@ -98,6 +90,17 @@
         </template>
       </rs-card>
 
+      <!-- Toolbar Above Kategori Multidimensi Section -->
+      <div class="flex justify-end gap-3">
+        <rs-button
+          variant="primary"
+          @click="navigateTo(`/BF-PRF/KF/MD/01_03?id=${selectedId}`)"
+          class="px-6 py-3"
+        >
+          <Icon name="mdi:folder-plus" class="mr-2" /> Tambah Kategori Multidimensi
+        </rs-button>
+      </div>
+
       <!-- Kategori Multidimensi Section -->
       <rs-card v-if="kategoriData.length > 0">
         <template #header>
@@ -107,7 +110,7 @@
           <rs-table
             class="mt-4"
             :data="kategoriData"
-            :field="['kategori', 'pemberat', 'skor_tertinggi', 'status', 'jadual_skor_lov', 'tarikhMula', 'tarikhTamat', 'tindakan']"
+            :field="['kategori', 'pemberat', 'skor_tertinggi', 'status', 'status_data', 'jadual_skor_lov', 'tarikhMula', 'tarikhTamat', 'tindakan']"
             :pageSize="10"
             :showNoColumn="true"
             :options="{
@@ -123,6 +126,11 @@
             <template v-slot:status="data">
               <rs-badge :variant="getStatusVariant(data.value.status)">
                 {{ data.value.status }}
+              </rs-badge>
+            </template>
+            <template v-slot:status_data="data">
+              <rs-badge :variant="getStatusVariant(data.value.statusData || data.value.status)">
+                {{ data.value.statusData || data.value.status || 'Draf' }}
               </rs-badge>
             </template>
             <template v-slot:jadual_skor_lov="data">
@@ -161,6 +169,17 @@
           </rs-table>
         </template>
       </rs-card>
+
+      <!-- Toolbar Above Kuadran Section -->
+      <div class="flex justify-end gap-3">
+        <rs-button
+          variant="secondary"
+          @click="navigateTo(`/BF-PRF/KF/MD/01_06?id=${selectedId}`)"
+          class="px-6 py-3"
+        >
+          <Icon name="mdi:chart-box" class="mr-2" /> Kuadran
+        </rs-button>
+      </div>
 
       <!-- Kuadran Section -->
       <rs-card v-if="kuadranData.length > 0">
@@ -225,12 +244,7 @@
         </template>
       </rs-card>
 
-      <!-- Edit Maklumat Button -->
-      <div class="flex justify-end">
-        <rs-button variant="primary" class="px-6 py-3" @click="openEditMaklumatAsas">
-          <Icon name="mdi:pencil" class="mr-2" /> Kemaskini Maklumat
-        </rs-button>
-      </div>
+      
 
       <!-- Edit Maklumat Modal -->
       <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center">
@@ -309,11 +323,23 @@
               <label class="text-sm font-medium text-gray-700">Skor Tertinggi</label>
               <input v-model="kategoriForm.skor_tertinggi" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
+            <div class="md:col-span-2">
+              <label class="text-sm font-medium text-gray-700">Jadual Skor LOV</label>
+              <input v-model="kategoriForm.jadual_skor_lov" type="text" placeholder="Contoh: Skor 1, Skor 2, Skor 3" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <p class="text-xs text-gray-500 mt-1">Pisahkan dengan koma. Contoh: A, B, C</p>
+            </div>
             <div>
               <label class="text-sm font-medium text-gray-700">Status</label>
               <select v-model="kategoriForm.status" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="Aktif">Aktif</option>
                 <option value="Tidak Aktif">Tidak Aktif</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Status Data</label>
+              <select v-model="kategoriForm.statusData" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="Draf">Draf</option>
+                <option value="Menunggu Kelulusan">Menunggu Kelulusan</option>
               </select>
             </div>
             <div>
@@ -460,7 +486,9 @@ const kategoriForm = ref({
   pemberat: '',
   skor_tertinggi: '',
   status: 'Aktif',
+  jadual_skor_lov: '',
   jadual_skor_lov_array: [],
+  statusData: 'Draf',
   tarikhMula: '',
   tarikhTamat: ''
 });
@@ -811,7 +839,9 @@ const openEditKategori = (kategori, index) => {
     pemberat: kategori.pemberat || '',
     skor_tertinggi: kategori.skor_tertinggi || '',
     status: kategori.status || 'Aktif',
+    jadual_skor_lov: kategori.jadual_skor_lov || (Array.isArray(kategori.jadual_skor_lov_array) ? kategori.jadual_skor_lov_array.join(', ') : ''),
     jadual_skor_lov_array: kategori.jadual_skor_lov_array || [],
+    statusData: kategori.statusData || kategori.status || 'Draf',
     tarikhMula: kategori.tarikhMula || '',
     tarikhTamat: kategori.tarikhTamat || ''
   };
@@ -825,7 +855,15 @@ const closeEditKategori = () => {
 
 const saveKategori = () => {
   if (editingKategoriIndex.value >= 0) {
-    kategoriData.value[editingKategoriIndex.value] = { ...kategoriForm.value };
+    const normalized = { ...kategoriForm.value };
+    // Normalize jadual_skor_lov into array field as well
+    if (typeof normalized.jadual_skor_lov === 'string') {
+      normalized.jadual_skor_lov_array = normalized.jadual_skor_lov
+        .split(',')
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
+    }
+    kategoriData.value[editingKategoriIndex.value] = normalized;
     // Save to localStorage
     const savedKategori = localStorage.getItem('multidimensi_kategori');
     const allKategori = savedKategori ? JSON.parse(savedKategori) : {};
