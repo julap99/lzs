@@ -270,6 +270,62 @@
             </div>
           </div>
         </div>
+
+        <div class="mb-8">
+
+
+
+          <!-- all section B form here -->
+
+
+          <!-- Komen Penyemak and Dokumen Lengkap outside table -->
+          <div class="mb-4 flex flex-col gap-4">
+            <div>
+              <label class="font-bold block mb-1">Komen Penyemak</label>
+              <FormKit
+                type="textarea"
+                name="komen_penyemak"
+                v-model="komenPenyemak"
+                :rows="3"
+                placeholder="Masukkan komen penyemak"
+              />
+            </div>
+
+            <div>
+              <label class="font-bold block mb-2">Dokumen Lengkap?</label>
+              <FormKit
+                type="radio"
+                name="dokumen_lengkap"
+                v-model="dokumenLengkap"
+                :options="[
+                  { label: 'Ya', value: 'Ya' },
+                  { label: 'Tidak', value: 'Tidak' },
+                ]"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <FormKit
+                  type="text"
+                  name="disemak_oleh"
+                  label="Disemak Oleh"
+                  v-model="disemakOleh"
+                  :readonly="true"
+                />
+              </div>
+              <div>
+                <FormKit
+                  type="text"
+                  name="tarikh_semakan"
+                  label="Tarikh Semakan"
+                  v-model="tarikhSemakan"
+                  :readonly="true"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </template>
     </rs-card>
   </div>
