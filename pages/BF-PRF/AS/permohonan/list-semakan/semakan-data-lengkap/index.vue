@@ -21,7 +21,8 @@
               :key="step.id"
               class="text-center flex-1 cursor-pointer"
               :class="{ 'font-semibold': currentStepA >= step.id }"
-              @click="goToStepA(step.id)">
+              @click="goToStepA(step.id)"
+            >
               {{ step.label }}
             </div>
           </div>
@@ -32,7 +33,8 @@
                 currentStepA >= totalStepsA
                   ? 100
                   : (currentStepA / totalStepsA) * 100
-              }%`"></div>
+              }%`"
+            ></div>
           </div>
         </div>
 
@@ -41,53 +43,52 @@
           <PeribadiForms
             v-if="currentStepA === 1"
             :form-data="formData"
-            :isteri-list="isteriList"
-            :get-countries="getCountries"
             :show-footer-buttons="false"
             :read-only="true"
+            @prev-step="prevStepA"
             @next-step="nextStepA"
-            @save-step="handleSaveStepA1" />
+            @save-step="handleSaveStepA1"
+          />
 
           <AlamatForms
             v-if="currentStepA === 2"
             :form-data="formData"
-            :negeri-options="negeriOptions"
-            :daerah-options="daerahOptions"
-            :bandar-options="bandarOptions"
-            :poskod-options="poskodOptions"
-            :kariah-options="kariahOptions"
-            :jenis-id="formData.jenis_id"
             :show-footer-buttons="false"
-            :read-only="true" />
+            :read-only="true"
+            @prev-step="prevStepA"
+            @next-step="nextStepA"
+            @save-step="handleSaveStepA2"
+          />
 
           <PendidikanForms
             v-if="currentStepA === 3"
             :form-data="formData"
-            :get-filtered-school-options="getFilteredSchoolOptions"
             :show-footer-buttons="false"
             :read-only="true"
-            @add-education-entry="addEducationEntry"
-            @remove-education-entry="removeEducationEntry"
-            @select-school="onSelectSchool" />
+            @prev-step="prevStepA"
+            @next-step="nextStepA"
+            @save-step="handleSaveStepA3"
+          />
 
           <PengislamanForms
             v-if="currentStepA === 4"
             :form-data="formData"
-            :islamic-dates-validation="islamicDatesValidation"
             :show-footer-buttons="false"
-            :read-only="true" />
+            :read-only="true"
+            @prev-step="prevStepA"
+            @next-step="nextStepA"
+            @save-step="handleSaveStepA4"
+          />
 
           <PerbankanForms
             v-if="currentStepA === 5"
             :form-data="formData"
-            :payment-method-options-main="paymentMethodOptionsMain"
-            :bank-options="bankOptions"
-            :no-payment-reason-options="noPaymentReasonOptions"
-            :show-lain-lain-sebab-tiada-akaun="showLainLainSebabTiadaAkaun"
             :show-footer-buttons="false"
             :read-only="true"
-            @add-bank-account="addBankAccount"
-            @remove-bank-account="removeBankAccount" />
+            @prev-step="prevStepA"
+            @next-step="nextStepA"
+            @save-step="handleSaveStepA5"
+          />
 
           <KesihatanForms
             v-if="currentStepA === 6"
@@ -96,7 +97,8 @@
             :read-only="true"
             @prev-step="prevStepA"
             @next-step="nextStepA"
-            @save-step="handleSaveStepA6" />
+            @save-step="handleSaveStepA6"
+          />
 
           <KemahiranForms
             v-if="currentStepA === 7"
@@ -105,17 +107,18 @@
             :read-only="true"
             @prev-step="prevStepA"
             @next-step="nextStepA"
-            @save-step="handleSaveStepA7" />
+            @save-step="handleSaveStepA7"
+          />
 
           <PinjamanHartaForms
             v-if="currentStepA === 8"
             :form-data="formData"
-            :jenis-pinjaman-options="jenisPinjamanOptions"
             :show-footer-buttons="false"
             :read-only="true"
             @prev-step="prevStepA"
             @next-step="nextStepA"
-            @save-step="handleSaveStepA8" />
+            @save-step="handleSaveStepA8"
+          />
 
           <PemilikanAsetForms
             v-if="currentStepA === 9"
@@ -124,18 +127,18 @@
             :read-only="true"
             @prev-step="prevStepA"
             @next-step="nextStepA"
-            @save-step="handleSaveStepA9" />
+            @save-step="handleSaveStepA9"
+          />
 
           <PekerjaanForms
             v-if="currentStepA === 10"
             :form-data="formData"
-            :jenis-id="formData.jenis_id"
-            :show-lain-lain-sektor="false"
             :show-footer-buttons="false"
             :read-only="true"
             @prev-step="prevStepA"
             @next-step="nextStepA"
-            @save-step="handleSaveStepA10" />
+            @save-step="handleSaveStepA10"
+          />
 
           <PendapatanPerbelanjaanForms
             v-if="currentStepA === 11"
@@ -144,13 +147,8 @@
             :read-only="true"
             @prev-step="prevStepA"
             @next-step="nextStepA"
-            @save-step="handleSaveStepA11" />
-
-          <div v-if="currentStepA === 11" class="mt-6 flex justify-end">
-            <rs-button type="button" variant="primary" @click="goToSectionB">
-              Ke Seksyen B: Tanggungan
-            </rs-button>
-          </div>
+            @save-step="handleSaveStepA11"
+          />
 
           <!-- Komen Penyemak and Dokumen Lengkap outside table -->
           <div class="mb-4 flex flex-col gap-4">
@@ -161,7 +159,8 @@
                 name="komen_penyemak"
                 v-model="komenPenyemak"
                 :rows="3"
-                placeholder="Masukkan komen penyemak" />
+                placeholder="Masukkan komen penyemak"
+              />
             </div>
 
             <div>
@@ -173,7 +172,8 @@
                 :options="[
                   { label: 'Ya', value: 'Ya' },
                   { label: 'Tidak', value: 'Tidak' },
-                ]" />
+                ]"
+              />
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -183,7 +183,8 @@
                   name="disemak_oleh"
                   label="Disemak Oleh"
                   v-model="disemakOleh"
-                  :readonly="true" />
+                  :readonly="true"
+                />
               </div>
               <div>
                 <FormKit
@@ -191,7 +192,8 @@
                   name="tarikh_semakan"
                   label="Tarikh Semakan"
                   v-model="tarikhSemakan"
-                  :readonly="true" />
+                  :readonly="true"
+                />
               </div>
             </div>
           </div>
@@ -203,7 +205,8 @@
             v-if="currentStepA > 1"
             type="button"
             variant="primary-outline"
-            @click="prevStepA">
+            @click="prevStepA"
+          >
             {{ stepsA[currentStepA - 2].label }}
           </rs-button>
 
@@ -213,8 +216,18 @@
             v-if="currentStepA < totalStepsA"
             type="button"
             variant="primary"
-            @click="nextStepA">
+            @click="nextStepA"
+          >
             {{ stepsA[currentStepA].label }}
+          </rs-button>
+
+          <rs-button
+            v-if="currentStepA === 11"
+            type="button"
+            variant="primary"
+            @click="goToSectionB"
+          >
+            Ke Seksyen B: Tanggungan
           </rs-button>
         </div>
       </template>
@@ -240,7 +253,8 @@
                 :key="step.id"
                 class="text-center flex-1 cursor-pointer"
                 :class="{ 'font-semibold': currentStepB >= step.id }"
-                @click="goToStepB(step.id)">
+                @click="goToStepB(step.id)"
+              >
                 {{ step.label }}
               </div>
             </div>
@@ -251,7 +265,8 @@
                   currentStepB >= totalStepsB
                     ? 100
                     : (currentStepB / totalStepsB) * 100
-                }%`"></div>
+                }%`"
+              ></div>
             </div>
           </div>
         </div>
@@ -290,7 +305,7 @@ const breadcrumb = ref([
   {
     name: "Semakan Data",
     type: "current",
-    path: "/BF-PRF/AS/permohonan/semakan-data",
+    path: "/BF-PRF/AS/permohonan/list-semakan/semakan-data-lengkap",
   },
 ]);
 
@@ -332,6 +347,22 @@ const prevStepA = () => {
 
 const handleSaveStepA1 = () => {
   toast.success("Maklumat Peribadi disimpan");
+};
+
+const handleSaveStepA2 = () => {
+  toast.success("Maklumat Alamat disimpan");
+};
+
+const handleSaveStepA3 = () => {
+  toast.success("Maklumat Pendidikan disimpan");
+};
+
+const handleSaveStepA4 = () => {
+  toast.success("Maklumat Islam disimpan");
+};
+
+const handleSaveStepA5 = () => {
+  toast.success("Maklumat Bank disimpan");
 };
 
 const handleSaveStepA6 = () => {
@@ -432,129 +463,7 @@ const formData = ref({
   kemahiran: ["Perniagaan"],
 });
 
-const isteriList = ref([]);
 
-// Keep isteriList in sync with bilangan_isteri like in AS/FR/02
-watch(
-  () => formData.value.bilangan_isteri,
-  (newVal) => {
-    const count = parseInt(newVal) || 0;
-    isteriList.value = Array(count).fill({});
-    formData.value.isteri_list = Array(count).fill({ no_kp: "", nama: "" });
-  }
-);
-
-// Country options for PeribadiForms
-const getCountries = [
-  "Malaysia",
-  "Indonesia",
-  "Singapura",
-  "Brunei",
-  "Thailand",
-];
-
-// Basic options for AlamatForms
-const negeriOptions = ["Selangor", "Wilayah Persekutuan", "Perak"];
-const daerahOptions = ["Petaling", "Klang", "Gombak"];
-const bandarOptions = ["Shah Alam", "Subang Jaya", "Kota Damansara"];
-const poskodOptions = ["40100", "40000", "40460"];
-const kariahOptions = ["Seksyen 7", "Seksyen 13", "Bukit Jelutong"];
-
-const islamicDatesValidation = { isValid: true, message: "" };
-
-// Minimal helpers for PendidikanForms
-const getFilteredSchoolOptions = (kategori) => {
-  if (kategori === "IPT") {
-    return ["UM", "UiTM", "UKM"];
-  }
-  if (kategori === "SRK") {
-    return ["SK Seksyen 7", "SK Seksyen 13"];
-  }
-  if (kategori === "SRA") {
-    return ["SRA Seksyen 7", "SRA Seksyen 13"];
-  }
-  return [];
-};
-
-const addEducationEntry = () => {
-  if (!formData.value.education_entries) formData.value.education_entries = [];
-  formData.value.education_entries.push({
-    jenis_sekolah: "",
-    kategori_sekolah: "",
-    tarikh_mula_pengajian: "",
-    tarikh_tamat_pengajian: "",
-    tahun_bersekolah: "",
-    tahun_tingkatan: "",
-    nama_sekolah: "",
-    sekolah_rendah_kategori: [],
-    alamat_sekolah_1: "",
-    alamat_sekolah_2: "",
-    alamat_sekolah_3: "",
-    daerah_sekolah: "",
-    bandar_sekolah: "",
-    poskod_sekolah: "",
-    bidang_kursus: "",
-    jurusan_bidang: "",
-    pembiayaan_pengajian: [],
-    lain_pembiayaan: "",
-    catatan: "",
-  });
-};
-
-const removeEducationEntry = (index) => {
-  if (formData.value.education_entries) {
-    formData.value.education_entries.splice(index, 1);
-  }
-};
-
-const onSelectSchool = (index, value) => {
-  if (
-    formData.value.education_entries &&
-    formData.value.education_entries[index]
-  ) {
-    formData.value.education_entries[index].nama_sekolah = value;
-  }
-};
-
-// Minimal banking helpers/options
-const paymentMethodOptionsMain = [
-  { label: "Ya", value: "ya" },
-  { label: "Tidak", value: "tidak" },
-];
-const bankOptions = ["Maybank", "CIMB", "Bank Islam", "RHB"];
-const noPaymentReasonOptions = [
-  { label: "Bukan Warganegara", value: "bukan-warganegara" },
-  { label: "Sakit Terlantar", value: "sakit" },
-  { label: "Lain-lain", value: "lain-lain" },
-];
-const showLainLainSebabTiadaAkaun = false;
-
-const jenisPinjamanOptions = [
-  { label: "Perumahan", value: "perumahan" },
-  { label: "Kenderaan", value: "kenderaan" },
-  { label: "Peribadi", value: "peribadi" },
-  { label: "Pendidikan", value: "pendidikan" },
-  { label: "Lain-lain", value: "lain-lain" },
-];
-
-const addBankAccount = () => {
-  if (!formData.value.bank_accounts) formData.value.bank_accounts = [];
-  formData.value.bank_accounts.push({
-    nama_bank: "",
-    no_akaun_bank: "",
-    nama_pemegang_akaun: "",
-    jenis_akaun: "individu",
-    id_pengenalan: "",
-    nama_bersama: "",
-    hubungan: "",
-  });
-};
-
-const removeBankAccount = (index) => {
-  if (formData.value.bank_accounts) {
-    formData.value.bank_accounts.splice(index, 1);
-  }
-};
 
 const komenPenyemak = ref("");
 const disemakOleh = ref("penyemak");

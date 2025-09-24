@@ -195,9 +195,6 @@
     <div class="mb-6">
       <h4 class="text-md font-medium mb-3">Maklumat Tempat Tinggal</h4>
 
-      <!-- Hidden field for ID type -->
-      <FormKit type="hidden" name="jenis_id_alamat" :value="jenisId" />
-
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormKit
           type="select"
@@ -343,30 +340,6 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  negeriOptions: {
-    type: Array,
-    default: () => []
-  },
-  daerahOptions: {
-    type: Array,
-    default: () => []
-  },
-  bandarOptions: {
-    type: Array,
-    default: () => []
-  },
-  poskodOptions: {
-    type: Array,
-    default: () => []
-  },
-  kariahOptions: {
-    type: Array,
-    default: () => []
-  },
-  jenisId: {
-    type: String,
-    default: ''
-  },
   showFooterButtons: {
     type: Boolean,
     default: true
@@ -376,6 +349,13 @@ const props = defineProps({
     default: false
   }
 })
+
+// Address options - moved from parent component
+const negeriOptions = ["Selangor", "Wilayah Persekutuan", "Perak"];
+const daerahOptions = ["Petaling", "Klang", "Gombak"];
+const bandarOptions = ["Shah Alam", "Subang Jaya", "Kota Damansara"];
+const poskodOptions = ["40100", "40000", "40460"];
+const kariahOptions = ["Seksyen 7", "Seksyen 13", "Bukit Jelutong"];
 
 // Emits
 const emit = defineEmits(['next-step', 'prev-step', 'save-step', 'get-location'])

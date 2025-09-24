@@ -6,9 +6,6 @@
     id="sectionA11">
     <h3 class="text-lg font-semibold mb-4">10. Maklumat Pekerjaan</h3>
 
-    <!-- Hidden field for ID type -->
-    <FormKit type="hidden" name="jenis_id_pekerjaan" :value="jenisId" />
-
     <!-- Employment Status -->
     <div class="mb-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -53,7 +50,7 @@
           :disabled="readOnly" />
 
         <FormKit
-          v-if="showLainLainSektor"
+          v-if="formData.sektor_pekerjaan === 'Lain-lain'"
           type="text"
           name="lain_lain_sektor"
           label="Lain-lain Sektor Pekerjaan"
@@ -138,14 +135,6 @@ const props = defineProps({
   formData: {
     type: Object,
     required: true,
-  },
-  jenisId: {
-    type: String,
-    default: "",
-  },
-  showLainLainSektor: {
-    type: Boolean,
-    default: false,
   },
   showFooterButtons: {
     type: Boolean,

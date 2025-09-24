@@ -135,10 +135,6 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  jenisPinjamanOptions: {
-    type: Array,
-    default: () => [],
-  },
   showFooterButtons: {
     type: Boolean,
     default: true,
@@ -148,6 +144,15 @@ const props = defineProps({
     default: false,
   },
 });
+
+// Loan type options - moved from parent component
+const jenisPinjamanOptions = [
+  { label: "Perumahan", value: "perumahan" },
+  { label: "Kenderaan", value: "kenderaan" },
+  { label: "Peribadi", value: "peribadi" },
+  { label: "Pendidikan", value: "pendidikan" },
+  { label: "Lain-lain", value: "lain-lain" },
+];
 
 // Emits
 const emit = defineEmits(["next-step", "prev-step", "save-step"]);

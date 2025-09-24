@@ -69,7 +69,7 @@
             </h6>
             <button
               type="button"
-              @click="$emit('remove-bank-account', index)"
+              @click="removeBankAccount(index)"
               class="text-red-500 hover:text-red-700"
             >
               <Icon name="mdi:delete" size="1.1rem" />
@@ -162,7 +162,7 @@
         <div class="flex justify-center mt-4">
           <rs-button
             variant="secondary"
-            @click="$emit('add-bank-account')"
+            @click="addBankAccount"
             type="button"
             :disabled="readOnly"
           >
@@ -240,18 +240,6 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  bankOptions: {
-    type: Array,
-    default: () => []
-  },
-  noPaymentReasonOptions: {
-    type: Array,
-    default: () => []
-  },
-  showLainLainSebabTiadaAkaun: {
-    type: Boolean,
-    default: false
-  },
   showFooterButtons: {
     type: Boolean,
     default: true
@@ -262,6 +250,39 @@ const props = defineProps({
   }
 })
 
+// Banking options - moved from parent component
+const paymentMethodOptionsMain = [
+  { label: "Ya", value: "ya" },
+  { label: "Tidak", value: "tidak" },
+];
+const bankOptions = ["Maybank", "CIMB", "Bank Islam", "RHB"];
+const noPaymentReasonOptions = [
+  { label: "Bukan Warganegara", value: "bukan-warganegara" },
+  { label: "Sakit Terlantar", value: "sakit" },
+  { label: "Lain-lain", value: "lain-lain" },
+];
+const showLainLainSebabTiadaAkaun = false;
+
+// Banking functions - moved from parent component
+const addBankAccount = () => {
+  if (!props.formData.bank_accounts) props.formData.bank_accounts = [];
+  props.formData.bank_accounts.push({
+    nama_bank: "",
+    no_akaun_bank: "",
+    nama_pemegang_akaun: "",
+    jenis_akaun: "individu",
+    id_pengenalan: "",
+    nama_bersama: "",
+    hubungan: "",
+  });
+};
+
+const removeBankAccount = (index) => {
+  if (props.formData.bank_accounts) {
+    props.formData.bank_accounts.splice(index, 1);
+  }
+};
+
 // Emits
-const emit = defineEmits(['next-step', 'prev-step', 'save-step', 'add-bank-account', 'remove-bank-account'])
+const emit = defineEmits(['next-step', 'prev-step', 'save-step'])
 </script>

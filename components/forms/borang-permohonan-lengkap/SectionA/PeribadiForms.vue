@@ -365,19 +365,13 @@
 </template>
 
 <script setup>
+import { ref, watch } from 'vue';
+
 // Props
 const props = defineProps({
   formData: {
     type: Object,
     required: true
-  },
-  isteriList: {
-    type: Array,
-    default: () => []
-  },
-  getCountries: {
-    type: Object,
-    default: () => ({})
   },
   showFooterButtons: {
     type: Boolean,
@@ -388,6 +382,28 @@ const props = defineProps({
     default: false
   }
 })
+
+// Countries options - moved from parent component
+const getCountries = [
+  "Malaysia",
+  "Indonesia", 
+  "Singapura",
+  "Brunei",
+  "Thailand",
+]
+
+// Isteri list management - moved from parent component
+const isteriList = ref([]);
+
+// Keep isteriList in sync with bilangan_isteri like in AS/FR/02
+watch(
+  () => props.formData.bilangan_isteri,
+  (newVal) => {
+    const count = parseInt(newVal) || 0;
+    isteriList.value = Array(count).fill({});
+    props.formData.isteri_list = Array(count).fill({ no_kp: "", nama: "" });
+  }
+);
 
 // Emits
 const emit = defineEmits(['next-step', 'save-step'])

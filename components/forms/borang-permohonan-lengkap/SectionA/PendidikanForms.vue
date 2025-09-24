@@ -154,7 +154,7 @@
             </h5>
             <button
               type="button"
-              @click="$emit('remove-education-entry', index)"
+              @click="removeEducationEntry(index)"
               class="text-red-500 hover:text-red-700"
             >
               <Icon name="mdi:delete" size="1.1rem" />
@@ -240,7 +240,7 @@
                 validation="required"
                 :disabled="readOnly"
                 v-model="edu.nama_sekolah"
-                @input="$emit('select-school', index, $event)"
+                @input="onSelectSchool(index, $event)"
               />
             </div>
 
@@ -411,7 +411,7 @@
         <div class="flex justify-center mt-4">
           <rs-button
             variant="secondary"
-            @click="$emit('add-education-entry')"
+            @click="addEducationEntry"
             type="button"
             :disabled="readOnly"
           >
@@ -498,10 +498,6 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  getFilteredSchoolOptions: {
-    type: Function,
-    required: true
-  },
   showFooterButtons: {
     type: Boolean,
     default: true
@@ -512,13 +508,64 @@ const props = defineProps({
   }
 })
 
+// Education-related functions - moved from parent component
+const getFilteredSchoolOptions = (kategori) => {
+  if (kategori === "IPT") {
+    return ["UM", "UiTM", "UKM"];
+  }
+  if (kategori === "SRK") {
+    return ["SK Seksyen 7", "SK Seksyen 13"];
+  }
+  if (kategori === "SRA") {
+    return ["SRA Seksyen 7", "SRA Seksyen 13"];
+  }
+  return [];
+};
+
+const addEducationEntry = () => {
+  if (!props.formData.education_entries) props.formData.education_entries = [];
+  props.formData.education_entries.push({
+    jenis_sekolah: "",
+    kategori_sekolah: "",
+    tarikh_mula_pengajian: "",
+    tarikh_tamat_pengajian: "",
+    tahun_bersekolah: "",
+    tahun_tingkatan: "",
+    nama_sekolah: "",
+    sekolah_rendah_kategori: [],
+    alamat_sekolah_1: "",
+    alamat_sekolah_2: "",
+    alamat_sekolah_3: "",
+    daerah_sekolah: "",
+    bandar_sekolah: "",
+    poskod_sekolah: "",
+    bidang_kursus: "",
+    jurusan_bidang: "",
+    pembiayaan_pengajian: [],
+    lain_pembiayaan: "",
+    catatan: "",
+  });
+};
+
+const removeEducationEntry = (index) => {
+  if (props.formData.education_entries) {
+    props.formData.education_entries.splice(index, 1);
+  }
+};
+
+const onSelectSchool = (index, value) => {
+  if (
+    props.formData.education_entries &&
+    props.formData.education_entries[index]
+  ) {
+    props.formData.education_entries[index].nama_sekolah = value;
+  }
+};
+
 // Emits
 const emit = defineEmits([
   'next-step', 
   'prev-step', 
-  'save-step', 
-  'add-education-entry',
-  'remove-education-entry',
-  'select-school'
+  'save-step'
 ])
 </script>
