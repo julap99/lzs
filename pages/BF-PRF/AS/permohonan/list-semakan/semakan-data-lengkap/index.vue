@@ -272,8 +272,104 @@
         </div>
 
         <div class="mb-8">
+          <!-- Tanggungan Selector and Management (Visible only during Steps 1-9) -->
+          <div
+            v-if="currentStepB >= 1 && currentStepB <= 9"
+            class="mb-6 p-4 bg-gray-50 rounded-lg"
+          >
+            <div class="flex justify-between items-center mb-4">
+              <h4 class="text-lg font-semibold">Senarai Tanggungan</h4>
+              <rs-button
+                type="button"
+                variant="primary"
+                @click="addTanggungan"
+                class="text-sm"
+                :disabled="tanggunganList.length >= 3"
+              >
+                + Tambah Tanggungan
+                {{ tanggunganList.length >= 3 ? "(Maksimum 3)" : "" }}
+              </rs-button>
+            </div>
 
+            <!-- Tanggungan Cards Display -->
+            <div
+              v-if="tanggunganList.length > 0"
+              class="grid grid-cols-1 md:grid-cols-3 gap-4"
+            >
+              <div
+                v-for="(tanggungan, index) in tanggunganList"
+                :key="tanggungan.id"
+                class="p-4 bg-white rounded-lg border cursor-pointer hover:shadow-md transition-all"
+                :class="{
+                  'ring-2 ring-blue-500 border-blue-300':
+                    currentTanggunganIndex === index,
+                  'border-green-300 bg-green-50':
+                    isTanggunganComplete(tanggungan) &&
+                    currentTanggunganIndex !== index,
+                  'border-yellow-300 bg-yellow-50':
+                    !isTanggunganComplete(tanggungan) &&
+                    currentTanggunganIndex !== index,
+                  'border-gray-200':
+                    currentTanggunganIndex !== index &&
+                    !isTanggunganComplete(tanggungan),
+                }"
+                @click="selectTanggungan(index)"
+              >
+                <!-- Card Header -->
+                <div class="flex justify-between items-start mb-3">
+                  <div class="flex-1 text-center">
+                    <p class="text-sm text-gray-600">
+                      {{ tanggungan.nama_tanggungan || "Nama belum diisi" }}
+                    </p>
+                    <p class="text-sm text-gray-600">
+                      {{ tanggungan.hubungan_pemohon || "Hubungan belum diisi" }}
+                    </p>
+                  </div>
 
+                  <!-- Status Badge -->
+                  <span
+                    class="px-2 py-1 text-xs rounded-full"
+                    :class="{
+                      'bg-green-100 text-green-800':
+                        isTanggunganComplete(tanggungan),
+                      'bg-yellow-100 text-yellow-800':
+                        !isTanggunganComplete(tanggungan),
+                    }"
+                  >
+                    {{
+                      isTanggunganComplete(tanggungan)
+                        ? "Lengkap"
+                        : "Tidak Lengkap"
+                    }}
+                  </span>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-2 mt-4">
+                  <button
+                    @click.stop="selectTanggungan(index)"
+                    class="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
+                  >
+                    {{
+                      currentTanggunganIndex === index ? "Sedang Edit" : "Edit"
+                    }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section B Form - Step 1: Maklumat Peribadi Tanggungan -->
+          <TanggunganPeribadiForms
+            v-if="currentStepB === 1"
+            :get-current-tanggungan="getCurrentTanggungan"
+            :current-tanggungan-index="currentTanggunganIndex"
+            :form-data="formData"
+            :calculate-age="calculateAge"
+            :calculate-total-tanggungan="calculateTotalTanggungan"
+            :show-footer-buttons="false"
+            :read-only="true"
+          />
 
           <!-- all section B form here -->
 
@@ -326,13 +422,45 @@
             </div>
           </div>
         </div>
+        
+        <!-- Bottom Step Navigation (Section B - like Section A) -->
+        <div class="mt-8 border-t pt-4 flex items-center justify-between">
+          <rs-button
+            v-if="currentStepB === 1"
+            type="button"
+            variant="primary-outline"
+            @click="goToSectionA"
+          >
+            Ke Seksyen A
+          </rs-button>
+
+          <rs-button
+            v-if="currentStepB > 1"
+            type="button"
+            variant="primary-outline"
+            @click="prevStepB"
+          >
+            {{ stepsB[currentStepB - 2].label }}
+          </rs-button>
+
+          <div class="flex-1"></div>
+
+          <rs-button
+            v-if="currentStepB < totalStepsB"
+            type="button"
+            variant="primary"
+            @click="nextStepB"
+          >
+            {{ stepsB[currentStepB].label }}
+          </rs-button>
+        </div>
       </template>
     </rs-card>
   </div>
 </template>
 
 <script setup>
-import { ref, watch, watchEffect } from "vue";
+import { ref, watch, watchEffect, onMounted, computed } from "vue";
 import { useToast } from "vue-toastification";
 import PeribadiForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PeribadiForms.vue";
 import AlamatForms from "~/components/forms/borang-permohonan-lengkap/SectionA/AlamatForms.vue";
@@ -345,6 +473,7 @@ import PinjamanHartaForms from "~/components/forms/borang-permohonan-lengkap/Sec
 import PemilikanAsetForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PemilikanAsetForms.vue";
 import PekerjaanForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PekerjaanForms.vue";
 import PendapatanPerbelanjaanForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PendapatanPerbelanjaanForms.vue";
+import TanggunganPeribadiForms from "~/components/forms/borang-permohonan-lengkap/SectionB/TanggunganPeribadiForms.vue";
 
 const toast = useToast();
 
@@ -601,4 +730,237 @@ const goToSectionB = () => {
     sectionBRef.value.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 };
+
+// Navigate back to Section A from Section B
+const goToSectionA = () => {
+  currentSection.value = "A";
+  if (typeof window !== "undefined") {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+};
+
+// ==========================
+// Tanggungan Management
+// ==========================
+const currentTanggunganIndex = ref(0);
+const tanggunganList = ref([]);
+
+const isTanggunganComplete = (tanggungan) => {
+  return (
+    tanggungan.nama_tanggungan &&
+    tanggungan.hubungan_pemohon &&
+    tanggungan.jenis_id_tanggungan &&
+    tanggungan.jantina_tanggungan &&
+    tanggungan.tarikh_lahir_tanggungan
+  );
+};
+
+const getCurrentTanggungan = () => {
+  if (tanggunganList.value.length === 0) {
+    addTanggungan(false);
+  }
+  return tanggunganList.value[currentTanggunganIndex.value];
+};
+
+const selectTanggungan = (index) => {
+  currentTanggunganIndex.value = index;
+  currentStepB.value = 1;
+};
+
+const addTanggungan = (showNotification = true) => {
+  if (tanggunganList.value.length >= 3) {
+    toast.error("Maksimum 3 tanggungan sahaja dibenarkan");
+    return;
+  }
+
+  const newTanggungan = {
+    id: Date.now(),
+    // Step 1: Peribadi ringkas
+    hubungan_pemohon: "",
+    lain_lain_hubungan: "",
+    nama_tanggungan: "",
+    jenis_pengenalan_tanggungan: "",
+    pengenalan_id_tanggungan: "",
+    warganegara_tanggungan: "",
+    lain_lain_warganegara: "",
+    no_pasport_lama: "",
+    taraf_penduduk_tetap: "",
+    no_pasport: "",
+    tarikh_mula_pasport: "",
+    tarikh_tamat_pasport: "",
+    tarikh_lahir_tanggungan: "",
+    umur_tanggungan: "",
+    mohon_ketua_keluarga: false,
+    tempat_lahir_tanggungan: "",
+    jantina_tanggungan: "",
+    agama_tanggungan: "",
+    lain_lain_agama: "",
+    bangsa_tanggungan: "",
+    lain_lain_bangsa: "",
+    no_telefon_bimbit_tanggungan: "",
+    no_telefon_rumah_tanggungan: "",
+    emel_tanggungan: "",
+    tempoh_menetap_selangor_tanggungan: "",
+    tempoh_menetap_selangor_tanggungan_nilai: "",
+    tempoh_menetap_selangor_tanggungan_unit: "",
+    status_perkahwinan_tanggungan: "",
+    lain_lain_status_perkahwinan: "",
+    jumlah_tanggungan: "",
+    situasi_kelulusan_khas: "",
+    kelulusan_khas: "",
+    jenis_id_tanggungan: "",
+    no_pengenalan_tanggungan: "",
+    tempoh_menetap_selangor: "",
+    no_telefon_tanggungan: "",
+  };
+
+  tanggunganList.value.push(newTanggungan);
+  currentTanggunganIndex.value = tanggunganList.value.length - 1;
+  currentStepB.value = 1;
+
+  if (showNotification) {
+    toast.success(`Tanggungan ${tanggunganList.value.length} berjaya ditambah`);
+  }
+};
+
+// Helper functions used by Peribadi form
+const calculateAge = (birthDate) => {
+  if (!birthDate) return "";
+  try {
+    const birth = new Date(birthDate);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age.toString();
+  } catch (e) {
+    return "";
+  }
+};
+
+const calculateTotalTanggungan = () => {
+  if (tanggunganList.value.length === 0) return "0";
+  let activeCount = 0;
+  tanggunganList.value.forEach((t) => {
+    if (t.warganegara_tanggungan === "Malaysia") {
+      activeCount++;
+    } else {
+      if (t.tarikh_tamat_pasport) {
+        try {
+          const expiryDate = new Date(t.tarikh_tamat_pasport);
+          const today = new Date();
+          if (expiryDate > today) activeCount++;
+        } catch (e) {
+          activeCount++;
+        }
+      } else {
+        activeCount++;
+      }
+    }
+  });
+  return activeCount.toString();
+};
+
+// Initialize with 3 tanggungan (mock data like AS/FR/02)
+onMounted(() => {
+  if (tanggunganList.value.length === 0) {
+    addTanggungan(false);
+    addTanggungan(false);
+    addTanggungan(false);
+
+    // 1) Pasangan Pemohon
+    tanggunganList.value[0] = {
+      ...tanggunganList.value[0],
+      hubungan_pemohon: "Pasangan Pemohon",
+      nama_tanggungan: "ROHANA BINTI AHMAD",
+      jenis_pengenalan_tanggungan: "MyKad",
+      pengenalan_id_tanggungan: "801004035672",
+      warganegara_tanggungan: "Malaysia",
+      taraf_penduduk_tetap: "Y",
+      tarikh_lahir_tanggungan: "1980-10-04",
+      umur_tanggungan: "43",
+      tempat_lahir_tanggungan: "Kelantan",
+      jantina_tanggungan: "Perempuan",
+      agama_tanggungan: "Islam",
+      bangsa_tanggungan: "Melayu",
+      no_telefon_bimbit_tanggungan: "0138202398",
+      no_telefon_rumah_tanggungan: "038881234",
+      emel_tanggungan: "rohana@email.com",
+      tempoh_menetap_selangor_tanggungan: "20",
+      tempoh_menetap_selangor_tanggungan_nilai: "20",
+      tempoh_menetap_selangor_tanggungan_unit: "tahun",
+      status_perkahwinan_tanggungan: "Berkahwin",
+      situasi_kelulusan_khas: "Profiling",
+      kelulusan_khas: "Y",
+      jenis_id_tanggungan: "MyKad",
+      no_pengenalan_tanggungan: "801004035672",
+      tempoh_menetap_selangor: "20",
+      no_telefon_tanggungan: "0138202398",
+    };
+
+    // 2) Anak Perempuan Dewasa
+    tanggunganList.value[1] = {
+      ...tanggunganList.value[1],
+      hubungan_pemohon: "Anak",
+      nama_tanggungan: "NUR NAJWA BINTI ADNAN",
+      jenis_pengenalan_tanggungan: "MyKad",
+      pengenalan_id_tanggungan: "060802030272",
+      warganegara_tanggungan: "Malaysia",
+      taraf_penduduk_tetap: "Y",
+      tarikh_lahir_tanggungan: "2000-08-02",
+      umur_tanggungan: "23",
+      tempat_lahir_tanggungan: "Shah Alam",
+      jantina_tanggungan: "Perempuan",
+      agama_tanggungan: "Islam",
+      bangsa_tanggungan: "Melayu",
+      no_telefon_bimbit_tanggungan: "0197883456",
+      no_telefon_rumah_tanggungan: "038881234",
+      emel_tanggungan: "najwa@email.com",
+      tempoh_menetap_selangor_tanggungan: "19",
+      tempoh_menetap_selangor_tanggungan_nilai: "19",
+      tempoh_menetap_selangor_tanggungan_unit: "tahun",
+      status_perkahwinan_tanggungan: "Bujang",
+      situasi_kelulusan_khas: "Dewasa",
+      kelulusan_khas: "N",
+      jenis_id_tanggungan: "MyKad",
+      no_pengenalan_tanggungan: "060802030272",
+      tempoh_menetap_selangor: "19",
+      no_telefon_tanggungan: "0197883456",
+    };
+
+    // 3) Anak Perempuan Sekolah
+    tanggunganList.value[2] = {
+      ...tanggunganList.value[2],
+      hubungan_pemohon: "Anak",
+      nama_tanggungan: "NUR QISTINA BINTI ADNAN",
+      jenis_pengenalan_tanggungan: "MyKad",
+      pengenalan_id_tanggungan: "091108030442",
+      warganegara_tanggungan: "Malaysia",
+      taraf_penduduk_tetap: "Y",
+      tarikh_lahir_tanggungan: "2009-11-08",
+      umur_tanggungan: "14",
+      tempat_lahir_tanggungan: "Petaling Jaya",
+      jantina_tanggungan: "Perempuan",
+      agama_tanggungan: "Islam",
+      bangsa_tanggungan: "Melayu",
+      no_telefon_bimbit_tanggungan: "01299982378",
+      no_telefon_rumah_tanggungan: "038881234",
+      emel_tanggungan: "qistina@email.com",
+      tempoh_menetap_selangor_tanggungan: "13",
+      tempoh_menetap_selangor_tanggungan_nilai: "13",
+      tempoh_menetap_selangor_tanggungan_unit: "tahun",
+      status_perkahwinan_tanggungan: "Bujang",
+      situasi_kelulusan_khas: "Profiling",
+      kelulusan_khas: "Y",
+      jenis_id_tanggungan: "MyKad",
+      no_pengenalan_tanggungan: "091108030442",
+      tempoh_menetap_selangor: "16",
+      no_telefon_tanggungan: "01299982378",
+    };
+
+    currentTanggunganIndex.value = 0;
+  }
+});
 </script>

@@ -36,6 +36,7 @@
             'Lain-lain',
           ]"
           validation="required"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().hubungan_pemohon"
         />
 
@@ -47,6 +48,7 @@
           label="Lain-lain Hubungan "
           placeholder="Nyatakan hubungan lain"
           validation="required"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().lain_lain_hubungan"
         />
 
@@ -59,6 +61,7 @@
             accept=".pdf,.jpg,.jpeg,.png"
             help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
             validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+            :disabled="readOnly"
             v-model="formData.dokumen_surat_nikah"
           />
         </div>
@@ -70,6 +73,7 @@
           label="Nama Mengikut Dokumen Pengenalan "
           placeholder="Masukkan nama penuh"
           validation="required"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().nama_tanggungan"
         />
 
@@ -84,6 +88,7 @@
             { label: 'ForeignId', value: 'ForeignId' },
           ]"
           validation="required"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().jenis_pengenalan_tanggungan"
         />
 
@@ -103,6 +108,7 @@
             length: 'MyKad mesti 12 digit tanpa tanda sempang',
             matches: 'MyKad mesti mengandungi nombor sahaja (12 digit)',
           }"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().pengenalan_id_tanggungan"
         />
 
@@ -115,6 +121,7 @@
             accept=".pdf,.jpg,.jpeg,.png"
             help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
             validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+            :disabled="readOnly"
           />
         </div>
 
@@ -129,6 +136,7 @@
             { label: 'Lain-lain', value: 'Lain-lain' },
           ]"
           validation="required"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().warganegara_tanggungan"
         />
 
@@ -141,6 +149,7 @@
           help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
           accept=".pdf,.jpg,.jpeg,.png"
           validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().lain_lain_warganegara"
         />
 
@@ -161,6 +170,7 @@
                 { label: 'Tidak', value: 'tidak' },
               ]"
               validation="required"
+              :disabled="readOnly"
               v-model="getCurrentTanggungan().taraf_penduduk_tetap"
             />
           </div>
@@ -172,6 +182,7 @@
           type="text"
           name="no_pasport_lama"
           label="No Passport Lama"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().no_pasport_lama"
         />
 
@@ -183,6 +194,7 @@
           label="No Pasport "
           placeholder="Masukkan nombor pasport"
           validation="required"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().no_pasport"
         />
 
@@ -193,6 +205,7 @@
           name="tarikh_mula_pasport"
           label="Tarikh Mula Pasport (DD/MM/YYYY) "
           validation="required"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().tarikh_mula_pasport"
         />
 
@@ -203,6 +216,7 @@
           name="tarikh_tamat_pasport"
           label="Tarikh Tamat Pasport (DD/MM/YYYY) "
           validation="required"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().tarikh_tamat_pasport"
         />
 
@@ -229,6 +243,7 @@
           name="tarikh_lahir_tanggungan"
           label="Tarikh Lahir "
           validation="required"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().tarikh_lahir_tanggungan"
         />
 
@@ -257,6 +272,7 @@
           <FormKit
             type="checkbox"
             name="mohon_ketua_keluarga"
+            :disabled="readOnly"
             v-model="getCurrentTanggungan().mohon_ketua_keluarga"
           />
         </div>
@@ -295,7 +311,7 @@
                     ? 'required'
                     : ''
                 "
-                :disabled="true"
+                :disabled="readOnly"
                 v-model="getCurrentTanggungan().situasi_kelulusan_khas"
               />
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -315,7 +331,7 @@
                         ? 'required'
                         : ''
                     "
-                    :disabled="true"
+                    :disabled="readOnly"
                     v-model="getCurrentTanggungan().kelulusan_khas"
                   />
                 </div>
@@ -330,6 +346,7 @@
           name="tempat_lahir_tanggungan"
           label="Tempat Lahir"
           placeholder="Masukkan tempat lahir"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().tempat_lahir_tanggungan"
         />
 
@@ -343,6 +360,7 @@
             { label: 'Lelaki', value: 'Lelaki' },
             { label: 'Perempuan', value: 'Perempuan' },
           ]"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().jantina_tanggungan"
         />
 
@@ -359,6 +377,7 @@
             { label: 'Hindu', value: 'Hindu' },
             { label: 'Lain-lain', value: 'Lain-lain' },
           ]"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().agama_tanggungan"
         />
 
@@ -370,6 +389,7 @@
           label="Lain-lain Agama "
           placeholder="Nyatakan agama lain"
           validation="required"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().lain_lain_agama"
         />
 
@@ -391,6 +411,7 @@
             { label: 'Lain-lain', value: 'Lain-lain' },
           ]"
           validation="required"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().bangsa_tanggungan"
         />
 
@@ -402,6 +423,7 @@
           label="Lain-lain Bangsa "
           placeholder="Nyatakan bangsa lain"
           validation="required"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().lain_lain_bangsa"
         />
 
@@ -417,6 +439,7 @@
             matches:
               'Format nombor telefon tidak sah. Contoh: 0123456789',
           }"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().no_telefon_bimbit_tanggungan"
         />
 
@@ -430,6 +453,7 @@
           :validation-messages="{
             email: 'Format emel tidak sah. Contoh: nama@email.com',
           }"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().emel_tanggungan"
         />
 
@@ -448,6 +472,7 @@
               min: 'Tempoh menetap mesti 0 atau lebih',
               max: 'Tempoh tidak boleh melebihi 120',
             }"
+            :disabled="readOnly"
             v-model="
               getCurrentTanggungan().tempoh_menetap_selangor_tanggungan_nilai
             "
@@ -463,6 +488,7 @@
               { label: 'Tahun', value: 'tahun' },
             ]"
             validation="required"
+            :disabled="readOnly"
             v-model="
               getCurrentTanggungan().tempoh_menetap_selangor_tanggungan_unit
             "
@@ -481,6 +507,7 @@
               { label: 'Ya', value: 'Y' },
               { label: 'Tidak', value: 'T' },
             ]"
+            :disabled="readOnly"
             v-model="getCurrentTanggungan().kelulusan_khas"
           />
         </div>
@@ -497,6 +524,7 @@
             { label: 'Lain-lain', value: 'Lain-lain' },
           ]"
           validation="required"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().status_perkahwinan_tanggungan"
         />
 
@@ -508,6 +536,7 @@
           label="Lain-lain Status Perkahwinan "
           placeholder="Nyatakan status perkahwinan lain"
           validation="required"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().lain_lain_status_perkahwinan"
         />
 
@@ -525,7 +554,7 @@
       </div>
     </div>
 
-    <div class="flex justify-between gap-3 mt-6">
+    <div v-if="showFooterButtons" class="flex justify-between gap-3 mt-6">
       <rs-button
         type="button"
         variant="primary-outline"
@@ -572,6 +601,14 @@ const props = defineProps({
   calculateTotalTanggungan: {
     type: Function,
     required: true
+  },
+  readOnly: {
+    type: Boolean,
+    default: false
+  },
+  showFooterButtons: {
+    type: Boolean,
+    default: true
   }
 })
 
