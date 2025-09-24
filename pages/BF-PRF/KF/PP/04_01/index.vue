@@ -56,24 +56,26 @@
           </template>
           
           <template v-slot:tindakan="data">
-            <div class="flex items-center space-x-2">
-            <rs-button
-                variant="info-text"
+            <div class="flex items-center gap-2">
+              <rs-button
+                variant="primary"
                 size="sm"
-                class="p-1 w-8 h-8"
+                class="h-8 px-3 text-white"
                 @click="navigateTo({ path: '/BF-PRF/KF/PP/04_02', query: { id: data.value.idKomponenProfiling } })"
               >
-                <Icon name="mdi:eye" size="1.5rem" />
-            </rs-button>
-            <rs-button
-                variant="info-text"
+                Lihat
+              </rs-button>
+
+              <rs-button
+                variant="secondary"
                 size="sm"
-                class="p-1 w-8 h-8"
+                class="h-8 px-3 text-white"
                 @click="navigateTo(`/BF-PRF/KF/PP/04_03?id=${data.value.idKomponenProfiling}`)"
               >
-                <Icon name="mdi:check-circle" size="1.5rem" />
-            </rs-button>
+                Luluskan
+              </rs-button>
             </div>
+
           </template>
         </rs-table>
       </template>

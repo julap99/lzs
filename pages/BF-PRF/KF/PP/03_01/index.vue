@@ -66,35 +66,35 @@
           
           <!-- Actions (not part of 3.6.x, kept for UX) -->
           <template v-slot:tindakan="data">
-            <div class="flex items-center space-x-2">
-              <rs-button
-                variant="info-text"
-                size="sm"
-                class="p-1 w-8 h-8"
-                @click="navigateTo(`/BF-PRF/KF/PP/03_03?id=${data.value.idKomponenProfiling}`)"
-              >
-                <Icon name="mdi:pen" size="1.5rem" />
-              </rs-button>
+           <div class="flex items-center gap-2">
+            <rs-button
+              variant="primary"
+              size="sm"
+              class="h-8 px-3 text-white"
+              @click="navigateTo(`/BF-PRF/KF/PP/03_03?id=${data.value.idKomponenProfiling}`)"
+            >
+              Kemaskini
+            </rs-button>
 
-              <rs-button
-                variant="info-text"
-                size="sm"
-                class="p-1 w-8 h-8"
-                @click="navigateTo({ path: '/BF-PRF/KF/PP/03_04', query: { id: data.value.idKomponenProfiling } })"
-              >
-                <Icon name="mdi:eye" size="1.5rem" />
-              </rs-button>
+            <rs-button
+              variant="secondary"
+              size="sm"
+              class="h-8 px-3 text-white"
+              @click="navigateTo({ path: '/BF-PRF/KF/PP/03_04', query: { id: data.value.idKomponenProfiling } })"
+            >
+              Lihat
+            </rs-button>
 
-              <!-- Delete Button -->
-              <rs-button
-              variant="danger-text" 
-                size="sm"
-                class="p-1 w-8 h-8"
-                @click="deleteItem(data.value.idKomponenProfiling)"
-              >
-                <Icon name="mdi:delete" size="1.5rem" />
-              </rs-button>
-            </div>
+            <rs-button
+              variant="danger"
+              size="sm"
+              class="h-8 px-3 text-white"
+              @click="deleteItem(data.value.idKomponenProfiling)"
+            >
+              Buang
+            </rs-button>
+          </div>
+
           </template>
         </rs-table>
       </template>
