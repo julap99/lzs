@@ -236,73 +236,7 @@
                     <div class="flex justify-end">
                       <rs-button variant="primary" @click="confirmRecommendedAid">Sahkan</rs-button>
                   </div>
-                  </rs-tab-item>
-
-                  <rs-tab-item title="Bantuan daripada Agensi">
-                    <!-- Bantuan daripada Agensi Sub-tab Content -->
-
-                    <!-- <div
-                    class="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400 rounded-lg border border-gray-200 bg-white shadow-sm scroll-indicator"
-                  > -->
-                    <div class="flex justify-end mb-3">
-                      <rs-button variant="primary" @click="getLatestOtherAgencyAssistance">
-                        Dapatkan Data Bantuan Terkini
-                      </rs-button>
-                    </div>
-                    <div class="flex justify-end mb-4">
-                      <span class="text-xs text-gray-500">
-                        Kemaskini terakhir: {{ formatDateTimeLocal(lastOtherAgencyFetchAt) }}
-                      </span>
-                    </div>
-                    <rs-table
-                      :data="otherAgencyAssistance"
-                      :columns="otherAgencyColumns"
-                      :showNoColumn="true"
-                      :options="{
-                        variant: 'default',
-                        striped: true,
-                        hover: true,
-                      }"
-                      :options-advanced="{
-                        sortable: true,
-                        filterable: false,
-                      }"
-                      advanced
-                    >
-                      <template v-slot:jumlah="{ text }"
-                        >RM {{ text }}</template
-                      >
-                    </rs-table>
-                    <!-- </div> -->
-                  </rs-tab-item>
-
-                  <rs-tab-item title="Bantuan Sedia Ada">
-                    <rs-table
-                      :data="existingAssistance"
-                      :columns="existingAssistanceColumns"
-                      :showNoColumn="true"
-                      :options="{
-                        variant: 'default',
-                        striped: true,
-                        hover: true,
-                      }"
-                      :options-advanced="{
-                        sortable: true,
-                        filterable: false,
-                      }"
-                      advanced
-                    >
-                      <template v-slot:kadar="{ text }">RM {{ text }}</template>
-                      <template v-slot:jumlah="{ text }"
-                        >RM {{ text }}</template
-                      >
-                      <template v-slot:status="{ text }">
-                        <rs-badge :variant="getAssistanceStatusVariant(text)">{{
-                          text
-                        }}</rs-badge>
-                      </template>
-                    </rs-table>
-                  </rs-tab-item>
+                  </rs-tab-item> 
 
                   <rs-tab-item title="Perubahan Bantuan">
                     <div class="space-y-8">
@@ -503,6 +437,46 @@
                     </li>
                   </ul>
                   
+                </div>
+
+                <!-- Bantuan daripada Agensi (moved under Maklumat Lawatan & Siasatan) -->
+                <div>
+                  <rs-collapse>
+                    <rs-collapse-item type="card" title="Bantuan daripada Agensi">
+                      <div class="p-4">
+                        <rs-table
+                          :data="otherAgencyAssistance"
+                          :columns="otherAgencyColumns"
+                          :showNoColumn="true"
+                          :options="{ variant: 'default', striped: true, hover: true }"
+                          :options-advanced="{ sortable: true, filterable: false }"
+                          advanced
+                        >
+                          <template v-slot:jumlah="{ text }">RM {{ text }}</template>
+                        </rs-table>
+                      </div>
+                    </rs-collapse-item>
+
+                    <rs-collapse-item type="card" title="Bantuan Sedia Ada">
+                      <div class="p-4">
+                        <rs-table
+                          :data="existingAssistance"
+                          :columns="existingAssistanceColumns"
+                          :showNoColumn="true"
+                          :options="{ variant: 'default', striped: true, hover: true }"
+                          :options-advanced="{ sortable: true, filterable: false }"
+                          advanced
+                        >
+                          <template v-slot:kadar="{ text }">RM {{ text }}</template>
+                          <template v-slot:jumlah="{ text }">RM {{ text }}</template>
+                          <template v-slot:status="{ text }">
+                            <rs-badge :variant="getAssistanceStatusVariant(text)">{{ text }}</rs-badge>
+                          </template>
+                        </rs-table>
+                      </div>
+                    </rs-collapse-item>
+
+                  </rs-collapse>
                 </div>
 
                 <!-- Keadaan Siasatan -->
@@ -845,6 +819,7 @@
           </template>
           </rs-card>
       </div>
+    
     </div>
 
     <!-- Image Preview Modal -->

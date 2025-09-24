@@ -648,7 +648,7 @@ const getBantuanData = (id) => {
       penyiasat: 'Ahmad bin Hassan',
       cawangan: 'Cawangan Ibu Pejabat LZS'
     },
- 'BP-2025-01617': {
+    'BP-2025-01617': {
       kodBP: 'BP-2025-01617',
       tajuk: 'TUNTUTAN KFAM APRIL 2025 - PELAJAR',
       kategoriAsnaf: 'Muallaf',
@@ -657,12 +657,12 @@ const getBantuanData = (id) => {
       catatan: '',
       namaPegawai: 'Ahmad bin Ali',
       tarikhMohon: '04/05/2025',
-      kategoriBantuan: 'Bantuan Pendidikan',
-      subKategori: 'Wang Saku',
-      bantuan: 'Bantuan Pendidikan',
+      kategoriBantuan: 'Pendidikan (Muallaf)',
+      subKategori: 'Elaun/Imbuhan (Muallaf - Pendidikan)',
+      bantuan: '(HQ) ELAUN KEHADIRAN KELAS AGAM ASAS (MUALLAF)',
       kodBantuan: 'B309',
       produkBantuan: '(HQ) ELAUN KEHADIRAN KELAS AGAM ASAS (MUALLAF)',
-      penyiasat: 'Umar Bin Ramli',
+      penyiasat: 'Muhammad Yazid Bin Abdullah',
       cawangan: 'Cawangan Ibu Pejabat LZS'
     },
     'BP-2025-01589': {
@@ -674,12 +674,12 @@ const getBantuanData = (id) => {
       catatan: '',
       namaPegawai: 'Ahmad bin Ali',
       tarikhMohon: '30/04/2025',
-      kategoriBantuan: 'Bantuan Kesihatan',
-      subKategori: 'Bantuan Kesihatan',
-      bantuan: 'Bantuan Kesihatan',
+      kategoriBantuan: 'Sosial (Muallaf)',
+      subKategori: 'Elaun/Imbuhan (Muallaf - Sosial)',
+      bantuan: '(HQ) ELAUN GURU PEMBIMBING ASNAF (MUALLAF)',
       kodBantuan: 'B117',
       produkBantuan: '(HQ) ELAUN GURU PEMBIMBING ASNAF (MUALLAF)',
-      penyiasat: 'Umar Bin Ramli',
+      penyiasat: 'Muhammad Yazid Bin Abdullah',
       cawangan: 'Cawangan Ibu Pejabat LZS'
     },
     'BP-2025-00007': {
