@@ -6,25 +6,27 @@
         <template #header>
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">Maklumat Kelulusan Data (RUU)</h2>
-            <div class="flex items-center gap-2">
-              <rs-button variant="secondary" @click="navigateTo('/BF-PRF/KF/RUU/01_04/kemaskini')">
-                <Icon name="mdi:pencil" class="mr-1" /> Kemaskini
-              </rs-button>
-            </div>
           </div>
         </template>
 
         <template #body>
           <div class="mb-4 grid grid-cols-12 items-center gap-3">
             <label class="col-span-3 text-sm font-medium">Kategori Maklumat</label>
-            <div class="col-span-9 border rounded px-3 py-2 text-sm bg-white">{{ selectedKategori }}</div>
+            <div class="col-span-9 flex items-center gap-3">
+              <select v-model="selectedKategori" class="border rounded px-2 py-1 text-sm w-full">
+                <option v-for="opt in kategoriOptions" :key="opt.kod" :value="opt.value">{{ opt.value }}</option>
+              </select>
+              <rs-button variant="secondary" class="whitespace-nowrap" @click="navigateTo('/BF-PRF/KF/RUU/01_01/tambah_kategori')">
+                <Icon name="mdi:pencil" class="mr-1" /> Tambah Kategori
+              </rs-button>
+            </div>
           </div>
 
           <rs-table
             class="mt-2"
             :key="tableKey"
             :data="filteredData"
-            :field="['namaRuuField','namaNasField','kaedahKemaskini','status','statusData','tarikhMula','tarikhTamat']"
+            :field="['namaRuuField','namaNasField','kaedahKemaskini','status','statusData','tarikhMula','tarikhTamat','orderIndex']"
             :columns="[
               { key: 'namaRuuField', label: 'Nama RUU field' },
               { key: 'namaNasField', label: 'Nama Field dalam NAS' },
@@ -32,27 +34,41 @@
               { key: 'status', label: 'Status' },
               { key: 'statusData', label: 'Status data' },
               { key: 'tarikhMula', label: 'Tarikh Mula' },
-              { key: 'tarikhTamat', label: 'Tarikh Tamat' }
+              { key: 'tarikhTamat', label: 'Tarikh Tamat' },
+              { key: 'orderIndex', label: '' }
             ]"
+            :sort="{ column: 'orderIndex', direction: 'asc' }"
             :pageSize="10"
             :showNoColumn="true"
             :options="{ variant: 'default', hover: true }"
           >
-            <template v-slot:namaRuuField="data">{{ data.value.namaRuuField }}</template>
-            <template v-slot:namaNasField="data">{{ data.value.namaNasField }}</template>
-            <template v-slot:kaedahKemaskini="data">{{ data.value.kaedahKemaskini || 'Manual' }}</template>
+            <template v-slot:namaRuuField="data">
+              <input v-model="data.value.namaRuuField" type="text" class="border rounded px-2 py-1 text-sm w-full" :disabled="!data.value.isNew" />
+            </template>
+            <template v-slot:namaNasField="data">
+              <input v-model="data.value.namaNasField" type="text" class="border rounded px-2 py-1 text-sm w-full" :disabled="!data.value.isNew" />
+            </template>
+            <template v-slot:kaedahKemaskini="data">
+              <input v-model="data.value.kaedahKemaskini" type="text" class="border rounded px-2 py-1 text-sm w-full" :disabled="!data.value.isNew" />
+            </template>
             <template v-slot:status="data">
-              <rs-badge :variant="getStatusVariant(data.value.status || 'Tidak Aktif')">
-                {{ data.value.status || 'Tidak Aktif' }}
-              </rs-badge>
+              <input v-model="data.value.status" type="text" class="border rounded px-2 py-1 text-sm w-full" :disabled="!data.value.isNew" />
             </template>
             <template v-slot:statusData="data">
-              <rs-badge :variant="getStatusVariant(data.value.statusData)">
-                {{ data.value.statusData }}
-              </rs-badge>
+              <input v-model="data.value.statusData" type="text" class="border rounded px-2 py-1 text-sm w-full" :disabled="!data.value.isNew" />
             </template>
-            <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
-            <template v-slot:tarikhTamat="data">{{ data.value.tarikhTamat ? formatDate(data.value.tarikhTamat) : '' }}</template>
+            <template v-slot:tarikhMula="data">
+              <input v-model="data.value.tarikhMula" type="date" class="border rounded px-2 py-1 text-sm w-full" :disabled="!data.value.isNew" />
+            </template>
+            <template v-slot:tarikhTamat="data">
+              <input v-model="data.value.tarikhTamat" type="date" class="border rounded px-2 py-1 text-sm w-full" :disabled="!data.value.isNew" />
+            </template>
+            <template #header-orderIndex>
+              <span class="hidden"></span>
+            </template>
+            <template v-slot:orderIndex>
+              <span class="hidden"></span>
+            </template>
           </rs-table>
 
           <div class="mt-6 flex items-center justify-between">
@@ -61,10 +77,10 @@
             </rs-button>
 
             <div class="flex items-center gap-2 ml-auto">
-              <rs-button variant="primary" @click="navigateTo('/BF-PRF/KF/RUU/01_01/tambah_kategori')">
+              <rs-button variant="primary" @click="addRow">
                 <Icon name="material-symbols:add" class="mr-1" /> Tambah
               </rs-button>
-              <rs-button variant="primary">Simpan</rs-button>
+              <rs-button variant="primary" @click="saveData">Simpan</rs-button>
               <rs-button variant="success">Hantar</rs-button>
             </div>
           </div>
@@ -97,28 +113,27 @@
   const tableKey = ref(0);
   const kelulusanDataRuu = ref([]);
   const selectedKategori = ref("Peribadi");
-  const kategoriOptions = [
-    "Peribadi",
-    "Alamat",
-    "Pendidikan",
-    "Pengislaman",
-    "Perbankan",
-    "Kesihatan",
-    "Kemahiran",
-    "Alamat",
-    "Kediaman/Tempat Tinggal",
-    "Pinjaman Harta",
-    "Pemilikan Aset",
-    "Pekerjaan",
-    "Pendapatan dan Perbelanjaan Seisi Rumah",
-    "Peribadi Tanggungan",
-    "Pengislaman Tanggungan",
-    "Perbankan Tanggungan",
-    "Pendidikan Tanggungan",
-    "Kesihatan Tanggungan",
-    "Kemahiran Tanggungan",
-    "Pekerjaan Tanggungan",
-  ];
+  const kategoriOptions = ref([
+    { value: "Peribadi", kod: "1" },
+    { value: "Alamat", kod: "2" },
+    { value: "Pendidikan", kod: "3" },
+    { value: "Pengislaman", kod: "4" },
+    { value: "Perbankan", kod: "5" },
+    { value: "Kesihatan", kod: "6" },
+    { value: "Kemahiran", kod: "7" },
+    { value: "Kediaman/Tempat Tinggal", kod: "8" },
+    { value: "Pinjaman Harta", kod: "9" },
+    { value: "Pemilikan Aset", kod: "10" },
+    { value: "Pekerjaan", kod: "11" },
+    { value: "Pendapatan dan Perbelanjaan Seisi Rumah", kod: "12" },
+    { value: "Peribadi Tanggungan", kod: "13" },
+    { value: "Pengislaman Tanggungan", kod: "14" },
+    { value: "Perbankan Tanggungan", kod: "15" },
+    { value: "Pendidikan Tanggungan", kod: "16" },
+    { value: "Kesihatan Tanggungan", kod: "17" },
+    { value: "Kemahiran Tanggungan", kod: "18" },
+    { value: "Pekerjaan Tanggungan", kod: "19" },
+  ]);
   
   const filteredData = computed(() => {
     if (!selectedKategori.value) return kelulusanDataRuu.value;
@@ -178,10 +193,13 @@
       if (savedData) {
         const parsedData = JSON.parse(savedData);
         // Validate and sanitize parsed data
-        const validatedData = parsedData.map(validateDataItem);
+        const validatedData = parsedData.map((item, idx) => ({
+          ...validateDataItem(item),
+          orderIndex: typeof item.orderIndex === 'number' ? item.orderIndex : (idx + 1),
+        }));
         
         // Merge with default data, giving priority to saved data
-        const mergedData = [...defaultData];
+        const mergedData = [...defaultData.map((d, idx) => ({ ...d, orderIndex: idx + 1 }))];
         validatedData.forEach(savedItem => {
           // Check if item already exists in default data
           const existingIndex = mergedData.findIndex(item => item.idRuu === savedItem.idRuu);
@@ -193,13 +211,16 @@
             mergedData.push(validateDataItem(savedItem));
           }
         });
-        kelulusanDataRuu.value = mergedData;
+        // Ensure stable order
+        kelulusanDataRuu.value = mergedData
+          .map((it, idx) => ({ ...it, orderIndex: typeof it.orderIndex === 'number' ? it.orderIndex : (idx + 1) }))
+          .sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0));
       } else {
-        kelulusanDataRuu.value = defaultData;
+        kelulusanDataRuu.value = defaultData.map((d, idx) => ({ ...d, orderIndex: idx + 1 }));
       }
     } catch (error) {
       console.error('Error loading data:', error);
-      kelulusanDataRuu.value = defaultData;
+      kelulusanDataRuu.value = defaultData.map((d, idx) => ({ ...d, orderIndex: idx + 1 }));
     }
   };
   
@@ -229,6 +250,40 @@
       console.log("Pending approval:", pendingApprovalCount.value);
       console.log("Sample data:", kelulusanDataRuu.value[0]);
     });
+  };
+
+  const addRow = () => {
+    const newItem = {
+      idRuu: `new_${Date.now()}`,
+      namaRuuField: "",
+      namaNasField: "",
+      kaedahKemaskini: "",
+      status: "Draf",
+      statusData: "Draf",
+      tarikhMula: "",
+      tarikhTamat: "",
+      kategori: selectedKategori.value,
+      isNew: true,
+      orderIndex: kelulusanDataRuu.value.length > 0 ? Math.max(...kelulusanDataRuu.value.map(i => i.orderIndex || 0)) + 1 : 1,
+    };
+    kelulusanDataRuu.value = [...kelulusanDataRuu.value, newItem];
+    refreshTable();
+  };
+
+  const saveData = () => {
+    // Finalize new rows and persist
+    const finalized = kelulusanDataRuu.value.map((item, idx) => ({
+      ...item,
+      isNew: false,
+      orderIndex: typeof item.orderIndex === 'number' ? item.orderIndex : (idx + 1),
+    }));
+    kelulusanDataRuu.value = finalized;
+    try {
+      localStorage.setItem('kelulusanDataRuu', JSON.stringify(finalized));
+    } catch (e) {
+      console.error('Error saving data:', e);
+    }
+    refreshTable();
   };
   
   const formatDate = (dateString) => {
