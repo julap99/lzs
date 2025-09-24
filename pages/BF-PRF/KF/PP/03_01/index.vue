@@ -63,57 +63,37 @@
               {{ data.value.statusData || 'Draf' }}
             </rs-badge>
           </template>
-
+          
           <!-- Actions (not part of 3.6.x, kept for UX) -->
-          <template v-slot:actions="{ text, index }">
-            <div class="flex justify-center items-center gap-2">
-              <!-- Edit -->
-              <div class="relative flex items-center justify-center" @mouseenter="tooltips['edit'+index] = true" @mouseleave="tooltips['edit'+index] = false">
-                <rs-button 
-                  variant="info-text" 
-                  class="p-1 w-8 h-8"
-                  @click="navigateTo(`/BF-PRF/KF/PP/03_03?id=${data.value.idKomponenProfiling}`)"
-                >
-                  <Icon name="ic:outline-edit" size="18" />
-                </rs-button>
-                <transition name="tooltip">
-                  <span v-if="tooltips['edit'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
-                    Edit
-                  </span>
-                </transition>
-              </div>
+          <template v-slot:actions="data">
+            <div class="flex items-center space-x-2">
+              <rs-button
+                variant="info-text"
+                size="sm"
+                class="p-1 w-8 h-8"
+                @click="navigateTo(`/BF-PRF/KF/PP/03_03?id=${data.value.idKomponenProfiling}`)"
+              >
+                <Icon name="mdi:pen" size="1.5rem" />
+              </rs-button>
 
-              <!-- View -->
-              <div class="relative flex items-center justify-center" @mouseenter="tooltips['view'+index] = true" @mouseleave="tooltips['view'+index] = false">
-                <rs-button 
-                  variant="info-text" 
-                  class="p-1 w-8 h-8"
-                  @click="navigateTo({ path: '/BF-PRF/KF/PP/03_04', query: { id: data.value.idKomponenProfiling } })"
-                >
-                  <Icon name="ic:outline-visibility" size="18" />
-                </rs-button>
-                <transition name="tooltip">
-                  <span v-if="tooltips['view'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
-                    Lihat
-                  </span>
-                </transition>
-              </div>
+              <rs-button
+                variant="info-text"
+                size="sm"
+                class="p-1 w-8 h-8"
+                @click="navigateTo({ path: '/BF-PRF/KF/PP/03_04', query: { id: data.value.idKomponenProfiling } })"
+              >
+                <Icon name="mdi:eye" size="1.5rem" />
+              </rs-button>
 
-              <!-- Delete -->
-              <div class="relative flex items-center justify-center" @mouseenter="tooltips['delete'+index] = true" @mouseleave="tooltips['delete'+index] = false">
-                <rs-button 
-                  variant="danger-text" 
-                  class="p-1 w-8 h-8"
-                  @click="deleteItem(data.value.idKomponenProfiling)"
-                >
-                  <Icon name="ic:outline-delete" size="18" />
-                </rs-button>
-                <transition name="tooltip">
-                  <span v-if="tooltips['delete'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
-                    Hapus
-                  </span>
-                </transition>
-              </div>
+              <!-- Delete Button -->
+              <rs-button
+              variant="danger-text" 
+                size="sm"
+                class="p-1 w-8 h-8"
+                @click="deleteItem(data.value.idKomponenProfiling)"
+              >
+                <Icon name="mdi:delete" size="1.5rem" />
+              </rs-button>
             </div>
           </template>
         </rs-table>
