@@ -356,6 +356,36 @@ export default [
             path: "/BF-ADN/KF/senarai-permohonan-kelulusan-kawalan-validasi",
           },
           {
+            title: "Senarai Akses Peranan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-ADN/KF/akses-peranan",
+          },
+          {
+            title: "Senarai Permohonan Kelulusan Akses Peranan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-ADN/KF/senarai-permohonan-kelulusan-akses-peranan",
+          }
+        ],
+        meta: {},
+      },
+      {
+        title: "Laporan",
+        icon: "iconamoon:file-document",
+        path: "/BF-ADN/laporan",
+        child: [
+          {
+            title: "Laporan Status Aduan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-ADN/laporan/laporan-status-aduan",
+          }
+        ],
+      },
+      {
+        title: "Mengurus Konfigurasi",
+        icon: "iconamoon:arrow-right-2-duotone",
+        path: "/BF-ADN/laporan/mengurus-konfigurasi",
+        child: [
+          {
             title: "Senarai SLA",
             icon: "iconamoon:file-document",
             path: "/BF-ADN/PK/KS/01/01",
