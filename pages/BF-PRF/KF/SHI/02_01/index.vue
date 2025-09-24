@@ -13,6 +13,7 @@
                 </rs-badge>
             </div>
         </template>
+
         <template #body>
             <!-- Status Table -->
             <rs-table class="mt-4" :key="tableKey" :data="pagedRows" :fields="fields" :pageSize="10" :options="{
@@ -53,8 +54,8 @@
                         </rs-button>
                     </div>
                 </template>
-
             </rs-table>
+            
             <div class="flex items-center justify-between mt-3">
                 <div class="text-sm text-gray-500">
                     Menunjukkan {{ totalRecords ? startIndex + 1 : 0 }} hingga {{ endIndex }} daripada {{ totalRecords
@@ -71,7 +72,7 @@
                 </div>
             </div>
             <!-- Lihat Modal -->
-            <RsModal v-model="showModal" size="lg" class="flex items-center justify-center">
+            <RsModal  v-if="showModal"v-model="showModal" :destroy-on-close="true" teleport="body" size="lg" class="flex items-center justify-center">
                 <template #header>
                     <h3 class="text-lg font-semibold">
                         Maklumat Status: {{ selected?.nama || '-' }}
@@ -148,11 +149,12 @@
     </RsCard>
 </template>
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
-definePageMeta({ title: "Konfigurasi Status Household / Individu",middleware: ["auth", "approver"] });
+import { ref, computed, onMounted, watch, nextTick } from "vue";
+import {onBeforeRouteLeave} from 'vue-router'
+definePageMeta({ title: "Konfigurasi Status Household / Individu" });
 
 const breadcrumb = ref([
-    { name: "Profiling", type: "link", path: "/BF-PRF/KF/SHI/admin" },
+    { name: "Profiling", type: "link", path: "/BF-PRF/KF/SHI/02_01" },
     { name: "Konfigurasi Status Household / Individu", type: "current", path: "/BF-PRF/KF/SHI/02_01/admin" },
 ]);
 
@@ -204,6 +206,7 @@ function formatPct(val) {
     const clamped = Math.min(Math.max(n, 0), 9999.99);
     return `${clamped}%`;
 }
+
 function getStatusVariant(status) {
     switch (status) {
         case "Lulus": return "success";
@@ -212,6 +215,18 @@ function getStatusVariant(status) {
         default: return "default";
     }
 }
+
+
+function unlockScroll() {
+    document.documentElement.classList.remove('overflow-hidden', 'no-scroll')
+    document.body.classList.remove('overflow-hidden', 'no-scroll')
+    document.documentElement.style.overflow = ''
+    document.body.style.overflow = ''
+    // remove any stale backdrops if your modal leaves them behind
+    document.querySelectorAll('.rs-modal-backdrop,.modal-backdrop,[data-rs-backdrop]')
+        .forEach(el => el.remove())
+}
+
 function openLihat(entryId) {
     const row = approvals.value.find(a => a.entryId === entryId || a.id === entryId);
     if (row) {
@@ -220,10 +235,13 @@ function openLihat(entryId) {
     }
 }
 
-function openKelulusan(entryId) {
+async function openKelulusan(entryId) {
     const row = approvals.value.find(a => a.entryId === entryId || a.id === entryId);
 
-    navigateTo({
+    showModal.value = false
+    await nextTick()
+    unlockScroll()
+    await navigateTo({
         path: "/BF-PRF/KF/SHI/02_03",
         query: { entryId } // will be ?entryId=...
     });
@@ -233,6 +251,11 @@ function openKelulusan(entryId) {
         selected.value = row;
         showModal.value = true;
     }
+
+    onBeforeRouteLeave(() => {
+        showModal.value = false
+        unlockScroll()
+    })
 }
 
 /* ---------- computed lists ---------- */

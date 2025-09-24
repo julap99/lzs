@@ -1,96 +1,164 @@
 <template>
+  <div class="space-y-4">
     <LayoutsBreadcrumb :items="breadcrumb" />
-    <RsCard class="mt4">
-        <template #header>
-            <div class="flex justify-between items-center">
-                <h2 class="text-xl font-semibold">Kelulusan</h2>
-            </div>
-        </template>
-
-        <template #body>
-            <!-- Approval form -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Status Kelulusan -->
-                <div class="lg:col-span-2">
-                    <label class="block font-semibold mb-2">Status Kelulusan</label>
-
-                    <div class="flex items-center gap-8">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" class="success" name="statusKelulusan" value="Lulus"
-                                v-model="form.statusKelulusan"
-                                :class="validateOnSubmit && !form.statusKelulusan ? 'ring-2 ring-red-500 rounded-full' : ''" />
-                            <rs-badge variant="success">Lulus</rs-badge>
-                        </label>
-
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" class="danger" name="statusKelulusan" value="Tolak"
-                                v-model="form.statusKelulusan"
-                                :class="validateOnSubmit && !form.statusKelulusan ? 'ring-2 ring-red-500 rounded-full' : ''" />
-                            <rs-badge variant="danger">Tolak</rs-badge>
-                        </label>
-                    </div>
-                    <p v-if="validateOnSubmit && !form.statusKelulusan" class="text-red-600 text-sm mt-2 mb-2">
-                        Sila pilih status kelulusan.
-                    </p>
-
-
-                </div>
-
-
-                <!-- Catatan -->
-                <div class="lg:col-span-2">
-                    <label class="block font-semibold mb-2">Catatan</label>
-                    <textarea v-model="form.catatan" rows="4"
-                        class="w-full rounded-md border px-3 py-2 outline-none focus:ring"
-                        placeholder="Masukkan catatan (jika ada)"></textarea>
-                </div>
-
-                <!-- Tarikh Lulus -->
-                <div>
-                    <label class="block font-semibold mb-2">Tarikh Lulus</label>
-                    <div class="py-2 px-3 rounded-md bg-gray-50">
-                        {{ formatDate(form.tarikhLulus) }}
-                    </div>
-                </div>
-
-                <!-- Nama Pelulus -->
-                <div>
-                    <label class="block font-semibold mb-2">Nama Pelulus</label>
-                    <div class="py-2 px-3 rounded-md bg-gray-50">
-                        {{ form.namaPelulus }}
-                    </div>
-                </div>
-            </div>
-
-            <!-- Actions -->
-            <div class="mt-6 flex items-center justify-between">
-                <rs-button variant="primary-outline" class="!px-5" @click="goBack">
-                    <Icon name="iconamoon:arrow-left-1" class="mr-1" /> Kembali
-                </rs-button>
-
-                <div class="flex items-center gap-3">
-                    <rs-button variant="primary-outline" class="!px-5" @click="onSimpanDraf">
-                        <Icon name="material-symbols:save-outline" class="mr-1" /> Simpan Draf
-                    </rs-button>
-                    <rs-button variant="primary" class="!px-5" @click="onHantar">
-                        <Icon name="iconamoon:location" />
-                        Hantar
-                    </rs-button>
-                </div>
-            </div>
-        </template>
+    <RsCard class="mt-4>">
+      <template #header>
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-semibold">Kelulusan Status Household</h2>
+        </div>
+      </template>
     </RsCard>
+
+    <!-- Maklumat Asas  -->
+    <RsCard class="mt-4">
+      <template #header>
+        <h3 class="text-lg font-semibold">Maklumat Asas</h3>
+      </template>
+      <template #body>
+        <div class="space-y-4">
+          <div class="flex items-center py-2 border-b border-gray-100">
+            <span class="text-sm font-medium text-gray-600 w-40">Kod:</span>
+            <span class="text-sm text-gray-900">{{ selectedRow.kod || 'N/A' }}</span>
+          </div>
+
+          <div class="flex items-center py-2 border-b border-gray-100">
+            <span class="text-sm font-medium text-gray-600 w-40">Nama:</span>
+            <span class="text-sm text-gray-900">{{ selectedRow.nama || 'N/A' }}</span>
+          </div>
+
+          <div class="flex items-center py-2 border-b border-gray-100">
+            <span class="text-sm font-medium text-gray-600 w-40">Jenis:</span>
+            <span class="text-sm text-gray-900">{{ selectedRow.jenis || 'N/A' }}</span>
+          </div>
+
+          <div class="flex items-center py-2 border-b border-gray-100">
+            <span class="text-sm font-medium text-gray-600 w-40">Keterangan:</span>
+            <span class="text-sm text-gray-900">{{ selectedRow.keterangan || 'N/A' }}</span>
+          </div>
+
+          <div class="flex items-center py-2 border-b border-gray-100">
+            <span class="text-sm font-medium text-gray-600 w-40">Julat Min:</span>
+            <span class="text-sm text-gray-900">{{ formatPercent(selectedRow.julatMin) }}</span>
+          </div>
+
+          <div class="flex items-center py-2 border-b border-gray-100">
+            <span class="text-sm font-medium text-gray-600 w-40">Julat Max:</span>
+            <span class="text-sm text-gray-900">{{ formatPercent(selectedRow.julatMax) }}</span>
+          </div>
+
+          <div class="flex items-center py-2 border-b border-gray-100">
+            <span class="text-sm font-medium text-gray-600 w-40">Tarikh Mula:</span>
+            <span class="text-sm text-gray-900">{{ formatDate(selectedRow.tarikhMula) || 'N/A' }}</span>
+          </div>
+
+          <div class="flex items-center py-2 border-b border-gray-100">
+            <span class="text-sm font-medium text-gray-600 w-40">Tarikh Tamat:</span>
+            <span class="text-sm text-gray-900">{{ formatDate(selectedRow.tarikhTamat) || 'N/A' }}</span>
+          </div>
+
+          <div class="flex items-center py-2 border-b border-gray-100">
+            <span class="text-sm font-medium text-gray-600 w-40">Status Aktif:</span>
+            <rs-badge :variant="getStatusVariant(selectedRow.statusAktif)">
+              {{ selectedRow.statusAktif || 'N/A' }}
+            </rs-badge>
+          </div>
+
+          <div class="flex items-center py-2 border-b border-gray-100">
+            <span class="text-sm font-medium text-gray-600 w-40">Status Data:</span>
+            <rs-badge :variant="getStatusVariant(selectedRow.statusData)">
+              {{ selectedRow.statusData || 'N/A' }}
+            </rs-badge>
+          </div>
+        </div>
+      </template>
+    </RsCard>
+
+    <!-- Approval form -->
+    <RsCard class="mt-4">
+      <template #header>
+        <h3 class="text-lg font-semibold">Kelulusan</h3>
+      </template>
+      <template #body>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Status Kelulusan -->
+          <div class="lg:col-span-2">
+            <label class="block font-semibold mb-2">Status Kelulusan</label>
+
+            <div class="flex items-center gap-8">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" class="success" name="statusKelulusan" value="Lulus" v-model="form.statusKelulusan"
+                  :class="validateOnSubmit && !form.statusKelulusan ? 'ring-2 ring-red-500 rounded-full' : ''" />
+                <rs-badge variant="success">Lulus</rs-badge>
+              </label>
+
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" class="danger" name="statusKelulusan" value="Tolak" v-model="form.statusKelulusan"
+                  :class="validateOnSubmit && !form.statusKelulusan ? 'ring-2 ring-red-500 rounded-full' : ''" />
+                <rs-badge variant="danger">Tolak</rs-badge>
+              </label>
+            </div>
+            <p v-if="validateOnSubmit && !form.statusKelulusan" class="text-red-600 text-sm mt-2 mb-2">
+              Sila pilih status kelulusan.
+            </p>
+
+
+          </div>
+
+
+          <!-- Catatan -->
+          <div class="lg:col-span-2">
+            <label class="block font-semibold mb-2">Catatan</label>
+            <textarea v-model="form.catatan" rows="4" class="w-full rounded-md border px-3 py-2 outline-none focus:ring"
+              placeholder="Masukkan catatan (jika ada)"></textarea>
+          </div>
+
+          <!-- Tarikh Lulus -->
+          <div>
+            <label class="block font-semibold mb-2">Tarikh Lulus</label>
+            <div class="py-2 px-3 rounded-md bg-gray-50">
+              {{ formatDate(form.tarikhLulus) }}
+            </div>
+          </div>
+
+          <!-- Nama Pelulus -->
+          <div>
+            <label class="block font-semibold mb-2">Nama Pelulus</label>
+            <div class="py-2 px-3 rounded-md bg-gray-50">
+              {{ form.namaPelulus }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="mt-6 flex items-center justify-between">
+          <rs-button variant="primary-outline" class="!px-5" @click="goBack">
+            <Icon name="iconamoon:arrow-left-1" class="mr-1" /> Kembali
+          </rs-button>
+
+          <div class="flex items-center gap-3">
+            <rs-button variant="primary-outline" class="!px-5" @click="onSimpanDraf">
+              <Icon name="material-symbols:save-outline" class="mr-1" /> Simpan Draf
+            </rs-button>
+            <rs-button variant="primary" class="!px-5" @click="onHantar">
+              <Icon name="iconamoon:location" />
+              Hantar
+            </rs-button>
+          </div>
+        </div>
+      </template>
+    </RsCard>
+  </div>
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
 import { useToast } from "vue-toastification";
 
-definePageMeta({ title: "Konfigurasi Status Household / Individu", middleware: ["auth", "approver"]
- });
+definePageMeta({ title: "Konfigurasi Status Household / Individu" });;
 
 /* ----------------- UI basics ----------------- */
 const breadcrumb = ref([
-  { name: "Profiling", type: "link", path: "/BF-PRF/KF/SHI/admin" },
+  { name: "Profiling", type: "link", path: "/BF-PRF/KF/SHI/02_01" },
   { name: "Konfigurasi Status Household / Individu", type: "link", path: "/BF-PRF/KF/SHI/02_01/" },
   { name: "Kelulusan Status Household / Individu", type: "current", path: "/BF-PRF/KF/SHI/02_03" },
 ]);
@@ -126,6 +194,20 @@ function formatDate(value) {
   if (Number.isNaN(d.getTime())) return value;
   const pad = (n) => String(n).padStart(2, "0");
   return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+}
+
+function formatPercent(v) {
+  if (v === null || v === undefined || v === '') return 'N/A';
+  const n = Number(v);
+  if (Number.isNaN(n)) return String(v);
+  return `${n}%`;
+}
+function getStatusVariant(v) {
+  const s = String(v || '').toLowerCase();
+  if (['aktif', 'lulus', 'success'].includes(s)) return 'success';
+  if (['menunggu', 'pending', 'draft', 'draf'].includes(s)) return 'warning';
+  if (['tidak aktif', 'tolak', 'rejected', 'danger'].includes(s)) return 'danger';
+  return 'default';
 }
 
 /* ----------------- form model ----------------- */
@@ -171,6 +253,23 @@ function upsertApproval(fields) {
   saveApprovals(list);
 }
 
+const ROWS_STORAGE_KEY = 'shi-rows-v1';
+
+function loadRows() {
+  try {
+    const raw = localStorage.getItem(ROWS_STORAGE_KEY);
+    const parsed = JSON.parse(raw || '[]');
+    return Array.isArray(parsed) ? parsed : [];
+  } catch { return []; }
+}
+
+const selectedRow = ref({
+  kod: '', nama: '', jenis: '', keterangan: '',
+  julatMin: null, julatMax: null,
+  tarikhMula: '', tarikhTamat: '',
+  statusAktif: '', statusData: ''
+});
+
 /* ----------------- actions ----------------- */
 function onSimpanDraf() {
   validateOnSubmit.value = false;
@@ -215,6 +314,26 @@ onMounted(() => {
   entryId.value = getEntryIdFromQuery();
   if (!entryId.value) return;
 
+  const rows = loadRows();
+  const row =
+    rows.find(r => r.id === entryId.value) ||
+    rows.find(r => r.entryId === entryId.value);
+
+  if (row) {
+    selectedRow.value = {
+      kod: row.kod ?? '',
+      nama: row.nama ?? '',
+      jenis: row.jenis ?? '',
+      keterangan: row.keterangan ?? '',
+      julatMin: row.julatMin ?? null,
+      julatMax: row.julatMax ?? null,
+      tarikhMula: row.tarikhMula ?? '',
+      tarikhTamat: row.tarikhTamat ?? '',
+      statusAktif: row.statusAktif ?? '',
+      statusData: row.statusData ?? ''
+    };
+  }
+
   const list = loadApprovals();
   const rec =
     list.find((a) => a.entryId === entryId.value) ||
@@ -231,5 +350,3 @@ onMounted(() => {
   }
 });
 </script>
-
-
