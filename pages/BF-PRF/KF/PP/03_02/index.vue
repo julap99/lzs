@@ -15,8 +15,7 @@
               <label class="block text-sm font-medium mb-1">Nama Pendaftaran<span class="text-red-500">*</span></label>
               <FormKit
                 v-model="form.namaPendaftaran"
-                type="select"
-                :options="['Pendaftaran Lengkap']"
+                type="text"
                 class="rs-input w-full"
                 validation="required"
               />
@@ -29,7 +28,7 @@
                 v-model="form.kodProses"
                 type="text"
                 class="rs-input w-full"
-                placeholder="cth: PP001"
+                placeholder="cth: KP001"
                 validation="required"
               />
             </div>
@@ -94,16 +93,16 @@
             </div>
           </div>
 
-          <div class="flex justify-end items-center pt-2">
+          <div class="flex items-center justify-between pt-4 w-full">
+            <rs-button btnType="button" variant="secondary" @click="onCancel">
+              <Icon name="mdi:arrow-left" class="mr-1" /> Kembali
+            </rs-button>
+
             <rs-button btnType="submit" variant="primary">
               <Icon name="mdi:content-save" class="mr-1" /> Simpan
             </rs-button>
           </div>
-          <div class="pt-3">
-            <rs-button btnType="button" variant="secondary" @click="onCancel">
-              <Icon name="mdi:arrow-left" class="mr-1" /> Kembali
-            </rs-button>
-          </div>
+
         </form>
       </template>
     </rs-card>

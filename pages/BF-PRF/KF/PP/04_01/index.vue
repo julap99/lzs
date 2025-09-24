@@ -10,18 +10,13 @@
       </template>
 
       <template #body>
-        <!-- Debug info - remove in production -->
-        <div class="mb-4 p-2 bg-gray-100 rounded">
-          <p>Jumlah Konfigurasi: {{ kifayahLimits.length }}</p>
-          <p>Kelulusan Menunggu: {{ pendingApprovalCount }}</p>
-        </div>
 
         <!-- Updated Table Section with 6 columns -->
         <rs-table
           class="mt-4"
           :key="tableKey"
           :data="kifayahLimits"
-          :field="['idKomponenProfiling','namaPendaftaran','kodProses','idMenu','tarikhMula','statusData','actions']"
+          :field="['idKomponenProfiling','namaPendaftaran','kodProses','idMenu','tarikhMula','statusData','tindakan']"
           :pageSize="10"
           :showNoColumn="false"
           :showFilter="true"
@@ -29,8 +24,8 @@
           :options="{
             variant: 'default',
             hover: true,
-            bordered: true,
-            striped: true,
+            bordered: false,
+            striped: false,
           }"
           advanced
         >
@@ -60,25 +55,25 @@
             </rs-badge>
           </template>
           
-          <template v-slot:actions="data">
+          <template v-slot:tindakan="data">
+            <div class="flex items-center space-x-2">
             <rs-button
-              variant="secondary"
-              size="sm"
-              class="!px-2 !py-1"
-              @click="navigateTo(`/BF-PRF/KF/PP/04_02?id=${data.value.idKomponenProfiling}`)"
-            >
-              Lihat
-              <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
+                variant="info-text"
+                size="sm"
+                class="p-1 w-8 h-8"
+                @click="navigateTo({ path: '/BF-PRF/KF/PP/04_02', query: { id: data.value.idKomponenProfiling } })"
+              >
+                <Icon name="mdi:eye" size="1.5rem" />
             </rs-button>
             <rs-button
-              variant="primary"
-              size="sm"
-              class="!px-2 !py-1 ml-2"
-              @click="navigateTo(`/BF-PRF/KF/PP/04_03?id=${data.value.idKomponenProfiling}`)"
-            >
-              Kelulusan
-              <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
+                variant="info-text"
+                size="sm"
+                class="p-1 w-8 h-8"
+                @click="navigateTo(`/BF-PRF/KF/PP/04_03?id=${data.value.idKomponenProfiling}`)"
+              >
+                <Icon name="mdi:check-circle" size="1.5rem" />
             </rs-button>
+            </div>
           </template>
         </rs-table>
       </template>

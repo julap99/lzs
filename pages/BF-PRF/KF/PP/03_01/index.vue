@@ -24,7 +24,7 @@
           class="mt-4"
           :key="tableKey"
           :data="kifayahLimits"
-          :field="['namaPendaftaran', 'kodProses', 'idMenu', 'tarikhMula', 'statusData', 'actions']"
+          :field="['namaPendaftaran', 'kodProses', 'idMenu', 'tarikhMula', 'statusData', 'tindakan']"
           :pageSize="10"
           :showNoColumn="false"
           :showFilter="true"
@@ -65,7 +65,7 @@
           </template>
           
           <!-- Actions (not part of 3.6.x, kept for UX) -->
-          <template v-slot:actions="data">
+          <template v-slot:tindakan="data">
             <div class="flex items-center space-x-2">
               <rs-button
                 variant="info-text"
