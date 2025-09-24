@@ -79,7 +79,7 @@
             <rs-button
               variant="primary-outline"
               size="sm"
-              @click="$emit('download-document', doc)"
+              @click="downloadDocument(doc)"
             >
               <Icon name="mdi:download" class="mr-1" />
               Muat Turun
@@ -127,22 +127,72 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 // Props
 const props = defineProps({
   formData: {
     type: Object,
     required: true
   },
-  kariahOptions: {
-    type: Array,
-    default: () => []
-  },
-  uploadedDocuments: {
-    type: Array,
-    default: () => []
-  }
+  
 })
 
 // Emits
-const emit = defineEmits(['next-step', 'prev-step', 'save-step', 'download-document'])
+const emit = defineEmits(['next-step', 'prev-step', 'save-step'])
+
+// Local options: Kariah (reuse same list used elsewhere)
+const kariahOptions = [
+  { label: 'Kariah Masjid Al-Hidayah', value: 'masjid-al-hidayah' },
+  { label: 'Kariah Masjid Al-Ikhlas', value: 'masjid-al-ikhlas' },
+  { label: 'Kariah Masjid Al-Muttaqin', value: 'masjid-al-muttaqin' },
+  { label: 'Kariah Masjid Al-Rahman', value: 'masjid-al-rahman' },
+  { label: 'Kariah Masjid Al-Salam', value: 'masjid-al-salam' },
+  { label: 'Kariah Masjid Al-Taqwa', value: 'masjid-al-taqwa' },
+  { label: 'Kariah Masjid An-Nur', value: 'masjid-an-nur' },
+  { label: 'Kariah Masjid Ar-Rahman', value: 'masjid-ar-rahman' },
+  { label: 'Kariah Masjid As-Salam', value: 'masjid-as-salam' },
+  { label: 'Kariah Masjid At-Taqwa', value: 'masjid-at-taqwa' }
+]
+
+// Local download handler
+const downloadDocument = (doc) => {
+  try {
+    // If doc has a direct URL, open it; else create a Blob if available
+    if (doc.url) {
+      window.open(doc.url, '_blank')
+      return
+    }
+    if (doc.blob) {
+      const url = URL.createObjectURL(doc.blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = doc.name || 'document'
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(url)
+    }
+  } catch (e) {
+    // swallow errors; keep UI responsive
+  }
+}
+
+// Local computed: uploaded documents derived from formData
+const uploadedDocuments = computed(() => {
+  const list = props.formData?.pengesahan?.surat_pengesahan_bermastautin
+  if (!list) return []
+  try {
+    // If it's already an array of files/objects
+    const arr = Array.isArray(list) ? list : [list]
+    return arr.map((f) => ({
+      name: f.name || f.filename || 'Dokumen',
+      type: f.type || f.mimetype || 'application/octet-stream',
+      size: f.size ? `${f.size}` : '',
+      url: f.url,
+      blob: f.blob || undefined
+    }))
+  } catch {
+    return []
+  }
+})
 </script>

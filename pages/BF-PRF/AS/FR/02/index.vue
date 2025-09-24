@@ -400,14 +400,10 @@
         <TanggunganPengesahanForms
           v-if="currentStepB === 10"
           :screen-type="screenType"
-          :dibantu-penolong-amil="dibantuPenolongAmil"
           :form-data="formData"
-          :kariah-options="kariahOptions"
-          :pak-officers-options-bantuan="pakOfficersOptionsBantuan"
           @next-step="nextStepB"
           @prev-step="prevStepB"
           @save-step="handleSaveStepB10"
-          @update:dibantu-penolong-amil="dibantuPenolongAmil = $event"
         />
 
         <!-- Section B Form - Step 11: Pengesahan Pendapatan -->
@@ -423,12 +419,9 @@
         <TanggunganPengesahanBermastauntinForms
           v-if="currentStepB === 12"
           :form-data="formData"
-          :kariah-options="kariahOptions"
-          :uploaded-documents="uploadedDocuments"
           @next-step="nextStepB"
           @prev-step="prevStepB"
           @save-step="handleSaveStepB12"
-          @download-document="downloadDocument"
         />
 
         <!-- Section B Form - Step 13: Pegawai Pendaftar -->
@@ -571,9 +564,6 @@ const filteredStepsB = computed(() => {
 // ============================================================================
 // FORM STATE VARIABLES
 // ============================================================================
-
-// Relationship Variables
-const dibantuPenolongAmil = ref("");
 
 // Tanggungan Management Variables
 const currentTanggunganIndex = ref(0);
@@ -857,119 +847,7 @@ onMounted(() => {
 // OPTIONS DATA
 // ============================================================================
 
-// Bank Options with SWIFT Codes
-const bankOptions = [
-  { label: "Maybank", value: "maybank", swiftCode: "MBBEMYKL" },
-  { label: "CIMB", value: "cimb", swiftCode: "CIBBMYKL" },
-  { label: "RHB", value: "rhb", swiftCode: "RHBBMYKL" },
-  { label: "Bank Islam", value: "bank-islam", swiftCode: "BIMBMYKL" },
-  { label: "Bank Rakyat", value: "bank-rakyat", swiftCode: "BKRMYKL" },
-  { label: "Public Bank", value: "public-bank", swiftCode: "PBBEMYKL" },
-  { label: "Hong Leong Bank", value: "hong-leong", swiftCode: "HLBBMYKL" },
-  { label: "Ambank", value: "ambank", swiftCode: "ARBKMYKL" },
-  { label: "BSN", value: "bsn", swiftCode: "BSNAMYKL" },
-  { label: "Affin Bank", value: "affin", swiftCode: "PHBMMYKL" },
-  { label: "UOB", value: "uob", swiftCode: "UOVBMYKL" },
-  { label: "OCBC", value: "ocbc", swiftCode: "OCBCMYKL" },
-  {
-    label: "Standard Chartered",
-    value: "standard-chartered",
-    swiftCode: "SCBLMYKL",
-  },
-  { label: "Alliance Bank", value: "alliance", swiftCode: "MFBBMYKL" },
-  { label: "Agrobank", value: "agrobank", swiftCode: "AGOBMYKL" },
-];
-
-// District Options
-const daerahOptions = [
-  { label: "Gombak", value: "gombak" },
-  { label: "Hulu Langat", value: "hulu-langat" },
-  { label: "Hulu Selangor", value: "hulu-selangor" },
-  { label: "Klang", value: "klang" },
-  { label: "Kuala Langat", value: "kuala-langat" },
-  { label: "Kuala Selangor", value: "kuala-selangor" },
-  { label: "Petaling", value: "petaling" },
-  { label: "Sabak Bernam", value: "sabak-bernam" },
-  { label: "Sepang", value: "sepang" },
-];
-
-// Mosque Parish Options
-const kariahOptions = [
-  { label: "Kariah Masjid Al-Hidayah", value: "masjid-al-hidayah" },
-  { label: "Kariah Masjid Al-Ikhlas", value: "masjid-al-ikhlas" },
-  { label: "Kariah Masjid Al-Muttaqin", value: "masjid-al-muttaqin" },
-  { label: "Kariah Masjid Al-Rahman", value: "masjid-al-rahman" },
-  { label: "Kariah Masjid Al-Salam", value: "masjid-al-salam" },
-  { label: "Kariah Masjid Al-Taqwa", value: "masjid-al-taqwa" },
-  { label: "Kariah Masjid An-Nur", value: "masjid-an-nur" },
-  { label: "Kariah Masjid Ar-Rahman", value: "masjid-ar-rahman" },
-  { label: "Kariah Masjid As-Salam", value: "masjid-as-salam" },
-  { label: "Kariah Masjid At-Taqwa", value: "masjid-at-taqwa" },
-];
-
-// PAK Officers by Mosque Parish
-const pakOfficersByKariah = {
-  "masjid-al-hidayah": [
-    { label: "Ustaz Ahmad bin Abdullah", value: "ustaz-ahmad-abdullah" },
-    { label: "Ustazah Siti binti Mohamed", value: "ustazah-siti-mohamed" },
-    { label: "Ustaz Mohd bin Hassan", value: "ustaz-mohd-hassan" },
-  ],
-  "masjid-al-ikhlas": [
-    { label: "Ustaz Ismail bin Omar", value: "ustaz-ismail-omar" },
-    { label: "Ustazah Fatimah binti Ali", value: "ustazah-fatimah-ali" },
-    { label: "Ustaz Kamal bin Ibrahim", value: "ustaz-kamal-ibrahim" },
-  ],
-  "masjid-al-muttaqin": [
-    { label: "Ustaz Rahman bin Sulaiman", value: "ustaz-rahman-sulaiman" },
-    { label: "Ustazah Aminah binti Yusof", value: "ustazah-aminah-yusof" },
-    { label: "Ustaz Zulkifli bin Ahmad", value: "ustaz-zulkifli-ahmad" },
-  ],
-  "masjid-al-rahman": [
-    { label: "Ustaz Aziz bin Mohamed", value: "ustaz-aziz-mohamed" },
-    { label: "Ustazah Nor binti Hassan", value: "ustazah-nor-hassan" },
-    { label: "Ustaz Hamid bin Abdullah", value: "ustaz-hamid-abdullah" },
-  ],
-  "masjid-al-salam": [
-    { label: "Ustaz Yusof bin Ahmad", value: "ustaz-yusof-ahmad" },
-    { label: "Ustazah Mariam binti Omar", value: "ustazah-mariam-omar" },
-    { label: "Ustaz Khalid bin Ismail", value: "ustaz-khalid-ismail" },
-  ],
-  "masjid-al-taqwa": [
-    { label: "Ustaz Omar bin Hassan", value: "ustaz-omar-hassan" },
-    { label: "Ustazah Zainab binti Ali", value: "ustazah-zainab-ali" },
-    { label: "Ustaz Ibrahim bin Mohamed", value: "ustaz-ibrahim-mohamed" },
-  ],
-  "masjid-an-nur": [
-    { label: "Ustaz Hassan bin Abdullah", value: "ustaz-hassan-abdullah" },
-    { label: "Ustazah Aishah binti Yusof", value: "ustazah-aishah-yusof" },
-    { label: "Ustaz Mohamed bin Khalid", value: "ustaz-mohamed-khalid" },
-  ],
-  "masjid-ar-rahman": [
-    { label: "Ustaz Abdullah bin Omar", value: "ustaz-abdullah-omar" },
-    {
-      label: "Ustazah Khadijah binti Hassan",
-      value: "ustazah-khadijah-hassan",
-    },
-    { label: "Ustaz Ali bin Ismail", value: "ustaz-ali-ismail" },
-  ],
-  "masjid-as-salam": [
-    { label: "Ustaz Sulaiman bin Ahmad", value: "ustaz-sulaiman-ahmad" },
-    {
-      label: "Ustazah Safiyah binti Mohamed",
-      value: "ustazah-safiyah-mohamed",
-    },
-    { label: "Ustaz Yusof bin Khalid", value: "ustaz-yusof-khalid" },
-  ],
-  "masjid-at-taqwa": [
-    { label: "Ustaz Khalid bin Abdullah", value: "ustaz-khalid-abdullah" },
-    { label: "Ustazah Aminah binti Omar", value: "ustazah-aminah-omar" },
-    { label: "Ustaz Ismail bin Hassan", value: "ustaz-ismail-hassan" },
-  ],
-};
-
-// moved into TanggunganPekerjaanForms
-
-// moved into TanggunganPerbankanForms
+// moved into PerbankanForms
 
 // Add/remove multiple bank accounts and helper
 const addBankAccount = () => {
@@ -983,29 +861,6 @@ const addBankAccount = () => {
     hubungan: "",
   });
 };
-
-const pakOfficersOptionsBantuan = computed(() => {
-  const selectedKariah = formData.value.pengesahan.kariah_bantuan;
-  return selectedKariah ? pakOfficersByKariah[selectedKariah] || [] : [];
-});
-
-const uploadedDocuments = computed(() => {
-  const documents = [];
-
-  // Add sample document for demonstration
-  if (formData.value.pengesahan.surat_pengesahan_bermastautin) {
-    documents.push({
-      name: "pengesahan_bermastautin.pdf",
-      type: "application/pdf",
-      size: "2.0 MB",
-    });
-  }
-
-  return documents;
-});
-
-// showLainLainHubungan moved into TanggunganPeribadiForms
-// moved into TanggunganPeribadiForms
 
 // Computed property for calculating Tarikh Keluar Muallaf
 const tarikhKeluarMuallaf = computed(() => {
@@ -1145,15 +1000,8 @@ watch(
 
 watch(
   () => formData.value.nama_bank,
-  (newVal) => {
-    if (newVal) {
-      const selectedBank = bankOptions.find((bank) => bank.value === newVal);
-      if (selectedBank) {
-        formData.value.swift_code = selectedBank.swiftCode;
-      }
-    } else {
-      formData.value.swift_code = "";
-    }
+  () => {
+    // handled within PerbankanForms
   }
 );
 
@@ -1237,15 +1085,8 @@ watch(
 
 watch(
   () => formData.value.nama_bank_tanggungan,
-  (newVal) => {
-    if (newVal) {
-      const selectedBank = bankOptions.find((bank) => bank.value === newVal);
-      if (selectedBank) {
-        formData.value.swift_code_tanggungan = selectedBank.swiftCode;
-      }
-    } else {
-      formData.value.swift_code_tanggungan = "";
-    }
+  () => {
+    // handled within TanggunganPerbankanForms
   }
 );
 
@@ -1370,14 +1211,7 @@ watch(
         () => getCurrentTanggungan()?.nama_bank_tanggungan,
         (newBankName) => {
           const currentTanggungan = getCurrentTanggungan();
-          if (currentTanggungan && newBankName) {
-            const selectedBank = bankOptions.find(
-              (bank) => bank.value === newBankName
-            );
-            if (selectedBank) {
-              currentTanggungan.swift_code_tanggungan = selectedBank.swiftCode;
-            }
-          }
+        // handled within TanggunganPerbankanForms
         },
         { deep: true }
       );

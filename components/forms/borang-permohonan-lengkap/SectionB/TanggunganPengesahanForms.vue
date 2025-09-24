@@ -18,8 +18,7 @@
           name="dibantu_penolong_amil"
           :options="['Ya', 'Tidak']"
           :validation="screenType === 'selfservice' ? 'required' : ''"
-          :value="dibantuPenolongAmil"
-          @input="$emit('update:dibantuPenolongAmil', $event)"
+          v-model="dibantuPenolongAmil"
         />
       </div>
 
@@ -244,42 +243,28 @@
 </template>
 
 <script setup>
+import { ref, watch, computed } from 'vue'
+
 // Props
 const props = defineProps({
   screenType: {
     type: String,
     default: 'selfservice'
   },
-  dibantuPenolongAmil: {
-    type: String,
-    default: ''
-  },
+  // managed locally now
   formData: {
     type: Object,
     required: true
-  },
-  kariahOptions: {
-    type: Array,
-    default: () => []
-  },
-  pakOfficersOptionsBantuan: {
-    type: Array,
-    default: () => []
-  },
-  pakOfficersOptionsHubungan: {
-    type: Array,
-    default: () => []
   }
 })
 
 // Emits
-const emit = defineEmits(['next-step', 'prev-step', 'save-step', 'update:dibantuPenolongAmil'])
+const emit = defineEmits(['next-step', 'prev-step', 'save-step'])
 
 // Local state synced with formData (to mirror AS/UP/02 behavior)
-import { ref, watch } from 'vue'
-
 const hubunganKakitanganLZS = ref(props.formData.pengesahan?.hubungan_kakitangan_lzs || '')
 const hubunganPAK = ref(props.formData.pengesahan?.hubungan_pak || '')
+const dibantuPenolongAmil = ref(props.formData.pengesahan?.dibantu_penolong_amil || '')
 
 watch(hubunganKakitanganLZS, (value) => {
   if (props.formData && props.formData.pengesahan) {
@@ -287,9 +272,45 @@ watch(hubunganKakitanganLZS, (value) => {
   }
 })
 
+// Local options: Kariah and PAK officers mapping
+const kariahOptions = [
+  { label: 'Kariah Masjid Al-Hidayah', value: 'masjid-al-hidayah' },
+  { label: 'Kariah Masjid Al-Ikhlas', value: 'masjid-al-ikhlas' }
+]
+
+const pakOfficersByKariah = {
+  'masjid-al-hidayah': [
+    { label: 'Ustaz Ahmad bin Abdullah', value: 'ustaz-ahmad-abdullah' },
+    { label: 'Ustazah Siti binti Mohamed', value: 'ustazah-siti-mohamed' },
+    { label: 'Ustaz Mohd bin Hassan', value: 'ustaz-mohd-hassan' }
+  ],
+  'masjid-al-ikhlas': [
+    { label: 'Ustaz Ismail bin Omar', value: 'ustaz-ismail-omar' },
+    { label: 'Ustazah Fatimah binti Ali', value: 'ustazah-fatimah-ali' },
+    { label: 'Ustaz Kamal bin Ibrahim', value: 'ustaz-kamal-ibrahim' }
+  ]
+}
+
+// Computed options based on selected kariah
+const pakOfficersOptionsBantuan = computed(() => {
+  const key = props.formData?.pengesahan?.kariah_bantuan
+  return key ? (pakOfficersByKariah[key] || []) : []
+})
+
+const pakOfficersOptionsHubungan = computed(() => {
+  const key = props.formData?.pengesahan?.kariah_hubungan_pak
+  return key ? (pakOfficersByKariah[key] || []) : []
+})
+
 watch(hubunganPAK, (value) => {
   if (props.formData && props.formData.pengesahan) {
     props.formData.pengesahan.hubungan_pak = value
+  }
+})
+
+watch(dibantuPenolongAmil, (value) => {
+  if (props.formData && props.formData.pengesahan) {
+    props.formData.pengesahan.dibantu_penolong_amil = value
   }
 })
 </script>
