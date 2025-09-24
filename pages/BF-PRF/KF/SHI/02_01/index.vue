@@ -149,7 +149,7 @@
 </template>
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
-definePageMeta({ title: "Konfigurasi Status Household / Individu",middleware: ["auth", "approver"] });
+definePageMeta({ title: "Konfigurasi Status Household / Individu" });
 
 const breadcrumb = ref([
     { name: "Profiling", type: "link", path: "/BF-PRF/KF/SHI/admin" },
