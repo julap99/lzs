@@ -101,9 +101,9 @@ const breadcrumb = ref([
     path: "/BF-PRF/KF/HK/admin",
   },
   {
-    name: "Konfigurasi Had Kifayah",
+    name: "Konfigurasi Proses Profiling",
     type: "current",
-    path: "/BF-PRF/KF/HK/admin",
+    path: "/BF-PRF/KF/PP/01_01",
   },
 ]);
 
