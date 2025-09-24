@@ -69,8 +69,8 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormKit type="text" label="Nombor GL" :modelValue="row.noGL" :disabled="true" />
             <FormKit type="text" label="Nombor Invoice" :modelValue="noInvois" :disabled="true" />
-            <FormKit type="text" label="Amaun Tuntutan (RM)" :modelValue="`RM ${formatNumber(row.amaunTuntutan)}`" :disabled="true" />
             <FormKit type="text" label="Amaun GL (RM)" :modelValue="`RM ${formatNumber(row.amaunGL)}`" :disabled="true" />
+            <FormKit type="text" label="Amaun Tuntutan (RM)" :modelValue="`RM ${formatNumber(row.amaunTuntutan)}`" :disabled="true" />
             <FormKit type="text" label="Baki Amaun (RM)" :modelValue="`RM ${formatNumber(row.bakiAmaun)}`" :disabled="true" />
             <FormKit type="text" label="Tarikh Mohon Tuntutan" :modelValue="formatDate(row.tarikhPermohonan)" :disabled="true" />
             <FormKit type="text" label="Catatan Tambahan" :modelValue="catatanTambahan" :disabled="true" />
@@ -118,54 +118,7 @@
         </template>
       </rs-card>
 
-      <!-- Section 5: Semakan Maklumat -->
-      <rs-card>
-        <template #header>
-          <div class="flex items-center">
-            Semakan Maklumat
-          </div>
-        </template>
-        <template #body>
-          <div class="space-y-6">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Status GL</label>
-              <rs-badge :variant="row.statusGL === 'Lulus' ? 'success' : 'danger'">
-                {{ row.statusGL }}
-              </rs-badge>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Perbandingan Amaun GL vs Tuntutan</label>
-              <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <StatBox title="Amaun GL" :value="`RM ${formatNumber(row.amaunGL)}`" />
-                <StatBox title="Amaun Tuntutan" :value="`RM ${formatNumber(row.amaunTuntutan)}`" />
-                <StatBox title="Baki Amaun" :value="`RM ${formatNumber(row.bakiAmaun)}`" />
-                <StatBox title="Perbezaan" :value="`RM ${formatNumber(Math.abs(row.amaunGL - row.amaunTuntutan))}`" :classValue="row.amaunTuntutan > row.amaunGL ? 'text-danger' : 'text-success'" />
-              </div>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Tarikh & Dokumen Perkhidmatan</label>
-              <div class="space-y-2">
-                <div>Tarikh: {{ row.tarikhPerkhidmatan ? formatDate(row.tarikhPerkhidmatan) : '-' }}</div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <a v-for="(doc, i) in (row.dokumenPerkhidmatan || [])" :key="i" :href="doc.url" target="_blank" class="text-primary-600 hover:text-primary-800 flex items-center">
-                    <Icon name="material-symbols:file-present-outline" class="mr-1" />
-                    {{ doc.name }}
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Lampiran Lain</label>
-              <div class="flex items-center flex-wrap gap-2">
-                <a v-for="(doc, i) in (row.lampiranLain || [])" :key="i" :href="doc.url" target="_blank" class="text-primary-600 hover:text-primary-800 flex items-center">
-                  <Icon name="material-symbols:file-present-outline" class="mr-1" />
-                  {{ doc.name }}
-                </a>
-              </div>
-            </div>
-          </div>
-        </template>
-      </rs-card>
+      <!-- Section 5: Semakan Maklumat (removed per backlog) -->
 
       <!-- Section 6: Maklumat Kelulusan (3.6) -->
       <rs-card>

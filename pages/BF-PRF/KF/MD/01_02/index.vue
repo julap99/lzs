@@ -34,20 +34,12 @@
       </rs-card>
 
       <!-- Action Buttons Below Title Card -->
-      <div class="flex justify-end gap-3">
-        <rs-button
-          variant="primary"
-          @click="navigateTo(`/BF-PRF/KF/MD/01_03?id=${selectedId}`)"
-          class="px-6 py-3"
-        >
-          <Icon name="mdi:folder-plus" class="mr-2" /> Tambah Kategori Multidimensi
-        </rs-button>
-        <rs-button
-          variant="secondary"
-          @click="navigateTo(`/BF-PRF/KF/MD/01_06?id=${selectedId}`)"
-          class="px-6 py-3"
-        >
-          <Icon name="mdi:chart-box" class="mr-2" /> Kuadran
+      <div class="flex justify-end gap-3"></div>
+
+      <!-- Toolbar Above Maklumat Multidimensi Section -->
+      <div class="flex justify-end">
+        <rs-button variant="primary" class="px-6 py-3" @click="openEditMaklumatAsas">
+          <Icon name="mdi:pencil" class="mr-2" /> Kemaskini Maklumat
         </rs-button>
       </div>
 
@@ -98,12 +90,161 @@
         </template>
       </rs-card>
 
-      <!-- Edit Maklumat Button -->
-      <div class="flex justify-end">
-        <rs-button variant="primary" class="px-6 py-3" @click="openEditMaklumatAsas">
-          <Icon name="mdi:pencil" class="mr-2" /> Kemaskini Maklumat
+      <!-- Toolbar Above Kategori Multidimensi Section -->
+      <div class="flex justify-end gap-3">
+        <rs-button
+          variant="primary"
+          @click="navigateTo(`/BF-PRF/KF/MD/01_03?id=${selectedId}`)"
+          class="px-6 py-3"
+        >
+          <Icon name="mdi:folder-plus" class="mr-2" /> Tambah Kategori Multidimensi
         </rs-button>
       </div>
+
+      <!-- Kategori Multidimensi Section -->
+      <rs-card v-if="kategoriData.length > 0">
+        <template #header>
+          <h3 class="text-lg font-semibold">Kategori Multidimensi</h3>
+        </template>
+        <template #body>
+          <rs-table
+            class="mt-4"
+            :data="kategoriData"
+            :field="['kategori', 'pemberat', 'skor_tertinggi', 'status', 'status_data', 'jadual_skor_lov', 'tarikhMula', 'tarikhTamat', 'tindakan']"
+            :pageSize="10"
+            :showNoColumn="true"
+            :options="{
+              variant: 'default',
+              hover: true,
+            }"
+          >
+            <template v-slot:kategori="data">
+              <span class="font-medium">{{ data.value.kategori }}</span>
+            </template>
+            <template v-slot:pemberat="data">{{ data.value.pemberat }}</template>
+            <template v-slot:skor_tertinggi="data">{{ data.value.skor_tertinggi }}</template>
+            <template v-slot:status="data">
+              <rs-badge :variant="getStatusVariant(data.value.status)">
+                {{ data.value.status }}
+              </rs-badge>
+            </template>
+            <template v-slot:status_data="data">
+              <rs-badge :variant="getStatusVariant(data.value.statusData || data.value.status)">
+                {{ data.value.statusData || data.value.status || 'Draf' }}
+              </rs-badge>
+            </template>
+            <template v-slot:jadual_skor_lov="data">
+              <div class="flex flex-wrap gap-1">
+                <span 
+                  v-for="(lov, idx) in (data.value.jadual_skor_lov_array || [])" 
+                  :key="idx"
+                  class="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs"
+                >
+                  {{ lov }}
+                </span>
+              </div>
+            </template>
+            <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
+            <template v-slot:tarikhTamat="data">{{ formatDate(data.value.tarikhTamat) }}</template>
+            <template v-slot:tindakan="data">
+              <rs-button
+                variant="primary"
+                size="sm"
+                class="!px-2 !py-1"
+                @click="openEditKategori(data.value, data.index)"
+              >
+                Kemaskini
+                <Icon name="mdi:pencil" class="ml-1" size="1rem" />
+              </rs-button>
+              <rs-button
+                variant="danger"
+                size="sm"
+                class="!px-2 !py-1 ml-2"
+                @click="deleteKategori(data.value, data.index)"
+              >
+                Buang
+                <Icon name="mdi:delete" class="ml-1" size="1rem" />
+              </rs-button>
+            </template>
+          </rs-table>
+        </template>
+      </rs-card>
+
+      <!-- Toolbar Above Kuadran Section -->
+      <div class="flex justify-end gap-3">
+        <rs-button
+          variant="secondary"
+          @click="navigateTo(`/BF-PRF/KF/MD/01_06?id=${selectedId}`)"
+          class="px-6 py-3"
+        >
+          <Icon name="mdi:chart-box" class="mr-2" /> Kuadran
+        </rs-button>
+      </div>
+
+      <!-- Kuadran Section -->
+      <rs-card v-if="kuadranData.length > 0">
+        <template #header>
+          <h3 class="text-lg font-semibold">Kuadran</h3>
+        </template>
+        <template #body>
+          <rs-table
+            class="mt-4"
+            :data="kuadranData"
+            :field="['kuadran', 'min_merit', 'max_merit', 'status_multidimensi', 'status', 'status_data', 'tarikhMula', 'tarikhTamat', 'tindakan']"
+            :pageSize="10"
+            :showNoColumn="true"
+            :options="{
+              variant: 'default',
+              hover: true,
+            }"
+          >
+            <template v-slot:kuadran="data">
+              <span class="font-medium">{{ data.value.kuadran || data.value.namaKuadran || 'N/A' }}</span>
+            </template>
+            <template v-slot:min_merit="data">{{ data.value.min_merit || 'N/A' }}</template>
+            <template v-slot:max_merit="data">{{ data.value.max_merit || 'N/A' }}</template>
+            <template v-slot:status_multidimensi="data">
+              <rs-badge :variant="getStatusVariant(data.value.status_multidimensi)">
+                {{ data.value.status_multidimensi || 'N/A' }}
+              </rs-badge>
+            </template>
+            <template v-slot:status="data">
+              <rs-badge :variant="getStatusVariant(data.value.status)">
+                {{ data.value.status || 'Aktif' }}
+              </rs-badge>
+            </template>
+            <template v-slot:status_data="data">
+              <rs-badge :variant="getStatusVariant(data.value.status_data)">
+                {{ data.value.status_data || 'N/A' }}
+              </rs-badge>
+            </template>
+            <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
+            <template v-slot:tarikhTamat="data">{{ formatDate(data.value.tarikhTamat) }}</template>
+            <template v-slot:tindakan="data">
+              <rs-button
+                variant="primary"
+                size="sm"
+                class="!px-2 !py-1"
+                @click="openEditKuadran(data.value, data.index)"
+              >
+                Kemaskini
+                <Icon name="mdi:pencil" class="ml-1" size="1rem" />
+              </rs-button>
+              <rs-button
+                variant="danger"
+                size="sm"
+                class="!px-2 !py-1 ml-2"
+                @click="deleteKuadran(data.value, data.index)"
+              >
+                Buang
+                <Icon name="mdi:delete" class="ml-1" size="1rem" />
+              </rs-button>
+            </template>
+          </rs-table>
+        </template>
+      </rs-card>
+
+      
 
       <!-- Edit Maklumat Modal -->
       <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center">
@@ -162,6 +303,121 @@
         </div>
       </div>
 
+      <!-- Edit Kategori Modal -->
+      <div v-if="showKategoriModal" class="fixed inset-0 z-50 flex items-center justify-center">
+        <div class="absolute inset-0 bg-black/40" @click="closeEditKategori"></div>
+        <div class="relative bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4">
+          <div class="px-6 py-4 border-b">
+            <h3 class="text-lg font-semibold">Kemaskini Kategori</h3>
+          </div>
+          <div class="px-6 py-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm font-medium text-gray-700">Kategori</label>
+              <input v-model="kategoriForm.kategori" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Pemberat</label>
+              <input v-model="kategoriForm.pemberat" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Skor Tertinggi</label>
+              <input v-model="kategoriForm.skor_tertinggi" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="text-sm font-medium text-gray-700">Jadual Skor LOV</label>
+              <input v-model="kategoriForm.jadual_skor_lov" type="text" placeholder="Contoh: Skor 1, Skor 2, Skor 3" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <p class="text-xs text-gray-500 mt-1">Pisahkan dengan koma. Contoh: A, B, C</p>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Status</label>
+              <select v-model="kategoriForm.status" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="Aktif">Aktif</option>
+                <option value="Tidak Aktif">Tidak Aktif</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Status Data</label>
+              <select v-model="kategoriForm.statusData" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="Draf">Draf</option>
+                <option value="Menunggu Kelulusan">Menunggu Kelulusan</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Tarikh Mula</label>
+              <input v-model="kategoriForm.tarikhMula" type="date" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Tarikh Tamat</label>
+              <input v-model="kategoriForm.tarikhTamat" type="date" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+          </div>
+          <div class="px-6 py-4 border-t flex justify-end gap-2">
+            <rs-button variant="secondary" @click="closeEditKategori">Batal</rs-button>
+            <rs-button variant="primary" @click="saveKategori">
+              <Icon name="mdi:content-save" class="mr-2" /> Simpan
+            </rs-button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Kuadran Modal -->
+      <div v-if="showKuadranModal" class="fixed inset-0 z-50 flex items-center justify-center">
+        <div class="absolute inset-0 bg-black/40" @click="closeEditKuadran"></div>
+        <div class="relative bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4">
+          <div class="px-6 py-4 border-b">
+            <h3 class="text-lg font-semibold">Kemaskini Kuadran</h3>
+          </div>
+          <div class="px-6 py-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm font-medium text-gray-700">Kuadran</label>
+              <input v-model="kuadranForm.kuadran" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Min Merit</label>
+              <input v-model="kuadranForm.min_merit" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Max Merit</label>
+              <input v-model="kuadranForm.max_merit" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Status Multidimensi</label>
+              <select v-model="kuadranForm.status_multidimensi" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="Aktif">Aktif</option>
+                <option value="Tidak Aktif">Tidak Aktif</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Status</label>
+              <select v-model="kuadranForm.status" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="Aktif">Aktif</option>
+                <option value="Tidak Aktif">Tidak Aktif</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Status Data</label>
+              <select v-model="kuadranForm.status_data" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="Draf">Draf</option>
+                <option value="Menunggu Kelulusan">Menunggu Kelulusan</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Tarikh Mula</label>
+              <input v-model="kuadranForm.tarikhMula" type="date" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Tarikh Tamat</label>
+              <input v-model="kuadranForm.tarikhTamat" type="date" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+          </div>
+          <div class="px-6 py-4 border-t flex justify-end gap-2">
+            <rs-button variant="secondary" @click="closeEditKuadran">Batal</rs-button>
+            <rs-button variant="primary" @click="saveKuadran">
+              <Icon name="mdi:content-save" class="mr-2" /> Simpan
+            </rs-button>
+          </div>
+        </div>
+      </div>
 
     </div>
 
@@ -219,6 +475,33 @@ const selectedMultidimensi = ref(null);
 const allMultidimensiData = ref([]);
 const isSubmitting = ref(false);
 const showEditModal = ref(false);
+const kategoriData = ref([]);
+const kuadranData = ref([]);
+const showKategoriModal = ref(false);
+const showKuadranModal = ref(false);
+const editingKategoriIndex = ref(-1);
+const editingKuadranIndex = ref(-1);
+const kategoriForm = ref({
+  kategori: '',
+  pemberat: '',
+  skor_tertinggi: '',
+  status: 'Aktif',
+  jadual_skor_lov: '',
+  jadual_skor_lov_array: [],
+  statusData: 'Draf',
+  tarikhMula: '',
+  tarikhTamat: ''
+});
+const kuadranForm = ref({
+  kuadran: '',
+  min_merit: '',
+  max_merit: '',
+  status_multidimensi: 'Aktif',
+  status: 'Aktif',
+  status_data: 'Draf',
+  tarikhMula: '',
+  tarikhTamat: ''
+});
 const editForm = ref({
   namaHadKifayah: '',
   keterangan: '',
@@ -332,6 +615,10 @@ const loadData = () => {
       }
       if (!selectedMultidimensi.value) {
         error.value = `Rekod dengan ID "${selectedId}" tidak ditemui.`;
+      } else {
+        // Load kategori and kuadran data when record is found
+        loadKategoriData();
+        loadKuadranData();
       }
     } else {
       error.value = "ID Multidimensi tidak disediakan.";
@@ -511,6 +798,147 @@ onMounted(() => {
 onActivated(() => {
   loadData();
 });
+
+// Load kategori data for the selected multidimensi
+const loadKategoriData = () => {
+  try {
+    const savedKategori = localStorage.getItem('multidimensi_kategori');
+    if (savedKategori && selectedId) {
+      const allKategori = JSON.parse(savedKategori);
+      kategoriData.value = allKategori[selectedId] || [];
+    } else {
+      kategoriData.value = [];
+    }
+  } catch (error) {
+    console.error('Error loading kategori data:', error);
+    kategoriData.value = [];
+  }
+};
+
+// Load kuadran data for the selected multidimensi
+const loadKuadranData = () => {
+  try {
+    const savedKuadran = localStorage.getItem('multidimensi_kuadran');
+    if (savedKuadran && selectedId) {
+      const allKuadran = JSON.parse(savedKuadran);
+      kuadranData.value = allKuadran[selectedId] || [];
+    } else {
+      kuadranData.value = [];
+    }
+  } catch (error) {
+    console.error('Error loading kuadran data:', error);
+    kuadranData.value = [];
+  }
+};
+
+// Kategori functions
+const openEditKategori = (kategori, index) => {
+  editingKategoriIndex.value = index;
+  kategoriForm.value = {
+    kategori: kategori.kategori || '',
+    pemberat: kategori.pemberat || '',
+    skor_tertinggi: kategori.skor_tertinggi || '',
+    status: kategori.status || 'Aktif',
+    jadual_skor_lov: kategori.jadual_skor_lov || (Array.isArray(kategori.jadual_skor_lov_array) ? kategori.jadual_skor_lov_array.join(', ') : ''),
+    jadual_skor_lov_array: kategori.jadual_skor_lov_array || [],
+    statusData: kategori.statusData || kategori.status || 'Draf',
+    tarikhMula: kategori.tarikhMula || '',
+    tarikhTamat: kategori.tarikhTamat || ''
+  };
+  showKategoriModal.value = true;
+};
+
+const closeEditKategori = () => {
+  showKategoriModal.value = false;
+  editingKategoriIndex.value = -1;
+};
+
+const saveKategori = () => {
+  if (editingKategoriIndex.value >= 0) {
+    const normalized = { ...kategoriForm.value };
+    // Normalize jadual_skor_lov into array field as well
+    if (typeof normalized.jadual_skor_lov === 'string') {
+      normalized.jadual_skor_lov_array = normalized.jadual_skor_lov
+        .split(',')
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
+    }
+    kategoriData.value[editingKategoriIndex.value] = normalized;
+    // Save to localStorage
+    const savedKategori = localStorage.getItem('multidimensi_kategori');
+    const allKategori = savedKategori ? JSON.parse(savedKategori) : {};
+    allKategori[selectedId] = kategoriData.value;
+    localStorage.setItem('multidimensi_kategori', JSON.stringify(allKategori));
+    
+    const { $toast } = useNuxtApp();
+    if ($toast) $toast.success('Kategori berjaya dikemaskini');
+  }
+  closeEditKategori();
+};
+
+const deleteKategori = (kategori, index) => {
+  if (confirm('Adakah anda pasti mahu memadamkan kategori ini?')) {
+    kategoriData.value.splice(index, 1);
+    // Save to localStorage
+    const savedKategori = localStorage.getItem('multidimensi_kategori');
+    const allKategori = savedKategori ? JSON.parse(savedKategori) : {};
+    allKategori[selectedId] = kategoriData.value;
+    localStorage.setItem('multidimensi_kategori', JSON.stringify(allKategori));
+    
+    const { $toast } = useNuxtApp();
+    if ($toast) $toast.success('Kategori berjaya dipadamkan');
+  }
+};
+
+// Kuadran functions
+const openEditKuadran = (kuadran, index) => {
+  editingKuadranIndex.value = index;
+  kuadranForm.value = {
+    kuadran: kuadran.kuadran || kuadran.namaKuadran || '',
+    min_merit: kuadran.min_merit || '',
+    max_merit: kuadran.max_merit || '',
+    status_multidimensi: kuadran.status_multidimensi || 'Aktif',
+    status: kuadran.status || 'Aktif',
+    status_data: kuadran.status_data || 'Draf',
+    tarikhMula: kuadran.tarikhMula || '',
+    tarikhTamat: kuadran.tarikhTamat || ''
+  };
+  showKuadranModal.value = true;
+};
+
+const closeEditKuadran = () => {
+  showKuadranModal.value = false;
+  editingKuadranIndex.value = -1;
+};
+
+const saveKuadran = () => {
+  if (editingKuadranIndex.value >= 0) {
+    kuadranData.value[editingKuadranIndex.value] = { ...kuadranForm.value };
+    // Save to localStorage
+    const savedKuadran = localStorage.getItem('multidimensi_kuadran');
+    const allKuadran = savedKuadran ? JSON.parse(savedKuadran) : {};
+    allKuadran[selectedId] = kuadranData.value;
+    localStorage.setItem('multidimensi_kuadran', JSON.stringify(allKuadran));
+    
+    const { $toast } = useNuxtApp();
+    if ($toast) $toast.success('Kuadran berjaya dikemaskini');
+  }
+  closeEditKuadran();
+};
+
+const deleteKuadran = (kuadran, index) => {
+  if (confirm('Adakah anda pasti mahu memadamkan kuadran ini?')) {
+    kuadranData.value.splice(index, 1);
+    // Save to localStorage
+    const savedKuadran = localStorage.getItem('multidimensi_kuadran');
+    const allKuadran = savedKuadran ? JSON.parse(savedKuadran) : {};
+    allKuadran[selectedId] = kuadranData.value;
+    localStorage.setItem('multidimensi_kuadran', JSON.stringify(allKuadran));
+    
+    const { $toast } = useNuxtApp();
+    if ($toast) $toast.success('Kuadran berjaya dipadamkan');
+  }
+};
 
 const formatDate = (dateString) => {
   if (!dateString) return "";

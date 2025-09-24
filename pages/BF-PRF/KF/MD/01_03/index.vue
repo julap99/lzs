@@ -170,11 +170,7 @@
                     type="date"
                     name="tarikhTamat"
                     label="Tarikh Tamat"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Tarikh tamat diperlukan'
-                    }"
-                    help="Pilih tarikh tamat"
+                    help="Pilih tarikh tamat (opsional)"
                   />
                 </div>
 

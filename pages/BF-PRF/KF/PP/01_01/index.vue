@@ -72,6 +72,14 @@
               >Lihat
               <Icon name="mdi:chevron-right" class="ml-1" size="1rem" />
             </rs-button>
+            <rs-button
+              variant="danger"
+              size="sm"
+              class="!px-2 !py-1 ml-2"
+              @click="deleteRecord(data.value.idPP || data.value.kodProses || data.value.idHadKifayah)"
+              >Buang
+              <Icon name="mdi:delete" class="ml-1" size="1rem" />
+            </rs-button>
           </template>
         </rs-table>
       </template>
@@ -93,9 +101,9 @@ const breadcrumb = ref([
     path: "/BF-PRF/KF/HK/admin",
   },
   {
-    name: "Konfigurasi Had Kifayah",
+    name: "Konfigurasi Proses Profiling",
     type: "current",
-    path: "/BF-PRF/KF/HK/admin",
+    path: "/BF-PRF/KF/PP/01_01",
   },
 ]);
 
@@ -161,6 +169,54 @@ const pendingApprovalCount = computed(() => {
     (item) => item.status === "Menunggu Kelulusan"
   ).length;
 });
+
+// Function to delete a record
+const deleteRecord = (idPP) => {
+  if (!idPP) {
+    console.error('No ID provided for deletion');
+    return;
+  }
+
+  // Show confirmation dialog
+  if (confirm('Adakah anda pasti mahu memadamkan rekod ini?')) {
+    try {
+      // Load current data from localStorage
+      const savedData = localStorage.getItem('prosesProfiling');
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        
+        // Filter out the record with matching idPP
+        const filteredData = parsedData.filter(item => 
+          (item.idPP || item.kodProses || item.idHadKifayah) !== idPP
+        );
+        
+        // Save updated data back to localStorage
+        localStorage.setItem('prosesProfiling', JSON.stringify(filteredData));
+        
+        // Update the local data
+        kifayahLimits.value = filteredData.map(validateDataItem);
+        
+        // Refresh the table
+        refreshTable();
+        
+        // Show success message
+        const { $toast } = useNuxtApp();
+        if ($toast) {
+          $toast.success('Rekod berjaya dipadamkan');
+        } else {
+          alert('Rekod berjaya dipadamkan');
+        }
+        
+        console.log('Record deleted successfully:', idPP);
+      } else {
+        console.log('No data found in localStorage');
+      }
+    } catch (error) {
+      console.error('Error deleting record:', error);
+      alert('Ralat semasa memadamkan rekod');
+    }
+  }
+};
 
 // Make sure the table refreshes when component mounts
 onMounted(() => {

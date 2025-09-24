@@ -305,13 +305,11 @@
                     type="select"
                     name="noPendaftaran"
                     label="No Pendaftaran"
-                    v-model="formData.noPengenalanPenerima"
+                    v-model="selectedRegistration"
                     :options="registrationOptions"
                     validation="required"
                     :validation-messages="{ required: 'Sila pilih no pendaftaran' }"
-                    @input="loadRecipientByRegistration"
                     @change="loadRecipientByRegistration"
-                    @update:modelValue="loadRecipientByRegistration"
                   />
                 </template>
                 <template v-else>
@@ -376,20 +374,20 @@
               </template>
               <template #body>
                 <div class="overflow-x-auto">
-                <table class="min-w-full text-left text-sm border border-gray-200 rounded-lg">
+                <table class="min-w-full text-left text-sm border border-gray-200 rounded-lg table-fixed">
                   <thead class="bg-gray-50">
                     <tr class="border-b">
-                      <th class="py-3 px-4 font-medium text-gray-900">NO.</th>
-                      <th class="py-3 px-4 font-medium text-gray-900">DOKUMEN</th>
-                      <th class="py-3 px-4 font-medium text-gray-900">ACTION</th>
-                      <th class="py-3 px-4 font-medium text-gray-900">STATUS</th>
-                      <th class="py-3 px-4 font-medium text-gray-900">CATATAN</th>
+                      <th class="py-3 px-4 font-medium text-gray-900 w-12">NO.</th>
+                      <th class="py-3 px-4 font-medium text-gray-900 w-1/4">DOKUMEN</th>
+                      <th class="py-3 px-4 font-medium text-gray-900 w-24">ACTION</th>
+                      <th class="py-3 px-4 font-medium text-gray-900 w-72">STATUS</th>
+                      <th class="py-3 px-4 font-medium text-gray-900 w-1/3">CATATAN</th>
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-200">
                     <tr v-for="(doc, idx) in documents" :key="doc.id" class="hover:bg-gray-50">
                       <td class="py-3 px-4 text-gray-900">{{ idx + 1 }}</td>
-                      <td class="py-3 px-4 text-gray-900">{{ doc.nama }}</td>
+                      <td class="py-3 px-4 text-gray-900 whitespace-normal break-words">{{ doc.nama }}</td>
                       <td class="py-3 px-4">
                         <div class="flex space-x-2">
                           <button 
@@ -412,7 +410,7 @@
                           type="select" 
                           :options="statusDokumenOptions" 
                           v-model="doc.status"
-                          placeholder="-- Pilih Status --"
+                          placeholder="Pilih"
                           class="w-full"
                         />
                       </td>
@@ -557,6 +555,9 @@
     penerimaManfaatNoPengenalan: '',
     penerimaManfaatHubungan: ''
   });
+  
+  // Separate reactive variable for registration selection
+  const selectedRegistration = ref('');
   const showSuccessModal = ref(false);
   const showConfirmationModal = ref(false);
   const nomorRujukan = ref("");
@@ -873,8 +874,11 @@
     'USM9900': { namaPenerima: 'Universiti Sains Malaysia (USM)', namaPemegangAkaun: 'Universiti Sains Malaysia (USM)', bank: 'Maybank', noAkaunBank: '101112131415' },
   };
   const loadRecipientByRegistration = () => {
-    const reg = formData.value.noPengenalanPenerima;
+    const reg = selectedRegistration.value;
+    console.log('loadRecipientByRegistration called with reg:', reg);
+    
     if (registrationData[reg]) {
+      console.log('Found registration data:', registrationData[reg]);
       formData.value.namaPenerimaBayaran = registrationData[reg].namaPenerima;
       formData.value.namaPemegangAkaun = registrationData[reg].namaPemegangAkaun;
       formData.value.bank = registrationData[reg].bank;
@@ -883,12 +887,20 @@
       if (!showBankFields.value) {
         formData.value.kaedahPembayaran = 'EFT';
       }
+      console.log('Updated formData:', {
+        namaPenerimaBayaran: formData.value.namaPenerimaBayaran,
+        namaPemegangAkaun: formData.value.namaPemegangAkaun,
+        bank: formData.value.bank,
+        noAkaunBank: formData.value.noAkaunBank
+      });
+    } else {
+      console.log('No registration data found for:', reg);
     }
   };
 
   // Ensure auto-fill also triggers when the selected registration changes
-  watch(() => formData.value.noPengenalanPenerima, (val) => {
-    if ((formData.value.kategoriPenerimaBayaran || '').toUpperCase() === 'ORGANISASI') {
+  watch(() => selectedRegistration.value, (val) => {
+    if ((formData.value.kategoriPenerimaBayaran || '').toUpperCase() === 'ORGANISASI' && val) {
       loadRecipientByRegistration();
     }
   });
@@ -990,11 +1002,12 @@
     },
   ]);
   const statusDokumenOptions = [
-    { label: "-- Pilih Status --", value: "", disabled: true },
+    { label: "-- Pilih --", value: "", disabled: true },
     { label: "Lengkap", value: "LENGKAP" },
     { label: "Tidak Lengkap", value: "TIDAK_LENGKAP" },
     { label: "Tiada Keperluan", value: "TIADA_KEPERLUAN" },
   ];
+  const getStatusLabel = (val) => statusDokumenOptions.find(o => o.value === val)?.label || '';
   const showReturnFields = computed(() => false); // first application: hidden
   const docInputRefs = new Map();
   const setDocInputRef = (el, id) => {
@@ -1037,7 +1050,29 @@
     alert('Buka Borang Siasatan Tunai (Kaunter Ekspres)');
   };
   const onSave = () => {
-    alert('Permohonan disimpan (mock)');
+    try {
+      // Create clean copies to avoid circular references
+      const cleanFormData = JSON.parse(JSON.stringify(formData.value));
+      const cleanDocuments = JSON.parse(JSON.stringify(documents.value));
+      
+      // Save all form data to localStorage
+      const saveData = {
+        formData: cleanFormData,
+        selectedDependentId: selectedDependentId.value,
+        penerimaManfaatJenisPengenalan: penerimaManfaatJenisPengenalan.value,
+        penerimaManfaatNoPengenalan: penerimaManfaatNoPengenalan.value,
+        penerimaManfaatHubungan: penerimaManfaatHubungan.value,
+        selectedRegistration: selectedRegistration.value,
+        documents: cleanDocuments,
+        timestamp: new Date().toISOString()
+      };
+      
+      localStorage.setItem('mohonBantuanData', JSON.stringify(saveData));
+      alert('Permohonan berjaya disimpan');
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
+      alert('Error menyimpan data');
+    }
   };
   
   // Breadcrumb items
@@ -1108,6 +1143,8 @@
 
   // Entitlement Product options (prototype: reuse product package options)
   const entitlementProductOptions = computed(() => productPackageOptions.value || []);
+
+  
   </script>
   
   <style lang="scss" scoped>

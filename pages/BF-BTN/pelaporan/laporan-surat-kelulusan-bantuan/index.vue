@@ -1,5 +1,6 @@
 <template>
   <div class="p-6 space-y-6">
+    <LayoutsBreadcrumb :items="breadcrumb" />
     <!-- Title -->
     <div>
       <h1 class="text-2xl font-semibold">Laporan Surat Kelulusan Bantuan</h1>
@@ -71,18 +72,20 @@
           :options="{ variant: 'default', striped: true, bordered: false, hover: true }"
         >
           <!-- Tindakan -->
-          <template #tindakan="{ row }">
-            <rs-button
-              variant="ghost"
-              size="sm"
-              class="!px-2 !py-1 text-blue-600 hover:text-blue-800"
-              @click="goToSurat()"
-              title="Lihat Surat Kelulusan Bantuan"
-              aria-label="Lihat Surat Kelulusan Bantuan"
-            >
-              <Icon name="material-symbols:visibility-outline" class="w-5 h-5" />
-            </rs-button>
+          <template #tindakan="{ value }">
+            <div class="flex justify-center items-center">
+              <rs-button
+                variant="info-text"
+                class="p-1 w-8 h-8"
+                @click="navigateTo(`/BF-BTN/pelaporan/laporan-surat-kelulusan-bantuan/${value.noRujukan}/surat-kelulusan`)"
+                title="Lihat"
+                aria-label="Lihat"
+              >
+                <Icon name="ic:outline-visibility" size="18" />
+              </rs-button>
+            </div>
           </template>
+                  
         </rs-table>
       </div>
     </div>
@@ -98,6 +101,12 @@ import { reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+
+const breadcrumb = ref([
+  { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/pelaporan' },
+  { name: 'Laporan', type: 'link', path: '/BF-BTN/pelaporan' },
+  { name: 'Laporan Surat Kelulusan Bantuan', type: 'current', path: '/BF-BTN/pelaporan/laporan-surat-kelulusan-bantuan' },
+])
 
 // 🔹 Mock data (selaras dengan halaman surat)
 const allSurat = [
@@ -186,6 +195,7 @@ function onSearch() {
     (!form.kategoriAsnaf || s.kategoriAsnaf === form.kategoriAsnaf) &&
     (!form.kodBantuan || s.kodBantuan === form.kodBantuan)
   )
+  console.log('Filtered results:', filteredResults.value)
   showTable.value = true  // Show the table after search
 }
 
@@ -198,13 +208,32 @@ function onReset() {
 }
 
 // 🚀 Navigate directly to the surat page
-function goToSurat() {
-  router.push({
-    path: '/BF-BTN/pelaporan/laporan-surat-kelulusan-bantuan/[id]/surat-kelulusan' // Static page path
-  })
-}
+// 🚀 Navigate directly to the surat page (robust)
+// function goToSurat(id) {
+//   if (!id) return
+//   const path = `/BF-BTN/pelaporan/laporan-surat-kelulusan-bantuan/${id.noRujukan}/surat-kelulusan`
+//   if (typeof navigateTo === 'function') return navigateTo(path)
+//   router.push(path)
+// }
 
 onMounted(() => {
   filteredResults.value = allSurat.slice()
+  console.log('On mount - allSurat:', allSurat)
+  console.log('On mount - filteredResults:', filteredResults.value)
 })
 </script>
+
+
+<style lang="scss" scoped>
+.rs-table {
+  :deep(th) {
+    @apply bg-gray-50 text-gray-600 font-medium;
+  }
+}
+.tooltip-enter-active, .tooltip-leave-active {
+  transition: opacity 0.2s;
+}
+.tooltip-enter-from, .tooltip-leave-to {
+  opacity: 0;
+}
+</style>

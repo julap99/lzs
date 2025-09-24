@@ -75,42 +75,47 @@
               </rs-badge>
             </div>
             
-            <!-- Multidimensi Details -->
+            <!-- Kategori Multidimensi Section -->
             <div class="pt-4">
-              <h4 class="text-md font-semibold mb-2">Multidimensi</h4>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Kuadran:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.kuadran || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Min Merit:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.min_merit || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Max Merit:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.max_merit || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Status Multidimensi:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.status_multidimensi || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Kategori:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.kategori || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Pemberat:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.pemberat || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1">
-                  <span class="text-sm font-medium text-gray-600 w-40">Skor Tertinggi:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.skor_tertinggi || 'N/A' }}</span>
-                </div>
-                <div class="flex items-center py-1 md:col-span-2">
-                  <span class="text-sm font-medium text-gray-600 w-40">Jadual Skor LOV:</span>
-                  <span class="text-sm text-gray-900">{{ selectedKifayah.jadual_skor_lov || 'N/A' }}</span>
-                </div>
+              <h4 class="text-md font-semibold mb-2">Kategori Multidimensi</h4>
+              <rs-table
+                v-if="kategoriData.length > 0"
+                class="mt-4"
+                :data="kategoriData"
+                :field="['kategori', 'pemberat', 'skor_tertinggi', 'status', 'jadual_skor_lov', 'tarikhMula', 'tarikhTamat']"
+                :pageSize="10"
+                :showNoColumn="true"
+                :options="{
+                  variant: 'default',
+                  hover: true,
+                }"
+              >
+                <template v-slot:kategori="data">
+                  <span class="font-medium">{{ data.value.kategori }}</span>
+                </template>
+                <template v-slot:pemberat="data">{{ data.value.pemberat }}</template>
+                <template v-slot:skor_tertinggi="data">{{ data.value.skor_tertinggi }}</template>
+                <template v-slot:status="data">
+                  <rs-badge :variant="getStatusVariant(data.value.status)">
+                    {{ data.value.status }}
+                  </rs-badge>
+                </template>
+                <template v-slot:jadual_skor_lov="data">
+                  <div class="flex flex-wrap gap-1">
+                    <span 
+                      v-for="(lov, idx) in (data.value.jadual_skor_lov_array || [])" 
+                      :key="idx"
+                      class="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs"
+                    >
+                      {{ lov }}
+                    </span>
+                  </div>
+                </template>
+                <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
+                <template v-slot:tarikhTamat="data">{{ formatDate(data.value.tarikhTamat) }}</template>
+              </rs-table>
+              <div v-else class="text-center py-4 text-gray-500">
+                Tiada data kategori multidimensi
               </div>
             </div>
           </div>
@@ -259,6 +264,7 @@
         </template>
       </rs-card>
     </div>
+
   </div>
 </template>
 
@@ -301,6 +307,7 @@ const loading = ref(true);
 const error = ref(null);
 const selectedKifayah = ref(null);
 const allKifayahData = ref([]);
+const kategoriData = ref([]);
 
 // Options for status kelulusan radio buttons
 const statusKelulusanOptions = [
@@ -410,6 +417,9 @@ const loadData = () => {
       selectedKifayah.value = allKifayahData.value.find(item => item.no === numericId);
       if (!selectedKifayah.value) {
         error.value = `Rekod dengan ID "${selectedId}" tidak ditemui.`;
+      } else {
+        // Load kategori data for the selected multidimensi
+        loadKategoriData();
       }
     } else {
       error.value = "ID Had Kifayah tidak disediakan.";
@@ -463,6 +473,41 @@ onMounted(() => {
 onActivated(() => {
   loadData();
 });
+
+// Load kategori data for the selected multidimensi
+const loadKategoriData = () => {
+  try {
+    console.log('Loading kategori data for selectedId:', selectedId);
+    console.log('Selected Kifayah:', selectedKifayah.value);
+    
+    const savedKategori = localStorage.getItem('multidimensi_kategori');
+    console.log('Saved kategori data:', savedKategori);
+    
+    if (savedKategori && selectedKifayah.value) {
+      const allKategori = JSON.parse(savedKategori);
+      console.log('Parsed kategori data:', allKategori);
+      
+      // Try to find data using the actual ID from selectedKifayah
+      const actualId = selectedKifayah.value.idMultidimensi || selectedKifayah.value.idHadKifayah;
+      console.log('Looking for kategori data with ID:', actualId);
+      
+      if (actualId) {
+        kategoriData.value = allKategori[actualId] || [];
+        console.log('Loaded kategori data:', kategoriData.value);
+      } else {
+        console.log('No actual ID found in selectedKifayah');
+        kategoriData.value = [];
+      }
+    } else {
+      console.log('No saved kategori data or selectedKifayah, initializing empty array');
+      kategoriData.value = [];
+    }
+  } catch (error) {
+    console.error('Error loading kategori data:', error);
+    kategoriData.value = [];
+  }
+};
+
 
 const formatDate = (dateString) => {
   if (!dateString) return "";

@@ -1132,6 +1132,15 @@ const semakanData = ref([
     noRujukan: "NAS-2025-0003",
     tindakan: "bantuan/semakan/NAS-2025-0003",
   },
+  {
+    pemohon: "Maryam binti Abdullah (920815-08-2567)",
+    kariah: "Masjid An-Nur",
+    daerah: "Shah Alam",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0005",
+    tindakan: "bantuan/semakan/NAS-2025-0005",
+  },
 ]);
 
 // Mock data for Sokongan sub-tab (own dataset, same format)
@@ -1176,6 +1185,15 @@ const kelulusanData = ref([
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     noRujukan: "NAS-2025-0403",
     tindakan: "bantuan/kelulusan/siasatan-eoad/btn-003",
+  },
+  {
+    pemohon: "Amirul Hakim bin Zainuddin (791230-10-4321)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0404",
+    tindakan: "bantuan/kelulusan/siasatan-eoad/btn-004",
   },
 ]);
 
@@ -1510,9 +1528,16 @@ const handleViewDetails = (noRujukan) => {
   navigateTo(`/BF-BTN/PB/senarai/${noRujukan}`);
 };
 
-const handleReview = (noRujukan) => {
-  console.log(noRujukan);
-  navigateTo(`/BF-BTN/tugasan/${noRujukan}`);
+const handleReview = (tindakan) => {
+  console.log(tindakan);
+  // Handle different routing patterns based on the tindakan field
+  if (tindakan.includes('/')) {
+    // For complex paths like kelulusan, siasatan, etc.
+    navigateTo(`/BF-BTN/tugasan/${tindakan}`);
+  } else {
+    // For simple reference numbers
+    navigateTo(`/BF-BTN/tugasan/${tindakan}`);
+  }
 };
 
 const handleAssignTask = (noRujukan) => {

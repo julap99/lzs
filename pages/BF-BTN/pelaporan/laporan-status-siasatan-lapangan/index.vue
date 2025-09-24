@@ -253,8 +253,10 @@ function exportExcel() {
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
-  // Use RegExp constructor to avoid Tailwind JIT mis-parsing /[-:T]/ as an arbitrary property class
-  const stamp = new Date().toISOString().replace(new RegExp('[-:T]', 'g'), '').slice(0, 12)
+  // Build a compact timestamp without hyphens, colons, or the 'T' separator.
+  // Avoids using bracket character classes in source (which Tailwind JIT might misinterpret).
+  // Minute-precision stamp (YYYYMMDDHHmm) using intern's slice(0, 12) style; no regex
+  const stamp = new Date().toISOString().replaceAll('-', '').replaceAll(':', '').replace('T', '').slice(0, 12)
   a.href = url
   a.download = `Laporan_Status_Siasatan_Lapangan_${stamp}.csv`
   a.click()
