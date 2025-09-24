@@ -179,7 +179,7 @@ const selectedId = route.query.id;
 const breadcrumb = ref([
   { name: 'Profiling', type: 'link', path: '/BF-PRF/KF/HK/admin' },
   { name: 'Kelulusan Proses Profiling', type: 'link', path: '/BF-PRF/KF/PP/02_01' },
-  { name: 'Lihat Proses', type: 'current', path: '/BF-PRF/KF/PP/02_02' },
+  { name: 'Kelulusan', type: 'current', path: '/BF-PRF/KF/PP/02_03' },
 ]);
 
 const loading = ref(true);

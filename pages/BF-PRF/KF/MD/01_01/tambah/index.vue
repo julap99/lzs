@@ -76,6 +76,16 @@
                   />
                 </div>
 
+                <!-- Tarikh Tamat -->
+                <div>
+                  <FormKit
+                    type="date"
+                    name="tarikhTamat"
+                    label="Tarikh Tamat"
+                    help="Pilih tarikh tamat (jika ada)"
+                  />
+                </div>
+
                 <!-- Status Data -->
                 <div>
                   <FormKit
@@ -89,6 +99,23 @@
                       required: 'Status Data diperlukan'
                     }"
                     help="Pilih Status Data untuk Multidimensi"
+                  />
+                </div>
+
+                <!-- Status -->
+                <div>
+                  <FormKit
+                    type="radio"
+                    name="status"
+                    label="Status"
+                    :classes="{ label: 'block mb-2', inner: 'flex flex-col gap-2' }"
+                    :options="[
+                      { label: 'Aktif', value: 'Aktif' },
+                      { label: 'Tidak Aktif', value: 'Tidak Aktif' }
+                    ]"
+                    validation="required"
+                    :validation-messages="{ required: 'Status diperlukan' }"
+                    help="Pilih status Multidimensi"
                   />
                 </div>
               </div>
@@ -161,6 +188,8 @@ const formData = reactive({
   namaMultidimensi: "",
   keterangan: "",
   tarikhMula: "",
+  tarikhTamat: "",
+  status: "",
   statusData: "",
 });
 
@@ -214,6 +243,8 @@ const handleSubmit = async (formData) => {
       idMultidimensi: generateNextId(),
       namaMultidimensi: formData.namaMultidimensi,
       tarikhMula: formData.tarikhMula,
+      tarikhTamat: formData.tarikhTamat,
+      status: formData.status || 'Aktif',
       statusData: formData.statusData,
       keterangan: formData.keterangan || "",
       tindakan: existingData.length + 1,
