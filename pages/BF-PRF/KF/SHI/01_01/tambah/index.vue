@@ -164,7 +164,7 @@ const breadcrumb = ref([
   {
     name: "Profiling",
     type: "link",
-    path: "/BF-PRF/KF/SHI/admin",
+    path: "/BF-PRF/KF/SHI/01_01",
   },
   {
     name: "Konfigurasi Status Household / Individu",

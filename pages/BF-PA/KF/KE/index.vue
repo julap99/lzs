@@ -72,7 +72,7 @@
                   <template #status="data">
                     <rs-badge :variant="getStatusVariant(data.text)">{{ data.text }}</rs-badge>
                   </template>
-                  <template #tarikhKuatkuasa="data">
+                  <template #tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -112,7 +112,7 @@
                   <template #status="data">
                     <rs-badge :variant="getStatusVariant(data.text)">{{ data.text }}</rs-badge>
                   </template>
-                  <template #tarikhKuatkuasa="data">
+                  <template #tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -144,7 +144,7 @@
                   <template #status="data">
                     <rs-badge :variant="getStatusVariant(data.text)">{{ data.text }}</rs-badge>
                   </template>
-                  <template #tarikhKuatkuasa="data">
+                  <template #tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -189,7 +189,7 @@
                   <template #status="data">
                     <rs-badge :variant="getStatusVariant(data.text)">{{ data.text }}</rs-badge>
                   </template>
-                  <template #tarikhKuatkuasa="data">
+                  <template #tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -221,7 +221,7 @@
                   <template #status="data">
                     <rs-badge :variant="getStatusVariant(data.text)">{{ data.text }}</rs-badge>
                   </template>
-                  <template #tarikhKuatkuasa="data">
+                  <template #tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -260,7 +260,7 @@
                   <template #status="data">
                     <rs-badge :variant="getStatusVariant(data.text)">{{ data.text }}</rs-badge>
                   </template>
-                  <template #tarikhKuatkuasa="data">
+                  <template #tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -297,7 +297,7 @@
                   <template #status="data">
                     <rs-badge :variant="getStatusVariant(data.text)">{{ data.text }}</rs-badge>
                   </template>
-                  <template #tarikhKuatkuasa="data">
+                  <template #tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -338,7 +338,7 @@
                   <template #status="data">
                     <rs-badge :variant="getStatusVariant(data.text)">{{ data.text }}</rs-badge>
                   </template>
-                  <template #tarikhKuatkuasa="data">
+                  <template #tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -377,7 +377,7 @@
                   <template #status="data">
                     <rs-badge variant="warning">{{ data.text }}</rs-badge>
                   </template>
-                  <template #tarikhKuatkuasa="data">
+                  <template #tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -416,7 +416,7 @@
                   <template #status="data">
                     <rs-badge :variant="getStatusVariant(data.text)">{{ data.text }}</rs-badge>
                   </template>
-                  <template #tarikhKuatkuasa="data">
+                  <template #tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -569,7 +569,7 @@ const allowancesList = ref([
     rujukan: "KE-2024-001",
     kategoriPenolongAmil: "PAK",
     status: "Aktif",
-    tarikhKuatkuasa: "01-01-2024",
+    tarikhPaparan: "01-01-2024",
     tindakan: 1,
   },
 
@@ -578,14 +578,14 @@ const allowancesList = ref([
     rujukan: "KE-2024-003",
     kategoriPenolongAmil: "PAK+",
     status: "Aktif",
-    tarikhKuatkuasa: "01-01-2024",
+    tarikhPaparan: "01-01-2024",
     tindakan: 2,
   },
   {
     rujukan: "KE-2024-004",
     kategoriPenolongAmil: "PAF",
     status: "Aktif",
-    tarikhKuatkuasa: "01-03-2024",
+    tarikhPaparan: "01-03-2024",
     tindakan: 3,
   },
 
@@ -594,7 +594,7 @@ const allowancesList = ref([
     rujukan: "KE-2024-005",
     kategoriPenolongAmil: "PAP",
     status: "Aktif",
-    tarikhKuatkuasa: "01-03-2024",
+    tarikhPaparan: "01-03-2024",
     tindakan: 4,
   }
 ]);
@@ -604,7 +604,7 @@ const tableColumns = [
   { key: "rujukan", name: "Rujukan", sortable: true },
   { key: "kategoriPenolongAmil", name: "Kategori", sortable: true },
   { key: "status", name: "Status", sortable: true },
-  { key: "tarikhKuatkuasa", name: "Tarikh Dipaparkan", sortable: true },
+  { key: "tarikhPaparan", name: "Tarikh Dipaparkan", sortable: true },
   { key: "tindakan", name: "Tindakan", sortable: false },
 ];
 
@@ -778,7 +778,7 @@ const performBulkApproval = async () => {
     }
     toApprove.forEach((a) => {
       a.status = "Aktif";
-      a.tarikhKuatkuasa = today;
+      a.tarikhPaparan = today;
     });
 
     toast.success(`${toApprove.length} elaun berjaya diluluskan`);

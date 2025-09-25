@@ -1,3 +1,9 @@
+
+UNTUK PENGURUSAN RISIKO 
+
+BOLEH TAK BUAT KAN CHECKBOX DALAM KOTAK BOLE?
+
+
 <!-- 
   RTMF SCREEN: PA-PP-PD-01_01
   PURPOSE: Main Dashboard - Senarai Permohonan Penolong Amil

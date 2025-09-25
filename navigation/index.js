@@ -911,6 +911,34 @@ export default [
             ],
             meta: {},
           },
+                    {
+            title: "Level Kelulusan ",
+            icon: "iconamoon:arrow-right-2-duotone",
+            child: [
+              {
+                title: "Admin",
+                icon: "iconamoon:arrow-right-2-duotone",
+                child: [
+                  {
+                    title: "Konfigurasi Level Kelulusan",
+                    icon: "iconamoon:arrow-right-2-duotone",
+                    path: "/BF-PRF/KF/LK/01_01",
+                    child: [],
+                    meta: {},
+                  },
+                ],
+                meta: {},
+              },
+              {
+                title: "Pelulus",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PRF/KF/LK/02_01",
+                child: [],
+                meta: {},
+              },
+            ],
+            meta: {},
+          },
           {
             title: "Household / Individu",
 
@@ -1725,6 +1753,13 @@ export default [
             child: [],
             meta: {},
           },
+          {
+            title: "Kandungan Dokumen",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PA/KF/KD",
+            child: [],
+            meta: {},
+          },
         ],
         meta: {},
       },
@@ -1748,7 +1783,7 @@ export default [
             meta: {},
           },
           {
-            title: "Penamatan Jawatan",
+            title: "Penamatan Lantikan",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PA/PP/KP",
             child: [],

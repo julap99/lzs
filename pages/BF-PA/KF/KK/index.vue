@@ -94,7 +94,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -141,7 +141,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -180,7 +180,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -224,7 +224,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -263,7 +263,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -309,7 +309,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -353,7 +353,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -406,7 +406,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -452,7 +452,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -498,7 +498,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -696,34 +696,34 @@ const tableKey = ref(0);
 const categoriesList = ref([
   {
     rujukan: "KK-2024-001",
-    kategoriPenolongAmil: "Penolong Amil Fitrah",
+    kategoriPenolongAmil: "Fitrah",
     kodSingkatan: "PAF",
     status: "Aktif",
-    tarikhKuatkuasa: "01-01-2024",
+    tarikhPaparan: "01-01-2024",
     tindakan: 1
   },
   {
     rujukan: "KK-2024-002",
-    kategoriPenolongAmil: "Penolong Amil Padi",
+    kategoriPenolongAmil: "Padi",
     kodSingkatan: "PAP",
     status: "Aktif",
-    tarikhKuatkuasa: "01-01-2024",
+    tarikhPaparan: "01-01-2024",
     tindakan: 2
   },
   {
     rujukan: "KK-2024-003",
-    kategoriPenolongAmil: "Penolong Amil Kariah",
+    kategoriPenolongAmil: "Kariah",
     kodSingkatan: "PAK",
     status: "Aktif",
-    tarikhKuatkuasa: "01-01-2024",
+    tarikhPaparan: "01-01-2024",
     tindakan: 3
   },
   {
     rujukan: "KK-2024-004",
-    kategoriPenolongAmil: "Penolong Amil Komuniti",
+    kategoriPenolongAmil: "Komuniti",
     kodSingkatan: "PAK+",
     status: "Aktif",
-    tarikhKuatkuasa: "01-01-2024",
+    tarikhPaparan: "01-01-2024",
     tindakan: 4
   }
 ]);
@@ -737,7 +737,7 @@ const tableColumns = [
   },
   {
     key: 'kategoriPenolongAmil',
-    name: 'Kategori Penolong Amil',
+    name: 'Kategori',
     sortable: true,
   },
   {
@@ -751,8 +751,8 @@ const tableColumns = [
     sortable: true,
   },
   {
-    key: 'tarikhKuatkuasa',
-    name: 'Tarikh Kuatkuasa',
+    key: 'tarikhPaparan',
+    name: 'Tarikh Paparan',
     sortable: true,
   },
   {
@@ -1027,7 +1027,7 @@ const performBulkApproval = async () => {
     }
     toApprove.forEach(category => {
       category.status = 'Aktif';
-      category.tarikhKuatkuasa = formattedDate;
+      category.tarikhPaparan = formattedDate;
     });
     
     toast.success(`${toApprove.length} kategori berjaya diluluskan`);
