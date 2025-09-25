@@ -139,7 +139,7 @@
               <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-process`"
-                  :data="getTableDataByStatus(['Dihantar', 'Dalam Semakan', 'Telah Disaring', 'Telah Disemak', 'Telah Disokong', 'Telah Disahkan'])"
+                  :data="getTableDataByStatus(['Dihantar', 'Belum Disaring', 'Menunggu Semakan', 'Menunggu Sokongan', 'Menunggu Pengesahan', 'Menunggu Kelulusan'])"
                   :columns="eksekutifColumnsWithoutStatusLantikan"
                   :pageSize="10"
                   :show-search="false"
@@ -1460,7 +1460,7 @@ const getCurrentTabDataCount = () => {
   const tabStatusMap = {
     pyb: {
       "Draf": ["Draf", "Draft"],
-      "Sedang Proses": ["Dihantar", "Dalam Semakan", "Telah Disaring", "Telah Disemak", "Telah Disokong", "Telah Disahkan"],
+      "Sedang Proses": ["Dihantar", "Belum Disaring", "Menunggu Semakan", "Menunggu Sokongan", "Menunggu Pengesahan", "Menunggu Kelulusan"],
       "Lulus": ["Diluluskan", "Approved"],
       "Ditolak": ["Ditolak", "Rejected"],
     },
@@ -1546,9 +1546,9 @@ const applications = ref([
     jawatan: "Penolong Amil Kariah",
     institusiKariah: "Masjid Al-Amin",
     institusiId: "MASJID_NEGERI_SELANGOR_001",
-    statusPendaftaran: "Dalam Semakan",
+    statusPendaftaran: "Menunggu Kelulusan",
     statusLantikan: "Menunggu",
-    tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Dalam Semakan" },
+    tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Menunggu Kelulusan" },
   },
   {
     no: 3,
@@ -1725,10 +1725,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Dalam Semakan",
+      statusPendaftaran: "Menunggu Kelulusan",
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Dalam Semakan" },
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Menunggu Kelulusan" },
     },
     {
       no: 3,
@@ -1738,9 +1738,9 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Komuniti",
       jawatan: "Penolong Amil Komuniti",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disaring",
+      statusPendaftaran: "Menunggu Semakan",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Telah Disaring" },
+      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Menunggu Semakan" },
     },
     {
       no: 4,
@@ -1750,10 +1750,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Padi",
       jawatan: "Penolong Amil Padi",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disemak",
+      statusPendaftaran: "Menunggu Sokongan",
       sesiPerkhidmatan: "Sesi 4",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Disemak" },
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Menunggu Sokongan" },
     },
     {
       no: 5,
@@ -1763,10 +1763,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Fitrah",
       jawatan: "Penolong Amil Fitrah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disokong",
+      statusPendaftaran: "Menunggu Pengesahan",
       sesiPerkhidmatan: "Sesi 1",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Telah Disokong" },
+      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Menunggu Pengesahan" },
     },
     {
       no: 6,
@@ -1776,10 +1776,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disahkan",
+      statusPendaftaran: "Menunggu Kelulusan",
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-006", statusPendaftaran: "Telah Disahkan" },
+      tindakan: { rujukan: "PA-2024-006", statusPendaftaran: "Menunggu Kelulusan" },
     },
     {
       no: 7,
@@ -1867,10 +1867,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Dalam Semakan",
+      statusPendaftaran: "Menunggu Kelulusan",
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-010", statusPendaftaran: "Dalam Semakan" },
+      tindakan: { rujukan: "PA-2024-010", statusPendaftaran: "Menunggu Kelulusan" },
     },
     // NEW: PYB "Lulus" data
     {
@@ -2489,43 +2489,36 @@ const getStatusPendaftaranVariant = (status) => {
     Submitted: "warning",
     Dihantar: "warning",
     "Under Review": "info",
-    "Dalam Semakan": "info",
     
-    // Waiting stages - Different colors for differentiation
+    // Pending/Waiting stages (uniform warning)
     "Belum Disaring": "warning",
-    "Menunggu Semakan": "info",
-    "Menunggu Sokongan": "secondary", 
-    "Menunggu Pengesahan": "primary",
-    "Menunggu Kelulusan": "danger",
+    "Menunggu Semakan": "warning",
+    "Menunggu Sokongan": "warning",
+    "Menunggu Pengesahan": "warning",
+    "Menunggu Kelulusan": "warning",
     
-    // Screening stages
-    Screened: "info",
-    Disaring: "info",
-    "Telah Disaring": "info",
+    // Completed by current role (Telah ... → secondary)
+    Screened: "secondary",
+    Disaring: "secondary",
+    "Telah Disaring": "secondary",
+    "PT Reviewed": "secondary",
+    "Disemak PT": "secondary",
+    "Telah Disemak": "secondary",
+    "Executive Supported": "secondary",
+    "Disokong Eksekutif": "secondary",
+    "Telah Disokong": "secondary",
+    "Department Confirmed": "secondary",
+    "Disahkan Jabatan": "secondary",
+    "Telah Disahkan": "secondary",
     
-    // Review stages
-    "PT Reviewed": "info",
-    "Disemak PT": "info",
-    "Telah Disemak": "info",
+    // Final approvals (primary)
+    "Division Approved": "primary",
+    "Diluluskan Divisyen": "primary",
+    "Telah Diluluskan": "primary",
+    Approved: "primary",
+    Diluluskan: "primary",
     
-    // Support stages
-    "Executive Supported": "success",
-    "Disokong Eksekutif": "success",
-    "Telah Disokong": "success",
-    
-    // Confirmation stages
-    "Department Confirmed": "success",
-    "Disahkan Jabatan": "success",
-    "Telah Disahkan": "success",
-    
-    // Approval stages
-    "Division Approved": "success",
-    "Diluluskan Divisyen": "success",
-    "Telah Diluluskan": "success",
-    Approved: "success",
-    Diluluskan: "success",
-    
-    // Rejection
+    // Rejection (danger)
     Rejected: "danger",
     Ditolak: "danger",
   };
