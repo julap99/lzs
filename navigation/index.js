@@ -911,6 +911,34 @@ export default [
             ],
             meta: {},
           },
+                    {
+            title: "Level Kelulusan ",
+            icon: "iconamoon:arrow-right-2-duotone",
+            child: [
+              {
+                title: "Admin",
+                icon: "iconamoon:arrow-right-2-duotone",
+                child: [
+                  {
+                    title: "Konfigurasi Level Kelulusan",
+                    icon: "iconamoon:arrow-right-2-duotone",
+                    path: "/BF-PRF/KF/LK/01_01",
+                    child: [],
+                    meta: {},
+                  },
+                ],
+                meta: {},
+              },
+              {
+                title: "Pelulus",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-PRF/KF/LK/02_01",
+                child: [],
+                meta: {},
+              },
+            ],
+            meta: {},
+          },
           {
             title: "Household / Individu",
 
