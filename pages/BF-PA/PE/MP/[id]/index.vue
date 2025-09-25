@@ -110,7 +110,7 @@
                        Daerah
                      </th>
                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                       Kadar Elaun
+                       Jumlah Elaun (PA)
                      </th>
                    </tr>
                  </thead>
@@ -177,7 +177,7 @@
                      </td>
                      <td class="px-6 py-4 whitespace-nowrap">
                        <span :class="pa.attended ? 'text-green-600 font-medium' : 'text-gray-400'">
-                         RM {{ pa.attended ? pa.allowanceRate : '0.00' }}
+                         RM {{ pa.attended ? perPersonAllowance(pa).toFixed(2) : '0.00' }}
                        </span>
                      </td>
                    </tr>
@@ -190,11 +190,11 @@
                      <td class="px-6 py-4 font-medium text-blue-600">
                        RM {{ totalAllowance }}
                      </td>
-                   </tr>
-                 </tfoot>
-               </table>
-             </div>
-           </div>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
 
            <!-- Review History -->
            <div class="mb-6 p-6 border border-gray-200 rounded-lg">
@@ -477,6 +477,35 @@ const attendanceSummary = ref({
 // Mock Penolong Amil data
 const penolongAmil = ref([]);
 
+// Calculation helpers:
+// - Dalam Daerah = RM50 x (bilangan sesi hadir)
+// - Luar Daerah = RM50 x (bilangan sesi hadir) + RM50 (elaun tambahan)
+const BASE_RATE = 50;
+function getSessionCount(pa) {
+  if (!pa?.attended) return 0;
+  const times = String(pa?.checkInTime || '').trim();
+  if (times) {
+    // Count comma-separated check-in times
+    return times.split(',').map(s => s.trim()).filter(Boolean).length;
+  }
+  // Fallback to sesiDaftar (if provided) else 0/1
+  const sd = Number(pa?.sesiDaftar || 0);
+  return sd > 0 ? sd : 0;
+}
+function perPersonAllowance(pa) {
+  if (!pa?.attended) return 0;
+  const daerah = String(pa?.daerah || '').toLowerCase();
+  const sessions = getSessionCount(pa);
+  const extra = daerah === 'luar daerah' ? BASE_RATE : 0;
+  return (BASE_RATE * sessions) + extra;
+}
+const totalAllowance = computed(() => {
+  const sum = (penolongAmil.value || []).reduce((s, pa) => s + perPersonAllowance(pa), 0);
+  return sum
+    .toFixed(2)
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+});
+
 // Current role from dashboard (read from URL query parameter)
 const currentRole = ref('eksekutif'); // Default fallback
 
@@ -628,13 +657,6 @@ const activityDataMap = {
 };
 
 // Computed properties
-const totalAllowance = computed(() => {
-  return penolongAmil.value
-    .filter(pa => pa.attended)
-    .reduce((sum, pa) => sum + parseFloat(pa.allowanceRate), 0)
-    .toFixed(2)
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-});
 
 // Helper functions
 const getStatusClass = (status) => {
@@ -788,15 +810,13 @@ onMounted(() => {
     const totalInvited = penolongAmil.value.length;
     const totalAttended = penolongAmil.value.filter(pa => pa.attended).length;
     const attendanceRate = Math.round((totalAttended / totalInvited) * 100);
-    const totalAllowance = penolongAmil.value
-      .filter(pa => pa.attended)
-      .reduce((sum, pa) => sum + parseFloat(pa.allowanceRate), 0);
+    const totalAllowanceVal = penolongAmil.value.reduce((sum, pa) => sum + perPersonAllowance(pa), 0);
     
     attendanceSummary.value = {
       totalInvited,
       totalAttended,
       attendanceRate,
-      totalAllowance: totalAllowance.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+      totalAllowance: totalAllowanceVal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
     };
   }
 });
