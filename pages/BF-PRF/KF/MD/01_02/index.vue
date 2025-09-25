@@ -150,6 +150,15 @@
               <rs-button
                 variant="primary"
                 size="sm"
+                class="!px-2 !py-1 mr-2"
+                @click="hantarKategori(data.value, data.index)"
+              >
+                Hantar
+                <Icon name="mdi:send" class="ml-1" size="1rem" />
+              </rs-button>
+              <rs-button
+                variant="primary"
+                size="sm"
                 class="!px-2 !py-1"
                 @click="openEditKategori(data.value, data.index)"
               >
@@ -221,6 +230,15 @@
             <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
             <template v-slot:tarikhTamat="data">{{ formatDate(data.value.tarikhTamat) }}</template>
             <template v-slot:tindakan="data">
+              <rs-button
+                variant="primary"
+                size="sm"
+                class="!px-2 !py-1 mr-2"
+                @click="hantarKuadran(data.value, data.index)"
+              >
+                Hantar
+                <Icon name="mdi:send" class="ml-1" size="1rem" />
+              </rs-button>
               <rs-button
                 variant="primary"
                 size="sm"
@@ -890,6 +908,29 @@ const deleteKategori = (kategori, index) => {
   }
 };
 
+// Hantar actions: simple notification and mark statusData if applicable
+const hantarKategori = (kategori, index) => {
+  try {
+    if (index >= 0) {
+      // Update the specific item in the array
+      kategoriData.value[index] = { ...kategori, statusData: 'Menunggu Kelulusan' };
+      
+      // Force reactivity update
+      kategoriData.value = [...kategoriData.value];
+      
+      const savedKategori = localStorage.getItem('multidimensi_kategori');
+      const allKategori = savedKategori ? JSON.parse(savedKategori) : {};
+      allKategori[selectedId] = kategoriData.value;
+      localStorage.setItem('multidimensi_kategori', JSON.stringify(allKategori));
+    }
+    const { $toast } = useNuxtApp();
+    if ($toast) $toast.success('Kategori berjaya dihantar'); else alert('Kategori berjaya dihantar');
+  } catch (e) {
+    console.error('Hantar kategori error:', e);
+    alert('Ralat semasa menghantar kategori');
+  }
+};
+
 // Kuadran functions
 const openEditKuadran = (kuadran, index) => {
   editingKuadranIndex.value = index;
@@ -937,6 +978,28 @@ const deleteKuadran = (kuadran, index) => {
     
     const { $toast } = useNuxtApp();
     if ($toast) $toast.success('Kuadran berjaya dipadamkan');
+  }
+};
+
+const hantarKuadran = (kuadran, index) => {
+  try {
+    if (index >= 0) {
+      // Update the specific item in the array
+      kuadranData.value[index] = { ...kuadran, status_data: 'Menunggu Kelulusan' };
+      
+      // Force reactivity update
+      kuadranData.value = [...kuadranData.value];
+      
+      const savedKuadran = localStorage.getItem('multidimensi_kuadran');
+      const allKuadran = savedKuadran ? JSON.parse(savedKuadran) : {};
+      allKuadran[selectedId] = kuadranData.value;
+      localStorage.setItem('multidimensi_kuadran', JSON.stringify(allKuadran));
+    }
+    const { $toast } = useNuxtApp();
+    if ($toast) $toast.success('Kuadran berjaya dihantar'); else alert('Kuadran berjaya dihantar');
+  } catch (e) {
+    console.error('Hantar kuadran error:', e);
+    alert('Ralat semasa menghantar kuadran');
   }
 };
 

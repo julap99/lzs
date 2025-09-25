@@ -511,18 +511,29 @@ const sejarahSemakan = computed(() => ([
 const getStatusPendaftaranVariant = (status) => {
   const statusVariants = {
     Draft: "disabled",
-    Dihantar: "warning",
-    "Dalam Semakan": "info",
-    Disaring: "info",
-    "Disemak PT": "info",
-    "Disokong Eksekutif": "success",
-    "Disahkan Jabatan": "success",
-    "Diluluskan Divisyen": "success",
-    Diluluskan: "success",
-    Ditolak: "danger",
+    Draf: "disabled",
     Submitted: "warning",
-    Pending: "info",
-    Approved: "success",
+    Dihantar: "warning",
+    // Pending uniform
+    "Belum Disaring": "warning",
+    "Menunggu Semakan": "warning",
+    "Menunggu Sokongan": "warning",
+    "Menunggu Pengesahan": "warning",
+    "Menunggu Kelulusan": "warning",
+    // Completed (Telah ...)
+    Disaring: "secondary",
+    "Disemak PT": "secondary",
+    "Disokong Eksekutif": "secondary",
+    "Disahkan Jabatan": "secondary",
+    "Telah Disaring": "secondary",
+    "Telah Disemak": "secondary",
+    "Telah Disokong": "secondary",
+    "Telah Disahkan": "secondary",
+    // Final approvals
+    "Telah Diluluskan": "primary",
+    Diluluskan: "primary",
+    // Rejected
+    Ditolak: "danger",
     Rejected: "danger",
   };
   return statusVariants[status] || "secondary";
@@ -539,17 +550,18 @@ const getSupportStatusVariant = (status) => {
 const getLocalizedStatus = (status) => {
   const statusMap = {
     Submitted: "Dihantar",
-    Pending: "Menunggu",
-    Approved: "Diluluskan",
-    Rejected: "Ditolak",
     Draft: "Draf",
     Dihantar: "Dihantar",
-    "Dalam Semakan": "Dalam Semakan",
-    Disaring: "Disaring",
-    "Disemak PT": "Disemak PT",
-    "Disokong Eksekutif": "Disokong Eksekutif",
-    "Disahkan Jabatan": "Disahkan Jabatan",
-    "Diluluskan Divisyen": "Diluluskan Divisyen",
+    "Belum Disaring": "Belum Disaring",
+    "Menunggu Semakan": "Menunggu Semakan",
+    "Menunggu Sokongan": "Menunggu Sokongan",
+    "Menunggu Pengesahan": "Menunggu Pengesahan",
+    "Menunggu Kelulusan": "Menunggu Kelulusan",
+    "Telah Disaring": "Telah Disaring",
+    "Telah Disemak": "Telah Disemak",
+    "Telah Disokong": "Telah Disokong",
+    "Telah Disahkan": "Telah Disahkan",
+    "Telah Diluluskan": "Telah Diluluskan",
     Diluluskan: "Diluluskan",
     Ditolak: "Ditolak",
   };

@@ -1048,7 +1048,7 @@ const siasatanData = ref([
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     jenistugasan: "Bantuan",
     noRujukan: "NAS-2025-0001",
-    tindakan: "bantuan/siasatan/siasatan-eoad/NAS-2025-0001",
+    tindakan: "bantuan/siasatan/siasatan-eoad-2/NAS-2025-0001",
   },
   {
     pemohon: "Siti binti Hassan (850505-05-5678)",
@@ -1057,7 +1057,7 @@ const siasatanData = ref([
     bilanganBantuan: 2,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 2",
     noRujukan: "NAS-2025-0002",
-    tindakan: "bantuan/siasatan/siasatan-eoad/NAS-2025-0002",
+    tindakan: "bantuan/siasatan/siasatan-eoad-2/NAS-2025-0002",
   },
   {
     pemohon: "Mohd Amin bin Mohd Ali (650101-01-1234)",
@@ -1067,7 +1067,7 @@ const siasatanData = ref([
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     jenistugasan: "Bantuan ",
     noRujukan: "NAS-2025-0003",
-    tindakan: "bantuan/siasatan/siasatan-eoad/NAS-2025-0003",
+    tindakan: "bantuan/siasatan/siasatan-eoad-2/NAS-2025-0003",
   },
   {
     pemohon: "Amirul Hakim bin Zainuddin (791230-10-4321)",
@@ -1077,7 +1077,7 @@ const siasatanData = ref([
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     jenistugasan: "Bantuan ",
     noRujukan: "NAS-2025-0004",
-    tindakan: "bantuan/siasatan/siasatan-eoad/NAS-2025-0004",
+    tindakan: "bantuan/siasatan/siasatan-eoad-2/NAS-2025-0004",
   },
 ]);
 

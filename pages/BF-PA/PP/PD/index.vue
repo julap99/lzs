@@ -139,7 +139,7 @@
               <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-process`"
-                  :data="getTableDataByStatus(['Dihantar', 'Dalam Semakan', 'Telah Disaring', 'Telah Disemak', 'Telah Disokong', 'Telah Disahkan'])"
+                  :data="getTableDataByStatus(['Dihantar', 'Belum Disaring', 'Menunggu Semakan', 'Menunggu Sokongan', 'Menunggu Pengesahan', 'Menunggu Kelulusan'])"
                   :columns="eksekutifColumnsWithoutStatusLantikan"
                   :pageSize="10"
                   :show-search="false"
@@ -316,7 +316,7 @@
                       </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                      <tr v-for="item in getTableDataByStatus(['Dihantar'])" :key="item.rujukan" class="hover:bg-gray-50">
+                      <tr v-for="item in getTableDataByStatus(['Belum Disaring'])" :key="item.rujukan" class="hover:bg-gray-50">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           {{ item.rujukan }}
                         </td>
@@ -341,22 +341,22 @@
                           </rs-badge>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div class="flex justify-center items-center gap-3">
-                            <button
+                    <div class="flex justify-center items-center gap-3">
+                      <button
                               @click="handleView(item.tindakan)"
-                              title="Lihat"
-                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                            >
-                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                            </button>
-                            <button
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                      >
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
+                      <button
                               @click="handleRiskAnalysis(item.tindakan)"
-                              title="Saringan"
-                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                            >
-                              <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-info" />
-                            </button>
-                          </div>
+                        title="Saringan"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                      >
+                        <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-info" />
+                      </button>
+                    </div>
                         </td>
                       </tr>
                     </tbody>
@@ -377,7 +377,7 @@
                       :disabled="selectedRows.length === 0"
                     >
                       <Icon name="ic:baseline-download" class="w-4 h-4 mr-2" />
-                      Export Terpilih ({{ selectedRows.length }})
+                      Export ({{ selectedRows.length }})
                     </rs-button>
                   </div>
                 </div>
@@ -439,22 +439,22 @@
                           </rs-badge>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div class="flex justify-center items-center gap-3">
-                            <button
+                    <div class="flex justify-center items-center gap-3">
+                      <button
                               @click="handleView(item.tindakan)"
-                              title="Lihat"
-                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                            >
-                              <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
-                            </button>
+                        title="Lihat"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                      >
+                        <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
+                      </button>
                             <button
                               @click="exportApplication(item.tindakan)"
                               title="Export Borang"
                               class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
                               <Icon name="ic:baseline-download" class="w-5 h-5 text-success" />
-                            </button>
-                          </div>
+                      </button>
+                    </div>
                         </td>
                       </tr>
                     </tbody>
@@ -472,7 +472,7 @@
               <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-pending-pt-review`"
-                  :data="getTableDataByStatus(['Telah Disaring'])"
+                  :data="getTableDataByStatus(['Menunggu Semakan'])"
                   :columns="eksekutifColumnsWithoutStatusLantikan"
                   :pageSize="10"
                   :show-search="false"
@@ -566,7 +566,7 @@
               <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-pending-support`"
-                  :data="getTableDataByStatus(['Telah Disemak'])"
+                  :data="getTableDataByStatus(['Menunggu Sokongan'])"
                   :columns="eksekutifColumnsWithoutStatusLantikan"
                   :pageSize="10"
                   :show-search="false"
@@ -660,7 +660,7 @@
               <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-pending-confirmation`"
-                  :data="getTableDataByStatus(['Telah Disokong'])"
+                  :data="getTableDataByStatus(['Menunggu Pengesahan'])"
                   :columns="eksekutifColumnsWithoutStatusLantikan"
                   :pageSize="10"
                   :show-search="false"
@@ -754,7 +754,7 @@
               <div class="pt-2">
                 <!-- Bulk Approval Button - Right Aligned -->
                 <div class="flex justify-end mb-4">
-                  <div v-if="getTableDataByStatus(['Telah Disahkan']).length > 0" class="flex space-x-3">
+                  <div v-if="getTableDataByStatus(['Menunggu Kelulusan']).length > 0" class="flex space-x-3">
                     <rs-button
                       variant="success"
                       @click="openBulkApprovalModal"
@@ -767,7 +767,7 @@
                 
                 <rs-table
                   :key="`table-${tableKey}-pending-approval`"
-                  :data="getTableDataByStatus(['Telah Disahkan'])"
+                  :data="getTableDataByStatus(['Menunggu Kelulusan'])"
                   :columns="eksekutifColumnsWithoutStatusLantikan"
                   :pageSize="10"
                   :show-search="false"
@@ -862,7 +862,7 @@
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold text-gray-900 flex items-center">
             <Icon name="ic:baseline-security" class="w-6 h-6 mr-3 text-warning" />
-            Saring Semua Permohonan Terpilih
+            Saring Bulk Permohonan
           </h3>
           <button
             @click="closeBulkScreeningModal"
@@ -874,7 +874,7 @@
         
         <div class="mb-4">
           <p class="text-gray-600 mb-2">
-            Anda akan menyaring <strong>{{ selectedScreeningItems.length }} permohonan</strong> untuk analisis risiko.
+            Anda akan menyaring <strong> permohonan</strong> untuk analisis risiko.
           </p>
           
           <!-- Selected Items Table -->
@@ -1460,28 +1460,28 @@ const getCurrentTabDataCount = () => {
   const tabStatusMap = {
     pyb: {
       "Draf": ["Draf", "Draft"],
-      "Sedang Proses": ["Dihantar", "Dalam Semakan", "Telah Disaring", "Telah Disemak", "Telah Disokong", "Telah Disahkan"],
+      "Sedang Proses": ["Dihantar", "Belum Disaring", "Menunggu Semakan", "Menunggu Sokongan", "Menunggu Pengesahan", "Menunggu Kelulusan"],
       "Lulus": ["Diluluskan", "Approved"],
       "Ditolak": ["Ditolak", "Rejected"],
     },
     "eksekutif-pengurusan-risiko": {
-      "Menunggu Saringan": ["Dihantar"],
+      "Menunggu Saringan": ["Belum Disaring"],
       "Telah Disaring": ["Telah Disaring"],
     },
     pt: {
-      "Menunggu Semakan": ["Telah Disaring"],
+      "Menunggu Semakan": ["Menunggu Semakan"],
       "Telah Disemak": ["Telah Disemak"],
     },
     eksekutif: {
-      "Menunggu Sokongan": ["Telah Disemak"],
+      "Menunggu Sokongan": ["Menunggu Sokongan"],
       "Telah Disokong": ["Telah Disokong"],
     },
     "ketua-jabatan": {
-      "Menunggu Pengesahan": ["Telah Disokong"],
+      "Menunggu Pengesahan": ["Menunggu Pengesahan"],
       "Telah Disahkan": ["Telah Disahkan"],
     },
     "ketua-divisyen": {
-      "Menunggu Kelulusan": ["Telah Disahkan"],
+      "Menunggu Kelulusan": ["Menunggu Kelulusan"],
       "Lulus": ["Diluluskan", "Approved"],
     },
   };
@@ -1494,11 +1494,11 @@ const getCurrentTabDataCount = () => {
 
 // Computed properties for eksekutif-pengurusan-risiko bulk operations
 const hasPendingScreening = computed(() => {
-  return getTableDataByStatus(['Dihantar']).length > 0;
+  return getTableDataByStatus(['Belum Disaring']).length > 0;
 });
 
 const pendingScreeningCount = computed(() => {
-  return getTableDataByStatus(['Dihantar']).length;
+  return getTableDataByStatus(['Belum Disaring']).length;
 });
 
 const selectedScreeningCount = computed(() => {
@@ -1533,7 +1533,7 @@ const applications = ref([
     jawatan: "Penolong Amil Kariah",
     institusiKariah: "Masjid Al-Amin",
     institusiId: "MASJID_NEGERI_SELANGOR_001",
-    statusPendaftaran: "Dihantar",
+    statusPendaftaran: "Belum Disaring",
     statusLantikan: "Menunggu",
     tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Dihantar" },
   },
@@ -1546,9 +1546,9 @@ const applications = ref([
     jawatan: "Penolong Amil Kariah",
     institusiKariah: "Masjid Al-Amin",
     institusiId: "MASJID_NEGERI_SELANGOR_001",
-    statusPendaftaran: "Dalam Semakan",
+    statusPendaftaran: "Menunggu Kelulusan",
     statusLantikan: "Menunggu",
-    tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Dalam Semakan" },
+    tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Menunggu Kelulusan" },
   },
   {
     no: 3,
@@ -1713,9 +1713,9 @@ const roleSpecificData = {
       jawatan: "Penolong Amil Fitrah",
       institusiKariah: "Masjid Al-Amin",
       institusiId: "MASJID_NEGERI_SELANGOR_001",
-      statusPendaftaran: "Dihantar",
+      statusPendaftaran: "Belum Disaring",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Dihantar" },
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Belum Disaring" },
     },
     {
       no: 2,
@@ -1725,10 +1725,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Dalam Semakan",
+      statusPendaftaran: "Menunggu Kelulusan",
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Dalam Semakan" },
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Menunggu Kelulusan" },
     },
     {
       no: 3,
@@ -1738,9 +1738,9 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Komuniti",
       jawatan: "Penolong Amil Komuniti",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disaring",
+      statusPendaftaran: "Menunggu Semakan",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Telah Disaring" },
+      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Menunggu Semakan" },
     },
     {
       no: 4,
@@ -1750,10 +1750,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Padi",
       jawatan: "Penolong Amil Padi",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disemak",
+      statusPendaftaran: "Menunggu Sokongan",
       sesiPerkhidmatan: "Sesi 4",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Disemak" },
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Menunggu Sokongan" },
     },
     {
       no: 5,
@@ -1763,10 +1763,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Fitrah",
       jawatan: "Penolong Amil Fitrah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disokong",
+      statusPendaftaran: "Menunggu Pengesahan",
       sesiPerkhidmatan: "Sesi 1",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Telah Disokong" },
+      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Menunggu Pengesahan" },
     },
     {
       no: 6,
@@ -1776,10 +1776,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disahkan",
+      statusPendaftaran: "Menunggu Kelulusan",
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-006", statusPendaftaran: "Telah Disahkan" },
+      tindakan: { rujukan: "PA-2024-006", statusPendaftaran: "Menunggu Kelulusan" },
     },
     {
       no: 7,
@@ -1823,15 +1823,54 @@ const roleSpecificData = {
     {
       no: 10,
       rujukan: "PA-2024-010",
+      nama: "Ahmad bin Abdullah",
+      noKP: "900315071234",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Al-Hidayah",
+      statusPendaftaran: "Draf",
+      sesiPerkhidmatan: "Sesi 2",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-010", statusPendaftaran: "Draf" },
+    },
+    {
+      no: 11,
+      rujukan: "PA-2024-011",
+      nama: "Siti Aminah binti Omar",
+      noKP: "880420082345",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Al-Nur",
+      statusPendaftaran: "Diluluskan",
+      sesiPerkhidmatan: "Sesi 3",
+      statusLantikan: "Aktif",
+      tindakan: { rujukan: "PA-2024-011", statusPendaftaran: "Diluluskan" },
+    },
+    {
+      no: 12,
+      rujukan: "PA-2024-012",
+      nama: "Mohd Zain bin Ahmad",
+      noKP: "850315071234",
+      kategoriPenolongAmil: "Padi",
+      jawatan: "Penolong Amil Padi",
+      institusiKariah: "Masjid Al-Amin",
+      statusPendaftaran: "Diluluskan",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Aktif",
+      tindakan: { rujukan: "PA-2024-012", statusPendaftaran: "Diluluskan" },
+    },
+    {
+      no: 10,
+      rujukan: "PA-2024-010",
       nama: "Aminah binti Mohamed",
       noKP: "920810034567",
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Dalam Semakan",
+      statusPendaftaran: "Menunggu Kelulusan",
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-010", statusPendaftaran: "Dalam Semakan" },
+      tindakan: { rujukan: "PA-2024-010", statusPendaftaran: "Menunggu Kelulusan" },
     },
     // NEW: PYB "Lulus" data
     {
@@ -1870,10 +1909,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
-              statusPendaftaran: "Dihantar",
+              statusPendaftaran: "Belum Disaring",
         sesiPerkhidmatan: "Sesi 1",
         statusLantikan: "Menunggu",
-        tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Dihantar" },
+        tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Belum Disaring" },
     },
     {
       no: 2,
@@ -1883,10 +1922,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Khairiyah",
-              statusPendaftaran: "Dihantar",
+              statusPendaftaran: "Belum Disaring",
         sesiPerkhidmatan: "Sesi 2",
         statusLantikan: "Menunggu",
-        tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Dihantar" },
+        tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Belum Disaring" },
     },
     {
       no: 3,
@@ -1896,10 +1935,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Komuniti",
       jawatan: "Penolong Amil Komuniti",
       institusiKariah: "Masjid Kg Delek",
-              statusPendaftaran: "Dihantar",
+              statusPendaftaran: "Belum Disaring",
         sesiPerkhidmatan: "Sesi 3",
         statusLantikan: "Menunggu",
-        tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Dihantar" },
+        tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Belum Disaring" },
     },
     // NEW: Eksekutif Pengurusan Risiko "Telah Disaring" data
     {
@@ -1927,6 +1966,19 @@ const roleSpecificData = {
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Menunggu",
       tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Telah Disaring" },
+    },
+    {
+      no: 6,
+      rujukan: "PA-2024-006",
+      nama: "Fatimah binti Omar",
+      noKP: "880420082345",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Al-Nur",
+      statusPendaftaran: "Telah Disaring",
+      sesiPerkhidmatan: "Sesi 3",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-006", statusPendaftaran: "Telah Disaring" },
     }
   ],
   pt: [
@@ -1938,10 +1990,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disaring",
+      statusPendaftaran: "Menunggu Semakan",
       sesiPerkhidmatan: "Sesi 1",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Telah Disaring" },
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Menunggu Semakan" },
     },
     {
       no: 2,
@@ -1951,10 +2003,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Khairiyah",
-      statusPendaftaran: "Telah Disaring",
+      statusPendaftaran: "Menunggu Semakan",
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disaring" },
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Menunggu Semakan" },
     },
     // Additional PT data for both tabs
     {
@@ -1965,10 +2017,36 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Komuniti",
       jawatan: "Penolong Amil Komuniti",
       institusiKariah: "Masjid Kg Delek",
-      statusPendaftaran: "Telah Disaring",
+      statusPendaftaran: "Menunggu Semakan",
       sesiPerkhidmatan: "Sesi 3",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Telah Disaring" },
+      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Menunggu Semakan" },
+    },
+    {
+      no: 4,
+      rujukan: "PA-2024-004",
+      nama: "Ahmad bin Abdullah",
+      noKP: "900315071234",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Al-Hidayah",
+      statusPendaftaran: "Menunggu Semakan",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Menunggu Semakan" },
+    },
+    {
+      no: 5,
+      rujukan: "PA-2024-005",
+      nama: "Fatimah binti Omar",
+      noKP: "880420082345",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Al-Nur",
+      statusPendaftaran: "Menunggu Semakan",
+      sesiPerkhidmatan: "Sesi 2",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Menunggu Semakan" },
     },
     {
       no: 4,
@@ -1995,6 +2073,19 @@ const roleSpecificData = {
       sesiPerkhidmatan: "Sesi 1",
       statusLantikan: "Menunggu",
       tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Telah Disemak" },
+    },
+    {
+      no: 6,
+      rujukan: "PA-2024-006",
+      nama: "Siti Aminah binti Omar",
+      noKP: "880420082345",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Al-Nur",
+      statusPendaftaran: "Telah Disemak",
+      sesiPerkhidmatan: "Sesi 2",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-006", statusPendaftaran: "Telah Disemak" },
     }
   ],
   eksekutif: [
@@ -2006,9 +2097,9 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disemak",
+      statusPendaftaran: "Menunggu Sokongan",
       sesiPerkhidmatan: "Sesi 1",
-      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Telah Disemak" },
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Menunggu Sokongan" },
     },
     {
       no: 2,
@@ -2018,9 +2109,45 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Khairiyah",
-      statusPendaftaran: "Telah Disemak",
+      statusPendaftaran: "Menunggu Sokongan",
       sesiPerkhidmatan: "Sesi 2",
-      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disemak" },
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Menunggu Sokongan" },
+    },
+    {
+      no: 3,
+      rujukan: "PA-2024-003",
+      nama: "Abdul Rahman bin Hassan",
+      noKP: "870625098765",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Al-Hidayah",
+      statusPendaftaran: "Menunggu Sokongan",
+      sesiPerkhidmatan: "Sesi 1",
+      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Menunggu Sokongan" },
+    },
+    {
+      no: 4,
+      rujukan: "PA-2024-004",
+      nama: "Noraini binti Abdullah",
+      noKP: "900525093456",
+      kategoriPenolongAmil: "Padi",
+      jawatan: "Penolong Amil Padi",
+      institusiKariah: "Masjid Al-Nur",
+      statusPendaftaran: "Menunggu Sokongan",
+      sesiPerkhidmatan: "Sesi 3",
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Menunggu Sokongan" },
+    },
+    {
+      no: 5,
+      rujukan: "PA-2024-005",
+      nama: "Zulkifli bin Ahmad",
+      noKP: "850315071234",
+      kategoriPenolongAmil: "Komuniti",
+      jawatan: "Penolong Amil Komuniti",
+      institusiKariah: "Masjid Al-Amin",
+      statusPendaftaran: "Menunggu Sokongan",
+      sesiPerkhidmatan: "Sesi 2",
+      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Menunggu Sokongan" },
     },
     // NEW: Eksekutif "Telah Disokong" data
     {
@@ -2046,6 +2173,18 @@ const roleSpecificData = {
       statusPendaftaran: "Telah Disokong",
       sesiPerkhidmatan: "Sesi 4",
       tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Disokong" },
+    },
+    {
+      no: 5,
+      rujukan: "PA-2024-005",
+      nama: "Ahmad bin Abdullah",
+      noKP: "900315071234",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Al-Hidayah",
+      statusPendaftaran: "Telah Disokong",
+      sesiPerkhidmatan: "Sesi 1",
+      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Telah Disokong" },
     }
   ],
   "ketua-jabatan": [
@@ -2057,10 +2196,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disokong",
+      statusPendaftaran: "Menunggu Pengesahan",
       sesiPerkhidmatan: "Sesi 1",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Telah Disokong" },
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Menunggu Pengesahan" },
     },
     {
       no: 2,
@@ -2070,10 +2209,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Khairiyah",
-      statusPendaftaran: "Telah Disokong",
+      statusPendaftaran: "Menunggu Pengesahan",
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disokong" },
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Menunggu Pengesahan" },
     },
     // NEW: Ketua Jabatan "Telah Disahkan" data
     {
@@ -2101,6 +2240,19 @@ const roleSpecificData = {
       sesiPerkhidmatan: "Sesi 4",
       statusLantikan: "Menunggu",
       tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Disahkan" },
+    },
+    {
+      no: 5,
+      rujukan: "PA-2024-005",
+      nama: "Ahmad bin Abdullah",
+      noKP: "900315071234",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Al-Hidayah",
+      statusPendaftaran: "Telah Disahkan",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Telah Disahkan" },
     }
   ],
   "ketua-divisyen": [
@@ -2112,10 +2264,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disahkan",
+      statusPendaftaran: "Menunggu Kelulusan",
       sesiPerkhidmatan: "Sesi 1",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Telah Disahkan" },
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Menunggu Kelulusan" },
     },
     {
       no: 2,
@@ -2125,10 +2277,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Khairiyah",
-      statusPendaftaran: "Telah Disahkan",
+      statusPendaftaran: "Menunggu Kelulusan",
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disahkan" },
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Menunggu Kelulusan" },
     },
     // NEW: Ketua Divisyen "Telah Diluluskan" data
     {
@@ -2169,6 +2321,19 @@ const roleSpecificData = {
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Dilantik",
       tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Diluluskan" },
+    },
+    {
+      no: 6,
+      rujukan: "PA-2024-006",
+      nama: "Siti Aminah binti Omar",
+      noKP: "880420082345",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Al-Nur",
+      statusPendaftaran: "Diluluskan",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Dilantik",
+      tindakan: { rujukan: "PA-2024-006", statusPendaftaran: "Diluluskan" },
     }
   ],
 };
@@ -2324,36 +2489,36 @@ const getStatusPendaftaranVariant = (status) => {
     Submitted: "warning",
     Dihantar: "warning",
     "Under Review": "info",
-    "Dalam Semakan": "info",
     
-    // Screening stages
-    Screened: "info",
-    Disaring: "info",
-    "Telah Disaring": "info",
+    // Pending/Waiting stages (uniform warning)
+    "Belum Disaring": "warning",
+    "Menunggu Semakan": "warning",
+    "Menunggu Sokongan": "warning",
+    "Menunggu Pengesahan": "warning",
+    "Menunggu Kelulusan": "warning",
     
-    // Review stages
-    "PT Reviewed": "info",
-    "Disemak PT": "info",
-    "Telah Disemak": "info",
+    // Completed by current role (Telah ... → secondary)
+    Screened: "secondary",
+    Disaring: "secondary",
+    "Telah Disaring": "secondary",
+    "PT Reviewed": "secondary",
+    "Disemak PT": "secondary",
+    "Telah Disemak": "secondary",
+    "Executive Supported": "secondary",
+    "Disokong Eksekutif": "secondary",
+    "Telah Disokong": "secondary",
+    "Department Confirmed": "secondary",
+    "Disahkan Jabatan": "secondary",
+    "Telah Disahkan": "secondary",
     
-    // Support stages
-    "Executive Supported": "success",
-    "Disokong Eksekutif": "success",
-    "Telah Disokong": "success",
+    // Final approvals (primary)
+    "Division Approved": "primary",
+    "Diluluskan Divisyen": "primary",
+    "Telah Diluluskan": "primary",
+    Approved: "primary",
+    Diluluskan: "primary",
     
-    // Confirmation stages
-    "Department Confirmed": "success",
-    "Disahkan Jabatan": "success",
-    "Telah Disahkan": "success",
-    
-    // Approval stages
-    "Division Approved": "success",
-    "Diluluskan Divisyen": "success",
-    "Telah Diluluskan": "success",
-    Approved: "success",
-    Diluluskan: "success",
-    
-    // Rejection
+    // Rejection (danger)
     Rejected: "danger",
     Ditolak: "danger",
   };
@@ -2470,7 +2635,7 @@ onMounted(() => {
 
 // Bulk operations functions for eksekutif-pengurusan-risiko
 const openBulkScreeningModal = () => {
-  selectedScreeningItems.value = getTableDataByStatus(['Dihantar']);
+  selectedScreeningItems.value = getTableDataByStatus(['Belum Disaring']);
   selectedScreeningMap.value = {};
   selectedScreeningItems.value.forEach(item => {
     selectedScreeningMap.value[item.rujukan] = true;
@@ -2518,7 +2683,7 @@ const performBulkScreening = async () => {
 };
 
 const openBulkExportModal = () => {
-  selectedExportItems.value = getTableDataByStatus(['Dihantar']).filter(item => 
+  selectedExportItems.value = getTableDataByStatus(['Telah Disaring']).filter(item => 
     selectedRows.value.includes(item.rujukan)
   );
   selectedExportMap.value = {};
@@ -2567,7 +2732,7 @@ const exportApplication = (rujukanId) => {
 
 // Bulk approval functions for ketua-divisyen
 const openBulkApprovalModal = () => {
-  selectedScreeningItems.value = getTableDataByStatus(['Telah Disahkan']);
+  selectedScreeningItems.value = getTableDataByStatus(['Menunggu Kelulusan']);
   selectedScreeningMap.value = {};
   selectedScreeningItems.value.forEach(item => {
     selectedScreeningMap.value[item.rujukan] = true;
@@ -2616,7 +2781,7 @@ const performBulkApproval = async () => {
 
 // Toggle select all function
 const toggleSelectAll = () => {
-  const allItems = getTableDataByStatus(['Dihantar']);
+  const allItems = getTableDataByStatus(['Belum Disaring']);
   if (selectedRows.value.length === allItems.length) {
     // If all are selected, deselect all
     selectedRows.value = [];
