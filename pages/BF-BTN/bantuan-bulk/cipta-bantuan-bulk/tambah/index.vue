@@ -157,65 +157,18 @@
                 }"
                 :disabled="!formData.productPackage"
               />
-            <!-- Kategori Bantuan -->
-            <!-- <FormKit
-              type="text"
-              name="kategoriBantuan"
-              label="Kategori Bantuan"
-              v-model="formData.kategoriBantuan"
-              disabled
-            /> -->
 
-            <!-- Sub-Kategori -->
-            <!-- <FormKit
-              type="text"
-              name="subKategori"
-              label="Sub-Kategori"
-              v-model="formData.subKategori"
-              disabled
-            /> -->
-
-            <!-- Bantuan -->
-            <!-- <FormKit
-              type="select"
-              name="bantuan"
-              label="Bantuan"
-              :options="bantuanOptions"
-              placeholder="Pilih bantuan"
-              validation="required"
-              v-model="formData.bantuan"
-            /> -->
-
-            <!-- Kod Bantuan -->
-            <!-- <FormKit
-              type="text"
-              name="kodBantuan"
-              label="Kod Bantuan"
-              v-model="formData.kodBantuan"
-              disabled
-              help="Auto-generate berdasarkan bantuan"
-            /> -->
-
-            <!-- Produk Bantuan -->
-            <!-- <FormKit
-              type="select"
-              name="produkBantuan"
-              label="Produk Bantuan"
-              :options="produkBantuanOptions"
-              placeholder="Pilih produk bantuan"
-              validation="required"
-              v-model="formData.produkBantuan"
-            /> -->
-
-            <!-- Penyiasat -->
+            <!-- Tarikh Jangkaan Bayaran -->
             <FormKit
-              type="select"
-              name="penyiasat"
-              label="Penyiasat"
-              :options="penyiasatOptions"
-              placeholder="Pilih penyiasat"
+              type="date"
+              name="tarikhJangkaanBayaran"
+              label="Tarikh Jangkaan Bayaran"
+              placeholder="Pilih tarikh jangkaan bayaran"
               validation="required"
-              v-model="formData.penyiasat"
+              :validation-messages="{
+                required: 'Sila pilih tarikh jangkaan bayaran',
+              }"
+              v-model="formData.tarikhJangkaanBayaran"
             />
 
             <!-- Cawangan (CustomSelect) -->
@@ -280,7 +233,7 @@
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">Maklumat Bayaran Kepada (Payable To)</h2>
 
-            <div v-if="paymentList.length >= 1" class="flex items-center gap-2">
+            <div class="flex items-center gap-2">
 
                 <rs-button
                   
@@ -1168,7 +1121,8 @@ const formData = ref({
   aidProduct: "",
   productPackage: "",
   productEntitlement: "",
-  jenisBantuan: ""
+  jenisBantuan: "",
+  tarikhJangkaanBayaran: "",
 });
 
 // Tooltip state for action buttons
@@ -1287,7 +1241,7 @@ const paymentColumns = [
   { key: "recipient", label: "Recipient" },
   { key: "organization", label: "Organization" },
   { key: "amaun", label: "Amaun" },
-  { key: "tarikhBayaran", label: "Tarikh Bayaran" },
+  { key: "modeOfPayment", label: "MOP" },
   { key: "bankName", label: "Bank" },
   { key: "bankAccount", label: "No. Akaun" },
   {
@@ -1536,7 +1490,7 @@ const handleImport = async () => {
         recipient: "Nur Hazimah Binti Mohd Hafiz",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
-        tarikhBayaran: "2025-04-17",
+        modeOfPayment: "Tunai",
         bankName: "Maybank",
         bankAccount: "1623-44-889901",
         checkbox: '',
@@ -1549,7 +1503,7 @@ const handleImport = async () => {
         recipient: "Nur safiyya Binti Rosly",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
-        tarikhBayaran: "2025-04-17",
+        tarikhBayaran: "Akaun",
         bankName: "Maybank",
         bankAccount: "16A3-44-889901",            // ← WRONG (letter)
         checkbox: '',
@@ -1562,7 +1516,7 @@ const handleImport = async () => {
         recipient: "Mohd Nazrin Bin Mokhtar",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 240,                               // ← WRONG amount
-        tarikhBayaran: "2025-04-17",
+        modeOfPayment: "Akaun",
         bankName: "CIMB",
         bankAccount: "7600-11-222222",
         checkbox: '',
@@ -1575,7 +1529,7 @@ const handleImport = async () => {
         recipient: "Intan Nadia Binti Mohd Zamri",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
-        tarikhBayaran: "2025-04-17",
+        modeOfPayment: "Tunai",
         bankName: "maybnk",                       // ← WRONG spelling
         bankAccount: "7600-11-333333",
         checkbox: '',
@@ -1588,7 +1542,7 @@ const handleImport = async () => {
         recipient: "Nur safiyya Binti Rosly",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
-        tarikhBayaran: "2025-04-17",
+        modeOfPayment: "Akaun",
         bankName: "Maybank",
         bankAccount: "1623-44-889901",
         checkbox: '',
@@ -1812,7 +1766,7 @@ const handleAddPayment = () => {
     recipient: "",
     organization: "",
     amaun: 0,
-    tarikhBayaran: new Date().toLocaleDateString("ms-MY"),
+    modeOfPayment: "Tunai" || "Akaun",
     bankName: "",
     bankAccount: "",
     status: "Dalam Proses",
@@ -2336,10 +2290,10 @@ const handleEditDamagedData = (data) => {
 const getStatusVariant = (status) => {
   switch (status) {
     case 'Draf':
-      return 'warning';
+      return 'disabled';
     case 'Sedang Diproses':
     case 'Dalam Proses':
-      return 'info';
+      return 'warning';
     case 'Ditolak':
       return 'danger';
     case 'Baru':
