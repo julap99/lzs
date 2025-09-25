@@ -118,6 +118,10 @@
 <script setup>
 import { ref } from "vue";
 
+definePageMeta({
+  title: "Multidimensi",
+});
+
 const breadcrumb = ref([
   {
     name: "Profiling",
