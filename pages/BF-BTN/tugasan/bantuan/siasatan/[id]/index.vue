@@ -3116,7 +3116,12 @@ const editingPBStatus = computed({
 })
 
 // Registration dropdown for B112 edit panel (mimic B300/B307)
-const registrationOptions = ref(['800101101234 -Ahmad bin Saif','202201012345(1234567-W) -Syarikat Maju Jaya','550303109999 -Noraini bt Yusuf'])
+const registrationOptions = ref([
+  '800101101234 -Ahmad bin Saif',
+  '202201012345(1234567-W) -Syarikat Maju Jaya',
+  '550303109999 -Noraini bt Yusuf',
+  '990101019999 -Siti Aminah binti Hassan'
+])
 const editingPBNoPendaftaran = computed({
   get: () => currentEditingProductData.value?.penerimaBayaran.noPendaftaran ?? '',
   set: (val) => { const d = currentEditingProductData.value; if (d) d.penerimaBayaran.noPendaftaran = val }
@@ -3127,9 +3132,10 @@ const loadEditingPenerimaByRegistration = () => {
   if (!d) return
   const no = d.penerimaBayaran.noPendaftaran
   const registrationData = {
-    '800101101234 -Ahmad bin Saif': { namaPenerima: 'Ahmad bin Ali', namaPemegangAkaun: 'Ahmad bin Ali', bank: 'MAYBANK', noAkaunBank: '162345678901' },
-    '202201012345(1234567-W) -Syarikat Maju Jaya': { namaPenerima: 'Syarikat Maju Jaya', namaPemegangAkaun: 'Syarikat Maju Jaya', bank: 'CIMB', noAkaunBank: '8000123456' },
-    '550303109999 -Noraini bt Yusuf': { namaPenerima: 'Noraini bt Yusuf', namaPemegangAkaun: 'Noraini bt Yusuf', bank: 'RHB', noAkaunBank: '123456789012' },
+    '800101101234 -Ahmad bin Saif': { namaPenerima: 'Ahmad bin Ali', namaPemegangAkaun: 'Ahmad bin Ali', bank: 'MAYBANK', noAkaunBank: '162345678901', status: 'verified' },
+    '202201012345(1234567-W) -Syarikat Maju Jaya': { namaPenerima: 'Syarikat Maju Jaya', namaPemegangAkaun: 'Syarikat Maju Jaya', bank: 'CIMB', noAkaunBank: '8000123456', status: 'verified' },
+    '550303109999 -Noraini bt Yusuf': { namaPenerima: 'Noraini bt Yusuf', namaPemegangAkaun: 'Noraini bt Yusuf', bank: 'RHB', noAkaunBank: '123456789012', status: 'verified' },
+    '990101019999 -Siti Aminah binti Hassan': { namaPenerima: 'Siti Aminah binti Hassan', namaPemegangAkaun: 'Siti Aminah binti Hassan', bank: 'BANK ISLAM', noAkaunBank: '140123456789', status: 'unverified' },
   }
   if (registrationData[no]) {
     d.penerimaBayaran.namaPenerima = registrationData[no].namaPenerima
@@ -3137,6 +3143,7 @@ const loadEditingPenerimaByRegistration = () => {
     d.penerimaBayaran.noKadPengenalan = no
     d.penerimaBayaran.bank = registrationData[no].bank
     d.penerimaBayaran.noAkaunBank = registrationData[no].noAkaunBank
+    d.penerimaBayaran.status = registrationData[no].status
   }
 }
 
