@@ -473,19 +473,21 @@
               Dokumen Sokongan
             </label>
             <FormKit
-              type="file"
-              v-model="warningLetterData.file"
+              type="dropzone"
+              v-model="warningLetterData.supportingDocuments"
               accept=".pdf,.doc,.docx"
+              multiple="false"
+              max-files="1"
+              max-size="5242880"
               :classes="{
-                input: 'block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-primary file:text-white hover:file:bg-primary-dark',
+                dropzone: 'small-dropzone border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors',
                 wrapper: 'w-full'
               }"
               validation="required"
               validation-label="Fail surat amaran"
-              @change="handleFileChange"
             />
             <p class="mt-1 text-xs text-gray-500">
-              Format yang diterima: PDF, DOC, DOCX (Maksimum 5MB)
+              Seret & lepas atau klik untuk muat naik (PDF/DOC/DOCX, maksimum 5MB)
             </p>
           </div>
           
@@ -847,7 +849,7 @@ const selectAll = (tab, event) => {
 // Warning Letter Modal State
 const showWarningModal = ref(false);
 const warningLetterData = ref({
-  file: null,
+  supportingDocuments: [],
   notes: "",
   reason: "",        // NEW
   customReason: "",  // NEW
@@ -1220,13 +1222,13 @@ const paginatedRequests = computed(() => {
 
 // VALIDATION — Warning Letter Modal
 const isFormValid = computed(() => {
+  const hasDoc = Array.isArray(warningLetterData.value.supportingDocuments) && warningLetterData.value.supportingDocuments.length > 0;
   const base =
     warningLetterData.value.reason &&               // NEW
-    warningLetterData.value.file &&
+    hasDoc &&
     warningLetterData.value.notes &&
     warningLetterData.value.notes.length >= 10 &&
-    warningLetterData.value.notes.length <= 500 &&
-    !fileError.value;
+    warningLetterData.value.notes.length <= 500;
 
   if (!base) return false;
 
@@ -1420,7 +1422,7 @@ const sendWarningLetter = (request) => {
   };
   
   warningLetterData.value = {
-    file: null,
+    supportingDocuments: [],
     notes: "",
     reason: "",
     customReason: "",
@@ -1448,7 +1450,7 @@ const submitWarningLetter = async () => {
 };
 
 const closeWarningModal = () => {
-  if ((warningLetterData.value.file || warningLetterData.value.notes || warningLetterData.value.reason || warningLetterData.value.customReason) && !isSubmitting.value) {
+  if (((Array.isArray(warningLetterData.value.supportingDocuments) && warningLetterData.value.supportingDocuments.length > 0) || warningLetterData.value.notes || warningLetterData.value.reason || warningLetterData.value.customReason) && !isSubmitting.value) {
     if (confirm('Anda pasti mahu menutup modal ini? Data yang telah dimasukkan akan hilang.')) {
       resetWarningModal();
     }
@@ -1460,7 +1462,7 @@ const closeWarningModal = () => {
 const resetWarningModal = () => {
   showWarningModal.value = false;
   warningLetterData.value = {
-    file: null,
+    supportingDocuments: [],
     notes: "",
     reason: "",
     customReason: "",

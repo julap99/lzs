@@ -25,6 +25,7 @@
               ]"
               validation="required"
               validation-label="Status pekerjaan"
+              :disabled="readOnly"
               v-model="getCurrentTanggungan().pekerjaan_status"
             />
           </div>
@@ -57,6 +58,7 @@
                 required: 'Sila pilih sekurang-kurangnya satu sumber pendapatan',
                 min: 'Sila pilih sekurang-kurangnya satu sumber pendapatan'
               }"
+              :disabled="readOnly"
               v-model="getCurrentTanggungan().sumber_pendapatan"
             />
           </div>
@@ -77,6 +79,7 @@
             placeholder="Sila nyatakan sumber pendapatan lain"
             validation="required"
             validation-label="Lain-lain sumber pendapatan"
+            :disabled="readOnly"
             v-model="getCurrentTanggungan().lain_lain_sumber_pendapatan"
           />
         </div>
@@ -96,6 +99,7 @@
             placeholder="Contoh: Kerani, Jurutera, Guru"
             validation="required"
             validation-label="Jenis pekerjaan"
+            :disabled="readOnly"
             v-model="getCurrentTanggungan().jenis_pekerjaan"
           />
 
@@ -114,6 +118,7 @@
             ]"
             validation="required"
             validation-label="Sektor pekerjaan"
+            :disabled="readOnly"
             v-model="getCurrentTanggungan().sektor_pekerjaan"
           />
 
@@ -125,6 +130,7 @@
             placeholder="Contoh: Pengurus, Penolong Pengurus"
             validation="required"
             validation-label="Jawatan"
+            :disabled="readOnly"
             v-model="getCurrentTanggungan().jawatan"
           />
 
@@ -141,6 +147,7 @@
             ]"
             validation="required"
             validation-label="Status jawatan"
+            :disabled="readOnly"
             v-model="getCurrentTanggungan().status_jawatan"
           />
 
@@ -153,6 +160,7 @@
             min="0"
             validation="required"
             validation-label="Pendapatan kasar"
+            :disabled="readOnly"
             v-model="getCurrentTanggungan().pendapatan_kasar"
           />
 
@@ -165,6 +173,7 @@
               placeholder="Sila nyatakan sektor pekerjaan lain"
               validation="required"
               validation-label="Lain-lain sektor pekerjaan"
+              :disabled="readOnly"
               v-model="getCurrentTanggungan().lain_lain_sektor_pekerjaan"
             />
           </div>
@@ -184,6 +193,7 @@
                 max: 'Saiz fail tidak boleh melebihi 5MB',
                 mime: 'Format fail tidak dibenarkan',
               }"
+              :disabled="readOnly"
               v-model="getCurrentTanggungan().pengesahan_pendapatan"
             />
           </div>
@@ -210,6 +220,7 @@
               { label: 'Lain-lain', value: 'Lain-lain' },
             ]"
             validation="required"
+            :disabled="readOnly"
             v-model="getCurrentTanggungan().sebab_tidak_bekerja"
             placeholder="Pilih sebab tidak bekerja"
           />
@@ -224,6 +235,7 @@
               label="Lain-lain Sebab"
               placeholder="Sila nyatakan sebab lain"
               validation="required"
+              :disabled="readOnly"
               v-model="getCurrentTanggungan().lain_lain_sebab_tidak_bekerja"
             />
           </div>
@@ -231,7 +243,7 @@
       </div>
     </div>
 
-    <div class="flex justify-between gap-3 mt-6">
+    <div v-if="showFooterButtons" class="flex justify-between gap-3 mt-6">
       <rs-button
         type="button"
         variant="primary-outline"
@@ -262,7 +274,14 @@ const props = defineProps({
     type: Function,
     required: true
   },
-  // flag moved into component
+  readOnly: {
+    type: Boolean,
+    default: false
+  },
+  showFooterButtons: {
+    type: Boolean,
+    default: true
+  }
 })
 
 // Emits
