@@ -15,6 +15,7 @@ export default defineNuxtConfig({
   nitro: {
     preset: "static",
     compatibilityDate: '2025-08-13',
+    prerender: false
   },
   modules: isStatic
     ? [
@@ -25,7 +26,6 @@ export default defineNuxtConfig({
         "@pinia/nuxt",
         "@pinia-plugin-persistedstate/nuxt",
         "nuxt-security",
-        "nuxt-typed-router",
         "nuxt-icon",
         "@davestewart/nuxt-scrollbar",
       ]
@@ -37,7 +37,6 @@ export default defineNuxtConfig({
         "@pinia/nuxt",
         "@pinia-plugin-persistedstate/nuxt",
         "nuxt-security",
-        "nuxt-typed-router",
         "nuxt-icon",
         "@davestewart/nuxt-scrollbar",
       ],

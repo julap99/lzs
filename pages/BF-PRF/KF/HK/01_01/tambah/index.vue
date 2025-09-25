@@ -6,7 +6,7 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Tambah Had Kifayah Baharu</h2>
-          <rs-button variant="secondary" @click="navigateTo('01_01')">
+          <rs-button variant="secondary" @click="navigateTo('/BF-PRF/KF/HK/01_01')">
             <Icon name="material-symbols:arrow-back" class="mr-1" /> Kembali
           </rs-button>
         </div>
@@ -58,36 +58,26 @@
                     help="Masukkan nama lengkap Had Kifayah"
                   />
                 </div>
+              </div>
+            </div>
 
-                <!-- Kategori -->
+            <!-- Keterangan Section -->
+            <div class="mb-8">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <Icon name="mdi:text" class="mr-2 text-blue-600" />
+                Keterangan
+              </h3>
+              
+              <div class="grid grid-cols-1 gap-6">
+                <!-- Keterangan -->
                 <div>
                   <FormKit
-                    type="select"
-                    name="kategori"
-                    label="Kategori"
-                    :options="kategoriOptions"
-                    placeholder="Pilih kategori"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Kategori diperlukan'
-                    }"
-                    help="Pilih kategori Had Kifayah"
-                  />
-                </div>
-
-                <!-- Jenis Isi Rumah -->
-                <div>
-                  <FormKit
-                    type="select"
-                    name="jenisIsiRumah"
-                    label="Jenis Isi Rumah"
-                    :options="jenisIsiRumahOptions"
-                    placeholder="Pilih jenis isi rumah"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Jenis isi rumah diperlukan'
-                    }"
-                    help="Pilih jenis isi rumah yang berkaitan"
+                    type="textarea"
+                    name="keterangan"
+                    label="Keterangan"
+                    placeholder="Masukkan keterangan tambahan (opsional)"
+                    rows="3"
+                    help="Keterangan atau nota tambahan untuk Had Kifayah ini"
                   />
                 </div>
               </div>
@@ -97,7 +87,7 @@
             <div class="mb-8">
               <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                 <Icon name="mdi:currency-usd" class="mr-2 text-green-600" />
-                Maklumat Kewangan
+                Pelarasan
               </h3>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -117,31 +107,55 @@
                     help="Masukkan kadar berbayar dalam Ringgit Malaysia"
                   />
                 </div>
+              </div>
+            </div>
 
-                <!-- Kadar Percuma -->
+            <!-- Status Section -->
+            <div class="mb-8">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <Icon name="mdi:check-circle" class="mr-2 text-green-600" />
+                Status
+              </h3>
+              
+              <div class="grid grid-cols-1 gap-6">
+                <!-- Status -->
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-3">Status</label>
+                  <FormKit
+                    type="radio"
+                    name="status"
+                    :options="statusOptions"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Status diperlukan'
+                    }"
+                    help="Pilih status Had Kifayah"
+                  />
+                </div>
+
+                <!-- Status Data -->
                 <div>
                   <FormKit
-                    type="money"
-                    name="kadarPercuma"
-                    label="Kadar Percuma (RM)"
-                    placeholder="0.00"
-                    validation="required|number|min:0"
+                    type="select"
+                    name="statusData"
+                    label="Status Data"
+                    :options="statusDataOptions"
+                    placeholder="Pilih status data"
+                    validation="required"
                     :validation-messages="{
-                      required: 'Kadar percuma diperlukan',
-                      number: 'Masukkan nilai angka yang sah',
-                      min: 'Nilai mesti lebih besar atau sama dengan 0'
+                      required: 'Status data diperlukan'
                     }"
-                    help="Masukkan kadar percuma dalam Ringgit Malaysia"
+                    help="Pilih status data"
                   />
                 </div>
               </div>
             </div>
 
-            <!-- Date and Status Section -->
+            <!-- Date Section -->
             <div class="mb-8">
               <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                 <Icon name="mdi:calendar" class="mr-2 text-purple-600" />
-                Tarikh dan Status
+                Tarikh
               </h3>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -159,19 +173,17 @@
                   />
                 </div>
 
-                <!-- Status -->
+                <!-- Tarikh Tamat -->
                 <div>
                   <FormKit
-                    type="select"
-                    name="status"
-                    label="Status"
-                    :options="statusOptions"
-                    placeholder="Pilih status"
+                    type="date"
+                    name="tarikhTamat"
+                    label="Tarikh Tamat"
                     validation="required"
                     :validation-messages="{
-                      required: 'Status diperlukan'
+                      required: 'Tarikh tamat diperlukan'
                     }"
-                    help="Pilih status Had Kifayah"
+                    help="Pilih tarikh tamat"
                   />
                 </div>
               </div>
@@ -182,7 +194,7 @@
               <rs-button 
                 type="button" 
                 variant="secondary" 
-                @click="navigateTo('01_01')"
+                @click="navigateTo('/BF-PRF/KF/HK/01_01')"
               >
                 Batal
               </rs-button>
@@ -232,38 +244,28 @@ const breadcrumb = ref([
 const formData = reactive({
   idHadKifayah: "",
   namaHadKifayah: "",
-  kategori: "",
-  jenisIsiRumah: "",
+  keterangan: "",
   kadarBerbayar: "",
-  kadarPercuma: "",
   tarikhMula: "",
+  tarikhTamat: "",
   status: "",
+  statusData: "",
 });
 
 // Form state
 const isSubmitting = ref(false);
 
 // Options for select fields
-const kategoriOptions = [
-  { label: "Utama", value: "Utama" },
-  { label: "Tambahan", value: "Tambahan" },
-  { label: "Khas", value: "Khas" },
-];
-
-const jenisIsiRumahOptions = [
-  { label: "Ketua Keluarga", value: "Ketua Keluarga" },
-  { label: "Dewasa Bekerja", value: "Dewasa Bekerja" },
-  { label: "Dewasa Tidak Bekerja", value: "Dewasa Tidak Bekerja" },
-  { label: "Kanak-kanak", value: "Kanak-kanak" },
-  { label: "Bayi", value: "Bayi" },
-  { label: "Warga Emas", value: "Warga Emas" },
-  { label: "Orang Kurang Upaya", value: "Orang Kurang Upaya" },
-];
+// removed kategori and jenisIsiRumah options
 
 const statusOptions = [
-  { label: "Aktif", value: "Aktif" },
-  { label: "Tidak Aktif", value: "Tidak Aktif" },
+  { label: "Ya", value: "Ya" },
+  { label: "Tidak", value: "Tidak" },
+];
+
+const statusDataOptions = [
   { label: "Menunggu Kelulusan", value: "Menunggu Kelulusan" },
+  { label: "Draf", value: "Draf" },
 ];
 
 // Function to load existing data from localStorage
@@ -302,16 +304,19 @@ const handleSubmit = async (formData) => {
     // Load existing data
     const existingData = loadExistingData();
     
+    // Convert radio button values to display values
+    const statusDisplay = formData.status === "Ya" ? "Aktif" : "Tidak Aktif";
+    
     // Prepare new data
     const newRecord = {
       idHadKifayah: formData.idHadKifayah,
       namaHadKifayah: formData.namaHadKifayah,
-      kategori: formData.kategori,
-      jenisIsiRumah: formData.jenisIsiRumah,
+      keterangan: formData.keterangan || "",
       kadarBerbayar: parseFloat(formData.kadarBerbayar),
-      kadarPercuma: parseFloat(formData.kadarPercuma),
       tarikhMula: formData.tarikhMula,
-      status: formData.status,
+      tarikhTamat: formData.tarikhTamat,
+      status: statusDisplay,
+      statusData: formData.statusData,
       tindakan: existingData.length + 1,
     };
     

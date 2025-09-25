@@ -2,645 +2,697 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
-      <template #header>
-        <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Butiran Had Kifayah Utama</h2>
-          <div class="flex gap-2">
-            <rs-button
-              variant="primary-outline"
-              @click="navigateTo('/BF-PRF/KF/HK/01_01')"
-            >
-              <Icon name="mdi:arrow-left" class="mr-1" /> Kembali
-            </rs-button>
-            <rs-button
-              variant="primary"
-              @click="openEditModal"
-              v-if="configData.status !== 'Menunggu Kelulusan'"
-              :disabled="hasPendingChanges"
-            >
-              <Icon name="mdi:pencil" class="mr-1" /> Kemaskini
+    <!-- Loading State -->
+    <div v-if="loading" class="mt-4 text-center">
+      <Icon name="mdi:loading" class="animate-spin text-blue-500 mb-2" size="32px" />
+      <p class="text-gray-600">Memuatkan maklumat...</p>
+    </div>
+
+    <!-- Error State -->
+    <div v-else-if="error" class="mt-4">
+      <rs-card>
+        <template #body>
+          <div class="text-center py-8">
+            <Icon name="mdi:alert-circle" class="text-red-500 mb-4" size="48px" />
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Ralat</h3>
+            <p class="text-gray-600">{{ error }}</p>
+            <rs-button variant="primary" @click="goBack" class="mt-4">
+              <Icon name="mdi:arrow-left" class="mr-2" /> Kembali
             </rs-button>
           </div>
-        </div>
-      </template>
+        </template>
+      </rs-card>
+    </div>
 
-      <template #body>
-                 <!-- Current Configuration -->
-         <div class="mb-8">
-           <h3 class="text-lg font-medium mb-4">Konfigurasi Semasa</h3>
-           
-           
-           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <p class="text-sm text-gray-500">Kategori</p>
-              <p class="font-medium">{{ configData.category }}</p>
+    <!-- Main Content -->
+    <div v-else-if="selectedKifayah" class="space-y-6">
+      <!-- Header Card -->
+      <rs-card>
+        <template #header>
+          <h2 class="text-xl font-semibold">Maklumat Had Kifayah</h2>
+        </template>
+      </rs-card>
+
+      <!-- Main Information Card -->
+      <rs-card>
+        <template #header>
+          <h3 class="text-lg font-semibold">Maklumat Asas</h3>
+        </template>
+        <template #body>
+          <div class="space-y-4">
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Nama Had Kifayah:</span>
+              <span class="text-sm text-gray-900">{{ selectedKifayah.namaHadKifayah }}</span>
             </div>
-            <div>
-              <p class="text-sm text-gray-500">Kategori Isi Rumah</p>
-              <p class="font-medium">{{ configData.householdType }}</p>
+            
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Keterangan:</span>
+              <span class="text-sm text-gray-900">{{ selectedKifayah.keterangan || 'N/A' }}</span>
             </div>
-            <div>
-              <p class="text-sm text-gray-500">Kadar Berbayar</p>
-              <p class="font-medium">
-                RM {{ formatCurrency(configData.paidHouseRate) }}
-              </p>
+            
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Pelarasan:</span>
+              <span class="text-sm text-gray-900 font-semibold">RM {{ formatCurrency(selectedKifayah.kadarBerbayar) }}</span>
             </div>
-            <div>
-              <p class="text-sm text-gray-500">Kadar Percuma</p>
-              <p class="font-medium">
-                RM {{ formatCurrency(configData.freeHouseRate) }}
-              </p>
+            
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Tarikh Mula:</span>
+              <span class="text-sm text-gray-900">{{ formatDate(selectedKifayah.tarikhMula) }}</span>
             </div>
-            <div>
-              <p class="text-sm text-gray-500">Tarikh Mula Kuat Kuasa</p>
-              <p class="font-medium">
-                {{ formatDate(configData.effectiveDate) }}
-              </p>
+            
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Tarikh Tamat:</span>
+              <span class="text-sm text-gray-900">{{ formatDate(selectedKifayah.tarikhTamat) }}</span>
             </div>
-            <div>
-              <p class="text-sm text-gray-500">Status</p>
-              <rs-badge :variant="getStatusVariant(configData.status)">
-                {{ configData.status }}
+            
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Status:</span>
+              <rs-badge :variant="getStatusVariant(selectedKifayah.status)">
+                {{ selectedKifayah.status }}
               </rs-badge>
             </div>
+            
+            <div class="flex items-center py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-600 w-40">Status Data:</span>
+              <rs-badge :variant="getStatusVariant(selectedKifayah.statusData)">
+                {{ selectedKifayah.statusData || 'N/A' }}
+              </rs-badge>
+            </div>
+            
           </div>
-        </div>
+        </template>
+      </rs-card>
 
-        <!-- Pending Changes (if any) -->
-        <div v-if="hasPendingChanges" class="border-t pt-6">
-          <h3 class="text-lg font-medium mb-4">Perubahan Menunggu Kelulusan</h3>
-          <div
-            class="bg-yellow-50 p-4 rounded-lg border border-yellow-200 mb-4"
-          >
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <p class="text-sm text-gray-500">Kategori</p>
-                <p class="font-medium">
-                  {{ pendingChanges.category }}
-                  <span
-                    v-if="pendingChanges.category !== configData.category"
-                    class="text-xs text-yellow-700 bg-yellow-100 px-2 py-1 rounded ml-2"
-                  >
-                    Perubahan
-                  </span>
-                </p>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500">Kategori Isi Rumah</p>
-                <p class="font-medium">
-                  {{ pendingChanges.householdType }}
-                  <span
-                    v-if="
-                      pendingChanges.householdType !== configData.householdType
-                    "
-                    class="text-xs text-yellow-700 bg-yellow-100 px-2 py-1 rounded ml-2"
-                  >
-                    Perubahan
-                  </span>
-                </p>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500">Kadar Berbayar</p>
-                <p class="font-medium">
-                  RM {{ formatCurrency(pendingChanges.paidHouseRate) }}
-                  <span
-                    v-if="
-                      pendingChanges.paidHouseRate !== configData.paidHouseRate
-                    "
-                    class="text-xs text-yellow-700 bg-yellow-100 px-2 py-1 rounded ml-2"
-                  >
-                    {{
-                      getChangeDirection(
-                        configData.paidHouseRate,
-                        pendingChanges.paidHouseRate
-                      )
-                    }}
-                  </span>
-                </p>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500">Kadar Percuma</p>
-                <p class="font-medium">
-                  RM {{ formatCurrency(pendingChanges.freeHouseRate) }}
-                  <span
-                    v-if="
-                      pendingChanges.freeHouseRate !== configData.freeHouseRate
-                    "
-                    class="text-xs text-yellow-700 bg-yellow-100 px-2 py-1 rounded ml-2"
-                  >
-                    {{
-                      getChangeDirection(
-                        configData.freeHouseRate,
-                        pendingChanges.freeHouseRate
-                      )
-                    }}
-                  </span>
-                </p>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500">Tarikh Mula Kuat Kuasa</p>
-                <p class="font-medium">
-                  {{ formatDate(pendingChanges.effectiveDate) }}
-                  <span
-                    v-if="
-                      pendingChanges.effectiveDate !== configData.effectiveDate
-                    "
-                    class="text-xs text-yellow-700 bg-yellow-100 px-2 py-1 rounded ml-2"
-                  >
-                    Perubahan
-                  </span>
-                </p>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500">Status</p>
-                <rs-badge variant="warning"> Menunggu Kelulusan </rs-badge>
-              </div>
+      <!-- Edit Maklumat Asas Button -->
+      <div class="flex justify-end">
+        <rs-button variant="primary" class="px-6 py-3" @click="openEditMaklumatAsas">
+          <Icon name="mdi:pencil" class="mr-2" /> Kemaskini Maklumat Asas
+        </rs-button>
+      </div>
+
+      <!-- Edit Maklumat Asas Modal -->
+      <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center">
+        <div class="absolute inset-0 bg-black/40" @click="closeEditMaklumatAsas"></div>
+        <div class="relative bg-white rounded-lg shadow-xl w-full max-w-xl mx-4">
+          <div class="px-6 py-4 border-b">
+            <h3 class="text-lg font-semibold">Kemaskini Maklumat Asas</h3>
+          </div>
+          <div class="px-6 py-4 space-y-4">
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Nama Had Kifayah</label>
+              <input v-model="editForm.namaHadKifayah" type="text" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Keterangan</label>
+              <input v-model="editForm.keterangan" type="text" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Pelarasan (RM)</label>
+              <input v-model.number="editForm.kadarBerbayar" type="number" step="0.01" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Tarikh Mula</label>
+              <input v-model="editForm.tarikhMula" type="date" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Tarikh Tamat</label>
+              <input v-model="editForm.tarikhTamat" type="date" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Status</label>
+              <select v-model="editForm.status" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="Aktif">Aktif</option>
+                <option value="Tidak Aktif">Tidak Aktif</option>
+                <option value="Menunggu Kelulusan">Menunggu Kelulusan</option>
+              </select>
+            </div>
+            <div class="flex items-center">
+              <label class="text-sm font-medium text-gray-700 w-40">Status Data</label>
+              <select v-model="editForm.statusData" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="Draf">Draf</option>
+                <option value="Menunggu Kelulusan">Menunggu Kelulusan</option>
+              </select>
             </div>
           </div>
-
-          <div class="flex justify-end mt-4">
-            <rs-button
-              variant="danger-outline"
-              size="sm"
-              @click="cancelPendingChanges"
-              :loading="isCancelling"
-            >
-              Batalkan Permohonan
+          <div class="px-6 py-4 border-t flex justify-end gap-2">
+            <rs-button variant="secondary" @click="closeEditMaklumatAsas">Batal</rs-button>
+            <rs-button variant="primary" @click="saveMaklumatAsas">
+              <Icon name="mdi:content-save" class="mr-2" /> Simpan
             </rs-button>
           </div>
         </div>
+      </div>
 
-        <!-- Change History -->
-        <div class="border-t pt-6 mt-6">
-          <h3 class="text-lg font-medium mb-4">Sejarah Perubahan</h3>
+      <!-- Categories Section -->
+      <rs-card v-if="relatedCategories.length > 0">
+        <template #header>
+          <h3 class="text-lg font-semibold">Kategori Berkaitan</h3>
+        </template>
+        <template #body>
           <rs-table
-            :data="changeHistory"
-            :options="{
-              variant: 'default',
-              hover: true,
-            }"
+            class="mt-2"
+            :data="relatedCategories"
+            :field="[
+              'kategoriHadKifayah',
+              'levelHadKifayah',
+              'idLevel',
+              'indicator',
+              'hadKifayah',
+              'statusAktif',
+              'statusData',
+              'tarikhMula',
+              'tindakan'
+            ]"
+            :columns="[
+              { key: 'kategoriHadKifayah', label: 'Kategori' },
+              { key: 'levelHadKifayah', label: 'Level Had Kifayah' },
+              { key: 'idLevel', label: 'Id Level' },
+              { key: 'indicator', label: 'Indicator' },
+              { key: 'hadKifayah', label: 'Had Kifayah' },
+              { key: 'statusAktif', label: 'Status Aktif' },
+              { key: 'statusData', label: 'Status Data' },
+              { key: 'tarikhMula', label: 'Tarikh Mula' },
+              { key: 'tindakan', label: 'Tindakan' }
+            ]"
+            :pageSize="10"
+            :options="{ variant: 'default', hover: true }"
           >
-            <template v-slot:changes="data">
-              <div v-for="change in data.text" :key="change.field" class="mb-1">
-                <span class="font-medium">{{ change.field }}:</span>
-                <span
-                  v-if="change.oldValue !== null"
-                  class="text-gray-600 line-through mr-2"
-                >
-                  {{ change.oldValue }}
-                </span>
-                <span class="text-primary-600 font-medium">
-                  {{ change.newValue }}
-                </span>
-              </div>
+            <template v-slot:kategoriHadKifayah="data">
+              <span class="font-medium">{{ data.value.kategoriHadKifayah }}</span>
+            </template>
+            <template v-slot:levelHadKifayah="data">{{ data.value.levelHadKifayah }}</template>
+            <template v-slot:idLevel="data">{{ data.value.idLevel || data.value.bil }}</template>
+            <template v-slot:indicator="data">{{ data.value.indicator }}</template>
+            <template v-slot:hadKifayah="data">RM {{ formatCurrency(data.value.hadKifayah) }}</template>
+            <template v-slot:statusAktif="data">
+              <rs-badge :variant="data.value.statusAktif ? 'success' : 'danger'">
+                {{ data.value.statusAktif ? 'Aktif' : 'Tidak Aktif' }}
+              </rs-badge>
+            </template>
+            <template v-slot:statusData="data">{{ data.value.statusData }}</template>
+            <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
+            <template v-slot:tindakan="data">
+              <rs-button variant="primary" size="sm" class="!px-2 !py-1" @click="openEditCategory(data.value)">
+                Kemaskini
+                <Icon name="mdi:pencil" class="ml-1" size="1rem" />
+              </rs-button>
             </template>
           </rs-table>
-        </div>
-      </template>
-    </rs-card>
+        </template>
+      </rs-card>
 
-    <!-- Edit Modal -->
-    <rs-modal
-      v-model="showEditModal"
-      :title="isEditing ? 'Kemaskini Had Kifayah' : 'Tambah Had Kifayah'"
-      size="lg"
-      position="center"
-      @close="resetForm"
-    >
-      <FormKit
-        type="form"
-        @submit="submitForm"
-        :actions="false"
-        v-model="formData"
-      >
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormKit
-            type="select"
-            name="category"
-            label="Kategori Kadar Had Kifayah"
-            validation="required"
-            :options="kategoriOptions"
-            placeholder="Pilih kategori"
-            :validation-messages="{
-              required: 'Kategori adalah wajib',
-            }"
-          />
-
-          <FormKit
-            type="select"
-            name="householdType"
-            label="Kategori Isi Rumah"
-            validation="required"
-            :options="householdOptions"
-            placeholder="Pilih kategori isi rumah"
-            :validation-messages="{
-              required: 'Kategori isi rumah adalah wajib',
-            }"
-          />
-
-          <FormKit
-            type="number"
-            name="paidHouseRate"
-            label="Kadar Kifayah Rumah Berbayar (RM)"
-            validation="required|min:0"
-            step="0.01"
-            :validation-messages="{
-              required: 'Kadar rumah berbayar adalah wajib',
-              min: 'Nilai tidak boleh negatif',
-            }"
-          />
-
-          <FormKit
-            type="number"
-            name="freeHouseRate"
-            label="Kadar Kifayah Rumah Percuma (RM)"
-            validation="required|min:0"
-            step="0.01"
-            :validation-messages="{
-              required: 'Kadar rumah percuma adalah wajib',
-              min: 'Nilai tidak boleh negatif',
-            }"
-          />
-
-          <FormKit
-            type="date"
-            name="effectiveDate"
-            label="Tarikh Mula Kuat Kuasa"
-            validation="required"
-            :validation-messages="{
-              required: 'Tarikh mula adalah wajib',
-            }"
-          />
-
-          <div
-            class="bg-yellow-50 p-3 rounded border border-yellow-200 col-span-2"
-          >
-            <p class="text-yellow-800 text-sm">
-              <Icon name="material-symbols:info-outline" class="mr-1" />
-              Perhatian: Semua perubahan akan melalui proses kelulusan terlebih
-              dahulu sebelum dikuat kuasa.
-            </p>
+      <!-- Edit Category Modal -->
+      <div v-if="showCategoryModal" class="fixed inset-0 z-50 flex items-center justify-center">
+        <div class="absolute inset-0 bg-black/40" @click="closeEditCategory"></div>
+        <div class="relative bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4">
+          <div class="px-6 py-4 border-b">
+            <h3 class="text-lg font-semibold">Kemaskini Kategori</h3>
+          </div>
+          <div class="px-6 py-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm font-medium text-gray-700">Kategori Had Kifayah</label>
+              <input v-model="categoryForm.kategoriHadKifayah" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Level Had Kifayah</label>
+              <input v-model="categoryForm.levelHadKifayah" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Id Level</label>
+              <input v-model="categoryForm.idLevel" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="md:col-span-2">
+              <div class="flex items-center justify-between">
+                <label class="text-sm font-medium text-gray-700">Indicator</label>
+                <rs-button size="sm" variant="secondary" class="!px-2 !py-1" @click="addIndicatorRow">
+                  <Icon name="mdi:plus" class="mr-1" /> Tambah Baris
+                </rs-button>
+              </div>
+              <div class="mt-2 space-y-2">
+                <div v-for="(ind, idx) in categoryIndicators" :key="idx" class="flex items-center gap-2">
+                  <input v-model="categoryIndicators[idx]" type="text" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  <rs-button size="sm" variant="danger" class="!px-2 !py-1" @click="removeIndicatorRow(idx)">
+                    <Icon name="mdi:delete" />
+                  </rs-button>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Had Kifayah (RM)</label>
+              <input v-model.number="categoryForm.hadKifayah" type="number" step="0.01" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Status Aktif</label>
+              <select v-model="categoryForm.statusAktif" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option :value="true">Aktif</option>
+                <option :value="false">Tidak Aktif</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Status Data</label>
+              <input v-model="categoryForm.statusData" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Tarikh Mula</label>
+              <input v-model="categoryForm.tarikhMula" type="date" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Tarikh Tamat</label>
+              <input v-model="categoryForm.tarikhTamat" type="date" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+          </div>
+          <div class="px-6 py-4 border-t flex justify-end gap-2">
+            <rs-button variant="secondary" @click="closeEditCategory">Batal</rs-button>
+            <rs-button variant="primary" @click="saveCategory">
+              <Icon name="mdi:content-save" class="mr-2" /> Simpan
+            </rs-button>
           </div>
         </div>
+      </div>
 
-        <div class="mt-6 flex justify-end gap-4">
-          <rs-button
-            variant="primary-outline"
-            @click="showEditModal = false"
-            type="button"
-            :disabled="isSubmitting"
-          >
-            Batal
-          </rs-button>
-          <rs-button variant="primary" type="submit" :loading="isSubmitting">
-            {{ isSubmitting ? "Menghantar..." : "Hantar Untuk Kelulusan" }}
-          </rs-button>
-        </div>
-      </FormKit>
+      <!-- Action Buttons Card -->
+      <rs-card>
+        <template #body>
+          <div class="flex justify-between gap-3">
+            <rs-button variant="secondary" @click="goBack" class="px-6 py-3">
+              <Icon name="mdi:arrow-left" class="mr-2" /> Kembali
+            </rs-button>
+            <div class="flex gap-3">
+              <rs-button 
+                variant="primary" 
+                @click="navigateTo(`/BF-PRF/KF/HK/01_01/tambah_kategori?id=${selectedId}`)"
+                class="px-6 py-3"
+              >
+                <Icon name="mdi:folder-plus" class="mr-2" /> Tambah Kategori
+              </rs-button>
+              <rs-button 
+                variant="success" 
+                @click="handleHantar"
+                class="px-6 py-3"
+              >
+                <Icon name="mdi:send" class="mr-2" /> Hantar
+              </rs-button>
+            </div>
+          </div>
+        </template>
+      </rs-card>
+    </div>
 
-      <template #footer></template>
-    </rs-modal>
+    <!-- Not Found State -->
+    <div v-else class="mt-4">
+      <rs-card>
+        <template #body>
+          <div class="text-center py-8">
+            <Icon name="mdi:file-search" class="text-gray-400 mb-4" size="48px" />
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Rekod Tidak Ditemui</h3>
+            <p class="text-gray-600">Maklumat Had Kifayah dengan ID "{{ selectedId }}" tidak ditemui.</p>
+            <rs-button variant="primary" @click="goBack" class="mt-4">
+              <Icon name="mdi:arrow-left" class="mr-2" /> Kembali
+            </rs-button>
+          </div>
+        </template>
+      </rs-card>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, onActivated, nextTick } from "vue";
 
 definePageMeta({
-  title: "Butiran Konfigurasi Had Kifayah",
+  title: "Maklumat Had Kifayah",
 });
 
+// Get query parameters
 const route = useRoute();
-const router = useRouter();
-
-const id = route.query.id;
+const selectedId = route.query.id;
 
 const breadcrumb = ref([
   {
     name: "Profiling",
     type: "link",
-    path: "/BF-PRF/KF/HK/01_01",
+    path: "/BF-PRF/KF/HK/admin",
   },
   {
-    name: "Had Kifayah Utama",
+    name: "Konfigurasi Had Kifayah",
     type: "link",
     path: "/BF-PRF/KF/HK/01_01",
   },
   {
-    name: "Butiran Konfigurasi",
+    name: "Maklumat Had Kifayah",
     type: "current",
-    path: `/BF-PRF/KF/HK/01_02?id=${id}`,
+    path: "/BF-PRF/KF/HK/01_02",
   },
 ]);
 
-// Data
-const configData = ref({
-  id: parseInt(id),
-  category: "Utama",
-  householdType: "Ketua Keluarga",
-  paidHouseRate: 1215.00,
-  freeHouseRate: 780.00,
-  effectiveDate: "2025-01-01",
-  status: "Aktif",
+// State management
+const loading = ref(true);
+const error = ref(null);
+const selectedKifayah = ref(null);
+const allKifayahData = ref([]);
+const relatedCategories = ref([]);
+const showCategoryModal = ref(false);
+const categoryForm = ref({
+  kategoriHadKifayah: '',
+  levelHadKifayah: '',
+  idLevel: '',
+  indicator: '',
+  hadKifayah: 0,
+  statusAktif: true,
+  statusData: '',
+  tarikhMula: '',
+  tarikhTamat: '',
+});
+let editingCategoryIndex = -1;
+const categoryIndicators = ref([]); // array of indicator strings
+const showEditModal = ref(false);
+const editForm = ref({
+  namaHadKifayah: '',
+  keterangan: '',
+  kadarBerbayar: 0,
+  tarikhMula: '',
+  tarikhTamat: '',
+  status: 'Aktif',
+  statusData: 'Draf'
 });
 
-// Function to fetch data based on ID
-const fetchConfigData = (configId) => {
-  console.log('fetchConfigData called with ID:', configId);
-  // Mock data - in real app this would be an API call
-  const mockData = {
-    1: {
-      id: 1,
-      category: "Utama",
-      householdType: "Ketua Keluarga",
-      paidHouseRate: 1215.00,
-      freeHouseRate: 780.00,
-      effectiveDate: "2025-01-01",
-      status: "Aktif",
-    },
-    2: {
-      id: 2,
-      category: "Utama",
-      householdType: "Dewasa Bekerja",
-      paidHouseRate: 412.00,
-      freeHouseRate: 412.00,
-      effectiveDate: "2025-01-01",
-      status: "Menunggu Kelulusan",
-    },
-    3: {
-      id: 3,
-      category: "Utama",
-      householdType: "Dewasa Tidak Bekerja",
-      paidHouseRate: 167.00,
-      freeHouseRate: 167.00,
-      effectiveDate: "2025-01-01",
-      status: "Aktif",
-    },
-    4: {
-      id: 4,
-      category: "Utama",
-      householdType: "Tanggungan IPT",
-      paidHouseRate: 613.00,
-      freeHouseRate: 613.00,
-      effectiveDate: "2025-01-01",
-      status: "Tidak Aktif",
-    },
-    5: {
-      id: 5,
-      category: "Utama",
-      householdType: "Tanggungan 7-17 Tahun",
-      paidHouseRate: 408.00,
-      freeHouseRate: 408.00,
-      effectiveDate: "2025-01-01",
-      status: "Aktif",
-    },
-    6: {
-      id: 6,
-      category: "Utama",
-      householdType: "Tanggungan 6 Tahun ke Bawah",
-      paidHouseRate: 175.00,
-      freeHouseRate: 175.00,
-      effectiveDate: "2025-01-01",
-      status: "Menunggu Kelulusan",
-    },
-    7: {
-      id: 7,
-      category: "Tambahan",
-      householdType: "OKU",
-      paidHouseRate: 247.00,
-      freeHouseRate: 247.00,
-      effectiveDate: "2025-01-01",
-      status: "Aktif",
-    },
-    8: {
-      id: 8,
-      category: "Tambahan",
-      householdType: "Pesakit Kronik",
-      paidHouseRate: 243.00,
-      freeHouseRate: 243.00,
-      effectiveDate: "2025-01-01",
-      status: "Aktif",
-    },
-    9: {
-      id: 9,
-      category: "Tambahan",
-      householdType: "Penjagaan Anak < 12 Tahun",
-      paidHouseRate: 330.00,
-      freeHouseRate: 330.00,
-      effectiveDate: "2025-01-01",
-      status: "Tidak Aktif",
-    },
-  };
+// Default data (fallback if no data in localStorage)
+const defaultData = [
+  {
+    idHadKifayah: "HK001",
+    namaHadKifayah: "Ketua Keluarga",
+    kategori: "Utama",
+    jenisIsiRumah: "Ketua Keluarga",
+    keterangan: "Had kifayah untuk ketua keluarga",
+    kadarBerbayar: 1215.00,
+    kadarPercuma: 780.00,
+    tarikhMula: "2025-01-01",
+    tarikhTamat: "2025-12-31",
+    status: "Aktif",
+    statusData: "Draf",
+    tindakan: 1,
+  },
+];
 
-  const data = mockData[configId];
-  console.log('Found data for ID', configId, ':', data);
-  if (data) {
-    configData.value = { ...data };
-    console.log('Updated configData:', configData.value);
-  } else {
-    // Handle case when ID not found
-    console.error(`Configuration with ID ${configId} not found`);
+// Function to validate and sanitize data item
+const validateDataItem = (item) => {
+  return {
+    ...item,
+    // Ensure numeric values are valid
+    kadarBerbayar: isNaN(parseFloat(item.kadarBerbayar)) ? 0 : parseFloat(item.kadarBerbayar),
+    kadarPercuma: isNaN(parseFloat(item.kadarPercuma)) ? 0 : parseFloat(item.kadarPercuma),
+    // Ensure dates are valid
+    tarikhMula: item.tarikhMula && !isNaN(new Date(item.tarikhMula).getTime()) ? item.tarikhMula : "2025-01-01",
+    tarikhTamat: item.tarikhTamat && !isNaN(new Date(item.tarikhTamat).getTime()) ? item.tarikhTamat : "2025-12-31",
+    // Ensure status is valid
+    status: item.status || "Aktif",
+    // Ensure statusData is valid
+    statusData: item.statusData || "Draf"
+  };
+};
+
+// Function to load related categories
+const loadRelatedCategories = () => {
+  try {
+    const savedCategories = localStorage.getItem('kifayahCategories');
+    if (savedCategories && selectedId) {
+      const allCategories = JSON.parse(savedCategories);
+      // Filter categories that belong to the selected Had Kifayah
+      relatedCategories.value = allCategories.filter(category => 
+        category.idHadKifayah === selectedId
+      );
+    } else {
+      relatedCategories.value = [];
+    }
+  } catch (error) {
+    console.error('Error loading categories:', error);
+    relatedCategories.value = [];
   }
 };
 
-const pendingChanges = ref(null);
-const isCancelling = ref(false);
-const changeHistory = ref([
-  {
-    date: "2025-03-15",
-    changedBy: "Ahmad bin Ali",
-    changes: [
-      { field: "Kadar Berbayar", oldValue: "RM 200.00", newValue: "RM 250.00" },
-      {
-        field: "Tarikh Mula",
-        oldValue: "15 Mac 2025",
-        newValue: "1 April 2025",
-      },
-    ],
-    status: "Tidak Diluluskan",
-  },
-  {
-    date: "2025-01-10",
-    changedBy: "Siti binti Abu",
-    changes: [{ field: "Status", oldValue: "Tidak Aktif", newValue: "Aktif" }],
-    status: "Diluluskan",
-  },
-  {
-    date: "2024-12-01",
-    changedBy: "System",
-    changes: [
-      {
-        field: "Rekod dicipta",
-        oldValue: null,
-        newValue: "Konfigurasi baharu",
-      },
-    ],
-    status: "Diluluskan",
-  },
-]);
-
-// Form state
-const showEditModal = ref(false);
-const isEditing = ref(false);
-const isSubmitting = ref(false);
-const formData = ref({
-  id: null,
-  category: "",
-  householdType: "",
-  paidHouseRate: 0,
-  freeHouseRate: 0,
-  effectiveDate: "",
-});
-
-// Options
-const kategoriOptions = [
-  { label: "Utama", value: "Utama" },
-  { label: "Tambahan", value: "Tambahan" },
-];
-
-const householdOptions = [
-  // Kategori Utama - Default (cannot be added via form)
-  { label: "Ketua Keluarga", value: "Ketua Keluarga" },
-  { label: "Dewasa Bekerja", value: "Dewasa Bekerja" },
-  { label: "Dewasa Tidak Bekerja", value: "Dewasa Tidak Bekerja" },
-  { label: "Tanggungan IPT", value: "Tanggungan IPT" },
-  { label: "Tanggungan 7-17 Tahun", value: "Tanggungan 7-17 Tahun" },
-  { label: "Tanggungan 6 Tahun ke Bawah", value: "Tanggungan 6 Tahun ke Bawah" },
-  
-  // Kategori Utama - Additional
-  { label: "Penjaga Bukan Keluarga", value: "Penjaga Bukan Keluarga" },
-  { label: "Tanggungan Tahfiz", value: "Tanggungan Tahfiz" },
-  { label: "Anak Angkat", value: "Anak Angkat" },
-  { label: "Ibu Bapa Tiri", value: "Ibu Bapa Tiri" },
-  { label: "Saudara Kandung", value: "Saudara Kandung" },
-  { label: "Nenek/Datuk", value: "Nenek/Datuk" },
-  { label: "Cucu", value: "Cucu" },
-  { label: "Penjaga Khas", value: "Penjaga Khas" },
-  { label: "Tanggungan Dewasa OKU", value: "Tanggungan Dewasa OKU" },
-  { label: "Anak Yatim Piatu", value: "Anak Yatim Piatu" },
-  
-  // Kategori Tambahan - Default
-  { label: "OKU", value: "OKU" },
-  { label: "Pesakit Kronik", value: "Pesakit Kronik" },
-  { label: "Penjagaan Anak < 12 Tahun", value: "Penjagaan Anak < 12 Tahun" },
-  
-  // Kategori Tambahan - Additional
-  { label: "Warga Emas", value: "Warga Emas" },
-  { label: "Keperluan Terapi", value: "Keperluan Terapi" },
-  { label: "Keperluan Pemulihan", value: "Keperluan Pemulihan" },
-  { label: "Bantuan Perubatan", value: "Bantuan Perubatan" },
-  { label: "Keperluan Diet Khas", value: "Keperluan Diet Khas" },
-  { label: "Alat Bantu Mobility", value: "Alat Bantu Mobility" },
-  { label: "Keperluan Pendidikan Khas", value: "Keperluan Pendidikan Khas" },
-  { label: "Rawatan Jangka Panjang", value: "Rawatan Jangka Panjang" },
-  { label: "Keperluan Penjagaan Harian", value: "Keperluan Penjagaan Harian" },
-  { label: "Bantuan Teknologi Assistive", value: "Bantuan Teknologi Assistive" },
-];
-
-// Computed
-const hasPendingChanges = computed(() => {
-  return pendingChanges.value !== null;
-});
-
-// Fetch data when component mounts
-onMounted(() => {
-  console.log('Component mounted, ID:', id);
-  if (id) {
-    console.log('Fetching data for ID:', id);
-    fetchConfigData(parseInt(id));
-  } else {
-    console.log('No ID found in query parameters');
+// Function to load data from localStorage
+const loadData = () => {
+  try {
+    loading.value = true;
+    error.value = null;
+    
+    const savedData = localStorage.getItem('kifayahLimits');
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      // Validate and sanitize parsed data
+      const validatedData = parsedData.map(validateDataItem);
+      
+      // Merge with default data, giving priority to saved data
+      const mergedData = [...defaultData];
+      validatedData.forEach(savedItem => {
+        // Check if item already exists in default data
+        const existingIndex = mergedData.findIndex(item => item.idHadKifayah === savedItem.idHadKifayah);
+        if (existingIndex >= 0) {
+          // Replace existing item
+          mergedData[existingIndex] = validateDataItem(savedItem);
+        } else {
+          // Add new item
+          mergedData.push(validateDataItem(savedItem));
+        }
+      });
+      allKifayahData.value = mergedData;
+    } else {
+      allKifayahData.value = defaultData;
+    }
+    
+    // Find the selected item
+    if (selectedId) {
+      selectedKifayah.value = allKifayahData.value.find(item => item.idHadKifayah === selectedId);
+      if (!selectedKifayah.value) {
+        error.value = `Rekod dengan ID "${selectedId}" tidak ditemui.`;
+      } else {
+        // Load related categories
+        loadRelatedCategories();
+        // Seed edit form with current values
+        editForm.value = {
+          namaHadKifayah: selectedKifayah.value.namaHadKifayah || '',
+          keterangan: selectedKifayah.value.keterangan || '',
+          kadarBerbayar: selectedKifayah.value.kadarBerbayar ?? 0,
+          tarikhMula: selectedKifayah.value.tarikhMula || '',
+          tarikhTamat: selectedKifayah.value.tarikhTamat || '',
+          status: selectedKifayah.value.status || 'Aktif',
+          statusData: selectedKifayah.value.statusData || 'Draf'
+        };
+      }
+    } else {
+      error.value = "ID Had Kifayah tidak disediakan.";
+    }
+    
+  } catch (error) {
+    console.error('Error loading data:', error);
+    error.value = "Ralat semasa memuatkan data.";
+    allKifayahData.value = defaultData;
+  } finally {
+    loading.value = false;
   }
-});
+};
 
-// Watch for route changes
-watch(() => route.query.id, (newId) => {
-  console.log('Route query ID changed to:', newId);
-  if (newId) {
-    fetchConfigData(parseInt(newId));
-  }
-}, { immediate: true });
+// Navigation function
+const goBack = () => {
+  navigateTo('/BF-PRF/KF/HK/01_01');
+};
 
-// Methods
-const openEditModal = () => {
-  isEditing.value = true;
-  formData.value = {
-    ...configData.value,
-    paidHouseRate: parseFloat(configData.value.paidHouseRate),
-    freeHouseRate: parseFloat(configData.value.freeHouseRate),
-    effectiveDate: formatDateForPicker(configData.value.effectiveDate),
+// Edit modal handlers
+const openEditMaklumatAsas = () => {
+  if (!selectedKifayah.value) return;
+  editForm.value = {
+    namaHadKifayah: selectedKifayah.value.namaHadKifayah || '',
+    keterangan: selectedKifayah.value.keterangan || '',
+    kadarBerbayar: selectedKifayah.value.kadarBerbayar ?? 0,
+    tarikhMula: selectedKifayah.value.tarikhMula || '',
+    tarikhTamat: selectedKifayah.value.tarikhTamat || '',
+    status: selectedKifayah.value.status || 'Aktif',
+    statusData: selectedKifayah.value.statusData || 'Draf'
   };
   showEditModal.value = true;
 };
 
-const submitForm = async () => {
-  isSubmitting.value = true;
-
-  try {
-    // Validate form data
-    if (!formData.value.category || !formData.value.householdType) {
-      throw new Error("Sila isi semua medan yang diperlukan");
-    }
-
-    // Create pending changes
-    pendingChanges.value = {
-      ...formData.value,
-      status: "Menunggu Kelulusan",
-    };
-
-    alert("Permohonan kemaskini telah dihantar untuk kelulusan");
-    showEditModal.value = false;
-  } catch (error) {
-    alert("Ralat semasa menyimpan perubahan");
-  } finally {
-    isSubmitting.value = false;
-  }
+const closeEditMaklumatAsas = () => {
+  showEditModal.value = false;
 };
 
-const cancelPendingChanges = async () => {
-  isCancelling.value = true;
-  try {
-    // In real app, call API to cancel pending changes
-    pendingChanges.value = null;
-    alert("Permohonan kemaskini telah dibatalkan");
-  } catch (error) {
-    alert("Gagal membatalkan permohonan");
-  } finally {
-    isCancelling.value = false;
-  }
-};
-
-const resetForm = () => {
-  formData.value = {
-    id: null,
-    category: "",
-    householdType: "",
-    paidHouseRate: 0,
-    freeHouseRate: 0,
-    effectiveDate: "",
+const saveMaklumatAsas = () => {
+  if (!selectedKifayah.value) return;
+  // Update the selected item
+  const updated = {
+    ...selectedKifayah.value,
+    ...editForm.value,
+    kadarBerbayar: Number(editForm.value.kadarBerbayar) || 0,
   };
-  isEditing.value = false;
+  selectedKifayah.value = updated;
+
+  // Persist back into the array
+  const index = allKifayahData.value.findIndex(i => i.idHadKifayah === selectedId);
+  if (index !== -1) {
+    allKifayahData.value[index] = { ...updated };
+  }
+
+  // Save to localStorage
+  try {
+    localStorage.setItem('kifayahLimits', JSON.stringify(allKifayahData.value));
+    const { $toast } = useNuxtApp();
+    if ($toast) $toast.success('Maklumat asas telah dikemaskini');
+  } catch (e) {
+    console.error('Gagal menyimpan data:', e);
+  }
+
+  showEditModal.value = false;
 };
 
-// Helper functions
+// Handle Hantar button click
+const handleHantar = () => {
+  console.log('Hantar button clicked!'); // Debug log
+  try {
+    // Show success notification
+    const { $toast } = useNuxtApp();
+    if ($toast) {
+      $toast.success('Data berjaya dihantar kepada pelulus');
+      console.log('Toast notification sent successfully');
+    } else {
+      // Fallback notification if toast is not available
+      console.log('Toast not available, using fallback');
+      alert('Data berjaya dihantar kepada pelulus');
+    }
+    // Redirect to HK/01_01 after brief delay
+    setTimeout(() => {
+      navigateTo('/BF-PRF/KF/HK/01_01');
+    }, 1000);
+  } catch (error) {
+    console.error('Error showing notification:', error);
+    // Fallback notification
+    alert('Data berjaya dihantar kepada pelulus');
+    // Redirect even if toast fails
+    navigateTo('/BF-PRF/KF/HK/01_01');
+  }
+};
+
+// Category edit handlers
+const openEditCategory = (row) => {
+  if (!relatedCategories.value) return;
+  editingCategoryIndex = relatedCategories.value.findIndex(
+    (c) => c.kategoriHadKifayah === row.kategoriHadKifayah &&
+           c.levelHadKifayah === row.levelHadKifayah &&
+           ((c.idLevel ?? c.bil) === (row.idLevel ?? row.bil))
+  );
+  categoryForm.value = { ...row, idLevel: row.idLevel ?? row.bil };
+  // Seed indicators array (split by comma if string)
+  if (Array.isArray(row.indicator)) {
+    categoryIndicators.value = [...row.indicator];
+  } else if (typeof row.indicator === 'string' && row.indicator.trim() !== '') {
+    // Split by semicolon or comma, support "ff1; ff2" or "ff1, ff2"
+    categoryIndicators.value = row.indicator
+      .split(/[;,]+/)
+      .map(s => s.trim())
+      .filter(Boolean);
+  } else {
+    categoryIndicators.value = [''];
+  }
+  showCategoryModal.value = true;
+};
+
+const closeEditCategory = () => {
+  showCategoryModal.value = false;
+  editingCategoryIndex = -1;
+};
+
+const saveCategory = () => {
+  if (editingCategoryIndex < 0) return;
+  // Update in-memory
+  const indicatorValue = categoryIndicators.value
+    .map(v => (v || '').toString().trim())
+    .filter(Boolean)
+    .join('; '); // persist using semicolon to match existing data format
+  relatedCategories.value[editingCategoryIndex] = { ...categoryForm.value, indicator: indicatorValue };
+
+  // Persist to localStorage (preserve other entries for other IDs if present)
+  try {
+    const savedCategoriesRaw = localStorage.getItem('kifayahCategories');
+    let all = [];
+    if (savedCategoriesRaw) {
+      all = JSON.parse(savedCategoriesRaw);
+      // Remove entries for this selectedId
+      all = all.filter((c) => c.idHadKifayah !== selectedId);
+    }
+    // Append updated entries with the same idHadKifayah
+    const updatedForId = relatedCategories.value.map((c) => ({ ...c, idHadKifayah: selectedId }));
+    const merged = [...all, ...updatedForId];
+    localStorage.setItem('kifayahCategories', JSON.stringify(merged));
+
+    const { $toast } = useNuxtApp();
+    if ($toast) $toast.success('Kategori berjaya dikemaskini');
+  } catch (e) {
+    console.error('Gagal menyimpan kategori:', e);
+  }
+
+  showCategoryModal.value = false;
+  editingCategoryIndex = -1;
+};
+
+const addIndicatorRow = () => {
+  categoryIndicators.value.push('');
+};
+
+const removeIndicatorRow = (index) => {
+  if (categoryIndicators.value.length <= 1) {
+    categoryIndicators.value[0] = '';
+    return;
+  }
+  categoryIndicators.value.splice(index, 1);
+};
+
+// Make sure the data loads when component mounts
+onMounted(() => {
+  loadData();
+});
+
+// Also refresh when the page becomes visible
+onActivated(() => {
+  loadData();
+});
+
 const formatDate = (dateString) => {
   if (!dateString) return "";
-  const options = { year: "numeric", month: "long", day: "numeric" };
-  return new Date(dateString).toLocaleDateString("ms-MY", options);
-};
-
-const formatDateForPicker = (dateString) => {
-  if (!dateString) return "";
-  const date = new Date(dateString);
-  return date.toISOString().split("T")[0];
+  
+  // Handle different date formats and validate
+  let date;
+  if (typeof dateString === 'string') {
+    // Check if it's a valid date string
+    date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return "Tarikh Tidak Sah";
+    }
+  } else if (dateString instanceof Date) {
+    date = dateString;
+    if (isNaN(date.getTime())) {
+      return "Tarikh Tidak Sah";
+    }
+  } else {
+    return "Tarikh Tidak Sah";
+  }
+  
+  const options = { year: "numeric", month: "short", day: "numeric" };
+  return date.toLocaleDateString("ms-MY", options);
 };
 
 const formatCurrency = (value) => {
-  if (value === undefined || value === null) return "0.00";
-  return parseFloat(value).toFixed(2);
+  if (value === undefined || value === null || value === "") return "0.00";
+  
+  // Convert to number and validate
+  const numValue = parseFloat(value);
+  if (isNaN(numValue)) {
+    return "0.00";
+  }
+  
+  // Ensure it's a valid number and format to 2 decimal places
+  return numValue.toFixed(2);
 };
 
+// Helper function to determine badge variant based on status
 const getStatusVariant = (status) => {
   switch (status) {
     case "Aktif":
@@ -649,14 +701,10 @@ const getStatusVariant = (status) => {
       return "danger";
     case "Menunggu Kelulusan":
       return "warning";
+    case "Draf":
+      return "secondary";
     default:
       return "default";
   }
-};
-
-const getChangeDirection = (oldValue, newValue) => {
-  if (newValue > oldValue) return "↑ Naik";
-  if (newValue < oldValue) return "↓ Turun";
-  return "Tiada perubahan";
 };
 </script>

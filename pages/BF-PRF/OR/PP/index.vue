@@ -6,7 +6,7 @@
       <template #header>
         <div class="flex justify-between items-center">
           <div>
-            <h2 class="text-xl font-semibold">Pengesahan Organisasi</h2>
+            <h2 class="text-xl font-semibold">Senarai Organisasi</h2>
           </div>
         </div>
       </template>
@@ -91,18 +91,59 @@
                     >
                       <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
                     </button>
-                    
-                    <!-- Delete Button - Only for Eksekutif role -->
-                    <!-- 
+                  </div>
+                </template>
+              </rs-table>
+            </div>
+          </rs-tab-item>
+
+          <rs-tab-item title="Dalam Pembetulan">
+            <div class="p-4">
+              <rs-table
+                :key="`table-${tableKey}-correction`"
+                :data="getTableDataByStatus(['Dalam Pembetulan'])"
+                :columns="columns"
+                :pageSize="pageSize"
+                :showNoColumn="true"
+                :options="{ variant: 'default', hover: true, striped: true }"
+                :options-advanced="{ sortable: true, filterable: false }"
+                advanced
+              >
+                <template v-slot:noRujukan="{ text }">
+                  <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewOrganization(text)">
+                    {{ text }}
+                  </a>
+                </template>
+
+                <template v-slot:tarikhPermohonan="{ text }">
+                  <div class="font-medium">{{ formatDate(text) }}</div>
+                </template>
+
+                <template v-slot:status="{ text }">
+                  <rs-badge :variant="getStatusVariant(text)">
+                    {{ text }}
+                  </rs-badge>
+                </template>
+
+                <template v-slot:tindakan="{ text }">
+                  <div class="flex space-x-3">
+                    <!-- View Button - Always available -->
                     <button
-                      v-if="canDelete(text.status)"
-                      @click="confirmDelete(text.id, text)"
-                      title="Padam"
+                      @click="viewItem(text.id)"
+                      title="Lihat"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:outline-delete" size="20" class="text-danger" />
+                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
                     </button>
-                    -->
+                    
+                    <!-- Edit Button - User can update during correction -->
+                    <button
+                      @click="editItem(text.id)"
+                      title="Kemaskini"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="ic:outline-edit" size="20" class="text-warning" />
+                    </button>
                   </div>
                 </template>
               </rs-table>
@@ -147,37 +188,6 @@
                     >
                       <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
                     </button>
-                    
-                    <!-- Edit Button - Available for all statuses -->
-                    <button
-                      @click="editItem(text.id)"
-                      title="Kemaskini"
-                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                    >
-                      <Icon name="ic:outline-edit" size="20" class="text-warning" />
-                    </button>
-                    
-                    <!-- Semak Button - Only for pending items -->
-                    <button
-                      v-if="canPerformAction(text.status)"
-                      @click="handleSemakPengesahan(text.id)"
-                      title="Semak"
-                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                    >
-                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
-                    </button>
-                    
-                    <!-- Delete Button - Only for Eksekutif role -->
-                    <!-- 
-                    <button
-                      v-if="canDelete(text.status)"
-                      @click="confirmDelete(text.id, text)"
-                      title="Padam"
-                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                    >
-                      <Icon name="ic:outline-delete" size="20" class="text-danger" />
-                    </button>
-                    -->
                   </div>
                 </template>
               </rs-table>
@@ -365,8 +375,9 @@ const breadcrumb = ref([
 const columns = [
   { key: 'noRujukan', label: 'No. Rujukan', sortable: true },
   { key: 'namaOrganisasi', label: 'Nama Organisasi', sortable: true },
-  { key: 'tarikhPermohonan', label: 'Tarikh Permohonan', sortable: true },
   { key: 'jenisOrganisasi', label: 'Jenis Organisasi', sortable: true },
+  { key: 'tarikhPermohonan', label: 'Tarikh Permohonan', sortable: true },
+  { key: 'jenisStruktur', label: 'Jenis Struktur', sortable: true },
   { key: 'status', label: 'Status', sortable: true },
   { key: 'tindakan', label: 'Tindakan', sortable: false },
 ];
@@ -378,60 +389,76 @@ const tableKey = ref(0);
 // Mock data for Eksekutif role
 const organizationList = ref([
   {
-    noRujukan: 'ORG-240501',
-    namaOrganisasi: 'Syarikat Teknologi Maju Sdn Bhd',
+    noRujukan: 'ORG-202507-0001',
+    namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
     tarikhPermohonan: '23/7/2025',
-    jenisOrganisasi: 'Swasta',
-    status: 'Menunggu Pengesahan',
-    tindakan: { id: 'ORG-240501', status: 'Menunggu Pengesahan' },
+    jenisOrganisasi: 'Masjid',
+    jenisStruktur: 'HQ',
+    status: 'Disahkan',
+    tindakan: { id: 'ORG-202507-0001', status: 'Disahkan' },
   },
   {
-    noRujukan: 'ORG-240502',
-    namaOrganisasi: 'Pertubuhan Amal Iman Malaysia',
+    noRujukan: 'ORG-202506-0002',
+    namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Petaling Jaya',
     tarikhPermohonan: '15/6/2025',
-    jenisOrganisasi: 'NGO',
-    status: 'Diluluskan',
-    tindakan: { id: 'ORG-240502', status: 'Diluluskan' },
+    jenisOrganisasi: 'Masjid',
+    jenisStruktur: 'Cawangan',
+    status: 'Disahkan',
+    tindakan: { id: 'ORG-202506-0002', status: 'Disahkan' },
   },
   {
-    noRujukan: 'ORG-240503',
-    namaOrganisasi: 'Sekolah Menengah Tahfiz Al-Amin',
+    noRujukan: 'ORG-202505-0003',
+    namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Klang',
     tarikhPermohonan: '8/5/2025',
-    jenisOrganisasi: 'IPT',
-    status: 'Diluluskan',
-    tindakan: { id: 'ORG-240503', status: 'Diluluskan' },
-  },
-  {
-    noRujukan: 'ORG-240504',
-    namaOrganisasi: 'Institut Latihan Kemahiran Malaysia',
-    tarikhPermohonan: '30/7/2025',
-    jenisOrganisasi: 'Institut',
+    jenisOrganisasi: 'Masjid',
+    jenisStruktur: 'Cawangan',
     status: 'Menunggu Pengesahan',
-    tindakan: { id: 'ORG-240504', status: 'Menunggu Pengesahan' },
+    tindakan: { id: 'ORG-202505-0003', status: 'Menunggu Pengesahan' },
   },
   {
-    noRujukan: 'ORG-240505',
-    namaOrganisasi: 'Syarikat Pembangunan Hartanah Sdn Bhd',
+    noRujukan: 'ORG-202507-0004',
+    namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Shah Alam',
+    tarikhPermohonan: '30/7/2025',
+    jenisOrganisasi: 'Masjid',
+    jenisStruktur: 'Cawangan',
+    status: 'Disahkan',
+    tindakan: { id: 'ORG-202507-0004', status: 'Disahkan' },
+  },
+  {
+    noRujukan: 'ORG-202506-0005',
+    namaOrganisasi: 'Pertubuhan Kebajikan Islam Selangor',
     tarikhPermohonan: '12/6/2025',
-    jenisOrganisasi: 'Swasta',
-    status: 'Ditolak',
-    tindakan: { id: 'ORG-240505', status: 'Ditolak' },
+    jenisOrganisasi: 'NGO',
+    jenisStruktur: 'HQ',
+    status: 'Tidak Sah',
+    tindakan: { id: 'ORG-202506-0005', status: 'Tidak Sah' },
   },
   {
-    noRujukan: 'ORG-240506',
-    namaOrganisasi: 'Persatuan Belia Islam Malaysia',
+    noRujukan: 'ORG-202505-0006',
+    namaOrganisasi: 'Rumah Anak Yatim Darul Ehsan',
     tarikhPermohonan: '25/5/2025',
     jenisOrganisasi: 'NGO',
+    jenisStruktur: 'HQ',
     status: 'Menunggu Pengesahan',
-    tindakan: { id: 'ORG-240506', status: 'Menunggu Pengesahan' },
+    tindakan: { id: 'ORG-202505-0006', status: 'Menunggu Pengesahan' },
   },
   {
-    noRujukan: 'ORG-240507',
-    namaOrganisasi: 'Universiti Teknologi Malaysia',
+    noRujukan: 'ORG-202504-0007',
+    namaOrganisasi: 'Maahad Tahfiz Selangor',
     tarikhPermohonan: '18/4/2025',
     jenisOrganisasi: 'IPT',
-    status: 'Ditolak',
-    tindakan: { id: 'ORG-240507', status: 'Ditolak' },
+    jenisStruktur: 'HQ',
+    status: 'Tidak Sah',
+    tindakan: { id: 'ORG-202504-0007', status: 'Tidak Sah' },
+  },
+  {
+    noRujukan: 'ORG-202508-0008',
+    namaOrganisasi: 'Pusat Dialisis As-Salam Shah Alam',
+    tarikhPermohonan: '05/8/2025',
+    jenisOrganisasi: 'Kesihatan',
+    jenisStruktur: 'Cawangan',
+    status: 'Dalam Pembetulan',
+    tindakan: { id: 'ORG-202508-0008', status: 'Dalam Pembetulan' },
   },
 ]);
 
@@ -488,8 +515,10 @@ const formatDate = (dateString) => {
 const getStatusVariant = (status) => {
   const variants = {
     'Menunggu Pengesahan': 'warning',
-    'Diluluskan': 'success',
-    'Ditolak': 'danger'
+    'Dalam Pembetulan': 'warning',
+    'Disahkan': 'success',
+    'Perlu Pembetulan': 'warning',
+    'Tidak Sah': 'danger'
   };
   return variants[status] || 'default';
 };
@@ -537,7 +566,7 @@ const performSearch = () => {
 // CRUD Operations
 const viewItem = (id) => navigateTo(`/BF-PRF/OR/PP/view/${id}`);
 const editItem = (id) => navigateTo(`/BF-PRF/OR/PP/kemaskini/${id}`);
-const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/OR/PP/04`);
+const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/OR/PP/04/${id}`);
 
 // Delete operations
 const confirmDelete = (id, item) => {

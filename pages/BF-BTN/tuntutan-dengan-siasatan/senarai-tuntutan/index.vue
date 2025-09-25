@@ -6,10 +6,6 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Senarai Tuntutan</h2>
-          <rs-button variant="primary" @click="navigateTo('/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan')">
-            <Icon name="material-symbols:add" class="w-5 h-5 mr-1" />
-            Mohon Tuntutan
-          </rs-button>
         </div>
       </template>
 
@@ -45,21 +41,20 @@
         <RsTab variant="primary" type="default">
           <RsTabItem title="Draf">
             <rs-table
-              :data="filteredTuntutan('Draf')"
-              :columns="columns"
-              :pageSize="pageSize"
-              :showNoColumn="true"
-              :options="{
-                variant: 'default',
-                hover: true,
-                striped: true,
-              }"
-              :options-advanced="{
-                sortable: true,
-                filterable: true,
-              }"
-              advanced
-            >
+                :data="filteredTuntutan('Draf')"
+                :columns="columns"
+                :pageSize="pageSize"
+                :showNoColumn="true"
+                :show-filter="true"
+                :show-search="true"
+                :options="{
+                  variant: 'default',
+                  hover: true,
+                  striped: true,
+                }"
+                advanced
+              >
+
               <template v-slot:noTuntutan="data">
                 <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewDetails(data.text)">
                   {{ data.text }}
@@ -71,7 +66,7 @@
               </template>
 
               <template v-slot:amaunTuntutan="data">
-                <div class="font-medium text-right">
+                <div class="font-medium text-left">
                   RM {{ formatNumber(data.text) }}
                 </div>
               </template>
@@ -84,16 +79,32 @@
 
               <template v-slot:tindakan="data">
                 <div class="flex justify-center items-center gap-2">
-                  <rs-button variant="primary" size="sm" @click="handleEdit(data.text.id)">
-                    <Icon name="material-symbols:edit" class="w-4 h-4 mr-1" />
-                    Edit
+                  <!-- Edit -->
+                  <rs-button
+                    variant="ghost"
+                    size="sm"
+                    class="!px-2 !py-1 text-blue-600 hover:text-blue-800"
+                    @click="handleEdit(data.text.id)"
+                    title="Edit"
+                    aria-label="Edit"
+                  >
+                    <Icon name="material-symbols:edit" class="w-5 h-5" />
                   </rs-button>
-                  <rs-button variant="danger" size="sm" @click="handleDelete(data.text.id)">
-                    <Icon name="material-symbols:delete" class="w-4 h-4 mr-1" />
-                    Hapus
+
+                  <!-- Hapus -->
+                  <rs-button
+                    variant="ghost"
+                    size="sm"
+                    class="!px-2 !py-1 text-red-600 hover:text-red-800"
+                    @click="handleDelete(data.text.id)"
+                    title="Hapus"
+                    aria-label="Hapus"
+                  >
+                    <Icon name="material-symbols:delete" class="w-5 h-5" />
                   </rs-button>
                 </div>
               </template>
+
             </rs-table>
           </RsTabItem>
 
@@ -103,17 +114,16 @@
               :columns="columns"
               :pageSize="pageSize"
               :showNoColumn="true"
+              :show-filter="true"
+              :show-search="true"
               :options="{
                 variant: 'default',
                 hover: true,
                 striped: true,
               }"
-              :options-advanced="{
-                sortable: true,
-                filterable: true,
-              }"
               advanced
             >
+
               <template v-slot:noTuntutan="data">
                 <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewDetails(data.text)">
                   {{ data.text }}
@@ -125,7 +135,7 @@
               </template>
 
               <template v-slot:amaunTuntutan="data">
-                <div class="font-medium text-right">
+                <div class="font-medium text-left">
                   RM {{ formatNumber(data.text) }}
                 </div>
               </template>
@@ -138,32 +148,39 @@
 
               <template v-slot:tindakan="data">
                 <div class="flex justify-center items-center gap-2">
-                  <rs-button variant="primary" size="sm" @click="handleViewDalamSemakan(data.text.id)">
-                    <Icon name="material-symbols:visibility" class="w-4 h-4 mr-1" />
-                    Lihat
+                  <rs-button
+                    variant="ghost"
+                    size="sm"
+                    class="!px-2 !py-1 text-blue-600 hover:text-blue-800"
+                    :title="`Lihat ${data.row?.noTuntutan || ''}`"
+                    title="Lihat"
+                    aria-label="Lihat"
+                    @click="handleViewDalamSemakan(data.row?.id || data.text)"
+                  >
+                    <Icon name="material-symbols:visibility" class="w-5 h-5" />
                   </rs-button>
                 </div>
               </template>
+
             </rs-table>
           </RsTabItem>
 
           <RsTabItem title="Lulus">
-            <rs-table
+                <rs-table
               :data="filteredTuntutan('Lulus')"
-              :columns="columnsLulus"
-              :pageSize="pageSizeLulus"
+              :columns="columns"
+              :pageSize="pageSize"
               :showNoColumn="true"
+              :show-filter="true"
+              :show-search="true"
               :options="{
                 variant: 'default',
                 hover: true,
                 striped: true,
               }"
-              :options-advanced="{
-                sortable: true,
-                filterable: true,
-              }"
               advanced
             >
+
               <template v-slot:noTuntutan="data">
                 <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewDetails(data.text)">
                   {{ data.text }}
@@ -175,7 +192,7 @@
               </template>
 
               <template v-slot:amaunTuntutan="data">
-                <div class="font-medium text-right">
+                <div class="font-medium text-left">
                   RM {{ formatNumber(data.text) }}
                 </div>
               </template>
@@ -188,21 +205,31 @@
 
               <template v-slot:tindakan="data">
                 <div class="flex justify-center items-center gap-2">
-                  <rs-button variant="primary" size="sm" @click="handleViewLulus(data.text.id)">
-                    <Icon name="material-symbols:visibility" class="w-4 h-4 mr-1" />
-                    Lihat
+                  <rs-button
+                    variant="ghost"
+                    size="sm"
+                    class="!px-2 !py-1 text-blue-600 hover:text-blue-800"
+                    :title="`Lihat ${data.row?.noTuntutan || ''}`"
+                    aria-label="Lihat"
+                    title="Lihat"
+                    @click="handleViewLulus(data.row?.id || data.text)"
+                  >
+                    <Icon name="material-symbols:visibility" class="w-5 h-5" />
                   </rs-button>
                 </div>
               </template>
+
             </rs-table>
           </RsTabItem>
 
           <RsTabItem title="Ditolak">
             <rs-table
-              :data="filteredTuntutan('Tidak Lulus')"
+              :data="filteredTuntutan('Ditolak')"
               :columns="columnsDitolak"
               :pageSize="pageSizeDitolak"
               :showNoColumn="true"
+              :show-filter="true"
+              :show-search="true"
               :options="{
                 variant: 'default',
                 hover: true,
@@ -225,7 +252,7 @@
               </template>
 
               <template v-slot:amaunTuntutan="data">
-                <div class="font-medium text-right">
+                <div class="font-medium text-left">
                   RM {{ formatNumber(data.text) }}
                 </div>
               </template>
@@ -238,12 +265,19 @@
 
               <template v-slot:tindakan="data">
                 <div class="flex justify-center items-center gap-2">
-                  <rs-button variant="primary" size="sm" @click="handleViewDitolak(data.text.id)">
-                    <Icon name="material-symbols:visibility" class="w-4 h-4 mr-1" />
-                    Lihat
+                  <rs-button
+                    variant="ghost"
+                    size="sm"
+                    class="!px-2 !py-1 text-blue-600 hover:text-blue-800"
+                    :title="`Lihat ${data.row?.noTuntutan || ''}`"
+                    aria-label="Lihat"
+                    @click="handleViewDitolak(data.row?.id || data.text)"
+                  >
+                    <Icon name="material-symbols:visibility" class="w-5 h-5" />
                   </rs-button>
                 </div>
               </template>
+
             </rs-table>
           </RsTabItem>
         </RsTab>
@@ -263,7 +297,7 @@ const breadcrumb = ref([
   {
     name: "Tuntutan dengan Siasatan",
     type: "link",
-    path: "/BF-BTN/tuntutan-dengan-siasatan",
+    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
   },
   {
     name: "Senarai Tuntutan",
@@ -277,6 +311,7 @@ const columns = [
   { key: "noTuntutan", label: "No. Tuntutan", sortable: true },
   { key: "noGL", label: "No. GL", sortable: true },
   { key: "namaPemohon", label: "Nama Pemohon / Institusi", sortable: true },
+  { key: "maklumatBantuan", label: "Maklumat Bantuan", sortable: true },
   { key: "tarikhTuntutan", label: "Tarikh Tuntutan", sortable: true },
   { key: "amaunTuntutan", label: "Amaun Tuntutan (RM)", sortable: true },
   { key: "statusPermohonan", label: "Status Permohonan", sortable: true },
@@ -288,6 +323,7 @@ const columnsLulus = [
   { key: "noTuntutan", label: "No. Tuntutan", sortable: true },
   { key: "noGL", label: "No. GL", sortable: true },
   { key: "namaPemohon", label: "Nama Pemohon / Institusi", sortable: true },
+  { key: "maklumatBantuan", label: "Maklumat Bantuan", sortable: true },
   { key: "tarikhTuntutan", label: "Tarikh Tuntutan", sortable: true },
   { key: "amaunTuntutan", label: "Amaun Tuntutan (RM)", sortable: true },
   { key: "statusPermohonan", label: "Status Permohonan", sortable: true },
@@ -299,6 +335,7 @@ const columnsDitolak = [
   { key: "noTuntutan", label: "No. Tuntutan", sortable: true },
   { key: "noGL", label: "No. GL", sortable: true },
   { key: "namaPemohon", label: "Nama Pemohon / Institusi", sortable: true },
+  { key: "maklumatBantuan", label: "Maklumat Bantuan", sortable: true },
   { key: "tarikhTuntutan", label: "Tarikh Tuntutan", sortable: true },
   { key: "amaunTuntutan", label: "Amaun Tuntutan (RM)", sortable: true },
   { key: "statusPermohonan", label: "Status Permohonan", sortable: true },
@@ -311,7 +348,7 @@ const statusOptions = [
   { label: "Draf", value: "Draf" },
   { label: "Dalam Semakan", value: "Dalam Semakan" },
   { label: "Lulus", value: "Lulus" },
-  { label: "Tidak Lulus", value: "Tidak Lulus" },
+  { label: "Ditolak", value: "Ditolak" },
   { label: "Perlu Penambahbaikan", value: "Perlu Penambahbaikan" },
 ];
 
@@ -325,108 +362,126 @@ const currentPage = ref(1);
 const pageSizeLulus = ref(5);
 const pageSizeDitolak = ref(5);
 
-// Sample data for Draf
-const tuntutanList = ref([
+// ⚠️ Replace all four sample arrays with this single one:
+const allTuntutan = ref([
+  // Draf
   {
+    id: "TUN-2024-001",
     noTuntutan: "TUN-2024-001",
     noGL: "GL-001",
     namaPemohon: "Ahmad bin Abdullah",
-    amaunTuntutan: 5000.00,
+    maklumatBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA (B400)",
+    amaunTuntutan: 5000.0,
     tarikhTuntutan: "2024-03-20",
     statusPermohonan: "Draf",
-    tindakan: { noTuntutan: "TUN-2024-001", status: "Draf" }
+    tindakan: "TUN-2024-001",
   },
   {
+    id: "TUN-2024-002",
     noTuntutan: "TUN-2024-002",
     noGL: "GL-002",
     namaPemohon: "Masjid Al-Hidayah",
-    amaunTuntutan: 8000.00,
+    maklumatBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA (B400)",
+    amaunTuntutan: 8000.0,
     tarikhTuntutan: "2024-03-18",
     statusPermohonan: "Draf",
-    tindakan: { noTuntutan: "TUN-2024-002", status: "Draf" }
+    tindakan: "TUN-2024-002",
   },
-]);
 
-// Sample data for Dalam Semakan
-const tuntutanDalamSemakan = ref([
+  // Dalam Semakan
   {
+    id: "TUN-2024-003",
     noTuntutan: "TUN-2024-003",
     noGL: "GL-003",
-    namaPemohon: "Sekolah Agama Rakyat Al-Amin",
-    amaunTuntutan: 12000.00,
+    namaPemohon: "PUSAT HEMODIALISIS PERMATA SDN. BHD.",
+    maklumatBantuan: "(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR) (B103)",
+    amaunTuntutan: 12000.0,
     tarikhTuntutan: "2024-03-15",
     statusPermohonan: "Dalam Semakan",
-    tindakan: { noTuntutan: "TUN-2024-003", status: "Dalam Semakan" }
+    tindakan: "TUN-2024-003",
   },
   {
+    id: "TUN-2024-004",
     noTuntutan: "TUN-2024-004",
     noGL: "GL-004",
     namaPemohon: "Surau Kampung Baru",
-    amaunTuntutan: 3500.00,
+    maklumatBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA (B400)",
+    amaunTuntutan: 3500.0,
     tarikhTuntutan: "2024-03-12",
     statusPermohonan: "Dalam Semakan",
-    tindakan: { noTuntutan: "TUN-2024-004", status: "Dalam Semakan" }
+    tindakan: "TUN-2024-004",
   },
-]);
 
-// Sample data for Lulus
-const tuntutanLulus = ref([
+  // Lulus
   {
+    id: "TUN-2024-005",
     noTuntutan: "TUN-2024-005",
     noGL: "GL-005",
     namaPemohon: "Pusat Tahfiz Al-Quran",
-    amaunTuntutan: 15000.00,
+    maklumatBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA (B400)",
+    amaunTuntutan: 15000.0,
     tarikhTuntutan: "2024-03-10",
     statusPermohonan: "Lulus",
-    tindakan: { noTuntutan: "TUN-2024-005", status: "Lulus" }
+    tindakan: "TUN-2024-005",
   },
-]);
 
-// Sample data for Ditolak
-const tuntutanDitolak = ref([
+  // Ditolak
   {
+    id: "TUN-2024-006",
     noTuntutan: "TUN-2024-006",
     noGL: "GL-006",
     namaPemohon: "Kumpulan Belia Islam",
-    amaunTuntutan: 25000.00,
+    maklumatBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA (B400)",
+    amaunTuntutan: 25000.0,
     tarikhTuntutan: "2024-03-22",
-    statusPermohonan: "Tidak Lulus",
-    tindakan: { noTuntutan: "TUN-2024-006", status: "Tidak Lulus" }
+    statusPermohonan: "Ditolak",
+    tindakan: "TUN-2024-006",
   },
   {
+    id: "TUN-2024-007",
     noTuntutan: "TUN-2024-007",
     noGL: "GL-007",
     namaPemohon: "Persatuan Islam Kampung Melayu",
-    amaunTuntutan: 18000.00,
+    maklumatBantuan: "(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA (B400)",
+    amaunTuntutan: 18000.0,
     tarikhTuntutan: "2024-03-19",
-    statusPermohonan: "Tidak Lulus",
-    tindakan: { noTuntutan: "TUN-2024-007", status: "Tidak Lulus" }
+    statusPermohonan: "Ditolak",
+    tindakan: "TUN-2024-007",
+  },
+  {
+    id: "TUN-2024-008",
+    noTuntutan: "TUN-2024-008",
+    noGL: "GL-008",
+    namaPemohon: "KLINIK DIALISIS NUR HIDAYAH",
+    maklumatBantuan: "(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR) (B103)",
+    amaunTuntutan: 15000.0,
+    tarikhTuntutan: "2024-03-25",
+    statusPermohonan: "Lulus",
+    tindakan: "TUN-2024-008",
   },
 ]);
 
+
 // Computed properties
 const filteredTuntutan = (status) => {
-  let filtered = tuntutanList.value;
+  let filtered = [...allTuntutan.value];
 
-  // Apply search filter
   if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
-    filtered = filtered.filter(item => 
-      item.noTuntutan.toLowerCase().includes(query) ||
-      item.namaPemohon.toLowerCase().includes(query) ||
-      item.noGL.toLowerCase().includes(query)
+    const q = searchQuery.value.toLowerCase();
+    filtered = filtered.filter((item) =>
+      item.noTuntutan.toLowerCase().includes(q) ||
+      item.namaPemohon.toLowerCase().includes(q) ||
+      item.noGL.toLowerCase().includes(q)
     );
   }
 
-  // Apply status filter
   if (status) {
-    filtered = filtered.filter(item => 
-      item.statusPermohonan === status
-    );
+    filtered = filtered.filter((item) => item.statusPermohonan === status);
   }
 
   return filtered;
 };
+
 
 const totalTuntutan = computed(() => filteredTuntutan.value.length);
 const totalPages = computed(() => Math.ceil(totalTuntutan.value / pageSize.value));
@@ -450,7 +505,7 @@ const getStatusVariant = (status) => {
     'Draf': 'info',
     'Dalam Semakan': 'warning',
     'Lulus': 'success',
-    'Tidak Lulus': 'danger',
+    'Ditolak': 'danger',
     'Perlu Penambahbaikan': 'warning'
   };
   return variants[status] || 'default';

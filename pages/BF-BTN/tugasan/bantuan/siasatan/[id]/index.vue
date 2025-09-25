@@ -9,7 +9,7 @@
           class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
         >
           <div>
-            <h1 class="text-2xl font-bold text-gray-900">Siasatan Lapangan</h1>
+            <h1 class="text-2xl font-bold text-gray-900">Siasatan</h1>
             <p class="mt-1 text-sm text-gray-600">
               Kemaskini maklumat bantuan
             </p>
@@ -94,17 +94,8 @@
                   name="productpackage"
                   v-model="formData.productpackage"
                   placeholder="Sila pilih product package"
-                  :options="[
-                    // '(PEROLEHAN) BINA RUMAH (FAKIR)',
-                    // '(WO) 3 BILIK (FAKIR) - TANGGUNGAN 3-6 ORANG',
-                    // 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)',
-                    // 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)'
-                    { label: '-- Sila Pilih --', value: '' }, // 👈 default option
-                    { label: '(PEROLEHAN) BINA RUMAH (FAKIR)', value: 'PEROLEHAN' },
-                    { label: '(WO) 3 BILIK (FAKIR) - TANGGUNGAN 3-6 ORANG', value: 'WO' },
-                    { label: 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)', value: 'PEMANTAUAN1' },
-                    { label: 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)', value: 'PEMANTAUAN2' }
-                  ]"
+                  :options="productPackageOptions"
+                  
                   searchable="true"
                   class="mt-1"
                 />
@@ -122,18 +113,31 @@
 
               <div class="space-y-1">
                 <label class="text-sm font-medium text-gray-700">Entitlement Product</label>
+                <!-- Checkbox for B300, B112 and B307 -->
+                <div v-if="isB300OrB307OrB112" class="mt-2 space-y-2">
+                  <div class="text-xs text-gray-500 mb-2">Debug: isB300OrB307OrB112 = {{ isB300OrB307OrB112 }}, route.id = {{ route.params.id }}</div>
+                  <div v-for="option in currentEntitlementOptions" :key="option.value" class="flex items-center">
+                    <input
+                      :id="option.value"
+                      type="checkbox"
+                      :value="option.value"
+                      v-model="formData.entitlementProducts"
+                      class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <label :for="option.value" class="ml-2 text-sm text-gray-700 cursor-pointer">
+                      {{ option.label }}
+                    </label>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-2">Selected: {{ formData.entitlementProducts }}</div>
+                </div>
+                <!-- Dropdown for other IDs -->
                 <FormKit
+                  v-else
                   type="select"
                   name="entitlementproduct"
                   v-model="formData.entitlementproduct"
                   placeholder="Sila pilih entitlement product"
-                  :options="[
-                    '-- Sila Pilih --', // 👈 default option
-                    '(PEROLEHAN) BINA RUMAH (FAKIR)',
-                    '(WO) 3 BILIK (FAKIR) - TANGGUNGAN 3-6 ORANG',
-                    '(PEROLEHAN) PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)',
-                    '(WO) PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)'
-                  ]"
+                  :options="entitlementProductOptions"
                   searchable="true"
                   class="mt-1"
                 />
@@ -219,120 +223,1044 @@
         </div>
           </template>
         </rs-card>
+             
+
+         <!-- NEW: Maklumat Pendidikan (read-only, shown for B300/B307) -->
+         <rs-card v-if="educationInfo" class="shadow-sm border-0 bg-white">
+             <template #header>
+               <div class="flex items-center space-x-3">
+                 <div class="flex-shrink-0">
+                   <div class="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center">
+                     <Icon name="ph:graduation-cap" class="w-6 h-6 text-cyan-600" />
+                   </div>
+                 </div>
+                 <div>
+                   <h2 class="text-lg font-semibold text-gray-900">Maklumat Penerima Manfaat & Pendidikan</h2>
+                   <p class="text-sm text-gray-500">{{ educationInfo.tablefor }}</p>
+                 </div>
+               </div>
+             </template>
+
+             <template #body>
+               <!-- Penerima Manfaat (merged on top) -->
+               <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                 <div class="space-y-1">
+                   <label class="text-sm font-medium text-gray-700">Nama</label>
+                   <FormKit
+                     type="select"
+                     v-model="dependentSelection.nama"
+                     :options="dependentNameOptions"
+                     placeholder="-- Sila Pilih --"
+                     searchable="true"
+                     class="mt-1"
+                   />
+                 </div>
+
+                 <div class="space-y-1" v-if="Boolean(dependentSelection.nama)">
+                   <label class="text-sm font-medium text-gray-700">No. Kad Pengenalan</label>
+                   <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                     <span class="text-sm text-gray-900">{{ selectedDependent?.noKadPengenalan || '-' }}</span>
+                   </div>
+                 </div>
+
+                 <div class="space-y-1" v-if="Boolean(dependentSelection.nama)">
+                   <label class="text-sm font-medium text-gray-700">Hubungan</label>
+                   <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                     <span class="text-sm text-gray-900">{{ selectedDependent?.hubungan || '-' }}</span>
+                   </div>
+                 </div>
+               </div>
+               <!-- /Penerima Manfaat -->
+
+               <div class="overflow-x-auto">
+                 <table class="min-w-full divide-y divide-gray-200">
+                   <tbody class="bg-white divide-y divide-gray-200">
+                     <tr v-for="(value, label) in educationInfo.fields" :key="label">
+                       <td class="px-6 py-3 w-1/3 text-sm font-medium text-gray-600">{{ label }}</td>
+                       <td class="px-6 py-3 text-sm text-gray-900">{{ value }}</td>
+                     </tr>
+                   </tbody>
+                 </table>
+               </div>
+
+               <!-- Editable table: Semester/Tahap (B307 only) -->
+               <div v-if="isB307" class="mt-6">
+                 <div class="flex items-center justify-between mb-3">
+                   <h3 class="text-md font-semibold text-gray-900">Perincian Semester/Tahap</h3>
+                   <rs-button variant="primary" size="sm" @click="addSemesterRow">Tambah Baris</rs-button>
+                 </div>
+                 <div class="overflow-x-auto">
+                   <table class="min-w-full divide-y divide-gray-200">
+                     <thead class="bg-gray-50">
+                       <tr>
+                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Semester/Tahap</th>
+                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bulan Mula Pengajian</th>
+                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bulan Tamat Pengajian</th>
+                         <!-- <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Semester</th> -->
+                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">GPA (jika ada)</th>
+                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CGPA (jika ada)</th>
+                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Yuran</th>
+                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Aksi</th>
+                       </tr>
+                     </thead>
+                     <tbody class="bg-white divide-y divide-gray-200">
+                       <tr v-for="(sem, index) in educationSemesters" :key="index" class="hover:bg-gray-50">
+                         <td class="px-3 py-2 text-sm text-gray-900">
+                           <input type="number" min="1" class="w-20 p-2 border rounded" v-model.number="sem.semester" @input="normalizeSemesterNumbers" />
+                         </td>
+                         <td class="px-3 py-2">
+                           <input type="text" class="w-full p-2 border rounded text-sm" v-model="sem.bulanMula" placeholder="cth: Jan-25" />
+                         </td>
+                         <td class="px-3 py-2">
+                           <input type="text" class="w-full p-2 border rounded text-sm" v-model="sem.bulanTamat" placeholder="cth: Jun-25" />
+                         </td>
+                         <!-- <td class="px-3 py-2">
+                           <select class="w-full p-2 border rounded text-sm" v-model="sem.jenis">
+                             <option value="">-- Pilih --</option>
+                             <option>Semester Panjang</option>
+                             <option>Semester Pendek</option>
+                           </select>
+                         </td> -->
+                         <td class="px-3 py-2">
+                           <input type="text" class="w-full p-2 border rounded text-sm" v-model="sem.gpa" placeholder="cth: 3.75" />
+                         </td>
+                         <td class="px-3 py-2">
+                           <input type="text" class="w-full p-2 border rounded text-sm" v-model="sem.cgpa" placeholder="cth: 3.60" />
+                         </td>
+                         <td class="px-3 py-2">
+                           <input type="number" class="w-full p-2 border rounded text-sm" v-model.number="sem.yuran" placeholder="cth: 1500" />
+                         </td>
+                         <td class="px-3 py-2">
+                           <rs-button variant="danger" size="sm" @click="removeSemesterRow(index)">Padam</rs-button>
+                         </td>
+                       </tr>
+                       <tr v-if="educationSemesters.length === 0">
+                         <td colspan="8" class="px-3 py-4 text-center text-sm text-gray-500">Tiada rekod. Klik "Tambah Baris" untuk menambah.</td>
+                       </tr>
+                     </tbody>
+                   </table>
+                 </div>
+               </div>
+             </template>
+           </rs-card>
+
+         <!-- NEW: Maklumat kediaman -->
+<rs-card v-if="kediamanInfo && !isB103" class="shadow-sm border-0 bg-white">
+  <template #header>
+    <div class="flex items-center space-x-3">
+      <div class="flex-shrink-0">
+        <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+          <Icon name="ph:house" class="w-6 h-6 text-red-600" />
+
+        </div>
       </div>
+      <div>
+        <h2 class="text-lg font-semibold text-gray-900">Maklumat Kediaman</h2>
+        <p class="text-sm text-gray-500">{{ kediamanInfo.tablefor }}</p>
+      </div>
+    </div>
+  </template>
+
+  <template #body>
+    <!-- Block style (status, keadaan, sewa) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div class="space-y-1">
+  <label class="text-sm font-medium text-gray-700">Status Kediaman Tempat Tinggal</label>
+  <FormKit
+    type="select"
+    v-model="formData.addressInfo.status_kediaman"
+    :options="statusKediamanOptions"
+    placeholder="-- Sila Pilih --"
+    searchable="true"
+    class="mt-1"
+  />
+</div>
+
+      
+
+
+      <div class="space-y-1">
+        <label class="text-sm font-medium text-gray-700">Keadaan Kediaman</label>
+        <FormKit
+          type="select"
+          v-model="formData.addressInfo.keadaan_kediaman"
+          :options="['Baik', 'Sempurna', 'Uzur', 'Separa Uzur']"
+          placeholder="-- Sila Pilih --"
+          searchable="true"
+          class="mt-1"
+        />
+      </div>
+
+      <div class="space-y-1">
+        <label class="text-sm font-medium text-gray-700">Kadar Sewa Bulanan (RM)</label>
+        <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+          <span class="text-sm text-gray-900">{{ formData?.addressInfo?.kadar_sewa || '800' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table style (Alamat, Negeri, Daerah, etc.) -->
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr v-for="(value, label) in kediamanInfo.fields" :key="label">
+            <td class="px-6 py-3 w-1/3 text-sm font-medium text-gray-600">{{ label }}</td>
+            <td class="px-6 py-3 text-sm text-gray-900">{{ value }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </template>
+</rs-card>
+
+         <!-- NEW: Maklumat Penerima Manfaat & Kesihatan for B103 -->
+         <rs-card v-if="isB103" class="shadow-sm border-0 bg-white">
+           <template #header>
+             <div class="flex items-center space-x-3">
+               <div class="flex-shrink-0">
+                 <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                   <Icon name="ph:heart" class="w-6 h-6 text-green-600" />
+                 </div>
+               </div>
+               <div>
+                 <h2 class="text-lg font-semibold text-gray-900">Maklumat Penerima Manfaat & Kesihatan</h2>
+                 <p class="text-sm text-gray-500">B103 - Bantuan Perubatan Dialisis (Fakir)</p>
+               </div>
+             </div>
+           </template>
+
+           <template #body>
+             <div class="space-y-6">
+               <!-- Beneficiary Information -->
+               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div>
+                   <FormKit
+                     type="select"
+                     name="namaPenerima"
+                     label="Nama"
+                     v-model="formData.healthInfo.namaPenerima"
+                     :options="beneficiaryOptions"
+                     placeholder="Sila pilih nama penerima"
+                     :classes="{ outer: 'mb-0' }"
+                   />
+                 </div>
+                 <div>
+                   <FormKit
+                     type="select"
+                     name="jenisPengenalan"
+                     label="Jenis Pengenalan"
+                     v-model="formData.healthInfo.jenisPengenalan"
+                     :options="[
+                       { label: 'MyKad', value: 'MyKad' },
+                       { label: 'MyKid', value: 'MyKid' },
+                       { label: 'Passport', value: 'Passport' }
+                     ]"
+                     :classes="{ outer: 'mb-0' }"
+                   />
+                 </div>
+                 <div>
+                   <FormKit
+                     type="text"
+                     name="noPengenalan"
+                     label="No Pengenalan"
+                     v-model="formData.healthInfo.noPengenalan"
+                     :classes="{ outer: 'mb-0' }"
+                   />
+                 </div>
+                 <div>
+                   <FormKit
+                     type="text"
+                     name="hubungan"
+                     label="Hubungan"
+                     v-model="formData.healthInfo.hubungan"
+                     :classes="{ outer: 'mb-0' }"
+                   />
+                 </div>
+               </div>
+
+               <!-- Health Information -->
+               <div class="border-t pt-6">
+                 <h3 class="text-md font-semibold text-gray-800 mb-4">Maklumat Kesihatan</h3>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                   <div>
+                     <FormKit
+                       type="select"
+                       name="tahapKesihatan"
+                       label="Tahap Kesihatan"
+                       v-model="formData.healthInfo.tahapKesihatan"
+                       :options="[
+                         { label: 'Sihat', value: 'Sihat' },
+                         { label: 'Sakit Kronik', value: 'Sakit Kronik' },
+                         { label: 'Kurang Upaya', value: 'Kurang Upaya' }
+                       ]"
+                       :classes="{ outer: 'mb-0' }"
+                     />
+                   </div>
+                   <div v-if="formData.healthInfo.tahapKesihatan && formData.healthInfo.tahapKesihatan !== 'Sihat'">
+                     <FormKit
+                       type="text"
+                       name="jenisPenyakit"
+                       label="Jenis Penyakit"
+                       v-model="formData.healthInfo.jenisPenyakit"
+                       placeholder="Nyatakan jenis penyakit"
+                       :classes="{ outer: 'mb-0' }"
+                     />
+                   </div>
+                 </div>
+               </div>
+
+               <!-- Chronic Illness Information -->
+               <div v-if="formData.healthInfo.tahapKesihatan === 'Sakit Kronik'" class="border-t pt-6">
+                 <h4 class="text-md font-semibold text-gray-800 mb-4">Maklumat Sakit Kronik</h4>
+                 
+                 <div class="space-y-4">
+                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                     <div>
+                       <FormKit
+                         type="select"
+                         name="keadaanKesihatan"
+                         label="Keadaan Kesihatan"
+                         v-model="formData.healthInfo.keadaanKesihatan"
+                         :options="[
+                           { label: 'Tidak Terlantar', value: 'Tidak Terlantar' },
+                           { label: 'Separuh Terlantar', value: 'Separuh Terlantar' },
+                           { label: 'Terlantar Sepenuhnya', value: 'Terlantar Sepenuhnya' }
+                         ]"
+                         :classes="{ outer: 'mb-0' }"
+                       />
+                     </div>
+                     <div>
+                       <FormKit
+                         type="select"
+                         name="kosPenjagaan"
+                         label="Kos Penjagaan"
+                         v-model="formData.healthInfo.kosPenjagaan"
+                         :options="[
+                           { label: 'Berbayar', value: 'Berbayar' },
+                           { label: 'Tidak Berbayar', value: 'Tidak Berbayar' }
+                         ]"
+                         :classes="{ outer: 'mb-0' }"
+                       />
+                     </div>
+                   </div>
+                   
+                   <div>
+                     <FormKit
+                       type="text"
+                       name="jumlahPerbelanjaan"
+                       label="Jumlah Perbelanjaan Bulanan (RM)"
+                       v-model="formData.healthInfo.jumlahPerbelanjaan"
+                       placeholder="Format: 9999.99"
+                       :classes="{ outer: 'mb-0' }"
+                     />
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </template>
+         </rs-card>
+
+           <!-- NEW: Senarai Entitlement Product Cards -->
+           <rs-card v-if="isB300OrB307OrB112" class="shadow-sm border-0 bg-white">
+             <template #header>
+               <div class="flex items-center space-x-3">
+                 <div class="flex-shrink-0">
+                   <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                     <Icon name="ph:gift" class="w-6 h-6 text-indigo-600" />
+                   </div>
+                 </div>
+                 <div>
+                   <h2 class="text-lg font-semibold text-gray-900">Senarai Entitlement Product</h2>
+                   <p class="text-sm text-gray-500">Bantuan yang dipilih berdasarkan checkbox</p>
+                 </div>
+               </div>
+             </template>
+
+             <template #body>
+               <div class="space-y-4">
+                 <!-- Entitlement Product Cards -->
+                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                   <div 
+                     v-for="(product, index) in selectedEntitlementProducts" 
+                     :key="index"
+                     class="relative border rounded-lg p-4 transition-all duration-200 hover:shadow-md"
+                     :class="{
+                       'border-green-200 bg-green-50': product.status === 'lengkap',
+                       'border-blue-200 bg-blue-50': product.status === 'sedang_edit',
+                       'border-gray-200 bg-white': product.status === 'baru'
+                     }"
+                   >
+                     <!-- Status Badge -->
+                     <div class="absolute top-2 right-2">
+                       <rs-badge 
+                         :variant="getProductStatusVariant(product.status)"
+                         class="text-xs"
+                       >
+                         {{ getProductStatusText(product.status) }}
+                       </rs-badge>
+                     </div>
+
+                     <!-- Product Info -->
+                     <div class="pr-16">
+                       <h3 class="font-semibold text-gray-900 text-sm mb-2">{{ product.name }}</h3>
+                       <p class="text-xs text-gray-600 mb-1">{{ product.code }}</p>
+                       <p class="text-xs text-gray-600 mb-3">{{ product.category }}</p>
+                     </div>
+
+                      <!-- Editable Sections (only when editing)
+                           Hidden for B112 when editing Sewaan_Rumah/Belian_Rumah and B103 when editing HEMODIALISIS/SUNTIKAN_EPO because we show external box -->
+                      <div
+                        v-if="
+                          product.status === 'sedang_edit' && !(
+                            (isB112 && (product.code === 'Sewaan_Rumah' || product.code === 'Belian_Rumah')) ||
+                            (isB103 && (product.code === 'HEMODIALISIS' || product.code === 'SUNTIKAN_EPO'))
+                          )
+                        "
+                        class="mt-4 space-y-4"
+                      >
+                       <!-- Maklumat Kadar Bantuan -->
+                       <div class="bg-gray-50 p-3 rounded-lg">
+                         <div class="flex items-center space-x-2 mb-3">
+                           <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                             <Icon name="ph:currency-dollar" class="w-4 h-4 text-green-600" />
+                           </div>
+                           <div>
+                             <h4 class="text-sm font-semibold text-gray-700">Maklumat Kadar Bantuan</h4>
+                             <p class="text-xs text-gray-500">Nilai kadar bantuan yang dicadangkan</p>
+                           </div>
+                         </div>
+                         <div class="space-y-3">
+                           <!-- Special case for yuran_pengajian - only show editable total amount -->
+                           <div v-if="product.code === 'yuran_pengajian'">
+                             <label class="text-xs font-medium text-gray-600">Jumlah Keseluruhan Bantuan akan Diterima</label>
+                             <input 
+                               v-model="product.kadarBantuan.jumlahKeseluruhan"
+                               type="text"
+                               class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="Masukkan jumlah keseluruhan bantuan"
+                             />
+                           </div>
+                           
+                           <!-- Regular form for other products -->
+                           <div v-else>
+                             <!-- Row 1: Kadar Bantuan & Tempoh/Kekerapan -->
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                               <div>
+                                 <label class="text-xs font-medium text-gray-600">Kadar Bantuan</label>
+                                 <div class="relative">
+                                   <input 
+                                     v-model="product.kadarBantuan.kadarBantuan"
+                                     type="number"
+                                     class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                     placeholder="Masukkan kadar bantuan"
+                                     @input="calculateTotalAmount(index)"
+                                   />
+                                   
+                                 </div>
+                               </div>
+                               <div>
+                                 <label class="text-xs font-medium text-gray-600">Tempoh/Kekerapan</label>
+                                 <input 
+                                   v-model="product.kadarBantuan.tempohKekerapan"
+                                   type="number"
+                                   class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                   placeholder="Masukkan bilangan tempoh/kekerapan"
+                                   @input="calculateTotalAmount(index)"
+                                 />
+                               </div>
+                             </div>
+                             
+                             <!-- Row 2: Tarikh Mula & Tarikh Tamat -->
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                               <div>
+                                 <label class="text-xs font-medium text-gray-600">Tarikh Mula</label>
+                                 <div class="relative">
+                                   <input 
+                                     v-model="product.kadarBantuan.tarikhMula"
+                                     type="date"
+                                     class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                   />
+                                   <Icon name="ph:calendar" class="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none" />
+                                 </div>
+                               </div>
+                               <div>
+                                 <label class="text-xs font-medium text-gray-600">Tarikh Tamat</label>
+                                 <div class="relative">
+                                   <input 
+                                     v-model="product.kadarBantuan.tarikhTamat"
+                                     type="date"
+                                     class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                   />
+                                   <Icon name="ph:calendar" class="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none" />
+                                 </div>
+                               </div>
+                             </div>
+                             
+                             <!-- Row 3: Jumlah Keseluruhan (read-only) -->
+                             <div>
+                               <label class="text-xs font-medium text-gray-600">Jumlah Keseluruhan Bantuan akan Diterima</label>
+                               <div class="w-full px-3 py-2 text-sm bg-gray-100 border border-gray-300 rounded-md text-gray-700 font-medium">
+                                 {{ product.kadarBantuan.jumlahKeseluruhan }}
+                               </div>
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+
+                       <!-- Maklumat Penerima Bayaran -->
+                       <div class="bg-gray-50 p-3 rounded-lg">
+                         <h4 class="text-sm font-semibold text-gray-700 mb-3">Maklumat Penerima Bayaran</h4>
+                         <div class="space-y-3">
+                           <!-- Kategori Penerima -->
+                           <div>
+                             <label class="text-xs font-medium text-gray-600">Kategori Penerima <span class="text-red-500">*</span></label>
+                             <select 
+                               v-model="product.penerimaBayaran.kategoriPenerima"
+                               @change="loadPenerimaData(index)"
+                               class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                             >
+                               <option value="">-- Sila Pilih --</option>
+                               <option value="asnaf">Asnaf</option>
+                               <option value="organisasi">Organisasi</option>
+                               <option value="third_party">Recipient</option>
+                             </select>
+                           </div>
+                           
+                           <!-- No Pendaftaran Dropdown (for Organisasi/Third Party) -->
+                           <div v-if="product.penerimaBayaran.kategoriPenerima === 'organisasi' || product.penerimaBayaran.kategoriPenerima === 'third_party'">
+                             <label class="text-xs font-medium text-gray-600">No Pendaftaran <span class="text-red-500">*</span></label>
+                             <select 
+                               v-model="product.penerimaBayaran.noPendaftaran"
+                               @change="loadPenerimaByRegistration(index)"
+                               class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                             >
+                               <option value="">-- Sila Pilih --</option>
+                               <option value="ABA1234">ABA1234 - SM Sains Kuala Selangor</option>
+                               <option value="WBA5678">WBA5678 - SM Sains Hulu Selangor</option>
+                               <option value="CBA9012">CBA9012 - Sekolah Seri Puteri, Cyberjaya</option>
+                               <option value="DGA3456">DGA3456 - Kolej Islam Sultan Alam Shah (KISAS)</option>
+                               <option value="EHA7890">EHA7890 - SBP Integrasi Gombak</option>
+                               <option value="UMA1122">UMA1122 - Universiti Malaya (UM)</option>
+                               <option value="UPM3344">UPM3344 - Universiti Putra Malaysia (UPM)</option>
+                               <option value="UKM5566">UKM5566 - Universiti Kebangsaan Malaysia (UKM)</option>
+                               <option value="UITM7788">UITM7788 - Universiti Teknologi MARA (UiTM)</option>
+                               <option value="USM9900">USM9900 - Universiti Sains Malaysia (USM)</option>
+                               <!-- Dialysis Centers for B103 -->
+                               <option v-if="isB103" value="DDC001">DDC001 - PUSAT DIALISIS DAVITA TANJUNG KARANG</option>
+                               <option v-if="isB103" value="FDB002">FDB002 - FORESIGHT DIALYSIS BANDAR PUNCAK ALAM</option>
+                               <option v-if="isB103" value="WAN003">WAN003 - KLINIK DAN PUSAT DIALISIS WAQAF AN NUR</option>
+                             </select>
+                           </div>
+                           
+                           <!-- Kaedah Pembayaran -->
+                           <div>
+                             <label class="text-xs font-medium text-gray-600">Kaedah Pembayaran <span class="text-red-500">*</span></label>
+                             <select 
+                               v-model="product.penerimaBayaran.kaedahanPembayaran"
+                               class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                             >
+                               <option value="">-- Sila Pilih --</option>
+                               <option value="EFT">EFT</option>
+                               <option value="CASH">CASH</option>
+                               <option value="CHEQUE">CHEQUE</option>
+                             </select>
+                           </div>
+                           
+                           <!-- Row 1: No Kad Pengenalan & Nama Penerima -->
+                           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                             <div>
+                               <label class="text-xs font-medium text-gray-600">No Kad Pengenalan/No Pendaftaran <span class="text-red-500">*</span></label>
+                               <input 
+                                 v-model="product.penerimaBayaran.noKadPengenalan"
+                                 class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                 placeholder="Masukkan no. kad pengenalan"
+                               />
+                             </div>
+                             <div>
+                               <label class="text-xs font-medium text-gray-600">Nama Penerima<span class="text-red-500">*</span></label>
+                               <input 
+                                 v-model="product.penerimaBayaran.namaPenerima"
+                                 class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                 placeholder="Masukkan nama penerima"
+                               />
+                             </div>
+                           </div>
+                           
+                           <!-- Row 2: Nama Pemegang Akaun & Bank -->
+                           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                             <div>
+                               <label class="text-xs font-medium text-gray-600">Nama Pemegang Akaun <span class="text-red-500">*</span></label>
+                               <input 
+                                 v-model="product.penerimaBayaran.namaPemegangAkaun"
+                                 class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                 placeholder="Masukkan nama pemegang akaun"
+                               />
+                             </div>
+                             <div>
+                               <label class="text-xs font-medium text-gray-600">Bank <span class="text-red-500">*</span></label>
+                               <input 
+                                 v-model="product.penerimaBayaran.bank"
+                                 class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                 placeholder="Masukkan nama bank"
+                               />
+                             </div>
+                           </div>
+                           
+                           <!-- Row 3: No. Akaun Bank (full width) -->
+                           <div>
+                             <label class="text-xs font-medium text-gray-600">No. Akaun Bank <span class="text-red-500">*</span></label>
+                             <input 
+                               v-model="product.penerimaBayaran.noAkaunBank"
+                               class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="Masukkan no. akaun bank"
+                             />
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+
+                     <!-- Action Buttons -->
+                     <div class="flex items-center justify-between mt-4 pt-3 border-t border-gray-200">
+                       <div v-if="product.status === 'sedang_edit'" class="flex space-x-2">
+                         <rs-button 
+                           variant="success" 
+                           size="sm"
+                           @click="saveProduct(index)"
+                         >
+                           Simpan
+                         </rs-button>
+                         <rs-button 
+                           variant="secondary" 
+                           size="sm"
+                           @click="cancelEdit"
+                         >
+                           Batal
+                         </rs-button>
+                       </div>
+                       <div v-else class="flex space-x-2">
+                         <rs-button 
+                           variant="primary" 
+                           size="sm"
+                           @click="editProduct(index)"
+                         >
+                           Edit
+                         </rs-button>
+                         <button 
+                           @click="removeProduct(index)"
+                           class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
+                         >
+                           <Icon name="ph:trash" class="w-4 h-4" />
+                         </button>
+                       </div>
+                     </div>
+                   </div>
+
+                   <!-- Empty State -->
+                   <div v-if="selectedEntitlementProducts.length === 0" class="col-span-full text-center py-8 text-gray-500">
+                     <Icon name="ph:gift" class="w-12 h-12 mx-auto mb-2 text-gray-400" />
+                     <p class="text-sm">Tiada entitlement product dipilih. Pilih checkbox di atas untuk menambah.</p>
+                   </div>
+                 </div>
+               </div>
+             </template>
+           </rs-card>
+      </div>
+
+          <!-- Modal: Tambah Penerima Baharu -->
+          <rs-modal v-model="showAddRegistration" title="Tambah Penerima Baharu">
+            <div class="space-y-3">
+              <div>
+                <label class="text-xs font-medium text-gray-600">Nama Penuh</label>
+                <input v-model="newRegistration.namaPenuh" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md" />
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs font-medium text-gray-600">Jenis Pengenalan</label>
+                  <select v-model="newRegistration.jenisPengenalan" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md">
+                    <option value="IC">MyKad</option>
+                    <option value="SSM">SSM</option>
+                    <option value="PASSPORT">Passport</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-xs font-medium text-gray-600">No Pengenalan</label>
+                  <input v-model="newRegistration.noPengenalan" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md" />
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs font-medium text-gray-600">Nama Pemegang Akaun</label>
+                  <input v-model="newRegistration.namaPemegangAkaun" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md" />
+                </div>
+                <div>
+                  <label class="text-xs font-medium text-gray-600">Bank</label>
+                  <input v-model="newRegistration.bank" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md" />
+                </div>
+              </div>
+              <div>
+                <label class="text-xs font-medium text-gray-600">No Akaun Bank</label>
+                <input v-model="newRegistration.noAkaun" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md" />
+              </div>
+            </div>
+            <template #footer>
+              <div class="flex justify-end gap-2">
+                <rs-button variant="secondary" @click="showAddRegistration = false">Batal</rs-button>
+                <rs-button variant="success" @click="saveNewRegistration">Simpan</rs-button>
+              </div>
+            </template>
+          </rs-modal>
 
       <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
         <div class="col-span-1 space-y-6">
-          <!-- Section 2: Dokumen Sokongan (Read-only) -->
-          <rs-card class="shadow-sm border-0 bg-white">
-            <template #header>
-              <div class="flex items-center space-x-3">
-                <div class="flex-shrink-0">
-                  <div
-                    class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
-                  >
-                    <Icon
-                      name="ph:folder-open"
-                      class="w-6 h-6 text-green-600"
-                    />
+          <div v-if="isB112Editing || isB103Editing">
+            <!-- B112 Edit panel shown first when editing -->
+            <div ref="externalEditorEl">
+            <rs-card
+              v-if="
+                (String(route.params.id || '').toUpperCase() === 'B112' &&
+                editingProductIndex >= 0 &&
+                ['Sewaan_Rumah','Belian_Rumah'].includes(selectedEntitlementProducts[editingProductIndex]?.code)) ||
+                (String(route.params.id || '').toUpperCase() === 'B103' &&
+                editingProductIndex >= 0 &&
+                ['HEMODIALISIS','SUNTIKAN_EPO'].includes(selectedEntitlementProducts[editingProductIndex]?.code))
+              "
+              class="shadow-sm border-0 bg-white"
+            >
+            
+
+          <template #body>
+  <div class="space-y-6 p-4">
+    <!-- gray box content -->
+ 
+
+                
+                <!-- Maklumat Kadar Bantuan -->
+                <div class="mt-4 bg-gray-50 p-4 rounded-lg border">
+                  <div class="flex items-center space-x-2 mb-3">
+                    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                      <Icon name="ph:currency-dollar" class="w-6 h-6 text-green-600" />
+                    </div>
+                    <div>
+                      <h4 class="text-sm font-semibold text-gray-700">Maklumat Kadar Bantuan</h4>
+                      <p class="text-xs text-gray-500">Nilai kadar bantuan yang dicadangkan</p>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label class="text-xs font-medium text-gray-600">Kadar Bantuan</label>
+                      <input
+                        v-model="editingKadarBantuanKadar"
+                        type="number"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="0"
+                      />
+                    </div>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600">Tempoh/Kekerapan</label>
+                      <input
+                        v-model="editingKadarBantuanTempoh"
+                        type="number"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="1"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                    <div>
+                      <label class="text-xs font-medium text-gray-600">Tarikh Mula</label>
+                      <input
+                        v-model="editingKadarBantuanTarikhMula"
+                        type="date"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600">Tarikh Tamat</label>
+                      <input
+                        v-model="editingKadarBantuanTarikhTamat"
+                        type="date"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="mt-3">
+                    <label class="text-xs font-medium text-gray-600">Jumlah Keseluruhan Bantuan akan Diterima</label>
+                    <div class="mt-1 p-3 bg-white border rounded-md text-sm">
+                      {{ currentEditingProductData?.kadarBantuan.jumlahKeseluruhan || 'RM 0.00' }}
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <h2 class="text-lg font-semibold text-gray-900">
-                    Dokumen Sokongan
-                  </h2>
-                  <p class="text-sm text-gray-500">
-                    Dokumen yang dikemukakan oleh pemohon
-                  </p>
+
+                <!-- Maklumat Penerima Bayaran -->
+                <div class="mt-4 bg-gray-50 p-4 rounded-lg border">
+                  <h4 class="text-sm font-semibold text-gray-700 mb-3">Maklumat Penerima Bayaran</h4>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="md:col-span-2">
+                      <label class="text-xs font-medium text-gray-600">Kategori Penerima <span class="text-red-500">*</span></label>
+                      <select
+                        v-model="editingPBKategori"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        <option value="">-- Sila Pilih --</option>
+                        <option value="asnaf">Asnaf</option>
+                        <option value="organisasi">Organisasi</option>
+                        <option value="third_party">Recipient</option>
+                      </select>
+                    </div>
+
+                    <!-- No Pendaftaran dropdown for Organisasi/Recipient -->
+                    <div class="md:col-span-2" v-if="editingPBKategori === 'organisasi' || editingPBKategori === 'third_party'">
+                      <div class="flex items-end gap-2">
+                        <div class="flex-1">
+                          <label class="text-xs font-medium text-gray-600">No Pengenalan/No Pendaftaran <span class="text-red-500">*</span></label>
+                          <select
+                            v-model="editingPBNoPendaftaran"
+                            @change="loadEditingPenerimaByRegistration"
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          >
+                            <option value="">-- Sila Pilih --</option>
+                            <option v-for="opt in registrationOptions" :key="opt" :value="opt">{{ opt }}</option>
+                          </select>
+                        </div>
+                        <rs-badge :variant="editingPBStatus === 'unverified' ? 'warning' : 'success'" class="mb-0.5">{{ editingPBStatus || 'verified' }}</rs-badge>
+                        <rs-button variant="primary" class="!py-2" @click="showAddRegistration = true">Tambah Baru</rs-button>
+                      </div>
+                    </div>
+
+                    <div class="md:col-span-2">
+                      <label class="text-xs font-medium text-gray-600">Kaedah Pembayaran <span class="text-red-500">*</span></label>
+                      <select
+                        v-model="editingPBKaedah"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        <option value="">-- Sila Pilih --</option>
+                        <option value="EFT">EFT</option>
+                        <option value="VCASH">Vcash</option>
+                        <option value="CHEQUE">Cheque</option>
+                        <option value="TT">TT</option>
+                        <option value="EWALLET">eWallet</option>
+                        <option value="TUNAI">Tunai</option>
+                        <option value="TUNAI_KAUNTER">Tunai (Kaunter Ekspres)</option>
+                        <option value="TUNAI_LAPANGAN">Tunai (Lapangan)</option>
+                      </select>
+                    </div>
+
+                    <div v-if="editingPBKategori !== 'organisasi' && editingPBKategori !== 'third_party'" class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label class="text-xs font-medium text-gray-600">Nama Penerima <span class="text-red-500">*</span></label>
+                        <select
+                          v-model="editingPBNama"
+                          @change="loadEditingAsnafByName"
+                          class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                          <option value="">-- Sila Pilih --</option>
+                          <option v-for="opt in asnafNameOptions" :key="opt" :value="opt">{{ opt }}</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label class="text-xs font-medium text-gray-600">No Kad Pengenalan <span class="text-red-500">*</span></label>
+                        <input
+                          v-model="editingPBNoKp"
+                          class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          placeholder="Masukkan no. kad pengenalan"
+                        />
+                      </div>
+                    </div>
+                    <!-- <div>
+                      <label class="text-xs font-medium text-gray-600">Nama Penerima<span class="text-red-500">*</span></label>
+                      <input
+                        v-model="editingPBNama"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Masukkan nama penerima"
+                      />
+                    </div> -->
+
+                    <div>
+                      <label class="text-xs font-medium text-gray-600">Nama Pemegang Akaun <span class="text-red-500">*</span></label>
+                      <input
+                        v-model="editingPBNamaPemegang"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Masukkan nama pemegang akaun"
+                      />
+                    </div>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600">Bank <span class="text-red-500">*</span></label>
+                      <input
+                        v-model="editingPBBank"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Masukkan nama bank"
+                      />
+                    </div>
+
+                    <div class="md:col-span-2">
+                      <label class="text-xs font-medium text-gray-600">No. Akaun Bank <span class="text-red-500">*</span></label>
+                      <input
+                        v-model="editingPBNoAkaun"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Masukkan no. akaun bank"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-2">
+                  <rs-button variant="success" @click="saveProduct(editingProductIndex)">Simpan</rs-button>
+                  <rs-button variant="secondary" @click="cancelEdit">Batal</rs-button>
                 </div>
               </div>
             </template>
+            </rs-card>
+            </div>
 
-            <template #body>
-              <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                  <thead class="bg-gray-50">
-                    <tr>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Dokumen
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Status
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Aksi
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
-                    <tr
-                      v-for="(dokumen, index) in dokumenSokongan"
-                      :key="index"
-                      class="hover:bg-gray-50"
+            <!-- Dokumen Sokongan rendered after edit panel during B112/B103 editing -->
+            <rs-card class="shadow-sm border-0 bg-white">
+              <template #header>
+                <div class="flex items-center space-x-3">
+                  <div class="flex-shrink-0">
+                    <div
+                      class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
                     >
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                      >
-                        {{ dokumen.jenis }}
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <FormKit
-                          type="select"
-                          :options="statusDokumenOptions"
-                          v-model="dokumen.status"
-                          :classes="{
-                            input: 'text-sm border-gray-300 rounded-md',
-                          }"
-                          outer-class="mb-0"
-                          wrapper-class="mb-0"
-                          inner-class="mb-0"
-                        />
-                      </td>
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm font-medium"
-                      >
-                        <div class="flex items-center space-x-2">
-                          <rs-button
-                            variant="primary"
-                            @click="previewDocument(dokumen)"
-                          >
-                            <Icon name="ph:eye" class="w-4 h-4 mr-1" />
-                            Preview
-                          </rs-button>
-                          <rs-button
-                            variant="success"
-                            @click="downloadDocument(dokumen)"
-                          >
-                            <Icon name="ph:download" class="w-4 h-4 mr-1" />
-                            Muat Turun
-                          </rs-button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr v-if="dokumenSokongan.length === 0">
-                      <td
-                        colspan="3"
-                        class="px-6 py-4 text-center text-sm text-gray-500"
-                      >
-                        Tiada dokumen dijumpai.
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </template>
-          </rs-card>
+                      <Icon
+                        name="ph:folder-open"
+                        class="w-6 h-6 text-green-600"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <h2 class="text-lg font-semibold text-gray-900">
+                      Dokumen Sokongan
+                    </h2>
+                    <p class="text-sm text-gray-500">
+                      Dokumen yang dikemukakan oleh pemohon
+                    </p>
+                  </div>
+                </div>
+              </template>
 
+              <template #body>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokumen</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr v-for="(dokumen, index) in dokumenSokongan" :key="index" class="hover:bg-gray-50">
+                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-normal break-words">{{ dokumen.jenis }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <FormKit type="select" :options="statusDokumenOptions" v-model="dokumen.status" :classes="{ input: 'text-sm px-4 py-3 border-gray-300 rounded-md min-w-[120px]' }" outer-class="mb-0" wrapper-class="mb-0" inner-class="mb-0" />
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div class="flex items-center space-x-2">
+                            <rs-button variant="primary" @click="previewDocument(dokumen)"><Icon name="ph:eye" class="w-4 h-4 mr-1" /></rs-button>
+                            <rs-button variant="success" @click="downloadDocument(dokumen)"><Icon name="ph:download" class="w-4 h-4 mr-1" /></rs-button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr v-if="dokumenSokongan.length === 0">
+                        <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500">Tiada dokumen dijumpai.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </template>
+            </rs-card>
+          </div>
+
+          <div v-else>
+            <!-- Not editing B112/B103: just show Dokumen Sokongan (no edit panel) -->
+            <rs-card class="shadow-sm border-0 bg-white">
+              <template #header>
+                <div class="flex items-center space-x-3">
+                  <div class="flex-shrink-0">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                      <Icon name="ph:folder-open" class="w-6 h-6 text-green-600" />
+                    </div>
+                  </div>
+                  <div>
+                    <h2 class="text-lg font-semibold text-gray-900">Dokumen Sokongan</h2>
+                    <p class="text-sm text-gray-500">Dokumen yang dikemukakan oleh pemohon</p>
+                  </div>
+                </div>
+              </template>
+
+              <template #body>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokumen</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr v-for="(dokumen, index) in dokumenSokongan" :key="index" class="hover:bg-gray-50">
+                        <td class="px-6 py-4 text-sm text-gray-900 whitespace-normal break-words">{{ dokumen.jenis }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <FormKit type="select" :options="statusDokumenOptions" v-model="dokumen.status" :classes="{ input: 'text-sm px-4 py-3 border-gray-300 rounded-md min-w-[120px]' }" outer-class="mb-0" wrapper-class="mb-0" inner-class="mb-0" />
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div class="flex items-center space-x-2">
+                            <rs-button variant="primary" @click="previewDocument(dokumen)"><Icon name="ph:eye" class="w-4 h-4 mr-1" /></rs-button>
+                            <rs-button variant="success" @click="downloadDocument(dokumen)"><Icon name="ph:download" class="w-4 h-4 mr-1" /></rs-button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr v-if="dokumenSokongan.length === 0">
+                        <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500">Tiada dokumen dijumpai.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </template>
+            </rs-card>
+          </div>
           <!-- BQ, Laporan Gambar, Laporan Teknikal in Tabs -->
-          <rs-tab variant="primary" type="card"  default-active="BQ">
-            <!-- Tab: BQ -->
-            <rs-tab-item title="BQ" active>
+          <div v-if="visibleTabs.length" class="bg-white">
+            <!-- Custom Tab Navigation -->
+             <button
+  v-for="(tab, index) in visibleTabs.filter(t => !((route.params.id.toUpperCase() === 'B112' || route.params.id.toUpperCase() === 'B103') && t.id === 'bq'))"
+  :key="index"
+  @click="activeTab = tab.id"
+  :class="[
+    'px-6 py-3 text-lg font-medium transition-colors duration-200',
+    activeTab === tab.id
+      ? 'text-teal-600 border-b-2 border-teal-600'
+      : 'text-gray-700 hover:text-gray-900'
+  ]"
+>
+  {{ tab.title }}
+</button>
+            <!-- <div class="flex border-b border-gray-200">
+              <button
+                v-for="(tab, index) in visibleTabs"
+                :key="index"
+                @click="activeTab = tab.id"
+                              :class="[
+                'px-6 py-3 text-lg font-medium transition-colors duration-200',
+                activeTab === tab.id
+                  ? 'text-teal-600 border-b-2 border-teal-600'
+                  : 'text-gray-700 hover:text-gray-900'
+              ]"
+              >
+                {{ tab.title }}
+              </button>
+            </div> -->
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+              <!-- BQ Tab -->
+              <!-- <div v-if="activeTab === 'bq' && isB1"> -->
+              <div v-if="activeTab === 'bq' && isB1 && route.params.id.toUpperCase() !== 'B112' && route.params.id.toUpperCase() !== 'B103'">
+
               <rs-card class="shadow-sm border-0 bg-white">
                 <template #header>
                   <div class="flex items-center justify-between">
@@ -436,10 +1364,10 @@
                   </div>
                 </template>
               </rs-card>
-            </rs-tab-item>
+              </div>
 
-            <!-- Tab: Laporan Gambar -->
-            <rs-tab-item title="Laporan Gambar">
+              <!-- Laporan Gambar Tab -->
+              <div v-if="activeTab === 'gambar'">
               <rs-card class="shadow-sm border-0 bg-white">
                 <template #header>
                   <div class="flex items-center justify-between">
@@ -478,21 +1406,22 @@
                     <div
                       v-for="(gambar, index) in gambarLokasi"
                       :key="index"
-                      class="relative aspect-square rounded-lg overflow-hidden border border-gray-200"
+                      class="bg-white rounded-lg border border-gray-200 overflow-hidden"
                     >
-                      <img
-                        :src="gambar.url"
-                        :alt="gambar.catatan"
-                        class="w-full h-full object-cover"
-                      />
-                      <div
-                        class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-opacity"
-                      >
-                        <div
-                          class="absolute bottom-0 left-0 right-0 p-2 bg-black bg-opacity-50 text-white text-sm"
-                        >
+                      <div class="aspect-square overflow-hidden">
+                        <img
+                          :src="gambar.url"
+                          :alt="gambar.catatan"
+                          class="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div class="p-3">
+                        <p class="text-sm text-gray-700 font-medium">
                           {{ gambar.catatan }}
-                        </div>
+                        </p>
+                        <p class="text-xs text-gray-500 mt-1">
+                          {{ formatDateTime(gambar.masaUpload) }}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -508,10 +1437,10 @@
                   </div>
                 </template>
               </rs-card>
-            </rs-tab-item>
+              </div>
 
-            <!-- Tab: Laporan Teknikal -->
-            <rs-tab-item title="Laporan Teknikal">
+              <!-- Laporan Teknikal Tab -->
+              <div v-if="activeTab === 'teknikal'">
               <rs-card class="shadow-sm border-0 bg-white">
                 <template #header>
                   <div class="flex items-center justify-between">
@@ -599,10 +1528,119 @@
                   </div>
                 </template>
               </rs-card>
-            </rs-tab-item>
-          </rs-tab>
+              </div>
+            </div>
+          </div>
           
-          <rs-card class="shadow-sm border-0 bg-white">
+          <!-- NEW: Maklumat Penerima Manfaat (jika tanggungan)
+          <rs-card v-if="false" class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                    <Icon name="ph:users" class="w-6 h-6 text-indigo-600" />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">Maklumat Penerima Manfaat <span class="text-gray-500 text-sm">(jika tanggungan)</span></h2>
+                  <p class="text-sm text-gray-500">Pilih nama tanggungan untuk paparan maklumat</p>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700">Nama</label>
+                  <FormKit
+                    type="select"
+                    v-model="dependentSelection.nama"
+                    :options="dependentNameOptions"
+                    placeholder="-- Sila Pilih --"
+                    searchable="true"
+                    class="mt-1"
+                  />
+                </div>
+
+                <div class="space-y-1" v-if="Boolean(dependentSelection.nama)">
+                  <label class="text-sm font-medium text-gray-700">No. Kad Pengenalan</label>
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm text-gray-900">{{ selectedDependent?.noKadPengenalan || '-' }}</span>
+                  </div>
+                </div>
+
+                <div class="space-y-1" v-if="Boolean(dependentSelection.nama)">
+                  <label class="text-sm font-medium text-gray-700">Hubungan</label>
+                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-sm text-gray-900">{{ selectedDependent?.hubungan || '-' }}</span>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </rs-card> -->
+
+          <!-- NEW: Maklumat Penerima Bayaran -->
+          <rs-card v-if="!isB102 && !isB300 && !isB307 && !isB112 && !isB103" class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div class="w-10 h-10 bg-rose-100 rounded-lg flex items-center justify-center">
+                    <Icon name="ph:hand-coins" class="w-6 h-6 text-rose-600" />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">Maklumat Penerima Bayaran</h2>
+                  <p class="text-sm text-gray-500">Isi maklumat untuk pembayaran</p>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-1 md:col-span-2">
+                  <label class="text-sm font-medium text-gray-700">Kaedah Pembayaran <span class="text-red-500">*</span></label>
+                  <FormKit
+                    type="select"
+                    v-model="paymentInfo.kaedah"
+                    :options="paymentMethodOptions"
+                    placeholder="-- Sila Pilih --"
+                    validation="required"
+                    :classes="{ input: 'text-sm' }"
+                  />
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700">No Kad Pengenalan/No Pendaftaran <span class="text-red-500">*</span></label>
+                  <FormKit type="text" v-model="paymentInfo.noId" validation="required" :classes="{ input: 'text-sm' }" />
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700">Nama Penerima/Institusi/Syarikat <span class="text-red-500">*</span></label>
+                  <FormKit type="text" v-model="paymentInfo.namaPenerima" validation="required" :classes="{ input: 'text-sm' }" />
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700">Nama Pemegang Akaun <span class="text-red-500">*</span></label>
+                  <FormKit type="text" v-model="paymentInfo.namaAkaun" validation="required" :classes="{ input: 'text-sm' }" />
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-gray-700">Bank <span class="text-red-500">*</span></label>
+                  <FormKit type="text" v-model="paymentInfo.bank" validation="required" :classes="{ input: 'text-sm' }" />
+                </div>
+
+                <div class="space-y-1 md:col-span-2">
+                  <label class="text-sm font-medium text-gray-700">No. Akaun Bank <span class="text-red-500">*</span></label>
+                  <FormKit type="text" v-model="paymentInfo.noAkaun" validation="required" :classes="{ input: 'text-sm' }" />
+                </div>
+              </div>
+            </template>
+          </rs-card>
+
+
+          
+
+          <rs-card v-if="!isB300 && !isB307 && !isB112 && !isB103" class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
                 <div class="flex-shrink-0">
@@ -620,7 +1658,7 @@
                     Maklumat Kadar Bantuan
                   </h2>
                   <p class="text-sm text-gray-500">
-                    Nilai kadar bantuan berdasarkan BQ
+                    Nilai kadar bantuan yang dicadangkan
                   </p>
                 </div>
               </div>
@@ -628,12 +1666,12 @@
 
             <template #body>
               <div class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                  <div class="space-y-1">
+                <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                  <div class="space-y-1"> -->
                     <!-- <label class="text-sm font-medium text-gray-700"
                       >Kadar Bantuan</label
                     > -->
-                    <div class="space-y-1">
+                    <!-- <div class="space-y-1">
                       <label class="text-sm font-medium text-gray-700">Kadar Bantuan</label>
                       <input
                         type="number"
@@ -642,7 +1680,7 @@
                         placeholder="Masukkan jumlah bantuan"
                       />
                       <span class="text-sm text-gray-500">(Diambil dari BQ)</span>
-                    </div>
+                    </div> -->
                     <!-- <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                        <span class="text-lg font-semibold text-gray-900">
                         RM {{ jumlahBantuan.toLocaleString() }}
@@ -657,7 +1695,7 @@
                         >(Diambil dari BQ)</span
                       >
                     </div> -->
-                  </div>
+                  <!-- </div> -->
 
                   <!-- <div class="space-y-1">
                     <label class="text-sm font-medium text-gray-700"
@@ -672,7 +1710,7 @@
                     </div>
                   </div> -->
 
-                  <div class="space-y-1">
+                  <!-- <div class="space-y-1">
                     <label class="text-sm font-medium text-gray-700">Tempoh/Kekerapan</label>
                     <input
                     type="number"
@@ -680,12 +1718,12 @@
                     class="mt-1 w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
                     placeholder="Masukkan bilangan tempoh/kekerapan"
                     />
-                  </div>
+                  </div> -->
 
-                </div>
+                <!-- </div> -->
 
                 <!-- Tarikh Mula & Tarikh Tamat side by side -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                   <div class="space-y-1">
                     <label class="text-sm font-medium text-gray-700">Tarikh Mula</label>
                     <input
@@ -703,7 +1741,7 @@
                       class="w-full p-3 bg-white border rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none"
                     />
                   </div>
-                </div>
+                </div> -->
 
                 <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700"
@@ -714,9 +1752,13 @@
                       RM {{ jumlahBantuan.toLocaleString() }}
                     </span> -->
                     <span class="text-lg font-semibold text-gray-900">
-                      RM {{ jumlahKeseluruhan.toLocaleString() }}
+                      RM {{ jumlahKeseluruhan.toLocaleString() }}  
                     </span>
+                    <span class="text-sm text-gray-500 ml-2"
+                      >(Diambil dari BQ)</span
+                    >
                   </div>
+
                 </div>
                 
 
@@ -802,6 +1844,121 @@
             </template>
           </rs-card> -->
 
+          <!-- Laluan Process  -->
+          <rs-card class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div
+                    class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
+                  >
+                    <Icon
+                      name="iconamoon:check-circle-2-duotone"
+                      class="w-6 h-6 text-yellow-600"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Laluan Proses
+                  </h2>
+                  <p class="text-sm text-gray-500">
+                    Laluan Proses Permohonan
+                  </p>
+                </div>
+              </div>
+            </template>
+
+            
+
+            <template #body>
+              
+              <div class="space-y-4">
+                <!-- Accordion: Laluan Proses Details -->
+                <div class="space-y-3">
+                  <!-- Permohonan Accordion Item -->
+                  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button
+                      type="button"
+                      class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
+                      @click="accordionOpen.permohonan = !accordionOpen.permohonan"
+                    >
+                      <span class="font-medium text-gray-900">Permohonan</span>
+                      <Icon
+                        :name="accordionOpen.permohonan ? 'ic:round-expand-less' : 'ic:round-expand-more'"
+                        class="w-6 h-6 text-gray-500"
+                      />
+                    </button>
+                    <div v-show="accordionOpen.permohonan" class="px-4 pb-4 pt-1">
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Permohonan Dibuat Oleh</label>
+                          <p class="text-gray-900">{{ permohonanDetails.dibuatOleh }}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Permohonan</label>
+                          <p class="text-gray-900">{{ formatDateTime(permohonanDetails.tarikhPermohonan) }}</p>
+                        </div>
+                        <div class="md:col-span-2">
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Sebab Memohon Bantuan</label>
+                          <p class="text-gray-900">{{ permohonanDetails.sebabMemohon }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Siasatan Accordion Item -->
+                  <!-- <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button
+                      type="button"
+                      class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
+                      @click="accordionOpen.siasatan = !accordionOpen.siasatan"
+                    >
+                      <span class="font-medium text-gray-900">Siasatan</span>
+                      <Icon
+                        :name="accordionOpen.siasatan ? 'ic:round-expand-less' : 'ic:round-expand-more'"
+                        class="w-6 h-6 text-gray-500"
+                      />
+                    </button>
+                    <div v-show="accordionOpen.siasatan" class="px-4 pb-4 pt-1">
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Disiasat Oleh</label>
+                          <p class="text-gray-900">{{ siasatanDetails.disiasatOleh }}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Status Siasatan</label>
+                          <rs-badge :variant="getProcessStatusVariant(siasatanDetails.statusSiasatan)">
+                            {{ siasatanDetails.statusSiasatan }}
+                          </rs-badge>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Selesai Siasatan</label>
+                          <p class="text-gray-900">{{ formatDateTime(siasatanDetails.tarikhSelesai) }}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">SLA</label>
+                          <p class="text-gray-900">{{ siasatanDetails.sla }}</p>
+                        </div>
+                        <div class="md:col-span-2">
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Catatan Siasatan</label>
+                          <p class="text-gray-900">{{ siasatanDetails.catatan }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div> -->
+                </div>
+
+                <!-- <div class="text-xs text-gray-500">
+                  <Icon name="ph:clock" class="w-4 h-4 inline mr-1" />
+                  Masa/Tarikh: {{ catatanLapangan.masaTarikh }}
+                </div> -->
+              </div>
+              
+            </template>
+            
+          </rs-card>
+
           <!-- Section 7: Status Lawatan -->
           <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
@@ -838,10 +1995,10 @@
               <div class="space-y-4">
                 <FormKit
                   type="textarea"
-                  label="Catatan Lapangan"
+                  label="Catatan"
                   v-model="catatanLapangan.catatan"
                   rows="6"
-                  placeholder="Masukkan catatan, dapatan dan pemerhatian semasa lawatan lapangan..."
+                  placeholder="Masukkan catatan, dapatan dan pemerhatian semasa siasatan..."
                   :classes="{ input: 'text-sm' }"
                 />
 
@@ -879,7 +2036,7 @@
               <rs-button
                 variant="primary"
                 @click="handleSelesaiDanHantar"
-                :disabled="processing"
+                :disabled="processing || !hasStatusSokongan"
                 :loading="processing && actionType === 'complete_submit'"
               >
                 Hantar Kelulusan
@@ -895,8 +2052,10 @@
               </rs-button>
             </div>
           </rs-card>
+
         </div>
       </div>
+
     </div>
 
     <!-- BQ Modal -->
@@ -928,8 +2087,11 @@
 </template>
 
 
+
+
+
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 
@@ -938,6 +2100,7 @@ const router = useRouter();
 const toast = useToast();
 const processing = ref(false);
 const actionType = ref("");
+const externalEditorEl = ref(null)
 
 definePageMeta({
   title: "Siasatan Lapangan",
@@ -950,7 +2113,7 @@ const breadcrumb = ref([
     path: "/BF-BTN/tugasan",
   },
   {
-    name: "Siasatan ke Lapangan",
+    name: "Siasatan",
     type: "link",
     path: "/BF-BTN/tugasan",
   },
@@ -961,42 +2124,490 @@ const breadcrumb = ref([
   },
 ]);
 
+// Tab configuration
+const tabs = [
+  { id: 'bq', title: 'BQ' },
+  { id: 'gambar', title: 'Laporan Gambar' },
+  { id: 'teknikal', title: 'Laporan Teknikal' }
+];
+
+const activeTab = ref('bq');
+
+// Show/hide rules by bantuan id
+const isB1 = computed(() => String(route.params.id || '').toUpperCase().startsWith('B1'));
+const isB102 = computed(() => String(route.params.id || '').toUpperCase() === 'B102');
+const isB300 = computed(() => String(route.params.id || '').toUpperCase() === 'B300');
+const isB307 = computed(() => String(route.params.id || '').toUpperCase() === 'B307');
+const isB112 = computed(() => String(route.params.id || '').toUpperCase() === 'B112');
+const isB103 = computed(() => String(route.params.id || '').toUpperCase() === 'B103');
+const visibleTabs = computed(() => {
+  if (!isB1.value) return []
+  if (isB112.value || isB103.value) return tabs.filter(t => t.id === 'bq')
+  return tabs
+});
+
+// Ensure active tab is valid when rules change
+watch(visibleTabs, (arr) => {
+  if (!arr.find(t => t.id === activeTab.value)) {
+    activeTab.value = arr[0]?.id || '';
+  }
+}, { immediate: true });
+
+
+// Product Package options based on route id
+const productPackageOptions = computed(() => {
+  const id = String(route.params.id || '').toUpperCase();
+  
+  if (id === 'B300') {
+    return [
+      { label: '-- Sila Pilih --', value: '' },
+      { label: '(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)', value: 'TUNTUTAN_KEPERLUAN' },
+      { label: '(HQ) TUNTUTAN PROGRAM (BIASISWA KECIL) (FAKIR)', value: 'TUNTUTAN_PROGRAM' },
+      { label: '(HQ) WANG PERSEDIAAN SEKOLAH ASRAMA (FAKIR)', value: 'WANG_PERSEDIAAN' },
+      { label: '(HQ) WANG SAKU SEKOLAH ASRAMA (FAKIR)', value: 'WANG_SAKU' },
+      { label: '(HQ) YURAN SEKOLAH ASRAMA (FAKIR)', value: 'YURAN' }
+      
+    ];
+  } else if (id === 'B307') {
+    return [
+      { label: '-- Sila Pilih --', value: '' },
+      { label: '(HQ) Dermasiswa IPT Dalam Negara (Fakir) - IPTA/IPTS', value: 'DERMASISWA_IPT' },
+      { label: '(HQ) KPIPT (FAKIR) - WANG PERSEDIAAN KEMASUKAN IPT', value: 'wangpersediaan_IPT' },
+      { label: '(HQ) YURAN PENGAJIAN (FAKIR)', value: 'yuran_pengajian' }
+    ];
+    } else if (id === 'B112') {
+    return [
+      { label: '-- Sila Pilih --', value: '' },
+      { label: 'Ansuran Belian Rumah Bulanan (Fakir)', value: 'BeliaSewaan_Rumahn_Rumah' },
+      { label: 'Sewaan Rumah Bulanan', value: '' },
+    ];  
+  } else if (id === 'B103') {
+    return [
+      { label: '-- Sila Pilih --', value: '' },
+      { label: '(GL) (HQ) HEMODIALISIS DAN SUNTIKAN EPO (FAKIR)', value: 'HEMODIALISIS_DAN_EPO' },
+      { label: '(GL) (HQ) HEMODIALISIS SAHAJA (FAKIR)', value: 'HEMODIALISIS_SAHAJA' },
+      { label: '(GL) (HQ) SUNTIKAN EPO SAHAJA (FAKIR)', value: 'SUNTIKAN_EPO_SAHAJA' },
+      { label: '(PTJ) (GL) (HQ) HEMODIALISIS DAN SUNTIKAN EPO (FAKIR)', value: 'PTJ_HEMODIALISIS_DAN_EPO' },
+      { label: '(PTJ) (GL) (HQ) HEMODIALISIS SAHAJA (FAKIR)', value: 'PTJ_HEMODIALISIS_SAHAJA' },
+      { label: '(PTJ) (GL) (HQ) SUNTIKAN EPO SAHAJA (FAKIR)', value: 'PTJ_SUNTIKAN_EPO_SAHAJA' },
+    ];
+  } else {
+    // Default options for B102 and others
+    return [
+      { label: '-- Sila Pilih --', value: '' },
+      { label: '(PEROLEHAN) BINA RUMAH (FAKIR)', value: 'PEROLEHAN' },
+      { label: '(WO) 3 BILIK (FAKIR) - TANGGUNGAN 3-6 ORANG', value: 'WO' },
+      { label: 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)', value: 'PEMANTAUAN1' },
+      { label: 'PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)', value: 'PEMANTAUAN2' }
+    ];
+  }
+  
+});
+
+// Entitlement Product options based on route id
+const entitlementProductOptions = computed(() => {
+  const id = String(route.params.id || '').toUpperCase();
+  
+  if (id === 'B300') {
+    return [
+      '-- Sila Pilih --',
+      '(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)',
+      '(HQ) TUNTUTAN PROGRAM (BIASISWA KECIL) (FAKIR)',
+      '(HQ) WANG PERSEDIAAN SEKOLAH ASRAMA (FAKIR)',
+      '(HQ) WANG SAKU SEKOLAH ASRAMA (FAKIR)',
+      '(HQ) YURAN SEKOLAH ASRAMA (FAKIR)'
+    ];
+  } else if (id === 'B307') {
+    return [
+      '-- Sila Pilih --',
+      '(HQ) Dermasiswa IPT Dalam Negara (Fakir) - IPTA/IPTS'
+    ];
+    } else if (id === 'B112') {
+    return [
+      '-- Sila Pilih --',
+      'Ansuran Belian Rumah Bulanan (Fakir)',
+      'Sewaan Rumah Bulanan'
+    ];
+  } else {
+    // Default options for B102 and others
+    return [
+      '-- Sila Pilih --',
+      '(PEROLEHAN) BINA RUMAH (FAKIR)',
+      '(WO) 3 BILIK (FAKIR) - TANGGUNGAN 3-6 ORANG',
+      '(PEROLEHAN) PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)',
+      '(WO) PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)'
+    ];
+  }
+});
+
+// B300 Entitlement Product options for checkboxes
+const b300EntitlementOptions = ref([
+  { label: '(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)', value: 'TUNTUTAN_KEPERLUAN' },
+  { label: '(HQ) TUNTUTAN PROGRAM (BIASISWA KECIL) (FAKIR)', value: 'TUNTUTAN_PROGRAM' },
+  { label: '(HQ) WANG PERSEDIAAN SEKOLAH ASRAMA (FAKIR)', value: 'WANG_PERSEDIAAN' },
+  { label: '(HQ) WANG SAKU SEKOLAH ASRAMA (FAKIR)', value: 'WANG_SAKU' },
+  { label: '(HQ) YURAN SEKOLAH ASRAMA (FAKIR)', value: 'YURAN' }
+]);
+
+// B307 Entitlement Product options for checkboxes
+const b307EntitlementOptions = ref([
+  { label: '(HQ) Dermasiswa IPT Dalam Negara (Fakir) - IPTA/IPTS', value: 'DERMASISWA_IPT' },
+  { label: '(HQ) KPIPT (FAKIR) - WANG PERSEDIAAN KEMASUKAN IPT', value: 'wangpersediaan_IPT' },
+  { label: '(HQ) YURAN PENGAJIAN (FAKIR)', value: 'yuran_pengajian' }  
+]);
+
+// B112 Entitlement Product options for checkboxes
+const b112EntitlementOptions = ref([
+  { label: 'Ansuran Belian Rumah Bulanan (Fakir)', value: 'Belian_Rumah' },
+  { label: 'Sewaan Rumah Bulanan', value: 'Sewaan_Rumah' },
+]);
+
+// B103 Entitlement Product options for checkboxes
+const b103EntitlementOptions = ref([
+  { label: '(GL) (HQ) HEMODIALISIS (FAKIR)', value: 'HEMODIALISIS' },
+  { label: '(GL) (HQ) SUNTIKAN EPO (FAKIR)', value: 'SUNTIKAN_EPO' },
+]);
+
+// Editing state
+const editingProductIndex = ref(-1);
+
+// Check if current ID is B300 or B307 or B112 or B103
+const isB300OrB307OrB112= computed(() => {
+  const id = String(route.params.id || '').toUpperCase();
+  return id === 'B300' || id === 'B307' || id === 'B112' || id === 'B103';
+});
+
+// Get the appropriate entitlement options based on route ID
+const currentEntitlementOptions = computed(() => {
+  const id = String(route.params.id || '').toUpperCase();
+  if (id === 'B300') {
+    return b300EntitlementOptions.value;
+  } else if (id === 'B307') {
+    return b307EntitlementOptions.value;
+  } else if (id === 'B112'){
+    return b112EntitlementOptions.value;
+  } else if (id === 'B103'){
+    return b103EntitlementOptions.value;
+  }
+  return [];
+});
+
+// Reactive data for entitlement products
+const entitlementProductsData = ref([]);
+
+// Selected Entitlement Products (computed from checkbox selections)
+const selectedEntitlementProducts = computed(() => {
+  if (!isB300OrB307OrB112.value) return [];
+  
+  return formData.value.entitlementProducts.map((value, index) => {
+    const option = currentEntitlementOptions.value.find(opt => opt.value === value);
+    const name = option ? option.label.replace('(HQ) ', '').replace(' (FAKIR)', '') : value;
+    
+    // Check if we already have data for this product
+    let productData = entitlementProductsData.value.find(p => p.code === value);
+    if (!productData) {
+      productData = {
+        code: value,
+        penerimaBayaran: {
+          kategoriPenerima: '',
+          noPendaftaran: '',
+          kaedahPembayaran: 'EFT',
+          noKadPengenalan: '',
+          namaPenerima: '',
+          namaPemegangAkaun: '',
+          bank: '',
+          noAkaunBank: '',
+          status: 'verified'
+        },
+        kadarBantuan: {
+          kadarBantuan: 0,
+          tempohKekerapan: 1,
+          tarikhMula: '',
+          tarikhTamat: '',
+          jumlahKeseluruhan: 'RM 0.00'
+        }
+      };
+      entitlementProductsData.value.push(productData);
+    }
+    
+    return {
+      name: name,
+      code: value,
+      category: 'Pendidikan',
+      status: index === editingProductIndex.value ? 'sedang_edit' : 'lengkap',
+      penerimaBayaran: productData.penerimaBayaran,
+      kadarBantuan: productData.kadarBantuan
+    };
+  });
+});
+
+
+// Mock data for different assistance types
+const mockAssistanceData = {
+  "B102": {
+    id: "B102",
+    aid: "B102 - BANTUAN BINAAN RUMAH (Fakir)",
+    aidproduct: "Bantuan Binaan Rumah (Fakir)",
+    productpackage: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
+    entitlementproduct: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
+    jumlahBantuan: 43000,
+    tempohKekerapan: 1,
+  },
+  "B300": {
+    id: "B300",
+    aid: "B300 - (HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+    aidproduct: "Bantuan Dermasiswa Sekolah Asrama (Fakir)",
+    productpackage: "Sekolah Asrama - Tingkatan 1-5",
+    entitlementproduct: "Dermasiswa Bulanan - RM 200",
+    jumlahBantuan: 2400,
+  },
+  "B307": {
+    id: "B307",
+    aid: "B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
+    aidproduct: "Dermasiswa IPT Dalam Negara (Fakir)",
+    productpackage: "IPTA/IPTS - Diploma/Degree",
+    entitlementproduct: "Dermasiswa Semester - RM 1500",
+    jumlahBantuan: 3000,
+  },
+   "B112": {
+    id: "B112",
+    aid: "B112 - Bantuan Sewaan/Ansuran Rumah (Fakir)",
+    aidproduct: "Bantuan Sewaan/Ansuran Rumah (Fakir)",
+    productpackage: "",
+    entitlementproduct: "",
+    jumlahBantuan: 3000,
+  },
+   "B103": {
+    id: "B103",
+    aid: "B103 - Bantuan Perubatan Dialisis (Fakir)",
+    aidproduct: "Kategori Hemodialisis (Fakir)",
+    productpackage: "",
+    entitlementproduct: "",
+    jumlahBantuan: 1800,
+  }
+};
+
 // Section 1: Maklumat Pemohon data
 const formData = ref({
-  aid: "B102	Bantuan Binaan Rumah (Fakir)",
-  aidproduct: "Bantuan Binaan Rumah (Fakir)",
-  productpackage: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
-  entitlementproduct: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
-  jumlahBantuan: 43000,
-  // noTelefon: "0123456789",
-  // emel: "rosli@gmail.com",
-  // statusKeluarga: "Fakir",
-  // statusIndividu: "Fakir",
-  // statusMultidimensi: "Asnaf Tidak Produktif",
-  // statusLawatan: "belum_selesai",
+  id: "",
+  aid: "",
+  aidproduct: "",
+  productpackage: "",
+  entitlementproduct: "",
+  entitlementProducts: [], // For B300 checkbox selections
+  jumlahBantuan: 0,
+
+   // 👇 Added Maklumat Kediaman
+  addressInfo: {
+    status_kediaman: "SEWA",   // default to option value
+    keadaan_kediaman: "Baik",  // default
+    kadar_sewa: "800",         // default example
+  },
+
+  // 👇 Added Health Information for B103
+  healthInfo: {
+    namaPenerima: "Nur Najihah binti Mazlan",
+    jenisPengenalan: "MyKad",
+    noPengenalan: "850315-10-1234",
+    hubungan: "Isteri",
+    tahapKesihatan: "Sakit Kronik",
+    jenisPenyakit: "Sakit Buah Pinggang",
+    keadaanKesihatan: "Tidak Terlantar",
+    kosPenjagaan: "Berbayar",
+    jumlahPerbelanjaan: "300",
+  },
 });
 
 // Section 2: Dokumen Sokongan
-const dokumenSokongan = ref([
-  // {
-  //   jenis: "Quotation (baik pulih)",
-  //   filename: "quotation.pdf",
-  //   url: "#",
-  //   status: "lengkap",
-  // },
-  {
-    jenis: "Geran Tanah",
-    filename: "geran_tanah.pdf",
-    url: "#",
-    status: "lengkap",
-  },
-  {
-    jenis: "Carian Rasmi Pejabat Tanah",
-    filename: "carian_rasmi.pdf",
-    url: "#",
-    status: "lengkap",
-  },
-]);
+const dokumenSokongan = ref([]);
+
+// Initialize dokumen sokongan based on route ID
+const initializeDokumenSokongan = () => {
+  const id = String(route.params.id || '').toUpperCase();
+  
+  if (id === 'B112') {
+    // Dokumen Sokongan for B112 (Sewaan/Beli Rumah) as per screenshot
+    dokumenSokongan.value = [
+      {
+        jenis: "Borang Maklumat Sewa Rumah/ Tunggakan Sewa Rumah",
+        filename: "borang_maklumat_sewa_rumah.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Salinan kad pengenalan pemilik rumah/wakil/ surat pengesahan institusi atau dokumen perjanjian sewaan rumah/ bilik",
+        filename: "salinan_ic_pemilik_rumah.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Surat kuasa bagi wakil yang menguruskan bilik/rumah yang disewa daripada tuan rumah (wajib, jika menggunakan wakil/ejen)",
+        filename: "surat_kuasa_wakil.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Maklumat bank terkini tuan rumah/ bilik yang mengandungi: Nama bank, Nama dan No akaun penerima",
+        filename: "maklumat_bank_tuan_rumah.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Bukti pemilikan seperti Salinan Bil Utiliti (Api/Air/Cukai Pintu Rumah Yang Di sewa atau lain-lain). Jika nama pemilik dan penerima bayaran berbeza, perlu dilampirkan bukti pertalian (bukti berdokumen)",
+        filename: "bukti_pemilikan_utiliti.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Salinan kad pengenalan ketua keluarga/ penjaga",
+        filename: "salinan_ic_ketua_keluarga.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+    ];
+  } else if (id === 'B103') {
+    dokumenSokongan.value = [
+      {
+        jenis: "Dokumen akuan/ pengesahan dari pihak hospital/ pusat dialisis (panel LZS)  berkaitan maklumat lengkap pesakit dan rawatan yang diperlukan adalah yang terkini.",
+        filename: "borang-pengesahanh.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Salinan dokumen kemasukan yang sah (bukan warganegara sahaja)",
+        filename: "salinan-ic.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Sebutharga kos rawatan yang diperlukan dari pusat rawatan.",
+        filename: "surat-sebutharga.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Surat pengesahan agensi luar, sekiranya terima tajaan.",
+        filename: "maklumat-agensi.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+    ];
+  } else if (id === 'B300') {
+    dokumenSokongan.value = [
+      {
+        jenis: "Surat tawaran belajar daripada pihak sekolah/surat pengesahan belajar",
+        filename: "surat_tawaran_belajar_sekolah.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Salinan akaun bank pelajar yang mengandungi: Nama bank, Nama dan no akaun bank",
+        filename: "salinan_akaun_bank_pelajar.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Salinan kad pengenalan ketua keluarga/ penjaga",
+        filename: "salinan_kad_pengenalan_ketua_keluarga.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Salinan kad pengenalan/surat beranak pelajar",
+        filename: "salinan_kad_pengenalan_pelajar.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+    ];
+  } else if (id === 'B307') {
+    dokumenSokongan.value = [
+      {
+        jenis: "SURAT TAWARAN BELAJAR IPT",
+        filename: "surat_tawaran_belajar_ipt.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "STRUKTUR YURAN PENGAJIAN",
+        filename: "struktur_yuran_pengajian.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "KEPUTUSAN SPM BAGI PERINGKAT DIPLOMA",
+        filename: "keputusan_spm_diploma.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "SALINAN MAKLUMAT AKAUN BANK",
+        filename: "salinan_maklumat_akaun_bank.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "SIJIL BERHENTI SEKOLAH BAGI PERMOHONAN 17 TAHUN DAN KE BAWAH",
+        filename: "sijil_berhenti_sekolah.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "SURAT PENGESAHAN BELAJAR DAN STATUS TAJAAN YANG DIKELUARKAN OLEH IPT",
+        filename: "surat_pengesahan_belajar_ipt.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "SURAT KELULUSAN TAJAAN DERMASISWA DARIPADA LZS",
+        filename: "surat_kelulusan_tajaan_lzs.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "INVOIS YURAN RASMI DARIPADA IPT",
+        filename: "invois_yuran_rasmi_ipt.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+    ];
+  } else {
+    // Default B102 documents
+    dokumenSokongan.value = [
+      {
+        jenis: "Geran Tanah",
+        filename: "geran_tanah.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Carian Rasmi Pejabat Tanah",
+        filename: "carian_rasmi.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+    ];
+  }
+};
+
+// Accordion state and mock details
+const accordionOpen = reactive({
+  permohonan: false,
+  siasatan: false,
+})
+
+const permohonanDetails = ref({
+  dibuatOleh: 'Ahmad bin Abdullah',
+  tarikhPermohonan: '2024-01-01 09:00:00',
+  sebabMemohon: 'Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan bantuan bina baru rumah'
+})
+
+const siasatanDetails = ref({
+  disiasatOleh: 'Siti binti Ali',
+  statusSiasatan: 'Semak',
+  tarikhSelesai: '2024-01-03 17:30:00',
+  catatan: 'Lawatan lapangan telah dilakukan dan dokumen disahkan.',
+  sla: '3 hari bekerja'
+})
 
 // Section 3: Draf BQ
 const bqList = ref([
@@ -1006,6 +2617,18 @@ const bqList = ref([
     jumlahBQ: "RM43,000",
     status: "Dalam Proses",
   },
+  // {
+  //   noBQ: "BQ202508648",
+  //   namaBQ: "BQ SITI BINTI HASSAN - DERMASISWA SEKOLAH",
+  //   jumlahBQ: "RM2,400",
+  //   status: "Dalam Proses",
+  // },
+  // {
+  //   noBQ: "BQ202508649",
+  //   namaBQ: "BQ SITI BINTI HASSAN - DERMASISWA IPT",
+  //   jumlahBQ: "RM3,000",
+  //   status: "Dalam Proses",
+  // },
 ]);
 
 const showBQModal = ref(false);
@@ -1014,13 +2637,13 @@ const editingBQ = ref(null);
 // Section 4: Laporan Gambar
 const gambarLokasi = ref([
   {
-    url: "/img/placeholder-image.jpg",
-    catatan: "Keadaan semasa rumah",
+    url: "https://scontent.fkul10-1.fna.fbcdn.net/v/t1.6435-9/33382272_977231325777776_3291633360509599744_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=tsi5WpsPCREQ7kNvwEe3GJk&_nc_oc=Adl4_F7yjD2xX6siXLa_NANICn4Cak1Wmni5VBa7XhbSYIByOReFS3wwQc7n0JHnBqz05IBIajWiWh8LE9coTq0L&_nc_zt=23&_nc_ht=scontent.fkul10-1.fna&_nc_gid=4p3_JCn3HWweiLZBezB58w&oh=00_AfZFYLhw-KRbw3goXGgJkj7ewaf54KBCnG0_XXcl4y3TWQ&oe=68E1A4D7",
+    catatan: "Keadaan dinding papan rumah",
     masaUpload: new Date().toISOString(),
   },
   {
-    url: "/img/placeholder-image.jpg",
-    catatan: "Bahagian yang perlu dibaiki",
+    url: "https://scontent.fkul15-1.fna.fbcdn.net/v/t39.30808-6/309943384_196941696025849_726196766864978484_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=IyNAhW7CUkgQ7kNvwHTA3nK&_nc_oc=AdmN3PYsmtpYr9gnvcQLzYd-zejr8nOaNfL2SkYiGIJsfKhvEWLi_gLtezJSzXrXrSpit_KvkUj1zjOCHOKl8Y4n&_nc_zt=23&_nc_ht=scontent.fkul15-1.fna&_nc_gid=aY79tE8vuTPag6wRgWP07g&oh=00_AfZvZmX3DPqOBnADSlF0Occy0BA6qGPavBKb7ME7Qre1eQ&oe=68C01482",
+    catatan: "Pandangan depan rumah",
     masaUpload: new Date().toISOString(),
   },
 ]);
@@ -1064,7 +2687,216 @@ const statusDokumenOptions = ref([
   { label: "Tiada Keperluan", value: "tiada_keperluan" },
 ]);
 
+// NEW: Maklumat Penerima Manfaat (jika tanggungan)
+const dependentSelection = ref({
+  nama: "",
+});
 
+const dependentNameOptions = ref([
+  { label: "-- Sila Pilih --", value: "" },
+  { label: "Ali Bin Ahmad", value: "ALI" },
+  { label: "Siti Binti Amin", value: "SITI" },
+]);
+
+// Options for Status Kediaman
+const statusKediamanOptions = ref([
+  { label: "Milik Sendiri Tidak Berbayar", value: "MILIK_TIDAK_BERBAYAR" },
+  { label: "Milik Sendiri Berbayar", value: "MILIK_BERBAYAR" },
+  { label: "Sewa", value: "SEWA" },
+  { label: "Kuarters Majikan", value: "KUARTERS" },
+  { label: "Tumpang Rumah Ibu/Bapa/Mertua", value: "TUMPANG" },
+  { label: "Pusaka", value: "PUSAKA" },
+  { label: "Sumbangan LZS / PPRT / RISDA", value: "SUMBANGAN" },
+  { label: "Lain-lain", value: "LAIN_LAIN" },
+]);
+
+
+const dependentsDirectory = {
+  ALI: { noKadPengenalan: "010101-01-0101", hubungan: "Anak" },
+  SITI: { noKadPengenalan: "020202-02-0202", hubungan: "Anak" },
+};
+
+const selectedDependent = computed(() => dependentsDirectory[dependentSelection.value.nama] || null);
+
+// NEW: Maklumat Penerima Bayaran
+const paymentInfo = ref({
+  kaedah: "",
+  noId: "",
+  namaPenerima: "",
+  namaAkaun: "",
+  bank: "",
+  noAkaun: "",
+});
+
+const paymentMethodOptions = ref([
+  { label: "-- Sila Pilih --", value: "" },
+  { label: "EFT", value: "EFT" },
+  { label: "Vcash", value: "VCASH" },
+  { label: "Cheque", value: "CHEQUE" },
+  { label: "TT", value: "TT" },
+  { label: "eWallet", value: "EWALLET" },
+  { label: "Tunai", value: "TUNAI" },
+  { label: "Tunai (Kaunter Ekspres)", value: "TUNAI_KAUNTER" },
+  { label: "Tunai (Lapangan)", value: "TUNAI_LAPANGAN" },
+]);
+
+// NEW: Keputusan Siasatan
+const investigationDecision = ref({
+  status: "",
+  catatan: "",
+  itemBantuan: "",
+});
+
+const supportDateTime = computed(() => new Date().toLocaleString("ms-MY"));
+
+//Maklumat Kediaman
+const kediamanByAid={
+  B112: {
+    tablefor: "B112 - Bantuan Sewaan/Ansuran Rumah (Fakir)",
+      fields: {
+        "Alamat 1": "Jalan Rajawali,",
+        "Alamat 2": "Kampung Bukit Kuching,",
+        "Alamat 3": "-",
+        "Negeri": "Selangor",
+        "Daerah": "Kuala Selangor",
+        "Bandar": "Jeram",
+        "Poskod": "45800 ",
+        "Kariah": "Masjid Al-Taqwa",
+        "Geolokasi": "-",
+        "Tempoh Menetap di Selangor": "3 Tahun",
+      },
+  },
+  B103: {
+    tablefor: "B103 - Bantuan Perubatan Dialisis (Fakir)",
+      fields: {
+        "Alamat 1": "Jalan Perubatan,",
+        "Alamat 2": "Kampung Kesihatan,",
+        "Alamat 3": "-",
+        "Negeri": "Selangor",
+        "Daerah": "Kuala Selangor",
+        "Bandar": "Jeram",
+        "Poskod": "45800 ",
+        "Kariah": "Masjid Al-Taqwa",
+        "Geolokasi": "-",
+        "Tempoh Menetap di Selangor": "2 Tahun",
+      },
+  },
+};
+
+const kediamanInfo = computed(() => {
+  const id = String(route.params.id || '').toUpperCase();
+  return kediamanByAid[id] || null;
+});
+
+// Beneficiary options for B103
+const beneficiaryOptions = ref([
+  { label: 'Nur Najihah binti Mazlan (Isteri)', value: 'Nur Najihah binti Mazlan' },
+  { label: 'Amir Helmi bin Amirul Hakim (Anak)', value: 'Amir Helmi bin Amirul Hakim' },
+  { label: 'Amira Hasya binti Amirul Hakim (Anak)', value: 'Amira Hasya binti Amirul Hakim' },
+]);
+
+// Beneficiary data mapping
+const beneficiaryData = {
+  'Nur Najihah binti Mazlan': {
+    noPengenalan: '850315-10-1234',
+    hubungan: 'Isteri'
+  },
+  'Amir Helmi bin Amirul Hakim': {
+    noPengenalan: '120512-10-5678',
+    hubungan: 'Anak'
+  },
+  'Amira Hasya binti Amirul Hakim': {
+    noPengenalan: '150815-10-9012',
+    hubungan: 'Anak'
+  }
+};
+
+// Function to update beneficiary info when name is selected
+const updateBeneficiaryInfo = (selectedName) => {
+  console.log('updateBeneficiaryInfo called with:', selectedName); // Debug log
+  console.log('beneficiaryData:', beneficiaryData); // Debug log
+  if (selectedName && beneficiaryData[selectedName]) {
+    const data = beneficiaryData[selectedName];
+    console.log('Found data:', data); // Debug log
+    formData.value.healthInfo.noPengenalan = data.noPengenalan;
+    formData.value.healthInfo.hubungan = data.hubungan;
+    console.log('Updated formData:', formData.value.healthInfo); // Debug log
+  } else {
+    console.log('No data found for:', selectedName); // Debug log
+  }
+};
+
+// Watch for namaPenerima changes and auto-fill beneficiary info
+watch(() => formData.value.healthInfo.namaPenerima, (newName) => {
+  console.log('Nama changed to:', newName); // Debug log
+  updateBeneficiaryInfo(newName);
+});
+
+// NEW: Education info (read-only) for B300/B307
+const educationByAid = {
+B300: {
+    tablefor: "(HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)",
+    fields: {
+      "Jenis Sekolah/Institusi": "Peringkat Tinggi",
+      "Kategori Sekolah/Institusi": "SBP",
+      "Tahun Bersekolah": "2025",
+      "Tahun/Tingkatan/Tahun Pengajian/Semester": "Tingkatan 4",
+      "Nama Sekolah/ Institusi": "Sekolah Menengah Sains Kuala Selangor",
+      "Tempat Tinggal Semasa Belajar": "Tidak Tinggal Bersama Keluarga",
+      "Maklumat Asrama/Rumah Sewa": "Asrama Puteri",
+      "Pembiayaan Pengajian": "Tiada",
+      "Catatan": "Masih Bersekolah di Tingkatan 4",
+    },
+  },
+  B307: {
+    tablefor: "(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
+    fields: {
+      "Jenis Sekolah/Institusi": "Peringkat Tinggi",
+      "Kategori Sekolah/Institusi": "IPT",
+      "Tarikh Mula Pengajian": "1/1/2025",
+      "Tarikh Tamat Pengajian": "6/1/2028",
+      "Tempoh Pengajian": "7 Semester",
+      "Tahun Bersekolah": "2025",
+      "Tahun/Tingkatan/Tahun Pengajian/Semester": "Semester 1",
+      "Nama Sekolah/ Institusi": "UPM",
+      "Bidang/Kursus Pengajian": "Ijazah Sarjana Muda:Ijazah Sarjana Muda Sains Komputer",
+      "Jurusan/Bidang": "-",
+      "Pembiayaan Pengajian": "Tiada",
+      "Catatan": "",
+      "Tinggal Bersama Keluarga Semasa Belajar": "Tidak",
+      "Maklumat Asrama/Rumah Sewa": "Kolej Melati",
+    },
+  },
+};
+
+const educationInfo = computed(() => {
+  const id = String(route.params.id || '').toUpperCase();
+  return educationByAid[id] || null;
+});
+
+// NEW: Editable semesters/tahap table state
+const educationSemesters = ref([
+  { semester: 1, bulanMula: 'Jan-25', bulanTamat: 'Jun-25', jenis: 'Semester Panjang', gpa: '', cgpa: '', yuran: 1500 },
+  { semester: 2, bulanMula: 'Aug-25', bulanTamat: 'Dec-25', jenis: 'Semester Pendek', gpa: '', cgpa: '', yuran: 1200 },
+]);
+
+const addSemesterRow = () => {
+  const next = (educationSemesters.value.at(-1)?.semester || 0) + 1;
+  educationSemesters.value.push({ semester: next, bulanMula: '', bulanTamat: '', jenis: '', gpa: '', cgpa: '', yuran: 0 });
+};
+
+const removeSemesterRow = (index) => {
+  if (index >= 0 && index < educationSemesters.value.length) {
+    educationSemesters.value.splice(index, 1);
+    normalizeSemesterNumbers();
+  }
+};
+
+const normalizeSemesterNumbers = () => {
+  educationSemesters.value
+    .sort((a, b) => (a.semester || 0) - (b.semester || 0))
+    .forEach((row, idx) => { row.semester = idx + 1; });
+};
 
 const jumlahKeseluruhan = computed(() => {
   const kadar = parseFloat(formData.value.jumlahBantuan) || 0
@@ -1072,6 +2904,17 @@ const jumlahKeseluruhan = computed(() => {
   return kadar * tempoh
 })
 
+// Check if both status sokongan and status proses have valid data
+const hasStatusSokongan = computed(() => {
+  const hasValidStatusSokongan = formData.value.statusLawatan && 
+                                 formData.value.statusLawatan !== "sila_pilih" && 
+                                 formData.value.statusLawatan !== "";
+  
+  const hasValidStatusProses = formData.value.statusproses && 
+                               formData.value.statusproses === "selesai";
+  
+  return hasValidStatusSokongan && hasValidStatusProses;
+})
 
 // Methods
 const getStatusVariant = (status) => {
@@ -1110,6 +2953,379 @@ const getBQStatusVariant = (status) => {
   return variants[status] || "default";
 };
 
+const getProcessStatusVariant = (status) => {
+  const variants = {
+    'Permohonan': 'info',
+    'Semak': 'warning',
+    'Sokong': 'primary',
+    'Lulus': 'success'
+  }
+  return variants[status] || 'primary'
+}
+
+// Entitlement Product management methods
+const getProductStatusVariant = (status) => {
+  const variants = {
+    'lengkap': 'success',
+    'sedang_edit': 'primary',
+    'baru': 'info'
+  }
+  return variants[status] || 'default'
+}
+
+const getProductStatusText = (status) => {
+  const statusMap = {
+    'lengkap': 'Lengkap',
+    'sedang_edit': 'Sedang Edit',
+    'baru': 'Baru'
+  }
+  return statusMap[status] || status
+}
+
+const editProduct = (index) => {
+  editingProductIndex.value = index;
+  toast.info(`Mengedit product: ${selectedEntitlementProducts.value[index].name}`);
+  const id = String(route.params.id || '').toUpperCase()
+  const code = selectedEntitlementProducts.value[index]?.code
+  if ((id === 'B112' && (code === 'Sewaan_Rumah' || code === 'Belian_Rumah')) ||
+      (id === 'B103' && (code === 'HEMODIALISIS' || code === 'SUNTIKAN_EPO'))) {
+    nextTick(() => {
+      externalEditorEl.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }
+}
+
+const saveProduct = (index) => {
+  editingProductIndex.value = -1;
+  toast.success('Product telah disimpan');
+}
+
+const cancelEdit = () => {
+  editingProductIndex.value = -1;
+  toast.info('Edit dibatalkan');
+}
+
+// Calculate total amount for a specific product
+const calculateTotalAmount = (productIndex) => {
+  const product = selectedEntitlementProducts.value[productIndex];
+  if (product && product.kadarBantuan) {
+    const kadar = parseFloat(product.kadarBantuan.kadarBantuan) || 0;
+    const tempoh = parseFloat(product.kadarBantuan.tempohKekerapan) || 0;
+    const total = kadar * tempoh;
+    
+    // Update the reactive data
+    const productData = entitlementProductsData.value.find(p => p.code === product.code);
+    if (productData) {
+      productData.kadarBantuan.jumlahKeseluruhan = `RM ${total.toLocaleString('en-MY', { minimumFractionDigits: 2 })}`;
+    }
+  }
+}
+
+// Helper to access the reactive data object for the product currently being edited
+const currentEditingProductData = computed(() => {
+  if (editingProductIndex.value < 0) return null
+  const code = selectedEntitlementProducts.value[editingProductIndex.value]?.code
+  if (!code) return null
+  return entitlementProductsData.value.find(p => p.code === code) || null
+})
+
+// Local editing proxies to avoid optional-chaining assignment in templates
+const editingKadarBantuanKadar = computed({
+  get: () => currentEditingProductData.value?.kadarBantuan.kadarBantuan ?? 0,
+  set: (val) => {
+    const d = currentEditingProductData.value
+    if (!d) return
+    d.kadarBantuan.kadarBantuan = val
+    const idx = editingProductIndex.value
+    if (idx >= 0) calculateTotalAmount(idx)
+  }
+})
+
+const editingKadarBantuanTempoh = computed({
+  get: () => currentEditingProductData.value?.kadarBantuan.tempohKekerapan ?? 1,
+  set: (val) => {
+    const d = currentEditingProductData.value
+    if (!d) return
+    d.kadarBantuan.tempohKekerapan = val
+    const idx = editingProductIndex.value
+    if (idx >= 0) calculateTotalAmount(idx)
+  }
+})
+
+const editingKadarBantuanTarikhMula = computed({
+  get: () => currentEditingProductData.value?.kadarBantuan.tarikhMula ?? '',
+  set: (val) => {
+    const d = currentEditingProductData.value
+    if (!d) return
+    d.kadarBantuan.tarikhMula = val
+  }
+})
+
+const editingKadarBantuanTarikhTamat = computed({
+  get: () => currentEditingProductData.value?.kadarBantuan.tarikhTamat ?? '',
+  set: (val) => {
+    const d = currentEditingProductData.value
+    if (!d) return
+    d.kadarBantuan.tarikhTamat = val
+  }
+})
+
+const editingPBKategori = computed({
+  get: () => currentEditingProductData.value?.penerimaBayaran.kategoriPenerima ?? '',
+  set: (val) => { const d = currentEditingProductData.value; if (d) d.penerimaBayaran.kategoriPenerima = val }
+})
+const editingPBKaedah = computed({
+  get: () => currentEditingProductData.value?.penerimaBayaran.kaedahPembayaran ?? '',
+  set: (val) => { const d = currentEditingProductData.value; if (d) d.penerimaBayaran.kaedahPembayaran = val }
+})
+const editingPBNoKp = computed({
+  get: () => currentEditingProductData.value?.penerimaBayaran.noKadPengenalan ?? '',
+  set: (val) => { const d = currentEditingProductData.value; if (d) d.penerimaBayaran.noKadPengenalan = val }
+})
+const editingPBNama = computed({
+  get: () => currentEditingProductData.value?.penerimaBayaran.namaPenerima ?? '',
+  set: (val) => { const d = currentEditingProductData.value; if (d) d.penerimaBayaran.namaPenerima = val }
+})
+const editingPBNamaPemegang = computed({
+  get: () => currentEditingProductData.value?.penerimaBayaran.namaPemegangAkaun ?? '',
+  set: (val) => { const d = currentEditingProductData.value; if (d) d.penerimaBayaran.namaPemegangAkaun = val }
+})
+const editingPBBank = computed({
+  get: () => currentEditingProductData.value?.penerimaBayaran.bank ?? '',
+  set: (val) => { const d = currentEditingProductData.value; if (d) d.penerimaBayaran.bank = val }
+})
+const editingPBNoAkaun = computed({
+  get: () => currentEditingProductData.value?.penerimaBayaran.noAkaunBank ?? '',
+  set: (val) => { const d = currentEditingProductData.value; if (d) d.penerimaBayaran.noAkaunBank = val }
+})
+const editingPBStatus = computed({
+  get: () => currentEditingProductData.value?.penerimaBayaran.status ?? 'verified',
+  set: (val) => { const d = currentEditingProductData.value; if (d) d.penerimaBayaran.status = val }
+})
+
+// Registration dropdown for B112 edit panel (mimic B300/B307)
+const registrationOptions = ref(['800101101234 -Ahmad bin Saif','202201012345(1234567-W) -Syarikat Maju Jaya','550303109999 -Noraini bt Yusuf'])
+const editingPBNoPendaftaran = computed({
+  get: () => currentEditingProductData.value?.penerimaBayaran.noPendaftaran ?? '',
+  set: (val) => { const d = currentEditingProductData.value; if (d) d.penerimaBayaran.noPendaftaran = val }
+})
+
+const loadEditingPenerimaByRegistration = () => {
+  const d = currentEditingProductData.value
+  if (!d) return
+  const no = d.penerimaBayaran.noPendaftaran
+  const registrationData = {
+    '800101101234 -Ahmad bin Saif': { namaPenerima: 'Ahmad bin Ali', namaPemegangAkaun: 'Ahmad bin Ali', bank: 'MAYBANK', noAkaunBank: '162345678901' },
+    '202201012345(1234567-W) -Syarikat Maju Jaya': { namaPenerima: 'Syarikat Maju Jaya', namaPemegangAkaun: 'Syarikat Maju Jaya', bank: 'CIMB', noAkaunBank: '8000123456' },
+    '550303109999 -Noraini bt Yusuf': { namaPenerima: 'Noraini bt Yusuf', namaPemegangAkaun: 'Noraini bt Yusuf', bank: 'RHB', noAkaunBank: '123456789012' },
+  }
+  if (registrationData[no]) {
+    d.penerimaBayaran.namaPenerima = registrationData[no].namaPenerima
+    d.penerimaBayaran.namaPemegangAkaun = registrationData[no].namaPemegangAkaun
+    d.penerimaBayaran.noKadPengenalan = no
+    d.penerimaBayaran.bank = registrationData[no].bank
+    d.penerimaBayaran.noAkaunBank = registrationData[no].noAkaunBank
+  }
+}
+
+// Auto-fill when kategori penerima = asnaf (same behavior as B300/B307)
+watch(() => editingPBKategori.value, (val) => {
+  const d = currentEditingProductData.value
+  if (!d) return
+  if (val === 'asnaf') {
+    d.penerimaBayaran.namaPenerima = 'Mohd Amin bin Mohd Ali'
+    d.penerimaBayaran.namaPemegangAkaun = 'Mohd Amin bin Mohd Ali'
+    d.penerimaBayaran.noKadPengenalan = '650101-01-1234'
+    d.penerimaBayaran.bank = 'MAYBANK'
+    d.penerimaBayaran.noAkaunBank = '1234567890'
+  }
+})
+
+// Asnaf name/ID options and autofill mapping
+const asnafDirectory = [
+  { name: 'Mohd Amin bin Mohd Ali', id: '800101101234', bank: 'MAYBANK', akaun: '1234567890' },
+  { name: 'Fatimah Bt Zulkifli', id: '890202022222', bank: 'CIMB', akaun: '8000123456' },
+  { name: 'Siti Binti Amin', id: '990303033333', bank: 'RHB', akaun: '123450987654' },
+]
+const asnafNameOptions = ref(asnafDirectory.map(x => x.name))
+
+const loadEditingAsnafByName = () => {
+  const d = currentEditingProductData.value
+  if (!d) return
+  const entry = asnafDirectory.find(x => x.name === d.penerimaBayaran.namaPenerima)
+  if (!entry) return
+  d.penerimaBayaran.noKadPengenalan = entry.id
+  d.penerimaBayaran.namaPemegangAkaun = entry.name
+  d.penerimaBayaran.bank = entry.bank
+  d.penerimaBayaran.noAkaunBank = entry.akaun
+}
+
+// Add new registration modal state and handler
+const showAddRegistration = ref(false)
+const newRegistration = ref({ namaPenuh:'', jenisPengenalan:'IC', noPengenalan:'', namaPemegangAkaun:'', bank:'', noAkaun:'' })
+const saveNewRegistration = () => {
+  const label = `${newRegistration.value.noPengenalan} -${newRegistration.value.namaPenuh}`
+  if (!registrationOptions.value.includes(label)) registrationOptions.value.push(label)
+  const d = currentEditingProductData.value
+  if (d) {
+    d.penerimaBayaran.noPendaftaran = label
+    d.penerimaBayaran.namaPenerima = newRegistration.value.namaPenuh
+    d.penerimaBayaran.namaPemegangAkaun = newRegistration.value.namaPemegangAkaun || newRegistration.value.namaPenuh
+    d.penerimaBayaran.noKadPengenalan = newRegistration.value.noPengenalan
+    d.penerimaBayaran.bank = newRegistration.value.bank
+    d.penerimaBayaran.noAkaunBank = newRegistration.value.noAkaun
+    d.penerimaBayaran.status = 'unverified'
+  }
+  showAddRegistration.value = false
+  newRegistration.value = { namaPenuh:'', jenisPengenalan:'IC', noPengenalan:'', namaPemegangAkaun:'', bank:'', noAkaun:'' }
+}
+
+// Load penerima data based on category selection
+const loadPenerimaData = (productIndex) => {
+  const product = selectedEntitlementProducts.value[productIndex];
+  const productData = entitlementProductsData.value.find(p => p.code === product.code);
+  
+  if (productData && productData.penerimaBayaran) {
+    const kategori = productData.penerimaBayaran.kategoriPenerima;
+    
+    if (kategori === 'asnaf') {
+      // Asnaf data
+      productData.penerimaBayaran.kaedahPembayaran = 'EFT';
+      productData.penerimaBayaran.noKadPengenalan = '010101-01-0101';
+      productData.penerimaBayaran.namaPenerima = 'Siti Binti Amin';
+      productData.penerimaBayaran.namaPemegangAkaun = 'Siti Binti Amin';
+      productData.penerimaBayaran.noPendaftaran = '';
+      productData.penerimaBayaran.bank = 'MAYBANK';
+      productData.penerimaBayaran.noAkaunBank = '1234567890';
+    } else if (kategori === 'organisasi' || kategori === 'third_party') {
+      // Reset for organisasi/third party
+      productData.penerimaBayaran.kaedahPembayaran = 'EFT';
+      productData.penerimaBayaran.noKadPengenalan = '';
+      productData.penerimaBayaran.namaPenerima = '';
+      productData.penerimaBayaran.namaPemegangAkaun = '';
+      productData.penerimaBayaran.noPendaftaran = '';
+    }
+  }
+}
+
+// Load penerima data based on registration number selection
+const loadPenerimaByRegistration = (productIndex) => {
+  const product = selectedEntitlementProducts.value[productIndex];
+  const productData = entitlementProductsData.value.find(p => p.code === product.code);
+  
+  if (productData && productData.penerimaBayaran) {
+    const noPendaftaran = productData.penerimaBayaran.noPendaftaran;
+    
+    // Registration data mapping
+    const registrationData = {
+      'ABA1234': {
+        namaPenerima: 'SM Sains Kuala Selangor',
+        namaPemegangAkaun: 'SM Sains Kuala Selangor',
+        bank: 'MAYBANK',
+        noAkaunBank: '1234567890'
+      },
+      'WBA5678': {
+        namaPenerima: 'SM Sains Hulu Selangor',
+        namaPemegangAkaun: 'SM Sains Hulu Selangor'
+      },
+      'CBA9012': {
+        namaPenerima: 'Sekolah Seri Puteri, Cyberjaya',
+        namaPemegangAkaun: 'Sekolah Seri Puteri, Cyberjaya'
+      },
+      'DGA3456': {
+        namaPenerima: 'Kolej Islam Sultan Alam Shah (KISAS)',
+        namaPemegangAkaun: 'Kolej Islam Sultan Alam Shah (KISAS)'
+      },
+      'EHA7890': {
+        namaPenerima: 'SBP Integrasi Gombak',
+        namaPemegangAkaun: 'SBP Integrasi Gombak'
+      },
+      'UMA1122': {
+        namaPenerima: 'Universiti Malaya (UM)',
+        namaPemegangAkaun: 'Universiti Malaya (UM)',
+        bank: 'MAYBANK',
+        noAkaunBank: '1234567890'
+      },
+      'UPM3344': {
+        namaPenerima: 'Universiti Putra Malaysia (UPM)',
+        namaPemegangAkaun: 'Universiti Putra Malaysia (UPM)',
+        bank: 'MAYBANK',
+        noAkaunBank: '1234567890'
+      },
+      'UKM5566': {
+        namaPenerima: 'Universiti Kebangsaan Malaysia (UKM)',
+        namaPemegangAkaun: 'Universiti Kebangsaan Malaysia (UKM)',
+        bank: 'MAYBANK',
+        noAkaunBank: '1234567890'
+      },
+      'UITM7788': {
+        namaPenerima: 'Universiti Teknologi MARA (UiTM)',
+        namaPemegangAkaun: 'Universiti Teknologi MARA (UiTM)',
+        bank: 'MAYBANK',
+        noAkaunBank: '1234567890'
+      },
+      'USM9900': {
+        namaPenerima: 'Universiti Sains Malaysia (USM)',
+        namaPemegangAkaun: 'Universiti Sains Malaysia (USM)',
+        bank: 'MAYBANK',
+        noAkaunBank: '1234567890'
+      },
+      // Dialysis Centers for B103
+      'DDC001': {
+        namaPenerima: 'PUSAT DIALISIS DAVITA TANJUNG KARANG',
+        namaPemegangAkaun: 'PUSAT DIALISIS DAVITA TANJUNG KARANG',
+        bank: 'MAYBANK',
+        noAkaunBank: '1234567890'
+      },
+      'FDB002': {
+        namaPenerima: 'FORESIGHT DIALYSIS BANDAR PUNCAK ALAM',
+        namaPemegangAkaun: 'FORESIGHT DIALYSIS BANDAR PUNCAK ALAM',
+        bank: 'CIMB',
+        noAkaunBank: '8000123456'
+      },
+      'WAN003': {
+        namaPenerima: 'KLINIK DAN PUSAT DIALISIS WAQAF AN NUR',
+        namaPemegangAkaun: 'KLINIK DAN PUSAT DIALISIS WAQAF AN NUR',
+        bank: 'RHB',
+        noAkaunBank: '123456789012'
+      }
+    };
+    
+    if (registrationData[noPendaftaran]) {
+      productData.penerimaBayaran.namaPenerima = registrationData[noPendaftaran].namaPenerima;
+      productData.penerimaBayaran.namaPemegangAkaun = registrationData[noPendaftaran].namaPemegangAkaun;
+      productData.penerimaBayaran.noKadPengenalan = noPendaftaran;
+      productData.penerimaBayaran.bank = registrationData[noPendaftaran].bank;
+      productData.penerimaBayaran.noAkaunBank = registrationData[noPendaftaran].noAkaunBank;
+    }
+  }
+}
+
+const removeProduct = (index) => {
+  if (confirm('Adakah anda pasti mahu memadam entitlement product ini?')) {
+    // Remove from checkbox selections
+    const productToRemove = selectedEntitlementProducts.value[index];
+    const valueIndex = formData.value.entitlementProducts.indexOf(productToRemove.code);
+    if (valueIndex > -1) {
+      formData.value.entitlementProducts.splice(valueIndex, 1);
+    }
+    
+    // Remove from reactive data
+    const dataIndex = entitlementProductsData.value.findIndex(p => p.code === productToRemove.code);
+    if (dataIndex > -1) {
+      entitlementProductsData.value.splice(dataIndex, 1);
+    }
+    
+    toast.success('Entitlement product telah dipadam');
+  }
+}
+
+const formatDateTime = (dateTimeString) => {
+  if (!dateTimeString) return '-'
+  const date = new Date(dateTimeString)
+  return date.toLocaleString('ms-MY')
+}
+
 const previewDocument = (dokumen) => {
   console.log("Previewing document:", dokumen);
   // Implement document preview functionality
@@ -1128,9 +3344,13 @@ const openBQForm = () => {
 
 const editBQ = (bq) => {
   // Navigate to dedicated BQ drafting/editing page with current id and edit flag
+  // router.push(
+  //   `/BF-BTN/tugasan/bantuan/siasatan/draf-bq/${route.params.id}`
+  // );
   router.push(
     `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}/draf-bq?edit=true`
-  );
+  );
+
 };
 
 const closeBQModal = () => {
@@ -1272,8 +3492,24 @@ const handleSimpan = async () => {
 };
 
 const handleBatal = () => {
-  router.push("/BF-BTN/tugasan/bantuan/siasatan/siasatan-eoad");
+  router.push("/BF-BTN/tugasan/bantuan/siasatan/siasatan-eoad/NAS-2025-0002");
 };
+
+// Helper: whether B112 edit panel is active
+const isB112Editing = computed(() => {
+  const id = String(route.params.id || '').toUpperCase();
+  const idx = editingProductIndex.value;
+  const code = selectedEntitlementProducts.value[idx]?.code;
+  return id === 'B112' && idx >= 0 && ['Sewaan_Rumah', 'Belian_Rumah'].includes(code);
+});
+
+// Helper: whether B103 edit panel is active
+const isB103Editing = computed(() => {
+  const id = String(route.params.id || '').toUpperCase();
+  const idx = editingProductIndex.value;
+  const code = selectedEntitlementProducts.value[idx]?.code;
+  return id === 'B103' && idx >= 0 && ['HEMODIALISIS', 'SUNTIKAN_EPO'].includes(code);
+});
 
 // Fetch application data on mount
 onMounted(() => {
@@ -1281,12 +3517,14 @@ onMounted(() => {
   
   // Implement API call to fetch application data
   // This is mock data for now
-  formData.value = {
-    aid: "B102	Bantuan Binaan Rumah (Fakir)",
+  Object.assign(formData.value, {
+    aid: "B102\tBantuan Binaan Rumah (Fakir)",
     aidproduct: "Bantuan Binaan Rumah (Fakir)",
     productpackage: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
     entitlementproduct: "3 Bilik (Fakir) - Tanggungan 3-6 Orang",
+    entitlementProducts: [], // Initialize checkbox array
     jumlahBantuan: 43000,
+    tempohKekerapan: 1,
     // nama: "Mohd Rosli bin Saad",
     // alamat: "No. 123, Jalan Merdeka, Taman Sejahtera, 50000 Kuala Lumpur",
     // jenisPengenalan: "No Pengenalan",
@@ -1296,8 +3534,27 @@ onMounted(() => {
     // statusKeluarga: "Fakir",
     // statusIndividu: "Fakir",
     // statusMultidimensi: "Asnaf Tidak Produktif",
-    statusLawatan: "Perlu Diproses",
-  };
+    // statusLawatan: "Perlu Diproses",
+  });
+
+  // Load by assistance type from route.params.id (e.g. B102/B300/B307)
+  const selectedType = String(route.params.id || '').toUpperCase();
+  if (mockAssistanceData[selectedType]) {
+    Object.assign(formData.value, mockAssistanceData[selectedType]);
+    console.log("Loaded assistance by id:", selectedType, formData.value);
+  } else {
+    console.warn("Assistance type not found, using fallback:", selectedType);
+  }
+
+  // Initialize dokumen sokongan based on route ID
+  initializeDokumenSokongan();
+
+  // Set initial nama based on route ID
+  if (selectedType === 'B300') {
+    dependentSelection.value.nama = 'SITI';
+  } else if (selectedType === 'B307') {
+    dependentSelection.value.nama = 'ALI';
+  }
 
   console.log("formData set:", formData.value); // Debug log
 
@@ -1320,24 +3577,25 @@ Ketua Keluarga : Pemohon (MISKIN)
 Pasangan : 1 orang isteri tinggal bersama
 Tanggungan : - NIL-
 Lain-lain : - NIL-`;
-laporanTeknikal.value.keperluan = `Keadaan rumah separa uzur. Sebahagian besar struktur rumah yang dibina daripada kayu telah uzur dan reput dimakan anal-anal.
+  laporanTeknikal.value.keperluan = `Keadaan rumah separa uzur. Sebahagian besar struktur rumah yang dibina daripada kayu telah uzur dan reput dimakan anal-anal.
 Keadaan rumah tidak sempuma.
 
 Pemohon tidak mepunyai pendapatan yang mencukupi untuk membaiki kerosakan yang berlaku dirumahnya.
 Untuk rekod, rumah masih dalam keadaan baik untuk diduduki dan sesuai untuk dibaikpulih.`;
 
-laporanTeknikal.value.cadangan = `Dicadangkan kerja-kerja baikpulih berikut :
+  laporanTeknikal.value.cadangan = `Dicadangkan kerja-kerja baikpulih berikut :
 
 1. Meroboh bahagian rumah yang rosak dan retak.
 2. Membina semula struktur bangunan rumah yang baru.
 3. Membaikpulih dan menaiktaraf pendawalan elektrik bahagian rumah yang terlibat.`;
 
-laporanTeknikal.value.nilaiKerja = "43000"
+  laporanTeknikal.value.nilaiKerja = "43000"
   // Auto-calculate jumlah bantuan from BQ (mock calculation)
   jumlahBantuan.value = 25000;
   catatanPengesyoran.value =
     "Cadangan kerja baik pulih bumbung bocor dan cat dinding luar untuk memastikan keselamatan dan keselesaan pemohon.";
 });
+
 </script>
 
 <style lang="scss" scoped>

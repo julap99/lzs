@@ -97,7 +97,7 @@
               <!-- Content (only for Pengguna Dalam) -->
               <div v-if="selectedRole === 'pengguna-dalam'" class="ml-4 flex-1">
                 <div class="text-sm text-gray-500">
-                  {{ formatDate(step.tarikh) }}
+                  {{ formatDate(step.tarikh) }}<span v-if="step.masa"> - {{ step.masa }}</span>
                 </div>
                 <div :class="getTextClass(step.label)" class="font-bold">
                   {{ step.label }}
@@ -116,7 +116,7 @@
               </div>
               <!-- Minimal content for Pengguna Luar: date + label only -->
               <div v-else class="ml-4 flex-1">
-                <div class="text-sm text-gray-500">{{ formatDate(step.tarikh) }}</div>
+                <div class="text-sm text-gray-500">{{ formatDate(step.tarikh) }}<span v-if="step.masa"> - {{ step.masa }}</span></div>
                 <div class="font-bold text-blue-800">{{ step.label }}</div>
               </div>
             </div>
@@ -276,6 +276,7 @@ const statusTimeline = [
   {
     label: 'Aduan Baru',
     tarikh: '10-06-2025',
+    masa: '09:15',
     completed: true,
     catatan: 'Aduan telah diterima dan direkod dalam sistem.',
     namaPegawai: 'Encik Ali',
@@ -284,6 +285,7 @@ const statusTimeline = [
   {
     label: 'Dalam Tindakan - Siasatan Ringkas',
     tarikh: '10-06-2025',
+    masa: '14:30',
     inProgress: true,
     catatan: 'Pegawai sedang menilai aduan dan menjalankan semakan awal.',
     namaPegawai: 'Pn. Zahrah',
@@ -293,6 +295,7 @@ const statusTimeline = [
     label: 'Kelulusan',
     notStarted: true,
     tarikh: '',
+    masa: '',
     catatan: 'Tiada tindakan direkodkan setakat ini.',
     namaPegawai: 'Belum Ditugaskan',
     masaBerbaki: '',
@@ -304,6 +307,7 @@ const statusTimeline = [
     label: 'Pembayaran',
     notStarted: true,
     tarikh: '',
+    masa: '',
     catatan: 'Tiada tindakan direkodkan setakat ini.',
     namaPegawai: 'Belum Ditugaskan',
     masaBerbaki: '',

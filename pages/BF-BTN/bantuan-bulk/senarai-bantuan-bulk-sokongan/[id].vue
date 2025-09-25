@@ -181,7 +181,7 @@
         </template>
         <template #body>
           <div
-            v-if="bayaranKepadaList.length === 0"
+            v-if="paymentList.length === 0"
             class="text-center py-8 text-gray-500"
           >
             Tiada maklumat bayaran.
@@ -189,21 +189,24 @@
 
           <div v-else class="space-y-3">
             <rs-table
-              :data="bayaranKepadaList"
-              :columns="recipientColumns"
+              :data="paymentList"
+              :columns="paymentColumns"
               :pageSize="5"
               :showNoColumn="true"
               :options="{ variant: 'default', hover: true, striped: true }"
-              :options-advanced="{ sortable: true, filterable: true }"
+              :options-advanced="{ sortable: true, filterable: false }"
               advanced
             >
+              <template v-slot:amaun="{ text }">
+                {{ formatCurrency(text) }}
+              </template>
               <template v-slot:actions="{ row }">
                 <div class="flex space-x-2 justify-center">
                   <rs-button
                     variant="info"
                     size="sm"
                     class="flex gap-2"
-                    @click="handleLihatBayaran(payment)"
+                    @click="handleLihatBayaran(row)"
                   >
                     <Icon name="ph:eye" class="h-4 w-4" />
                     Lihat
@@ -211,6 +214,10 @@
                 </div>
               </template>
             </rs-table>
+            <div class="flex justify-end text-sm text-gray-700 mt-2">
+              <div class="font-medium">Jumlah Amaun (Bayaran):&nbsp;</div>
+              <div>{{ formatCurrency(paymentTotal) }}</div>
+            </div>
           </div>
         </template>
       </rs-card>
@@ -222,7 +229,7 @@
         </template>
         <template #body>
           <div
-            v-if="penerimaList.length === 0"
+            v-if="recipientList.length === 0"
             class="text-center py-8 text-gray-500"
           >
             Tiada maklumat penerima.
@@ -230,21 +237,24 @@
 
           <div v-else class="space-y-3">
             <rs-table
-              :data="penerimaList"
+              :data="recipientList"
               :columns="recipientColumns"
               :pageSize="5"
               :showNoColumn="true"
               :options="{ variant: 'default', hover: true, striped: true }"
-              :options-advanced="{ sortable: true, filterable: true }"
+              :options-advanced="{ sortable: true, filterable: false }"
               advanced
             >
+              <template v-slot:amaun="{ text }">
+                {{ formatCurrency(text) }}
+              </template>
               <template v-slot:actions="{ row }">
                 <div class="flex space-x-2 justify-center">
                   <rs-button
                     variant="info"
                     size="sm"
                     class="flex gap-2"
-                    @click="handleLihatPenerima(recipient)"
+                    @click="handleLihatPenerima(row)"
                   >
                     <Icon name="ph:eye" class="h-4 w-4" />
                     Lihat
@@ -252,6 +262,10 @@
                 </div>
               </template>
             </rs-table>
+            <div class="flex justify-end text-sm text-gray-700 mt-2">
+              <div class="font-medium">Jumlah Amaun (Penerima):&nbsp;</div>
+              <div>{{ formatCurrency(totalAmount) }}</div>
+            </div>
           </div>
         </template>
       </rs-card>
@@ -506,110 +520,401 @@ const breadcrumb = ref([
   },
 ]);
 
-// Mock detail data - would be replaced with API call based on route.params.id
-const bantuanDetail = ref({
-  kodBP: route.params.id,
-  tajuk: "Wang Saku Fakir Mac 2025",
-  kategoriAsnaf: "Fakir",
-  status: "Dalam Proses",
-  jumlahAmaun: "RM 191,200.00",
-  catatan:
-    "Tuntutan wang saku pelajar batch 3\nJumlah Pelajar: 50\nJumlah Bayaran: RM 191,200.00",
-  tarikhMohon: "14/03/2025 03:15pm",
-  diciptaOleh: "Norlida Binti Mat Nor",
-  diciptaPada: "17/02/2025 3:17pm",
-  kategoriBantuan: "Pendidikan Fakir",
-  subKategori: "Pendidikan IPT - Kewangan (Fakir - Pendidikan)",
-  bantuan: "B314 - (HQ) Bantuan Keperluan Pendidikan IPT",
-  kodBantuan: "B314",
-  produkBantuan: "(HQ) KPIPT (Fakir) - Bantuan Wang Saku",
-  penyiasat: "Siti Aisyah Binti Ahmad",
-  cawangan: "Cawangan Ibu Pejabat LZS",
-});
+// Mock data based on bantuan ID
+const getBantuanData = (id) => {
+  const data = {
+    'BP-2025-00001': {
+      kodBP: 'BP-2025-00001',
+      tajuk: 'Wang Saku Fakir Mac 2025',
+      kategoriAsnaf: 'Fakir',
+      status: 'Dalam Proses',
+      jumlahAmaun: 'RM20,000.00',
+      catatan: 'Tuntutan wang saku pelajar untuk bulan Mac 2025. Program ini bertujuan membantu pelajar fakir dalam memenuhi keperluan asas mereka.',
+      tarikhMohon: '01/03/2025',
+      diciptaOleh: 'Ahmad bin Ali',
+      diciptaPada: '17/02/2025 3:17pm',
+      kategoriBantuan: 'Bantuan Pendidikan',
+      subKategori: 'Wang Saku',
+      bantuan: 'Bantuan Pendidikan',
+      kodBantuan: 'B314 - Bantuan Keperluan Pendidikan IPT (Fakir)',
+      produkBantuan: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS'
+    },
+    'BP-2025-00002': {
+      kodBP: 'BP-2025-00002',
+      tajuk: 'Wang Saku Fakir Feb 2025',
+      kategoriAsnaf: 'Fakir',
+      status: 'Dalam Proses',
+      jumlahAmaun: 'RM23,000.00',
+      catatan: 'Tuntutan wang saku pelajar untuk bulan Feb 2025. Program ini bertujuan membantu pelajar fakir dalam memenuhi keperluan asas mereka.',
+      tarikhMohon: '01/02/2025',
+      diciptaOleh: 'Ahmad bin Ali',
+      diciptaPada: '17/02/2025 3:17pm',
+      kategoriBantuan: 'Bantuan Pendidikan',
+      subKategori: 'Wang Saku',
+      bantuan: 'Bantuan Pendidikan',
+      kodBantuan: 'B314 - Bantuan Keperluan Pendidikan IPT (Fakir)',
+      produkBantuan: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS'
+    },
+    'BP-2025-00003': {
+      kodBP: 'BP-2025-00003',
+      tajuk: 'Wang Saku Miskin Feb 2025',
+      kategoriAsnaf: 'Miskin',
+      status: 'Dalam Proses',
+      jumlahAmaun: 'RM28,000.00',
+      catatan: 'Tuntutan wang saku pelajar untuk bulan Feb 2025. Program ini bertujuan membantu pelajar miskin dalam memenuhi keperluan asas mereka.',
+      tarikhMohon: '02/02/2025',
+      diciptaOleh: 'Ahmad bin Ali',
+      diciptaPada: '17/02/2025 3:17pm',
+      kategoriBantuan: 'Bantuan Pendidikan',
+      subKategori: 'Wang Saku',
+      bantuan: 'Bantuan Pendidikan',
+      kodBantuan: 'B314 - Bantuan Keperluan Pendidikan IPT (Fakir)',
+      produkBantuan: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS'
+    },
+    'BP-2025-00004': {
+      kodBP: 'BP-2025-00004',
+      tajuk: 'Bantuan bencana Feb 2025',
+      kategoriAsnaf: 'Fakir',
+      status: 'Dalam Proses',
+      jumlahAmaun: 'RM35,000.00',
+      catatan: 'Tuntutan bantuan bencana untuk bulan Feb 2025. Program ini bertujuan membantu mangsa bencana fakir dalam memenuhi keperluan asas mereka.',
+      tarikhMohon: '25/02/2025',
+      diciptaOleh: 'Ahmad bin Ali',
+      diciptaPada: '17/02/2025 3:17pm',
+      kategoriBantuan: 'Bantuan Bencana',
+      subKategori: 'Bantuan Banjir',
+      bantuan: 'Bantuan Bencana',
+      kodBantuan: 'B146 - (HQ) BANTUAN BENCANA (FAKIR)',
+      produkBantuan: '(HQ) BANTUAN BANJIR (FAKIR)',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS'
+    },
+    'BP-2025-01617': {
+      kodBP: 'BP-2025-01617',
+      tajuk: 'TUNTUTAN KFAM APRIL 2025 - PELAJAR',
+      kategoriAsnaf: 'Muallaf',
+      status: 'Lulus',
+      jumlahAmaun: 'RM44,390.00',
+      catatan: '',
+      tarikhMohon: '04/05/2025',
+      diciptaOleh: 'Ahmad bin Ali',
+      diciptaPada: '17/02/2025 3:17pm',
+      kategoriBantuan: 'Pendidikan (Muallaf)',
+      subKategori: 'Elaun/Imbuhan (Muallaf - Pendidikan)',
+      bantuan: '(HQ) ELAUN KEHADIRAN KELAS AGAM ASAS (MUALLAF)',
+      kodBantuan: 'B309',
+      produkBantuan: '(HQ) ELAUN KEHADIRAN KELAS AGAM ASAS (MUALLAF)',
+      penyiasat: 'Muhammad Yazid Bin Abdullah',
+      cawangan: 'Cawangan Ibu Pejabat LZS'
+    },
+    'BP-2025-01589': {
+      kodBP: 'BP-2025-01589',
+      tajuk: 'TUNTUTAN KFAM APRIL 2025 - GURU',
+      kategoriAsnaf: 'Muallaf',
+      status: 'Lulus',
+      jumlahAmaun: 'RM54,710.00',
+      catatan: '',
+      tarikhMohon: '30/04/2025',
+      diciptaOleh: 'Ahmad bin Ali',
+      diciptaPada: '17/02/2025 3:17pm',
+      kategoriBantuan: 'Sosial (Muallaf)',
+      subKategori: 'Elaun/Imbuhan (Muallaf - Sosial)',
+      bantuan: '(HQ) ELAUN GURU PEMBIMBING ASNAF (MUALLAF)',
+      kodBantuan: 'B117',
+      produkBantuan: '(HQ) ELAUN GURU PEMBIMBING ASNAF (MUALLAF)',
+      penyiasat: 'Muhammad Yazid Bin Abdullah',
+      cawangan: 'Cawangan Ibu Pejabat LZS'
+    },
+    'BP-2025-00007': {
+      kodBP: 'BP-2025-00007',
+      tajuk: 'Bantuan Rumah Jan 2025',
+      kategoriAsnaf: 'Fakir',
+      status: 'Ditolak',
+      jumlahAmaun: 'RM50,000.00',
+      catatan: 'Tuntutan bantuan rumah untuk bulan Jan 2025. Program ini bertujuan membantu keluarga fakir dalam memenuhi keperluan asas mereka.',
+      tarikhMohon: '05/01/2025',
+      diciptaOleh: 'Ahmad bin Ali',
+      diciptaPada: '17/02/2025 3:17pm',
+      kategoriBantuan: 'Bantuan Rumah',
+      subKategori: 'Bantuan Rumah',
+      bantuan: 'Bantuan Rumah',
+      kodBantuan: 'B100 - Bantuan Rumah',
+      produkBantuan: '(HQ) BANTUAN RUMAH',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS'
+    },
+    'BP-2025-00008': {
+      kodBP: 'BP-2025-00008',
+      tajuk: 'Bantuan Makanan Feb 2025',
+      kategoriAsnaf: 'Fakir',
+      status: 'Ditolak',
+      jumlahAmaun: 'RM15,000.00',
+      catatan: 'Tuntutan bantuan makanan untuk bulan Feb 2025. Program ini bertujuan membantu keluarga fakir dalam memenuhi keperluan asas mereka.',
+      tarikhMohon: '20/02/2025',
+      diciptaOleh: 'Ahmad bin Ali',
+      diciptaPada: '17/02/2025 3:17pm',
+      kategoriBantuan: 'Bantuan Makanan',
+      subKategori: 'Bantuan Makanan',
+      bantuan: 'Bantuan Makanan',
+      kodBantuan: 'B150 - Bantuan Makanan',
+      produkBantuan: '(HQ) BANTUAN MAKANAN',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS'
+    }
+  };
+  
+  return data[id] || data['BP-2025-00001']; // Default to first record if ID not found
+};
+
+// Form data state (populated with data based on ID)
+const bantuanDetail = ref(getBantuanData(route.params.id));
 
 // Removed bayaran columns as we're using card layout now
 
 // Mock bayaran kepada data
-const bayaranKepadaList = ref([
-  {
-    kod: "PT-2025-30371",
-    bayaranKepada: "Nur Hazimah Binti Mohd Hafiz",
-    asnaf: "Fakir",
-    contributor: "",
-    recipient: "",
-    organization: "",
-    amaun: "RM2,400.00",
-    tarikhBayaran: "17/04/2025",
-  },
-  {
-    kod: "PT-2025-30372",
-    bayaranKepada: "Nur safiyya Binti Rosly",
-    asnaf: "Fakir",
-    contributor: "",
-    recipient: "",
-    organization: "",
-    amaun: "RM2,400.00",
-    tarikhBayaran: "17/04/2025",
-  },
-  {
-    kod: "PT-2025-30373",
-    bayaranKepada: "Mohd Nazrin Bin Mokhtar",
-    asnaf: "Fakir",
-    contributor: "",
-    recipient: "",
-    organization: "",
-    amaun: "RM2,400.00",
-    tarikhBayaran: "17/04/2025",
-  },
-  {
-    kod: "PT-2025-30374",
-    bayaranKepada: "Intan Nadia Binti Mohd Zamri",
-    asnaf: "Fakir",
-    contributor: "",
-    recipient: "",
-    organization: "",
-    amaun: "RM2,400.00",
-    tarikhBayaran: "17/04/2025",
-  },
-]);
+const paymentDataByBp = {
+  "BP-2025-01617": [
+    {
+      kod: "PT-2025-36330",
+      idPermohonan: "",
+      bayaranKepada: "asnaf",
+      asnaf: "WOO MENG LEONG",
+      recipient: "",
+      organization: "",
+      amaun: 250.0,
+      tarikhBayaran: "2025-05-04",
+      bankName: "",
+      bankAccount: "",
+      checkbox: ""
+    },
+    {
+      kod: "PT-2025-36331",
+      idPermohonan: "",
+      bayaranKepada: "asnaf",
+      asnaf: "EUNIKE VALBORG BOLDVIK",
+      recipient: "",
+      organization: "",
+      amaun: 250.0,
+      tarikhBayaran: "2025-05-04",
+      bankName: "",
+      bankAccount: "",
+      checkbox: ""
+    },
+    {
+      kod: "PT-2025-36332",
+      idPermohonan: "",
+      bayaranKepada: "asnaf",
+      asnaf: "JULIE ANN BACLAS EBIO",
+      recipient: "",
+      organization: "",
+      amaun: 550.0,
+      tarikhBayaran: "2025-05-04",
+      bankName: "",
+      bankAccount: "",
+      checkbox: ""
+    },
+    {
+      kod: "PT-2025-36333",
+      idPermohonan: "",
+      bayaranKepada: "asnaf",
+      asnaf: "CHU KEAN HENG",
+      recipient: "",
+      organization: "",
+      amaun: 650.0,
+      tarikhBayaran: "2025-05-04",
+      bankName: "",
+      bankAccount: "",
+      checkbox: ""
+    }
+  ],
+  "BP-2025-01589": [
+    {
+      kod: "PT-2025-34488",
+      idPermohonan: "",
+      bayaranKepada: "recipient",
+      asnaf: "",
+      recipient: "AHMAD FIRDAUS BIN MUHAM...",
+      organization: "",
+      amaun: 1950.0,
+      tarikhBayaran: "2025-04-30",
+      bankName: "",
+      bankAccount: "",
+      checkbox: ""
+    },
+    {
+      kod: "PT-2025-34489",
+      idPermohonan: "",
+      bayaranKepada: "recipient",
+      asnaf: "",
+      recipient: "CHE NORHAYATI BINTI CHE MA...",
+      organization: "",
+      amaun: 1950.0,
+      tarikhBayaran: "2025-04-30",
+      bankName: "",
+      bankAccount: "",
+      checkbox: ""
+    },
+    {
+      kod: "PT-2025-34490",
+      idPermohonan: "",
+      bayaranKepada: "recipient",
+      asnaf: "",
+      recipient: "FIRDAUZ BIN NOH",
+      organization: "",
+      amaun: 1950.0,
+      tarikhBayaran: "2025-04-30",
+      bankName: "",
+      bankAccount: "",
+      checkbox: ""
+    },
+    {
+      kod: "PT-2025-34491",
+      idPermohonan: "",
+      bayaranKepada: "recipient",
+      asnaf: "",
+      recipient: "I.JANNAH BINTI ALI",
+      organization: "",
+      amaun: 1950.0,
+      tarikhBayaran: "2025-04-30",
+      bankName: "",
+      bankAccount: "",
+      checkbox: ""
+    }
+  ]
+};
+
+const paymentList = ref([...(paymentDataByBp[route.params.id] || [])]);
 
 // Removed penerima columns as we're using card layout now
 
-// Mock penerima data
-const penerimaList = ref([
-  {
-    namaPenuh: "Nur Hazimah Binti Mohd Hafiz",
-    amaun: "RM2,400.00",
-    agihanSemula: "",
-    bulkProcessing: "BP-2025-00004",
-    kategoriAsnaf: "Fakir",
-    bayaranKepada: "Asnaf"
-  },
-  {
-    namaPenuh: "Nur safiyya Binti Rosly",
-    amaun: "RM2,400.00",
-    agihanSemula: "",
-    bulkProcessing: "BP-2025-00004",
-    kategoriAsnaf: "Fakir",
-    bayaranKepada: "Asnaf"
-  },
-  {
-    namaPenuh: "Mohd Nazrin Bin Mokhtar",
-    amaun: "RM2,400.00",
-    agihanSemula: "",
-    bulkProcessing: "BP-2025-00004",
-    kategoriAsnaf: "Fakir",
-    bayaranKepada: "Asnaf"
-  },
-  {
-    namaPenuh: "Intan Nadia Binti Mohd Zamri",
-    amaun: "RM2,400.00",
-    agihanSemula: "",
-    bulkProcessing: "BP-2025-00004",
-    kategoriAsnaf: "Fakir",
-    bayaranKepada: "Asnaf"
-  },
-]);
+const paymentColumns = [
+  { key: "kod", label: "Kod" },
+  { key: "idPermohonan", label: "ID Permohonan" },
+  { key: "bayaranKepada", label: "Bayaran Kepada" },
+  { key: "asnaf", label: "Kategori Asnaf" },
+  { key: "contributor", label: "Contributor" },
+  { key: "recipient", label: "Recipient" },
+  { key: "organization", label: "Organization" },
+  { key: "amaun", label: "Amaun" },
+  { key: "tarikhBayaran", label: "Tarikh Bayaran" },
+  { key: "bankName", label: "Bank" },
+  { key: "bankAccount", label: "No. Akaun" },
+];
+
+const recipientColumns = [
+  { key: "namaPenuh", label: "Nama Penuh" },
+  { key: "amaun", label: "Amaun" },
+  { key: "agihanSemula", label: "Agihan Semula" },
+  { key: "bulkProcessing", label: "Bulk Processing" },
+  { key: "kategoriAsnaf", label: "Kategori Asnaf" },
+  { key: "bayaranKepada", label: "Bayaran Kepada" },
+  { key: "state", label: "Negeri" },
+  { key: "country", label: "Negara" },
+];
+
+// Recipient data by BP id (mock)
+const recipientsByBP = {
+  "BP-2025-01617": [
+    {
+      id: "RCP-BP-2025-01617-001",
+      namaPenuh: "AARON ALEXANDRE R.JOHN",
+      amaun: 360.0,
+      agihanSemula: "",
+      bulkProcessing: "BP-2025-01617",
+      kategoriAsnaf: "Muallaf",
+      bayaranKepada: "Asnaf",
+      state: "Selangor",
+      country: "Malaysia"
+    },
+    {
+      id: "RCP-BP-2025-01617-002",
+      namaPenuh: "AISYAH LINY BINTI TEGEK",
+      amaun: 650.0,
+      agihanSemula: "",
+      bulkProcessing: "BP-2025-01617",
+      kategoriAsnaf: "Muallaf",
+      bayaranKepada: "Asnaf",
+      state: "Selangor",
+      country: "Malaysia"
+    },
+    {
+      id: "RCP-BP-2025-01617-003",
+      namaPenuh: "AJANANI A/P ARUMUGAM",
+      amaun: 650.0,
+      agihanSemula: "",
+      bulkProcessing: "BP-2025-01617",
+      kategoriAsnaf: "Muallaf",
+      bayaranKepada: "Asnaf",
+      state: "Selangor",
+      country: "Malaysia"
+    },
+    {
+      id: "RCP-BP-2025-01617-004",
+      namaPenuh: "ALYSSA LEONG JIYAN",
+      amaun: 300.0,
+      agihanSemula: "",
+      bulkProcessing: "BP-2025-01617",
+      kategoriAsnaf: "Muallaf",
+      bayaranKepada: "Asnaf",
+      state: "Selangor",
+      country: "Malaysia"
+    }
+  ],
+  "BP-2025-01589": [
+    {
+      id: "RCP-BP-2025-01589-001",
+      namaPenuh: "ABDUL RAHIM BIN MOHD ALI",
+      amaun: 1950.0,
+      agihanSemula: "",
+      bulkProcessing: "BP-2025-01589",
+      kategoriAsnaf: "Muallaf",
+      bayaranKepada: "Recipient",
+      state: "Selangor",
+      country: "Malaysia"
+    },
+    {
+      id: "RCP-BP-2025-01589-002",
+      namaPenuh: "ABDUL RAHIM BIN MOHD ALI",
+      amaun: 1950.0,
+      agihanSemula: "",
+      bulkProcessing: "BP-2025-01589",
+      kategoriAsnaf: "Muallaf",
+      bayaranKepada: "Recipient",
+      state: "Selangor",
+      country: "Malaysia"
+    },
+    {
+      id: "RCP-BP-2025-01589-003",
+      namaPenuh: "AHMAD FIRDAUS BIN MUHAMMAD",
+      amaun: 1950.0,
+      agihanSemula: "",
+      bulkProcessing: "BP-2025-01589",
+      kategoriAsnaf: "Muallaf",
+      bayaranKepada: "Recipient",
+      state: "Selangor",
+      country: "Malaysia"
+    },
+    {
+      id: "RCP-BP-2025-01589-004",
+      namaPenuh: "CHE NORHAYATI BINTI CHE MAHMOOD",
+      amaun: 1950.0,
+      agihanSemula: "",
+      bulkProcessing: "BP-2025-01589",
+      kategoriAsnaf: "Muallaf",
+      bayaranKepada: "Recipient",
+      state: "Selangor",
+      country: "Malaysia"
+    }
+  ]
+};
+
+const recipientList = ref([...(recipientsByBP[route.params.id] || [])]);
 
 // Dokumen columns
 const dokumenColumns = [
@@ -657,6 +962,22 @@ const handleKembali = () => {
   navigateTo("/BF-BTN/bantuan-bulk/senarai-bantuan-bulk-sokongan");
 };
 
+const handleSimpan = async () => {
+  if (!sokonganForm.value.statusSemakan) {
+    alert("Sila pilih Status Semakan");
+    return;
+  }
+
+  try {
+    // Here you would make API call to save the sokongan
+    console.log("Saving sokongan:", sokonganForm.value);
+    alert("Maklumat sokongan berjaya disimpan!");
+  } catch (error) {
+    console.error("Error saving sokongan:", error);
+    alert("Ralat semasa menyimpan maklumat sokongan. Sila cuba lagi.");
+  }
+};
+
 const handleHantar = async () => {
   if (!sokonganForm.value.statusSemakan) {
     alert("Sila pilih Status Semakan");
@@ -700,10 +1021,37 @@ const handleLihatPenerima = (recipient) => {
 const getStatusVariant = (status) => {
   const variants = {
     "Dalam Proses": "warning",
+    "Lulus": "success",
     Selesai: "success",
     Ditolak: "danger",
   };
   return variants[status] || "default";
+};
+
+// Computed properties
+const totalAmount = computed(() => {
+  return recipientList.value.reduce(
+    (sum, recipient) => sum + (parseFloat(recipient.amaun) || 0),
+    0
+  );
+});
+
+const paymentTotal = computed(() => {
+  return paymentList.value.reduce(
+    (sum, payment) => sum + (parseFloat(payment.amaun) || 0),
+    0
+  );
+});
+
+// Currency display helper
+const formatCurrency = (n) => {
+  const num = parseFloat(n);
+  if (isNaN(num) || num === null || num === undefined) return 'RM0.00';
+  return new Intl.NumberFormat("ms-MY", {
+    style: 'currency',
+    currency: 'MYR',
+    minimumFractionDigits: 2,
+  }).format(num);
 };
 </script>
 

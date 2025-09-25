@@ -23,9 +23,9 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="space-y-6">
         <!-- Main Content -->
-        <div class="lg:col-span-2 space-y-6">
+        <div class="space-y-6">
           <!-- Maklumat Pemohon Card -->
           <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
@@ -55,122 +55,88 @@
                 @submit="handleSubmit"
                 v-model="formData"
               >
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div class="space-y-1">
-                    <label class="text-sm font-medium text-gray-700"
-                      >ID Permohonan</label
-                    >
-                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                      <span class="text-sm font-mono text-gray-900">{{
-                        formData.idPermohonan
-                      }}</span>
-                    </div>
-                  </div>
+                <!-- Section 1: Maklumat Pemohon -->
+                <rs-fieldset class="mb-6">
+                  <template #legend>
+                    <h3 class="text-lg font-medium">Information</h3>
+                  </template>
 
-                  <div class="space-y-1">
-                    <label class="text-sm font-medium text-gray-700"
-                      >Tarikh Permohonan</label
-                    >
-                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                      <span class="text-sm text-gray-900">{{
-                        formData.tarikhPermohonan
-                      }}</span>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Nama</label
+                      >
+                      <p class="text-gray-900">{{ formData.nama }}</p>
                     </div>
-                  </div>
-
-                  <div class="space-y-1">
-                    <label class="text-sm font-medium text-gray-700"
-                      >Nama Pemohon</label
-                    >
-                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                      <span class="text-sm text-gray-900">{{
-                        formData.namaPemohon
-                      }}</span>
-                    </div>
-                  </div>
-
-                  <div class="space-y-1">
-                    <label class="text-sm font-medium text-gray-700"
-                      >No. Kad Pengenalan / No Syarikat</label
-                    >
-                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                      <span class="text-sm font-mono text-gray-900">{{
-                        formData.noKadPengenalan
-                      }}</span>
-                    </div>
-                  </div>
-
-                  <div class="space-y-1 md:col-span-2">
-                    <label class="text-sm font-medium text-gray-700"
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1"
                       >Alamat</label
                     >
-                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                      <span class="text-sm text-gray-900">{{
-                        formData.alamatPremis
-                      }}</span>
+                      <p class="text-gray-900">{{ formData.alamat }}</p>
                     </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Kariah</label
+                      >
+                      <p class="text-gray-900">{{ formData.kariah }}</p>
                   </div>
-
-                  <div class="space-y-1">
-                    <label class="text-sm font-medium text-gray-700"
-                      >No. Telefon</label
-                    >
-                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                      <span class="text-sm text-gray-900">{{
-                        formData.nomorTelefon
-                      }}</span>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Daerah</label
+                      >
+                      <p class="text-gray-900">{{ formData.daerah }}</p>
                     </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Jenis Pengenalan</label
+                      >
+                      <p class="text-gray-900">{{ formData.jenisPengenalan }}</p>
                   </div>
-
-                  <div class="space-y-1">
-                    <label class="text-sm font-medium text-gray-700"
-                      >Emel</label
-                    >
-                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                      <span class="text-sm text-gray-900">{{
-                        formData.emel
-                      }}</span>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >No Pengenalan</label
+                      >
+                      <p class="text-gray-900">{{ formData.noPengenalan }}</p>
                     </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >No Telefon</label
+                      >
+                      <p class="text-gray-900">{{ formData.noTelefon }}</p>
                   </div>
-
-                  <div class="space-y-1">
-                    <label class="text-sm font-medium text-gray-700"
-                      >Status Household</label
-                    >
-                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                      <span class="text-sm text-gray-900">{{
-                        formData.statusHousehold
-                      }}</span>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >E-mel</label
+                      >
+                      <p class="text-gray-900">{{ formData.email }}</p>
                     </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Status Keluarga</label
+                      >
+                      <p class="text-gray-900">{{ formData.statusKeluarga }}</p>
                   </div>
-
-                  <div class="space-y-1">
-                    <label class="text-sm font-medium text-gray-700"
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1"
                       >Status Individu</label
                     >
-                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                      <span class="text-sm text-gray-900">{{
-                        formData.statusIndividu
-                      }}</span>
+                      <p class="text-gray-900">{{ formData.statusIndividu }}</p>
                     </div>
-                  </div>
-
-                  <div class="space-y-1 md:col-span-2">
-                    <label class="text-sm font-medium text-gray-700"
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1"
                       >Status Multidimensi</label
                     >
-                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                      <span class="text-sm text-gray-900">{{
-                        formData.statusMultidimensi
-                      }}</span>
+                      <p class="text-gray-900">{{ formData.statusMultidimensi }}</p>
                     </div>
                   </div>
-                </div>
+                </rs-fieldset>
               </FormKit>
             </template>
           </rs-card>
 
+          <div class="mt-8 grid grid-cols-1 xl:grid-cols-2 gap-6">
           <!-- Senarai Bantuan Card -->
+            <div class="col-span-1">
           <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
@@ -200,160 +166,44 @@
                 <table class="w-full divide-y divide-gray-200">
                   <thead class="bg-gray-50">
                     <tr>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        No
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        No Bantuan
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Aid
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Aid Product
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Product Package
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Entitlement Product
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Kadar (RM)
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Status
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Tarikh Permohonan
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        SLA
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Status Dokumen
-                      </th>
-                      <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Tindakan
-                      </th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No.</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Bantuan</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SLA</th>
+                          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
                     </tr>
                   </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
+                      <tbody v-if="formData.senaraiBantuan.length" class="bg-white divide-y divide-gray-200">
                     <tr
                       v-for="(bantuan, index) in formData.senaraiBantuan"
                       :key="bantuan.id"
                       class="hover:bg-gray-50 transition-colors duration-200"
-                      :class="getTableRowClass(bantuan.statusDokumen)"
-                    >
-                      <!-- No -->
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                      >
-                        {{ index + 1 }}
-                      </td>
-                      <!-- No Bantuan -->
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900"
-                      >
-                        {{ bantuan.noBantuan }}
-                      </td>
-                      <!-- Aid -->
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                      >
-                        {{ bantuan.aid }}
-                      </td>
-                      <!-- Aid Product -->
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                      >
-                        {{ bantuan.aidProduct }}
-                      </td>
-                      <!-- Product Package -->
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                      >
-                        {{ bantuan.productPackage }}
-                      </td>
-                      <!-- Entitlement Product -->
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                      >
-                        {{ bantuan.entitlementProduct }}
-                      </td>
-                      <!-- Kadar -->
+                            :class="getTableRowClass(bantuan.status)"
+                          >
+                            <td class="px-6 py-4 whitespace-nowrap">{{ index + 1 }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ bantuan.id }}</td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-semibold text-green-700">
-                          {{ bantuan.kadar.toLocaleString() }}
+                              <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full mr-3 flex-shrink-0" :class="getBantuanIndicatorClass(bantuan.status)"></div>
+                                <div class="text-sm font-medium text-gray-900">{{ bantuan.jenisBantuan }}</div>
                         </div>
                       </td>
-                      <!-- Status -->
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <rs-badge
-                          :variant="getStatusVariant(bantuan.status)"
-                          class="text-xs"
-                          >{{ bantuan.status }}</rs-badge
-                        >
+                              <rs-badge variant="primary" class="text-xs">{{ (bantuan.status || 'Lengkap').toUpperCase() }}</rs-badge>
                       </td>
-                      <!-- Tarikh Permohonan -->
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                      >
-                        {{ bantuan.tarikhPermohonan }}
-                      </td>
-                      <!-- SLA -->
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                      >
-                        {{ bantuan.sla }}
-                      </td>
-                      <!-- Status Dokumen -->
+                            <td class="px-6 py-4 whitespace-nowrap">{{ bantuan.sla || '-' }}</td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-semibold text-green-700">
-                          <rs-badge variant="primary" class="text-xs">{{
-                            bantuan.statusDokumen?.toUpperCase()
-                          }}</rs-badge>
-                        </div>
-                      </td>
-                      <!-- Tindakan -->
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <rs-button
-                          variant="primary-outline"
-                          size="sm"
-                          @click="editBantuan(bantuan.id)"
-                          class="!px-3 !py-2"
-                        >
-                          <Icon
-                            name="ph:magnifying-glass"
-                            class="w-4 h-4 mr-1"
-                          />
-                          Semak
+                              <rs-button variant="primary-outline" size="sm" class="!px-3 !py-2" @click="editBantuan(bantuan.id)">
+                                <Icon name="ph:magnifying-glass" class="w-4 h-4 mr-1" />
+                                Semakan
                         </rs-button>
                       </td>
+                          </tr>
+                        </tbody>
+                          <tbody v-else>
+                            <tr>
+                              <td colspan="6" class="px-6 py-6 text-center text-sm text-gray-500">Tiada rekod bantuan.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -362,10 +212,9 @@
           </rs-card>
         </div>
 
-        <!-- Sidebar -->
-        <div class="lg:col-span-1 space-y-6">
           <!-- Status Update Card -->
-          <rs-card class="shadow-sm border-0 bg-white sticky top-6">
+            <div class="col-span-1">
+              <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
                 <div class="flex-shrink-0">
@@ -380,7 +229,7 @@
                 </div>
                 <div>
                   <h2 class="text-lg font-semibold text-gray-900">
-                    Kemaskini Status
+                          Maklumat Semakan
                   </h2>
                   <p class="text-sm text-gray-500">
                     Status dan catatan permohonan
@@ -400,28 +249,29 @@
                     rows="4"
                     placeholder="Masukkan catatan umum (pilihan)"
                     :classes="{ outer: 'mb-0' }"
+                          v-model="formData.catatanUmumPegawai"
                   />
                 </div>
 
                 <!-- Action Buttons -->
                 <div class="space-y-3 pt-4 border-t">
                   <rs-button
-                    variant="primary"
+                    variant="success"
                     @click="handleSimpanLengkap"
                     class="w-full !py-3 text-sm font-medium"
                   >
-                    <Icon name="ph:check-circle" class="w-5 h-5 mr-2" />
-                    Hantar
+                    <Icon name="ph:floppy-disk" class="w-5 h-5 mr-2" />
+                    Simpan
                   </rs-button>
 
-                  <!-- <rs-button
-                    variant="danger"
+                  <rs-button
+                    variant="primary"
                     @click="handleTandakanTidakLengkap"
                     class="w-full !py-3 text-sm font-medium"
                   >
-                    <Icon name="ph:x-circle" class="w-5 h-5 mr-2" />
-                    Tandakan Tidak Lengkap
-                  </rs-button> -->
+                    <Icon name="ph:paper-plane" class="w-5 h-5 mr-2" />
+                    Hantar
+                  </rs-button>
 
                   <rs-button
                     variant="primary-outline"
@@ -429,21 +279,23 @@
                     class="w-full !py-3 text-sm font-medium"
                   >
                     <Icon name="ph:arrow-left" class="w-5 h-5 mr-2" />
-                    Kembali
+                    Batal / Kembali
                   </rs-button>
                 </div>
 
                 <!-- Information Note -->
                 <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                   <div class="flex">
-                    <Icon name="ph:info" class="w-5 h-5 text-blue-400 mt-0.5" />
+                          <Icon
+                            name="ph:info"
+                            class="w-5 h-5 text-blue-400 mt-0.5"
+                          />
                     <div class="ml-3">
                       <h3 class="text-sm font-medium text-blue-800">
                         Tindakan Permohonan
                       </h3>
                       <p class="mt-1 text-xs text-blue-700">
-                        Pilih tindakan yang sesuai berdasarkan semakan dokumen
-                        dan maklumat bantuan.
+                              Pilih tindakan yang sesuai berdasarkan semakan dokumen dan maklumat bantuan.
                       </p>
                     </div>
                   </div>
@@ -454,6 +306,8 @@
         </div>
       </div>
     </div>
+    </div>
+
 
     <!-- Success Modal -->
     <rs-modal
@@ -528,11 +382,12 @@
         </div>
       </template>
     </rs-modal>
+      </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
@@ -560,64 +415,161 @@ const breadcrumb = ref([
   },
 ]);
 
-// Mock data - would be replaced with API call
 const permohonanData = ref({
-  status: "Dalam Semakan",
+  status: 'Dalam Semakan',
 });
 
-// Form data
-const formData = ref({
-  // Section 1: Maklumat Pemohon
-  idPermohonan: "NAS-2025-0001",
-  namaPemohon: "Ahmad bin Abdullah", // Read-only (C/V)
-  noKadPengenalan: "800101-01-1234", // Read-only (C/V)
-  alamatPremis: "No. 123, Jalan ABC, Taman XYZ, 50000 Kuala Lumpur", // Read-only (C/V)
-  nomorTelefon: "012-3456789", // Read-only (C/V)
-  emel: "ahmad@email.com", // Read-only (C/V)
-  tarikhPermohonan: "15 Januari 2025",
-  statusPermohonan: "Dalam Semakan",
-  statusHousehold: "Fakir",
-  statusIndividu: "Fakir",
-  statusMultidimensi: "Asnaf tidak produktif",
+const bantuanList = computed(() => {
+  const v = formData.value;
+  return v && Array.isArray(v.senaraiBantuan) ? v.senaraiBantuan : [];
+});
 
-  // Section 2: Senarai Bantuan
+// Mock data - would be replaced with API call
+const bantuanColumns = [
+  { key: "id", label: "ID", sortable: false },
+  { key: "jenisBantuan", label: "Jenis Bantuan", sortable: false },
+  { key: "status", label: "Status", sortable: false },
+  { key: "sla", label: "SLA", sortable: false },
+  { key: "tindakan", label: "Action", sortable: false },
+];
+
+// Mock dataset keyed by noRujukan
+const mockByNoRujukan = {
+  'NAS-2025-0001': {
+    noRujukan: 'NAS-2025-0001',
+    nama: 'Ahmad bin Abdullah',
+    alamat: '10, Jalan SS 7/13, Kelana Jaya, 47301 Petaling Jaya, Selangor',
+    kariah: 'Masjid Al-Taqwa',
+    daerah: 'Kuala Selangor',
+    jenisPengenalan: 'MyKad',
+    noPengenalan: '800101-01-1234',
+    noTelefon: '0123456789',
+    email: 'ahmad@email.com',
+    statusKeluarga: 'Fakir',
+    statusIndividu: 'Fakir',
+    statusMultidimensi: 'Asnaf Tidak Produktif',
+    status: 'Dalam Siasatan',
   senaraiBantuan: [
-    {
-      id: "B125-001",
-      noBantuan: "B125-001",
-      aid: "B125 - BANTUAN BAIKPULIH RUMAH (MISKIN)",
-      aidProduct: "BAIKPULIH RUMAH (MISKIN)",
-      productPackage: "PAKEJ TERAS (MISKIN)",
-      entitlementProduct: "ENTITLEMENT BAIKPULIH (MISKIN)",
-      kadar: 800,
-      status: "Segera",
-      tarikhPermohonan: "15 Jan 2025",
-      sla: "3h",
-      statusDokumen: "Lengkap",
-    },
-    /* {
-      id: "B210", 
-      nama: "B210 - Bantuan Modal (Miskin)",
-      kadar: 5000,
-      statusDokumen: "Lengkap",
-    },
-    {
-      id: "B104",
-      nama: "B104 - Bantuan Tunggakan Pembiayaan Rumah (Miskin)", 
-      kadar: 1000,
-      statusDokumen: "Lengkap",
-    } */
-  ],
+      { id: 'B300', jenisBantuan: 'B300 - (HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)', status: 'Lengkap', sla: '2h', tindakan: '' },
+      { id: 'B307', jenisBantuan: 'B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS', status: 'Lengkap', sla: '3h', tindakan: '' },
+    ],
+    statusPermohonanBaru: '',
+    catatanUmumPegawai: 'Dipanjangkan kepada Jabatan Pendidikan untuk semakan lanjut',
+  },
+  'NAS-2025-0002': {
+    noRujukan: 'NAS-2025-0002',
+    nama: 'Mohd bin Ismail',
+    alamat: '12, Jalan SS 7/13, Kelana Jaya, 47301 Petaling Jaya, Selangor',
+    kariah: 'Masjid Al-Furqan',
+    daerah: 'Petaling',
+    jenisPengenalan: 'MyKad',
+    noPengenalan: '800101-01-5678',
+    noTelefon: '0190000000',
+    email: 'mohd@email.com',
+    statusKeluarga: 'Miskin',
+    statusIndividu: 'Miskin',
+    statusMultidimensi: 'Asnaf Produktif',
+    status: 'Dalam Semakan',
+    senaraiBantuan: [
+      { id: 'B307', jenisBantuan: 'B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS', status: 'Lengkap', sla: '2h', tindakan: '' },
+    ],
+    statusPermohonanBaru: '',
+    catatanUmumPegawai: 'Dipanjangkan kepada Jabatan Pendidikan untuk semakan lanjut',
+  },
+  'NAS-2025-0003': {
+    noRujukan: 'NAS-2025-0003',
+    nama: 'Mohd Amin bin Mohd Ali',
+    alamat: '12, Jalan SS 7/13, Petaling Jaya, 47301 Petaling Jaya, Selangor',
+    kariah: 'Masjid Al-Furqan',
+    daerah: 'Petaling',
+    jenisPengenalan: 'MyKad',
+    noPengenalan: '650101-01-1234',
+    noTelefon: '0190000123',
+    email: 'amin@email.com',
+    statusKeluarga: 'Miskin',
+    statusIndividu: 'Miskin',
+    statusMultidimensi: 'Asnaf Produktif',
+    status: 'Dalam Semakan',
+    senaraiBantuan: [
+      { id: 'B112', jenisBantuan: 'B112 - BANTUAN SEWAAN/ANSURAN RUMAH (FAKIR)', status: 'Lengkap', sla: '2h', tindakan: '' },
+    ],
+    statusPermohonanBaru: '',
+    catatanUmumPegawai: 'Dipanjangkan kepada EOAD untuk semakan lanjut',
+  },
+  'NAS-2025-0004': {
+    noRujukan: 'NAS-2025-0004',
+    nama: 'Amirul Hakim bin Zainuddin',
+    alamat: '12, Jalan SS 7/13, Petaling Jaya, 47301 Petaling Jaya, Selangor',
+    kariah: 'Masjid Al-Taqwa',
+    daerah: 'Kuala Selangor',
+    jenisPengenalan: 'MyKad',
+    noPengenalan: '791230104321',
+    noTelefon: '0190000123',
+    email: 'hakim@email.com',
+    statusKeluarga: 'Fakir',
+    statusIndividu: 'Fakir',
+    statusMultidimensi: 'Asnaf Tidak Produktif',
+    status: 'Dalam Semakan',
+    senaraiBantuan: [
+      { id: 'B103', jenisBantuan: 'B103 - (HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)', status: 'Lengkap', sla: '2h', tindakan: '' },
+    ],
+    statusPermohonanBaru: '',
+    catatanUmumPegawai: 'Dipanjangkan kepada Jabatan Perubatan untuk semakan lanjut',
+  },
+  'NAS-2025-0005': {
+    noRujukan: 'NAS-2025-0005',
+    nama: 'Maryam binti Abdullah',
+    alamat: '45, Jalan Perdana 2/3, Seksyen 2, 40000 Shah Alam, Selangor',
+    kariah: 'Masjid An-Nur',
+    daerah: 'Shah Alam',
+    jenisPengenalan: 'MyKad',
+    noPengenalan: '920815082567',
+    noTelefon: '0176543210',
+    email: 'maryam@email.com',
+    statusKeluarga: 'Mualaf',
+    statusIndividu: 'Mualaf',
+    statusMultidimensi: 'Asnaf Mualaf',
+    status: 'Dalam Semakan',
+          senaraiBantuan: [
+            { id: 'B135', jenisBantuan: 'B135 - (HQ) SAGUHATI GALAKAN SAUDARA BARU (MUALAF)', status: 'Dalam Semakan', sla: '3h', tindakan: '' },
+          ],
+    statusPermohonanBaru: '',
+    catatanUmumPegawai: 'Pemohon baru memeluk Islam 6 bulan yang lalu. Memerlukan bantuan sara hidup dan pendidikan agama.',
+  },
+};
 
-  // Section 3: Status update
-  statusPermohonanBaru: "",
-  catatanUmumPegawai: "",
+// Flat reactive form state to be populated from mock
+const formData = ref({
+  noRujukan: '',
+  nama: '',
+  alamat: '',
+  kariah: '',
+  daerah: '',
+  jenisPengenalan: '',
+  noPengenalan: '',
+  noTelefon: '',
+  email: '',
+  statusKeluarga: '',
+  statusIndividu: '',
+  statusMultidimensi: '',
+  status: '',
+  senaraiBantuan: [],
+  statusPermohonanBaru: '',
+  catatanUmumPegawai: '',
 });
+
 
 onMounted(() => {
-  formData.value.senaraiBantuan.forEach((item) => {
-    item.statusDokumen = "Lengkap";
-  });
+  const id = String(route.params.id || '');
+  const record = mockByNoRujukan[id];
+  if (!record) return;
+
+  // copy all fields
+  Object.assign(formData.value, record);
+
+  // ensure the textarea has a value (fallback to empty string)
+  formData.value.catatanUmumPegawai =
+    typeof record.catatanUmumPegawai === 'string' ? record.catatanUmumPegawai : '';
 });
 
 // Configuration data
@@ -634,7 +586,7 @@ const showSuccessModal = ref(false);
 const reviewedBantuan = computed(() => {
   return (
     formData.value.senaraiBantuan?.filter(
-      (bantuan) => bantuan.statusDokumen && bantuan.statusDokumen !== ""
+      (bantuan) => bantuan.status && bantuan.status !== ""
     ).length || 0
   );
 });
@@ -662,15 +614,77 @@ const formatDateTime = (date) => {
   });
 };
 
+// const reviewedBantuan = computed(() => {
+//   return (
+//     formData.value.senaraiBantuan?.filter((bantuan) => bantuan.status && bantuan.status !== "")
+//       .length || 0
+//   );
+// });
+
 const editBantuan = (bantuanId) => {
   // Navigate to bantuan details page
   router.push(`/BF-BTN/tugasan/bantuan/semakan/${route.params.id}/${bantuanId}`);
+};
+
+const getBantuanStatusIcon = (status) => {
+  switch (status) {
+    case "Lengkap":
+      return "ph:check";
+    case "Tak Lengkap":
+      return "ph:x";
+    default:
+      return "ph:circle";
+  }
+};
+
+const getBantuanIndicatorClass = (status) => {
+  switch (status) {
+    case "Lengkap":
+      return "bg-green-500";
+    case "Tak Lengkap":
+      return "bg-red-500";
+    default:
+      return "bg-gray-500";
+  }
+};
+
+const getBantuanBorderClass = (status) => {
+  if (!status || status === "") return "border-gray-200";
+
+  switch (status) {
+    case "Lengkap":
+      return "border-green-200 bg-green-50 ring-2 ring-green-500 ring-opacity-20";
+    case "Tak Lengkap":
+      return "border-red-200 bg-red-50";
+    default:
+      return "border-gray-200";
+  }
+};
+
+const getBantuanStatusVariant = (status) => {
+  switch (status) {
+    case "Lengkap":
+      return "success";
+    case "Tak Lengkap":
+      return "danger";
+    default:
+      return "default";
+  }
 };
 
 const handleSimpanLengkap = () => {
   // Set status to "Untuk Siasatan" and save
   formData.value.statusPermohonanBaru = "Untuk Siasatan";
   console.log("Submitting form with status: Untuk Siasatan");
+
+  // Show success modal
+  showSuccessModal.value = true;
+};
+
+const handleTandakanTidakLengkap = () => {
+  // Set status to "Tidak Lengkap - Untuk Tindakan Pemohon / Pegawai" and save
+  formData.value.statusPermohonanBaru = "Tidak Lengkap - Untuk Tindakan Pemohon / Pegawai";
+  console.log("Submitting form with status: Tidak Lengkap - Untuk Tindakan Pemohon / Pegawai");
 
   // Show success modal
   showSuccessModal.value = true;

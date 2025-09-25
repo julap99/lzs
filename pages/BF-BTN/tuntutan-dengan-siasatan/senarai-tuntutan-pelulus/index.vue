@@ -5,96 +5,63 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Senarai Semua Tuntutan (Pelulus)</h2>
+          <h2 class="text-xl font-semibold">Senarai Tuntutan (Pelulus)</h2>
         </div>
       </template>
 
       <template #body>
-        <!-- Search and Filter Section -->
-        <div class="mb-6">
-          <div class="flex flex-col md:flex-row gap-4">
-            <div class="flex-1">
-              <FormKit
-                v-model="searchQuery"
-                type="text"
-                placeholder="Cari No Tuntutan, Nama Pemohon, atau No GL..."
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-            </div>
-            <div class="flex gap-2">
-              <FormKit
-                v-model="filters.status"
-                type="select"
-                :options="statusOptions"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-            </div>
-          </div>
-        </div>
-
         <!-- Main Table -->
         <rs-table
-          :data="tableDataWithNo"
+          :data="tableData"
           :columns="columns"
-          :showNoColumn="false"
-          :options="{
-            variant: 'default',
-            hover: true,
-            striped: true,
-          }"
-          :options-advanced="{
-            sortable: true,
-            filterable: true,
-          }"
+          :showNoColumn="true"
+          :showSearch="true"
+          :options="{ variant: 'default', hover: true, striped: true }"
+          :options-advanced="{ sortable: true, filterable: true }"
+          :show-filter="true"
           advanced
         >
-          <template v-slot:no="{ value, index }">
-            <div class="flex items-center gap-2">
-              <input
-                type="checkbox"
-                class="form-checkbox h-4 w-4 text-primary-600"
-                :value="value.noTuntutan"
-                :checked="selectedRows.includes(value.noTuntutan)"
-                @change="onCheckboxChange($event, value)"
-              />
-              <span>{{ value.no }}</span>
-            </div>
-          </template>
-
-          <template v-slot:amaunTuntutan="{ text }">
-            <div class="font-medium text-right">
-              RM {{ formatNumber(text) }}
-            </div>
-          </template>
-
-          <template v-slot:tarikhTuntutan="{ text }">
-            <div>
-              <div class="font-medium">{{ formatDate(text) }}</div>
-              <div class="text-sm text-gray-500">{{ formatTime(text) }}</div>
-            </div>
-          </template>
-
-          <template v-slot:statusPermohonan="{ text }">
-            <rs-badge :variant="getStatusVariant(text)">
+          <!-- ID Permohonan: linkable -->
+          <template #idPermohonan="{ text }">
+            <a
+              href="#"
+              class="text-primary-600 hover:text-primary-800"
+              @click.prevent="goSemak(String(text))"
+            >
               {{ text }}
-            </rs-badge>
+            </a>
           </template>
 
-          <template v-slot:tindakan="{ text }">
+          <!-- Amaun Tuntutan -->
+          <template #amaunTuntutan="{ text }">
+            <div class="font-medium text-right">RM {{ formatNumber(Number(text)) }}</div>
+          </template>
+
+          <!-- Tarikh Permohonan -->
+          <template #tarikhPermohonan="{ text }">
+            <div>
+              <div class="font-medium">{{ formatDate(String(text)) }}</div>
+              <div class="text-sm text-gray-500">{{ formatTime(String(text)) }}</div>
+            </div>
+          </template>
+
+          <!-- Status Kelulusan -->
+          <template #statusKelulusan="{ text }">
+            <rs-badge :variant="statusVariant(String(text))">{{ text || 'Belum Diputus' }}</rs-badge>
+          </template>
+
+          <!-- Tindakan -->
+          <template #tindakan="{ value }">
             <div class="flex space-x-2">
               <rs-button
-                v-if="text.status === 'Untuk Kelulusan'"
-                variant="primary"
+                variant="ghost"
                 size="sm"
-                class="!px-2 !py-1"
-                @click="handleSemakKelulusan(text.noTuntutan)"
+                class="!px-2 !py-1 text-blue-600 hover:text-blue-800"
+                @click="goSemak(getAction(value).id)"
+                title="Semak & Luluskan"
+                aria-label="Semak & Luluskan"
               >
-                <Icon name="ph:check" class="w-4 h-4 mr-1" />
-                Semak & Buat Kelulusan
+                <Icon name="material-symbols:fact-check-outline" class="w-5 h-5" />
               </rs-button>
             </div>
           </template>
@@ -108,17 +75,12 @@
               v-model="pageSize"
               type="select"
               :options="[10, 25, 50]"
-              :classes="{
-                wrapper: 'w-20',
-                outer: 'mb-0',
-                input: '!rounded-lg',
-              }"
+              :classes="{ wrapper: 'w-20', outer: 'mb-0', input: '!rounded-lg' }"
             />
           </div>
           <div class="flex items-center gap-2">
             <span class="text-sm text-gray-700">
-              Menunjukkan {{ paginationStart }} hingga
-              {{ paginationEnd }} daripada {{ totalTuntutan }} entri
+              Menunjukkan {{ paginationStart }} hingga {{ paginationEnd }} daripada {{ totalRows }} entri
             </span>
             <div class="flex gap-1">
               <rs-button
@@ -140,264 +102,350 @@
             </div>
           </div>
         </div>
-
-        <!-- Bulk Approval Button at Bottom -->
-        <div v-if="selectedRows.length > 0" class="mt-4 flex justify-end">
-          <rs-button
-            variant="success"
-            @click="handleBulkApproval"
-            :disabled="processing"
-          >
-            <Icon name="material-symbols:approval" class="w-4 h-4 mr-1" />
-            Kelulusan (Bulk) ({{ selectedRows.length }})
-          </rs-button>
-        </div>
       </template>
     </rs-card>
   </div>
 </template>
 
-<script setup>
-import { ref, computed } from 'vue';
+<script setup lang="ts">
+import { ref, computed } from 'vue'
 
-definePageMeta({
-  title: 'Senarai Semua Tuntutan (Pelulus)',
-});
+definePageMeta({ title: 'Senarai Tuntutan Pelulus' })
 
-const breadcrumb = ref([
+/** ========= Types ========= */
+type TableColumn = { key: string; label: string; sortable?: boolean }
+type Dok = { name: string; url: string }
+type Pemohon = { nama: string; noId: string; telefon: string; email: string; alamat: string }
+type SiasatanInfo = {
+  kaedah: 'Semak Dokumen Sahaja' | 'Telefon' | 'Lapangan'
+  status: 'Sokong' | 'Tidak Sokong'
+  catatan?: string
+  tarikh?: string
+}
+type TuntutanItem = {
+  id: string
+  idPermohonan: string
+  noGL: string
+  noInvois?: string
+  amaunTuntutan: number
+  amaunGL: number
+  tarikhPermohonan: string
+  pegawaiETD: string
+  statusGL: 'Lulus' | 'Tidak Lulus'
+  tarikhPerkhidmatan: string
+  dokumenSokongan: Dok[]
+  dokumenPerkhidmatan: Dok[]
+  lampiranLain: Dok[]
+  bantuanData: {
+    kodBantuan: string
+    jenisBantuan: string
+    bahanBantuan: string
+    pakejBantuan: string
+    kelayakanBantuan: string
+  }
+  pemohon: Pemohon
+  catatan?: string
+  catatanTambahan?: string
+  siasatan?: SiasatanInfo
+  statusKelulusan?: 'Lulus' | 'Tidak Lulus' | 'Belum Diputus'
+}
+
+/** ========= Inline seed data (kept in sync with semak-kelulusan.vue) ========= */
+const createPemohonMock = (overrides: Partial<Pemohon> = {}): Pemohon => ({
+  nama: '-', noId: '-', telefon: '-', email: '-', alamat: '-', ...overrides,
+})
+
+const items = ref<TuntutanItem[]>([
   {
-    name: 'Tuntutan dengan Siasatan',
-    type: 'link',
-    path: '/BF-BTN/tuntutan-dengan-siasatan',
-  },
-  {
-    name: 'Senarai Tuntutan Pelulus',
-    type: 'current',
-    path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus',
-  },
-]);
-
-// Table columns configuration
-const columns = [
-  { key: 'noTuntutan', label: 'No. Tuntutan', sortable: true },
-  { key: 'noGL', label: 'No. GL', sortable: true },
-  { key: 'namaPemohon', label: 'Nama Pemohon / Institusi', sortable: true },
-  { key: 'tarikhTuntutan', label: 'Tarikh Tuntutan', sortable: true },
-  { key: 'amaunTuntutan', label: 'Amaun Tuntutan (RM)', sortable: true },
-  { key: 'statusPermohonan', label: 'Status Permohonan', sortable: true },
-  { key: 'pegawaiETD', label: 'Pegawai ETD/EOAD', sortable: true },
-  { key: 'tindakan', label: 'Tindakan', sortable: false },
-];
-
-// Options for filters
-const statusOptions = [
-  { label: 'Semua Status', value: '' },
-  { label: 'Untuk Kelulusan', value: 'Untuk Kelulusan' },
-  { label: 'Lulus', value: 'Lulus' },
-  { label: 'Tidak Lulus', value: 'Tidak Lulus' },
-];
-
-// State
-const searchQuery = ref('');
-const filters = ref({
-  status: '',
-});
-const pageSize = ref(10);
-const currentPage = ref(1);
-
-// Sample data - Replace with actual API call
-const tuntutanList = ref([
-  {
-    noTuntutan: 'TDS-2024-001',
+    id: 'TDS-2024-001',
+    idPermohonan: 'TDS-2024-001',
     noGL: 'GL-2024-001',
-    namaPemohon: 'Ahmad bin Abdullah',
-    tarikhTuntutan: '2024-03-20T09:30:00',
-    amaunTuntutan: 5000.00,
-    statusPermohonan: 'Untuk Kelulusan',
+    noInvois: 'INV-2024-001',
+    amaunTuntutan: 5000,
+    amaunGL: 6000,
+    tarikhPermohonan: '2024-03-20T09:30:00',
     pegawaiETD: 'Sarah binti Omar',
-    tindakan: {
-      noTuntutan: 'TDS-2024-001',
-      status: 'Untuk Kelulusan'
-    }
+    statusGL: 'Lulus',
+    tarikhPerkhidmatan: '2024-03-15T00:00:00',
+    dokumenSokongan: [
+      { name: 'GL_Report_2024.pdf', url: '#' },
+      { name: 'Invoice_INV-2024-001.pdf', url: '#' },
+    ],
+    dokumenPerkhidmatan: [{ name: 'Surat Pengesahan Perkhidmatan.pdf', url: '#' }],
+    lampiranLain: [{ name: 'Gambar Lokasi.jpg', url: '#' }],
+    bantuanData: {
+      kodBantuan: 'B400',
+      jenisBantuan: '(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA',
+      bahanBantuan: '(HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA',
+      pakejBantuan: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA',
+      kelayakanBantuan: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA',
+    },
+    pemohon: createPemohonMock({
+      nama: 'Masjid As-Salam',
+      noId: 'VND-10001',
+      telefon: '03-1234 5678',
+      email: 'admin@assalam.my',
+      alamat: 'Lot 12, Jalan Masjid, 43000 Kajang, Selangor',
+    }),
+    siasatan: {
+      kaedah: 'Semak Dokumen Sahaja',
+      status: 'Sokong',
+      catatan: 'Dokumen lengkap dan sah.',
+      tarikh: '2024-03-18T10:00:00',
+    },
+    catatanTambahan: 'Pembelian karpet dewan solat utama.',
+    statusKelulusan: 'Belum Diputus',
   },
   {
-    noTuntutan: 'TDS-2024-002',
+    id: 'TDS-2024-002',
+    idPermohonan: 'TDS-2024-002',
     noGL: 'GL-2024-002',
-    namaPemohon: 'Masjid Al-Hidayah',
-    tarikhTuntutan: '2024-03-19T14:15:00',
-    amaunTuntutan: 8000.00,
-    statusPermohonan: 'Untuk Kelulusan',
-    pegawaiETD: 'Sarah binti Omar',
-    tindakan: {
-      noTuntutan: 'TDS-2024-002',
-      status: 'Untuk Kelulusan'
-    }
+    noInvois: 'INV-2024-145',
+    amaunTuntutan: 3000,
+    amaunGL: 2500,
+    tarikhPermohonan: '2024-04-02T11:00:00',
+    pegawaiETD: 'Ahmad Faiz',
+    statusGL: 'Tidak Lulus',
+    tarikhPerkhidmatan: '2024-03-29T00:00:00',
+    dokumenSokongan: [{ name: 'Resit Pembelian.pdf', url: '#' }],
+    dokumenPerkhidmatan: [],
+    lampiranLain: [],
+    bantuanData: {
+      kodBantuan: 'B210',
+      jenisBantuan: '(HQ) BANTUAN TUNAI KECEMASAN',
+      bahanBantuan: '(HQ) BANTUAN WANG TUNAI',
+      pakejBantuan: 'Pakej Tunai',
+      kelayakanBantuan: 'Kecemasan - Maks RM2500',
+    },
+    pemohon: createPemohonMock({
+      nama: 'Syarikat Berkat Niaga',
+      noId: 'VND-20002',
+      telefon: '012-345 6789',
+      email: 'akaun@berkatniaga.com',
+      alamat: 'No. 8, Jalan Perniagaan 3, 81200 Johor Bahru, Johor',
+    }),
+    siasatan: {
+      kaedah: 'Telefon',
+      status: 'Tidak Sokong',
+      catatan: 'Amaun tuntutan melebihi amaun GL.',
+      tarikh: '2024-04-01T16:30:00',
+    },
+    catatan: 'Amaun tuntutan melebihi amaun GL.',
+    catatanTambahan: 'Kecemasan tidak dibuktikan mencukupi.',
+    statusKelulusan: 'Tidak Lulus',
   },
   {
-    noTuntutan: 'TDS-2024-003',
+    id: 'TDS-2024-003',
+    idPermohonan: 'TDS-2024-003',
     noGL: 'GL-2024-003',
-    namaPemohon: 'Sekolah Agama Rakyat Al-Amin',
-    tarikhTuntutan: '2024-03-18T11:45:00',
-    amaunTuntutan: 12000.00,
-    statusPermohonan: 'Untuk Kelulusan',
-    pegawaiETD: 'Sarah binti Omar',
-    tindakan: {
-      noTuntutan: 'TDS-2024-003',
-      status: 'Untuk Kelulusan'
-    }
+    noInvois: 'INV-2024-223',
+    amaunTuntutan: 2000,
+    amaunGL: 2000,
+    tarikhPermohonan: '2024-04-10T14:30:00',
+    pegawaiETD: 'Noraini Zulkifli',
+    statusGL: 'Lulus',
+    tarikhPerkhidmatan: '2024-04-05T00:00:00',
+    dokumenSokongan: [{ name: 'Invoice Barang.pdf', url: '#' }],
+    dokumenPerkhidmatan: [{ name: 'Surat Syor.pdf', url: '#' }],
+    lampiranLain: [],
+    bantuanData: {
+      kodBantuan: 'B330',
+      jenisBantuan: '(HQ) BANTUAN BARANGAN KEGUNAAN HARIAN',
+      bahanBantuan: 'BARANGAN DAPUR',
+      pakejBantuan: 'Pakej Barangan RM2000',
+      kelayakanBantuan: 'Isi Rumah',
+    },
+    pemohon: createPemohonMock({
+      nama: 'Ali bin Ahmad',
+      noId: '910101-14-5677',
+      telefon: '013-888 1122',
+      email: 'ali.ahmad@example.com',
+      alamat: 'No. 21, Jalan Mawar 2, Taman Mawar, 40400 Shah Alam, Selangor',
+    }),
+    siasatan: {
+      kaedah: 'Lapangan',
+      status: 'Sokong',
+      catatan: 'Lawatan lapangan: keadaan memerlukan.',
+      tarikh: '2024-04-07T09:15:00',
+    },
+    catatan: 'Diluluskan penuh.',
+    catatanTambahan: 'Barang dapur asas selama sebulan.',
+    statusKelulusan: 'Lulus',
   },
   {
-    noTuntutan: 'TDS-2024-004',
+    id: 'TDS-2024-004',
+    idPermohonan: 'TDS-2024-004',
     noGL: 'GL-2024-004',
-    namaPemohon: 'Surau Kampung Baru',
-    tarikhTuntutan: '2024-03-17T16:20:00',
-    amaunTuntutan: 3500.00,
-    statusPermohonan: 'Untuk Kelulusan',
-    pegawaiETD: 'Sarah binti Omar',
-    tindakan: {
-      noTuntutan: 'TDS-2024-004',
-      status: 'Untuk Kelulusan'
-    }
+    noInvois: 'INV-2024-417',
+    amaunTuntutan: 8000,
+    amaunGL: 10000,
+    tarikhPermohonan: '2024-05-05T10:15:00',
+    pegawaiETD: 'Mohd Yazid',
+    statusGL: 'Lulus',
+    tarikhPerkhidmatan: '2024-05-01T00:00:00',
+    dokumenSokongan: [{ name: 'Quotation Peralatan.pdf', url: '#' }],
+    dokumenPerkhidmatan: [{ name: 'Surat Pengesahan.pdf', url: '#' }],
+    lampiranLain: [{ name: 'Gambar Lokasi.jpg', url: '#' }],
+    bantuanData: {
+      kodBantuan: 'B500',
+      jenisBantuan: '(HQ) BANTUAN PEMBINAAN RUMAH',
+      bahanBantuan: 'BAHAN BINAAN',
+      pakejBantuan: 'Pakej Rumah Asnaf',
+      kelayakanBantuan: 'Keluarga Asnaf Fakir Miskin',
+    },
+    pemohon: createPemohonMock({
+      nama: 'Keluarga Pn. Zainab',
+      noId: '800202-10-2233',
+      telefon: '017-222 3344',
+      email: 'zainab.keluarga@example.com',
+      alamat: 'Kg. Seri Makmur, 27000 Jerantut, Pahang',
+    }),
+    siasatan: {
+      kaedah: 'Lapangan',
+      status: 'Sokong',
+      catatan: 'Penilaian struktur asas memadai untuk bina baharu.',
+      tarikh: '2024-05-03T15:45:00',
+    },
+    catatanTambahan: 'Permohonan bina semula ruang dapur.',
+    statusKelulusan: 'Belum Diputus',
   },
   {
-    noTuntutan: 'TDS-2024-005',
+    id: 'TDS-2024-005',
+    idPermohonan: 'TDS-2024-005',
     noGL: 'GL-2024-005',
-    namaPemohon: 'Pusat Tahfiz Al-Quran',
-    tarikhTuntutan: '2024-03-16T10:30:00',
-    amaunTuntutan: 15000.00,
-    statusPermohonan: 'Untuk Kelulusan',
-    pegawaiETD: 'Sarah binti Omar',
-    tindakan: {
-      noTuntutan: 'TDS-2024-005',
-      status: 'Untuk Kelulusan'
-    }
+    noInvois: 'INV-2024-590',
+    amaunTuntutan: 1200,
+    amaunGL: 1500,
+    tarikhPermohonan: '2024-05-15T09:00:00',
+    pegawaiETD: 'Siti Aminah',
+    statusGL: 'Lulus',
+    tarikhPerkhidmatan: '2024-05-12T00:00:00',
+    dokumenSokongan: [],
+    dokumenPerkhidmatan: [],
+    lampiranLain: [],
+    bantuanData: {
+      kodBantuan: 'B110',
+      jenisBantuan: '(HQ) BANTUAN PERUBATAN',
+      bahanBantuan: 'RAWATAN KLINIK',
+      pakejBantuan: 'Rawatan Kesihatan',
+      kelayakanBantuan: 'Asnaf - Pesakit Kronik',
+    },
+    pemohon: createPemohonMock({
+      nama: 'Klinik Kasih',
+      noId: 'VND-30005',
+      telefon: '03-7788 9090',
+      email: 'akaun@klinikkasih.my',
+      alamat: '19, Jalan Sehat, 46050 Petaling Jaya, Selangor',
+    }),
+    siasatan: {
+      kaedah: 'Semak Dokumen Sahaja',
+      status: 'Sokong',
+      catatan: 'Bill rawatan disahkan.',
+      tarikh: '2024-05-13T11:20:00',
+    },
+    catatanTambahan: 'Pesakit perlu rawatan susulan.',
+    statusKelulusan: 'Belum Diputus',
   },
-]);
+])
 
-// Computed properties
-const filteredTuntutan = computed(() => {
-  let result = tuntutanList.value;
+/** ========= Page ========= */
+const breadcrumb = ref([
+  { name: 'Tuntutan dengan Siasatan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan' },
+  { name: 'Senarai Tuntutan Pelulus', type: 'current', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus' },
+])
 
-  // Filter by search query
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
-    result = result.filter(item => 
-      item.noTuntutan.toLowerCase().includes(query) ||
-      item.namaPemohon.toLowerCase().includes(query) ||
-      item.noGL.toLowerCase().includes(query)
-    );
-  }
+/** Columns */
+const columns: TableColumn[] = [
+  { key: 'idPermohonan', label: 'ID Permohonan', sortable: true },
+  { key: 'noGL', label: 'No. GL', sortable: true },
+  { key: 'maklumatBantuan', label: 'Maklumat Bantuan', sortable: true },
+  { key: 'pegawaiETD', label: 'Pegawai ETD/EOAD', sortable: true },
+  { key: 'tarikhPermohonan', label: 'Tarikh Permohonan', sortable: true },
+  { key: 'amaunTuntutan', label: 'Amaun Tuntutan (RM)', sortable: true },
+  { key: 'statusKelulusan', label: 'Status', sortable: true },
+  { key: 'tindakan', label: 'Tindakan', sortable: false },
+]
 
-  // Filter by status
-  if (filters.value.status) {
-    result = result.filter(item => item.statusPermohonan === filters.value.status);
-  }
+/** Search + Pagination */
+const searchQuery = ref<string>('')
+const pageSize = ref<number>(10)
+const currentPage = ref<number>(1)
 
-  return result;
-});
+type Row = {
+  id: string
+  idPermohonan: string
+  noGL: string
+  maklumatBantuan: string
+  pegawaiETD: string
+  tarikhPermohonan: string
+  amaunTuntutan: number
+  statusKelulusan: string
+  tindakan: { id: string }
+}
 
-const totalTuntutan = computed(() => filteredTuntutan.value.length);
+/** Map to table rows */
+const baseRows = computed<Row[]>(() =>
+  items.value.map((x: TuntutanItem): Row => ({
+    id: x.id,
+    idPermohonan: x.idPermohonan,
+    noGL: x.noGL,
+    maklumatBantuan: x.bantuanData?.jenisBantuan || '-',
+    pegawaiETD: x.pegawaiETD,
+    tarikhPermohonan: x.tarikhPermohonan,
+    amaunTuntutan: x.amaunTuntutan,
+    statusKelulusan: x.statusKelulusan ?? 'Belum Diputus',
+    tindakan: { id: x.id },
+  }))
+)
 
-const totalPages = computed(() => Math.ceil(totalTuntutan.value / pageSize.value));
+/** Filter */
+const filteredRows = computed<Row[]>(() => {
+  if (!searchQuery.value) return baseRows.value
+  const q = searchQuery.value.toLowerCase()
+  return baseRows.value.filter((r: Row) =>
+    r.idPermohonan.toLowerCase().includes(q) ||
+    r.noGL.toLowerCase().includes(q) ||
+    r.pegawaiETD.toLowerCase().includes(q)
+  )
+})
 
-const paginationStart = computed(() => {
-  return (currentPage.value - 1) * pageSize.value + 1;
-});
+/** Pagination */
+const totalRows = computed<number>(() => filteredRows.value.length)
+const totalPages = computed<number>(() => Math.max(1, Math.ceil(totalRows.value / pageSize.value)))
+const paginationStart = computed<number>(() => (currentPage.value - 1) * pageSize.value + 1)
+const paginationEnd = computed<number>(() => Math.min(currentPage.value * pageSize.value, totalRows.value))
 
-const paginationEnd = computed(() => {
-  return Math.min(currentPage.value * pageSize.value, totalTuntutan.value);
-});
+const tableData = computed<Row[]>(() =>
+  filteredRows.value.slice((currentPage.value - 1) * pageSize.value, currentPage.value * pageSize.value)
+)
 
-const tableDataWithNo = computed(() =>
-  filteredTuntutan.value.map((row, idx) => {
-    return Object.assign({ no: idx + 1 }, row);
-  })
-);
+/** Helpers */
+const formatDate = (s: string) => new Date(s).toLocaleDateString('ms-MY')
+const formatTime = (s: string) => new Date(s).toLocaleTimeString('ms-MY')
+const formatNumber = (n: number) =>
+  new Intl.NumberFormat('ms-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    .format(Number.isFinite(n) ? n : 0)
 
-const selectedRows = ref([]);
-const processing = ref(false);
+const statusVariant = (status?: string) => {
+  if (status === 'Lulus') return 'success'
+  if (status === 'Tidak Lulus') return 'danger'
+  return 'warning'
+}
 
-const onCheckboxChange = (event, row) => {
-  const isChecked = event.target.checked;
-  if (isChecked) {
-    if (!selectedRows.value.includes(row.noTuntutan)) {
-      selectedRows.value.push(row.noTuntutan);
-    }
-  } else {
-    selectedRows.value = selectedRows.value.filter(id => id !== row.noTuntutan);
-  }
-};
+/** Action normalizer */
+const getAction = (v: unknown): { id: string } => {
+  const anyV = v as any
+  if (anyV?.id) return { id: String(anyV.id) }
+  if (anyV?.tindakan?.id) return { id: String(anyV.tindakan.id) }
+  return { id: '' }
+}
 
-const handleBulkApproval = async () => {
-  try {
-    processing.value = true;
-    const result = await $swal.fire({
-      icon: 'question',
-      title: 'Kelulusan (Bulk)',
-      text: `Adakah anda pasti untuk mengesahkan ${selectedRows.value.length} tuntutan yang dipilih?`,
-      showCancelButton: true,
-      confirmButtonText: 'Ya, Sahkan',
-      cancelButtonText: 'Batal',
-      confirmButtonColor: '#10b981',
-    });
-    if (result.isConfirmed) {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      await $swal.fire({
-        icon: 'success',
-        title: 'Berjaya!',
-        text: `Semua permohonan yang dipilih telah berjaya disahkan`,
-        confirmButtonText: 'OK'
-      });
-      selectedRows.value = [];
-      // Refresh data if needed
-    }
-  } catch (error) {
-    await $swal.fire({
-      icon: 'error',
-      title: 'Ralat',
-      text: 'Ralat telah berlaku semasa memproses kelulusan bulk',
-      confirmButtonText: 'OK'
-    });
-  } finally {
-    processing.value = false;
-  }
-};
-
-// Utility functions
-const formatNumber = (value) => {
-  return new Intl.NumberFormat('ms-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
-};
-
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString('ms-MY');
-};
-
-const formatTime = (dateString) => {
-  return new Date(dateString).toLocaleTimeString('ms-MY');
-};
-
-const getStatusVariant = (status) => {
-  switch (status) {
-    case 'Untuk Kelulusan':
-      return 'warning';
-    case 'Lulus':
-      return 'success';
-    case 'Tidak Lulus':
-      return 'danger';
-    default:
-      return 'primary';
-  }
-};
-
-// Action handlers
-const viewTuntutan = (noTuntutan) => {
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus/${noTuntutan}`);
-};
-
-const handleSemakKelulusan = (noTuntutan) => {
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus/${noTuntutan}/semak-kelulusan`);
-};
+const goSemak = (id: string) => {
+  if (!id) return
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus/${id}/semak-kelulusan`)
+}
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+/* optional styling hooks */
+</style>

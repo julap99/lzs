@@ -278,7 +278,7 @@
                               title="Sahkan"
                               class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-warning" />
+                              <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-warning" />
                             </button>
                           </div>
                         </td>
@@ -390,7 +390,7 @@
                               title="Luluskan"
                               class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                             >
-                              <Icon name="ic:baseline-check-circle" class="w-5 h-5 text-success" />
+                              <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-success" />
                             </button>
                           </div>
                         </td>
@@ -509,41 +509,41 @@ const allowancesList = ref([
     id: 1,
     rujukan: "ET-2024-001",
     year: "2024",
-    type: "tahunan",
-    typeLabel: "Elaun Tahunan",
+    type: "ET-KPAK",
+    typeLabel: "Elaun Tahunan KPAK",
     status: "DRAF",
-    count: 150,
-    totalAmount: 5000,
+    count: 7,
+    totalAmount: 3500,
   },
   {
     id: 2,
     rujukan: "ET-2024-002",
     year: "2024",
-    type: "khas",
-    typeLabel: "Elaun Khas",
+    type: "ET-KHAS",
+    typeLabel: "Elaun Khas - 48 Aktiviti/Tahun",
     status: "SEDANG PROSES",
-    count: 75,
-    totalAmount: 5000,
+    count: 6,
+    totalAmount: 2400,
   },
   {
     id: 3,
     rujukan: "ET-2024-003",
     year: "2024",
-    type: "tambahan",
-    typeLabel: "Elaun Tambahan",
+    type: "ANUG-KPAK",
+    typeLabel: "Ketua Penolong Amil Kariah (KPAK) terbaik",
     status: "MENUNGGU KELULUSAN",
-    count: 100,
-    totalAmount: 5000,
+    count: 8,
+    totalAmount: 4000,
   },
   {
     id: 4,
     rujukan: "ET-2024-004",
     year: "2024",
-    type: "tahunan",
-    typeLabel: "Elaun Tahunan",
+    type: "ET-KPAF",
+    typeLabel: "Elaun Tahunan KPAF",
     status: "LULUS",
-    count: 200,
-    totalAmount: 5000,
+    count: 4,
+    totalAmount: 1200,
   },
 ]);
 

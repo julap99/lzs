@@ -484,9 +484,9 @@ const branchId = ref(
 
 // HQ Data from query params
 const hqData = ref({
-  namaOrganisasi: 'Yayasan Pendidikan Islami Malaysia',
-  kodOrganisasi: 'SSM-123456-A',
-  zonNegeriStatus: 'Zon Tengah / Selangor / Aktif'
+  namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
+  kodOrganisasi: 'PPM-2021-001',
+  zonNegeriStatus: 'Zon A / Selangor / Aktif'
 });
 
 const formData = ref({

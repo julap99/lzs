@@ -82,7 +82,7 @@
           />
 
           <FormKit
-            v-if="['mykad', 'foreign_id'].includes(formData.jenisPengenalan)"
+            v-if="['mykad', 'passport_no'].includes(formData.jenisPengenalan)"
             type="text"
             name="idPengenalan"
             label="ID Pengenalan"
@@ -160,27 +160,58 @@
           @submit="submitForm"
           #default="{ value }"
         >
-          <div class="bg-blue-50 text-blue-800 p-4 rounded-md mb-4">
-            <p class="font-medium">Muat naik Dokumen Sokongan</p>
-            <p class="mt-2 text-sm">Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 10MB</p>
+          <div class="bg-yellow-50 text-yellow-800 p-4 rounded-md mb-4">
+            <p class="font-medium">Sila muat naik dokumen berikut:</p>
+            <ul class="list-disc ml-5 mt-2">
+              <li>Dokumen Pengenalan (ID Pengenalan/Passport No/ID Syarikat)</li>
+              <li>Dokumen Sokongan Bank</li>
+              <li>Dokumen Tambahan (jika ada)</li>
+            </ul>
+            <p class="mt-2">Format yang dibenarkan: PDF / JPG / PNG</p>
           </div>
 
           <FormKit
             type="file"
-            name="dokumenSokongan"
+            name="dokumenPengenalan"
+            label="Dokumen Pengenalan"
+            validation="required"
+            accept=".pdf,.jpg,.jpeg,.png"
+            help="Muat naik dokumen pengenalan (ID Pengenalan/Passport No/ID Syarikat)"
+            v-model="formData.dokumenPengenalan"
+          />
+
+          <FormKit
+            type="file"
+            name="dokumenSokonganBank"
             label="Dokumen Sokongan Bank"
             validation="required"
             accept=".pdf,.jpg,.jpeg,.png"
-            v-model="formData.dokumenSokongan"
+            help="Muat naik dokumen sokongan bank seperti penyata bank"
+            v-model="formData.dokumenSokonganBank"
+          />
+
+          <FormKit
+            type="file"
+            name="dokumenTambahan"
+            label="Dokumen Tambahan (jika ada)"
+            accept=".pdf,.jpg,.jpeg,.png"
+            multiple="true"
+            help="Muat naik dokumen tambahan yang berkaitan"
+            v-model="formData.dokumenTambahan"
           />
 
           <div class="flex justify-between mt-6">
             <rs-button variant="primary-outline" @click="prevStep">
               Kembali
             </rs-button>
-            <rs-button type="submit" @click="submitForm">
-              Hantar Permohonan
-            </rs-button>
+            <div class="flex gap-3">
+              <rs-button type="button" variant="secondary" @click="showDraftModal = true">
+                Simpan DRAF
+              </rs-button>
+              <rs-button type="submit" @click="submitForm">
+                Hantar Permohonan
+              </rs-button>
+            </div>
           </div>
         </FormKit>
       </div>
@@ -231,6 +262,73 @@
         </div>
       </div>
     </rs-card>
+
+    <!-- Simpan DRAF Confirmation Modal -->
+    <rs-modal v-model="showDraftModal" title="Sahkan Simpan DRAF" size="lg">
+      <template #body>
+        <div class="space-y-4">
+          <p class="text-sm text-gray-700">Sila semak ringkasan maklumat sebelum simpan:</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <label class="block text-gray-600 font-medium">Jenis Recipient</label>
+              <p class="text-gray-900">{{ formData.jenisRecipient || '-' }}</p>
+            </div>
+            <div v-if="formData.jenisRecipient === 'individu'">
+              <label class="block text-gray-600 font-medium">Nama Penuh</label>
+              <p class="text-gray-900">{{ formData.namaPenuh || '-' }}</p>
+            </div>
+            <div v-if="formData.jenisRecipient === 'syarikat'">
+              <label class="block text-gray-600 font-medium">Nama Syarikat</label>
+              <p class="text-gray-900">{{ formData.namaSyarikat || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Jenis Pengenalan</label>
+              <p class="text-gray-900">{{ getJenisPengenalanLabel() || '-' }}</p>
+            </div>
+            <div v-if="formData.jenisPengenalan === 'mykad' || formData.jenisPengenalan === 'passport_no'">
+              <label class="block text-gray-600 font-medium">ID Pengenalan</label>
+              <p class="text-gray-900">{{ formData.idPengenalan || '-' }}</p>
+            </div>
+            <div v-if="formData.jenisPengenalan === 'id_syarikat'">
+              <label class="block text-gray-600 font-medium">ID Syarikat</label>
+              <p class="text-gray-900">{{ formData.idSyarikat || '-' }}</p>
+            </div>
+            <div class="md:col-span-2"><hr class="my-2" /></div>
+            <div>
+              <label class="block text-gray-600 font-medium">Nama Bank</label>
+              <p class="text-gray-900">{{ formData.namaBank || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">No Akaun Bank</label>
+              <p class="text-gray-900">{{ formData.noAkaunBank || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Penama Akaun Bank</label>
+              <p class="text-gray-900">{{ formData.penamaAkaunBank || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Dokumen Pengenalan</label>
+              <rs-badge :variant="hasDokumenPengenalan ? 'success' : 'danger'">{{ hasDokumenPengenalan ? 'Dilampirkan' : 'Tiada' }}</rs-badge>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Dokumen Sokongan Bank</label>
+              <rs-badge :variant="hasDokumenSokonganBank ? 'success' : 'danger'">{{ hasDokumenSokonganBank ? 'Dilampirkan' : 'Tiada' }}</rs-badge>
+            </div>
+            <div>
+              <label class="block text-gray-600 font-medium">Dokumen Tambahan</label>
+              <rs-badge :variant="dokumenTambahanCount > 0 ? 'success' : 'warning'">{{ dokumenTambahanCount > 0 ? (dokumenTambahanCount + ' dokumen') : 'Tiada' }}</rs-badge>
+            </div>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <rs-button variant="secondary-outline" @click="showDraftModal = false">Batal</rs-button>
+          <rs-button variant="primary" @click="confirmSaveDraft">Ya, Simpan</rs-button>
+        </div>
+      </template>
+    </rs-modal>
   </div>
 </template>
 
@@ -255,6 +353,7 @@ const breadcrumb = ref([
 
 const totalSteps = 3; // 3 form steps (success step is separate)
 const currentStep = ref(1);
+const showDraftModal = ref(false);
 
 const steps = [
   { id: 1, label: 'Maklumat Recipient' },
@@ -284,15 +383,17 @@ const formData = ref({
   penamaAkaunBank: "",
 
   // Step 3: Dokumen Sokongan
-  dokumenSokongan: null,
+  dokumenPengenalan: null,
+  dokumenSokonganBank: null,
+  dokumenTambahan: [],
 });
 
 // Computed options for Jenis Pengenalan based on Jenis Recipient
 const jenisPengenalanOptions = computed(() => {
   if (formData.value.jenisRecipient === "individu") {
     return [
-      { label: "MyKad", value: "mykad" },
-      { label: "Foreign ID", value: "foreign_id" },
+      { label: "ID Pengenalan", value: "mykad" },
+      { label: "Passport No", value: "passport_no" },
     ];
   } else if (formData.value.jenisRecipient === "syarikat") {
     return [
@@ -322,10 +423,32 @@ const bankOptions = [
 const getIdPlaceholder = () => {
   switch (formData.value.jenisPengenalan) {
     case "mykad": return "Contoh: 880101123456";
-    case "foreign_id": return "Contoh: A12345678";
+    case "passport_no": return "Contoh: A12345678 (A untuk Selangor)";
     default: return "Sila pilih jenis pengenalan dahulu";
   }
 };
+
+// Helper function to get the label for jenis pengenalan
+const getJenisPengenalanLabel = () => {
+  const option = jenisPengenalanOptions.value.find(opt => opt.value === formData.value.jenisPengenalan);
+  return option ? option.label : '';
+};
+
+// Computed properties to check if documents are attached
+const hasDokumenPengenalan = computed(() => {
+  const f = formData.value.dokumenPengenalan;
+  return !!(f && ((Array.isArray(f) && f.length > 0) || (!Array.isArray(f) && f.name)));
+});
+
+const hasDokumenSokonganBank = computed(() => {
+  const f = formData.value.dokumenSokonganBank;
+  return !!(f && ((Array.isArray(f) && f.length > 0) || (!Array.isArray(f) && f.name)));
+});
+
+const dokumenTambahanCount = computed(() => {
+  const f = formData.value.dokumenTambahan;
+  return Array.isArray(f) ? f.length : (f ? 1 : 0);
+});
 
 const goToStep = (stepNumber) => {
   // Allow navigation to any step within total steps (same as reference pages)
@@ -364,6 +487,22 @@ const printApplication = () => {
 
 const goToHomepage = () => {
   router.push("/");
+};
+
+// Draft save functionality
+const confirmSaveDraft = () => {
+  showDraftModal.value = false;
+  
+  // Here you would normally handle the API submission for draft
+  console.log("Draft data to be saved:", formData.value);
+  
+  // For demo purposes, show success message
+  alert('Draf telah berjaya disimpan!');
+  
+  // In real implementation, you might want to:
+  // 1. Save to localStorage or send to API
+  // 2. Show a success toast
+  // 3. Redirect to a draft list or continue editing
 };
 
 // Watch for changes in jenisRecipient to reset dependent fields

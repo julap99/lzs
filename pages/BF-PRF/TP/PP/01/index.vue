@@ -98,6 +98,11 @@
               :showNoColumn="true"
               :options="{ variant: 'default', hover: true, striped: true }"
             >
+              <template v-slot:status="{ text }">
+                <rs-badge :variant="getNPSStatusVariant(text)">
+                  {{ text }}
+                </rs-badge>
+              </template>
               <template v-slot:tindakan="{ text }">
                 <div class="flex space-x-2">
                   <rs-button
@@ -180,8 +185,8 @@ const formData = ref({
 const jenisPengenalanOptions = computed(() => {
   if (formData.value.jenisRecipient === "individu") {
     return [
-      { label: "MyKad", value: "mykad" },
-      { label: "Foreign ID", value: "foreign_id" },
+      { label: "ID Pengenalan", value: "mykad" },
+      { label: "Passport No", value: "passport_no" },
     ];
   } else if (formData.value.jenisRecipient === "syarikat") {
     return [
@@ -204,27 +209,59 @@ const syarikatColumns = [
   { key: 'namaSyarikat', label: 'Nama Syarikat', sortable: true },
   { key: 'jenisPengenalan', label: 'Jenis Pengenalan', sortable: true },
   { key: 'idSyarikat', label: 'ID Syarikat', sortable: true },
+  { key: 'status', label: 'Status', sortable: true },
   { key: 'tindakan', label: 'Tindakan', sortable: false },
 ];
 
-// Mock data for search results
+// Mock data for search results (align with kemaskini dynamic IDs)
 const mockIndividuData = [
   {
-    id: 'IND001',
+    id: 'RE-202507-0011',
     namaPenuh: 'Ahmad Bin Abdullah',
-    jenisPengenalan: 'MyKad',
-    idPengenalan: '880101-12-3456',
-    tindakan: { id: 'IND001' }
+    jenisPengenalan: 'ID Pengenalan',
+    idPengenalan: '880101123456',
+    tindakan: { id: 'RE-202507-0011' }
+  },
+  {
+    id: 'RE-202505-0013',
+    namaPenuh: 'Siti Fatimah Binti Ali',
+    jenisPengenalan: 'Passport No',
+    idPengenalan: 'A12345678',
+    tindakan: { id: 'RE-202505-0013' }
+  },
+  {
+    id: 'RE-202506-0015',
+    namaPenuh: 'Zainab Binti Hassan',
+    jenisPengenalan: 'ID Pengenalan',
+    idPengenalan: '850720025678',
+    tindakan: { id: 'RE-202506-0015' }
   }
 ];
 
 const mockSyarikatData = [
   {
-    id: 'SYR001',
-    namaSyarikat: 'Pusat Dialisis Al-Falah Sdn Bhd',
+    id: 'RE-202506-0012',
+    namaSyarikat: 'Pusat Dialisis As-Salam Shah Alam',
     jenisPengenalan: 'ID Syarikat',
-    idSyarikat: 'SY123456-X',
-    tindakan: { id: 'SYR001' }
+    idSyarikat: 'PPM-2021-015',
+    status: 'Verified',
+    tindakan: { id: 'RE-202506-0012' }
+  },
+  {
+    id: 'RE-202507-0014',
+    namaSyarikat: 'Klinik Kesihatan Al-Ikhlas',
+    jenisPengenalan: 'ID Syarikat',
+    idSyarikat: 'PPM-2022-008',
+    status: 'Tidak Verified',
+    tindakan: { id: 'RE-202507-0014' }
+  },
+  {
+    id: 'RE-202505-0016',
+    namaSyarikat: 'Pembekal Makanan Halal Al-Amin Sdn Bhd',
+    jenisPengenalan: 'ID Syarikat',
+    idSyarikat: 'PPM-2022-008',
+    status: 'Verified',
+    tindakan: { id: 'RE-202505-0016' }
   }
 ];
 
@@ -233,10 +270,18 @@ const getPlaceholder = () => {
   
   switch (formData.value.jenisPengenalan) {
     case "mykad": return "Contoh: 880101123456";
-    case "foreign_id": return "Contoh: A12345678";
+    case "passport_no": return "Contoh: A12345678";
     case "id_syarikat": return "Contoh: SY123456-X";
     default: return "Sila pilih jenis pengenalan dahulu";
   }
+};
+
+const getNPSStatusVariant = (status) => {
+  const variants = {
+    'Verified': 'success',
+    'Tidak Verified': 'warning',
+  };
+  return variants[status] || 'default';
 };
 
 const resetForm = () => {
@@ -260,7 +305,7 @@ const performSearch = () => {
     processing.value = false;
     
     // Simulate search results - randomly return results or no results
-    const hasResults = Math.random() >= 0.3; // 70% chance of finding results
+    const hasResults = Math.random() >= 0.5; // 50% chance of finding results
     
     if (hasResults) {
       if (formData.value.jenisRecipient === 'individu') {

@@ -5,7 +5,9 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Kelulusan Kemaskini Profil (EOAD)</h2>
+          <h2 class="text-xl font-semibold">
+            Kelulusan Kemaskini Profil (EOAD)
+          </h2>
           <div class="flex items-center space-x-2">
             <rs-badge variant="warning">Menunggu Kelulusan</rs-badge>
             <span class="text-sm text-gray-500"
@@ -27,7 +29,7 @@
                 >No. Kad Pengenalan</label
               >
               <div class="p-3 bg-gray-50 rounded-md border border-gray-200">
-                880101121234
+                770319035991
               </div>
             </div>
             <div class="mb-4">
@@ -35,7 +37,7 @@
                 >Nama</label
               >
               <div class="p-3 bg-gray-50 rounded-md border border-gray-200">
-                AHMAD BIN ALI
+                Adnan bin Abu
               </div>
             </div>
             <div class="mb-4">
@@ -43,7 +45,7 @@
                 >Tarikh Lahir</label
               >
               <div class="p-3 bg-gray-50 rounded-md border border-gray-200">
-                01/01/1988
+                19/03/1977
               </div>
             </div>
             <div class="mb-4 md:col-span-3">
@@ -51,7 +53,7 @@
                 >Alamat</label
               >
               <div class="p-3 bg-gray-50 rounded-md border border-gray-200">
-                NO 12, JALAN MERAK 5, TAMAN BUKIT INDAH, 81200 JOHOR BAHRU,
+                NO 1, JALAN BUKIT INDAH 1, TAMAN BUKIT INDAH, 81200 JOHOR BAHRU,
                 JOHOR
               </div>
             </div>
@@ -63,7 +65,7 @@
           <div class="flex justify-between items-center mb-4 border-b pb-2">
             <h3 class="text-lg font-medium">Perubahan Dicadangkan</h3>
             <div class="text-sm text-gray-500">
-              Dikemaskini oleh: ali.ahmad@email.com
+              Dikemaskini oleh: adnan.abu@email.com
             </div>
           </div>
 
@@ -86,7 +88,7 @@
                     >Nilai Semasa</label
                   >
                   <div class="p-2 bg-gray-50 rounded text-sm">
-                    AHMAD BIN ALI
+                    Adnan bin Abu
                   </div>
                 </div>
                 <div>
@@ -96,7 +98,7 @@
                   <div
                     class="p-2 bg-green-50 rounded text-sm font-medium text-green-800 border border-green-100"
                   >
-                    AHMAD BIN ALI HAJI
+                    Haji Adnan bin Abu
                     <Icon
                       name="heroicons:arrow-long-right-20-solid"
                       class="ml-1 text-green-500 inline"
@@ -128,9 +130,7 @@
                   <label class="block text-xs text-gray-500 mb-1"
                     >Nilai Semasa</label
                   >
-                  <div class="p-2 bg-gray-50 rounded text-sm">
-                    RM 300
-                  </div>
+                  <div class="p-2 bg-gray-50 rounded text-sm">RM 300</div>
                 </div>
                 <div>
                   <label class="block text-xs text-gray-500 mb-1"
@@ -196,30 +196,33 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
+import { useToast } from "vue-toastification";
+import { useRoute, useRouter } from "vue-router";
+
+const toast = useToast();
+const router = useRouter();
+const route = useRoute();
+
 const breadcrumb = ref([
-  { name: "Laman Utama", path: "/" },
-  { name: "Kelulusan", path: "/approval" },
-  { name: "Profil", type: "current" },
+  { name: "Laman Utama", type: "link", path: "/BF-PRF/AS/UP/04" },
+  { name: "Kelulusan", type: "link", path: "/BF-PRF/AS/UP/04" },
+  { name: "Profil", type: "current", path: "/BF-PRF/AS/UP/04" },
 ]);
 
 const processing = ref(false);
 
-const handleApproval = async (data) => {
-  processing.value = true;
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  processing.value = false;
+const handleApproval = async () => {
+
+  toast.success("Kemaskini profil berjaya");
 
   navigateTo(`/BF-PRF/AS/UP/05`);
 };
 
 const rejectChanges = async () => {
-  processing.value = true;
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  processing.value = false;
 
-  alert("Kemaskini profil ditolak");
+
+  toast.error("Kemaskini profil ditolak");
 };
 </script>
 

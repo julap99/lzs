@@ -118,7 +118,7 @@
               </h3> -->
 
               <!-- Simulasi Peranan -->
-              <div class="mb-4 flex items-center gap-3">
+              <!-- <div class="mb-4 flex items-center gap-3">
                 <label class="text-sm text-gray-700 font-medium"
                   >Simulasi Peranan</label
                 >
@@ -133,7 +133,7 @@
                   }"
                   @change="onChangeSimulasiPeranan"
                 />
-              </div>
+              </div> -->
 
               <!-- Sub-tabs for Bantuan -->
               <rs-tab variant="secondary" type="border" class="mb-6">
@@ -243,40 +243,40 @@
                     <h4 class="text-md font-medium mb-3 text-gray-700">
                       Semakan
                     </h4>
-                    <rs-table
-                      :data="filteredSemakanData"
-                      :columns="siasatanColumns"
-                      :pageSize="pageSize"
-                      :showNoColumn="true"
-                      :options="{
-                        variant: 'default',
-                        hover: true,
-                        striped: true,
-                      }"
-                      :options-advanced="{
-                        sortable: true,
-                        filterable: false,
-                      }"
-                      advanced
-                    >
-                      <template v-slot:status="{ text }">
-                        <div class="flex flex-col gap-1">
-                          <template v-if="text.includes('\n')">
-                            <div
-                              v-for="(line, index) in text.split('\n')"
-                              :key="index"
-                              class="text-xs"
-                            >
-                              {{ line }}
-                            </div>
-                          </template>
-                          <template v-else>
-                            <rs-badge :variant="getStatusVariant(text)">
-                              {{ text }}
-                            </rs-badge>
-                          </template>
-                        </div>
-                      </template>
+                     <rs-table
+                       :data="filteredSemakanData"
+                       :columns="siasatanColumns"
+                       :pageSize="pageSize"
+                       :showNoColumn="true"
+                       :options="{
+                         variant: 'default',
+                         hover: true,
+                         striped: true,
+                       }"
+                       :options-advanced="{
+                         sortable: true,
+                         filterable: false,
+                       }"
+                       advanced
+                     >
+                       <template v-slot:status="{ text }">
+                         <div class="flex flex-col gap-1">
+                           <template v-if="text.includes('\n')">
+                             <div
+                               v-for="(line, index) in text.split('\n')"
+                               :key="index"
+                               class="text-xs"
+                             >
+                               {{ line }}
+                             </div>
+                           </template>
+                           <template v-else>
+                             <rs-badge :variant="getStatusVariant(text)">
+                               {{ text }}
+                             </rs-badge>
+                           </template>
+                         </div>
+                       </template>
 
                       <template v-slot:tindakan="{ text }">
                         <div class="flex justify-center items-center gap-2">
@@ -1035,19 +1035,20 @@ const applications = ref([
     namaPegawai: "Aminah binti Hassan",
     tindakan: "NAS-2025-0002",
   },
+  
 ]);
 
 // Mock data for Siasatan tab - would be replaced with API call
 const siasatanData = ref([
   {
-    pemohon: "Ahmad bin Abdullah (800101-01-1234)",
-    kariah: "Masjid Al-Hidayah",
-    daerah: "Kuala Lumpur",
+    pemohon: "Mohd Rosli bin Saad (800101-01-1234)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
     bilanganBantuan: 1,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     jenistugasan: "Bantuan",
     noRujukan: "NAS-2025-0001",
-    tindakan: "bantuan/siasatan/siasatan-eoad",
+    tindakan: "bantuan/siasatan/siasatan-eoad/NAS-2025-0001",
   },
   {
     pemohon: "Siti binti Hassan (850505-05-5678)",
@@ -1056,7 +1057,27 @@ const siasatanData = ref([
     bilanganBantuan: 2,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 2",
     noRujukan: "NAS-2025-0002",
-    tindakan: "bantuan/siasatan/siasatan-eoad",
+    tindakan: "bantuan/siasatan/siasatan-eoad/NAS-2025-0002",
+  },
+  {
+    pemohon: "Mohd Amin bin Mohd Ali (650101-01-1234)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    jenistugasan: "Bantuan ",
+    noRujukan: "NAS-2025-0003",
+    tindakan: "bantuan/siasatan/siasatan-eoad/NAS-2025-0003",
+  },
+  {
+    pemohon: "Amirul Hakim bin Zainuddin (791230-10-4321)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    jenistugasan: "Bantuan ",
+    noRujukan: "NAS-2025-0004",
+    tindakan: "bantuan/siasatan/siasatan-eoad/NAS-2025-0004",
   },
 ]);
 
@@ -1085,13 +1106,40 @@ const permohonanData = ref([
 // Mock data for Semakan sub-tab (own dataset, same format)
 const semakanData = ref([
   {
-    pemohon: "Hakim bin Nor (820303-03-3344)",
-    kariah: "Masjid Al-Hikmah",
-    daerah: "Gombak",
+    pemohon: "Ahmad bin Abdullah (800101-01-1234)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
     bilanganBantuan: 1,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
-    noRujukan: "NAS-2025-0201",
-    tindakan: "siasatan-eoad",
+    noRujukan: "NAS-2025-0001",
+    tindakan: "bantuan/semakan/NAS-2025-0001",
+  },
+  {
+    pemohon: "Amirul Hakim bin Zainuddin (791230-10-4321)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0004",
+    tindakan: "bantuan/semakan/NAS-2025-0004",
+  },
+  {
+    pemohon: "Mohd Amin bin Mohd Ali (650101-01-1234)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0003",
+    tindakan: "bantuan/semakan/NAS-2025-0003",
+  },
+  {
+    pemohon: "Maryam binti Abdullah (920815-08-2567)",
+    kariah: "Masjid An-Nur",
+    daerah: "Shah Alam",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0005",
+    tindakan: "bantuan/semakan/NAS-2025-0005",
   },
 ]);
 
@@ -1104,7 +1152,7 @@ const sokonganData = ref([
     bilanganBantuan: 2,
     status: "Segera - 0\nMelebihi SLA - 1\nPerlu Diproses - 1",
     noRujukan: "NAS-2025-0301",
-    tindakan: "bantuan/sokongan/B106",
+    tindakan: "bantuan/sokongan/NAS-2025-0001",
     //tindakan: "bantuan/sokongan/B106/draf-bq?view=true",
   },
 ]);
@@ -1112,13 +1160,40 @@ const sokonganData = ref([
 // Mock data for Kelulusan sub-tab (own dataset, same format)
 const kelulusanData = ref([
   {
-    pemohon: "Rosnah binti Karim (750707-07-7788)",
+    pemohon: "Rosli bin Saad (750707-07-7788)",
     kariah: "Masjid As-Salam",
-    daerah: "Sepang",
+    daerah: "Kuala Selangor",
     bilanganBantuan: 1,
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     noRujukan: "NAS-2025-0401",
-    tindakan: "bantuan/kelulusan/siasatan-eoad",
+    tindakan: "bantuan/kelulusan/siasatan-eoad/btn-001",
+  },
+  {
+    pemohon: "Muhammad Farhan bin Fitri (970707-07-7788)",
+    kariah: "Masjid As-Salam",
+    daerah: "Seri Kembangan",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0402",
+    tindakan: "bantuan/kelulusan/siasatan-eoad/btn-002",
+  },
+  {
+    pemohon: "Alia Natasha binti Hussain (971207-02-0568)",
+    kariah: "Masjid As-Salam",
+    daerah: "Seri Kembangan",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0403",
+    tindakan: "bantuan/kelulusan/siasatan-eoad/btn-003",
+  },
+  {
+    pemohon: "Amirul Hakim bin Zainuddin (791230-10-4321)",
+    kariah: "Masjid Al-Taqwa",
+    daerah: "Kuala Selangor",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0404",
+    tindakan: "bantuan/kelulusan/siasatan-eoad/btn-004",
   },
 ]);
 
@@ -1453,9 +1528,16 @@ const handleViewDetails = (noRujukan) => {
   navigateTo(`/BF-BTN/PB/senarai/${noRujukan}`);
 };
 
-const handleReview = (noRujukan) => {
-  console.log(noRujukan);
-  navigateTo(`/BF-BTN/tugasan/${noRujukan}`);
+const handleReview = (tindakan) => {
+  console.log(tindakan);
+  // Handle different routing patterns based on the tindakan field
+  if (tindakan.includes('/')) {
+    // For complex paths like kelulusan, siasatan, etc.
+    navigateTo(`/BF-BTN/tugasan/${tindakan}`);
+  } else {
+    // For simple reference numbers
+    navigateTo(`/BF-BTN/tugasan/${tindakan}`);
+  }
 };
 
 const handleAssignTask = (noRujukan) => {
