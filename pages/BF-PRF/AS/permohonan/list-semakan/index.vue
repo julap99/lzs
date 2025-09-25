@@ -1,7 +1,7 @@
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
-    
+
     <rs-card>
       <template #header>
         <div class="flex items-center">
@@ -26,8 +26,7 @@
             sortable: true,
             filterable: false,
           }"
-          advanced
-        >
+          advanced>
           <!-- Custom column templates -->
           <template v-slot:status="{ text }">
             <rs-badge :variant="getStatusVariant(text)">
@@ -35,12 +34,11 @@
             </rs-badge>
           </template>
 
-          <template v-slot:tindakan="{ text }">
+          <template v-slot:tindakan="{ text, value }">
             <rs-button
               variant="primary"
               size="sm"
-              @click="handleSemak(text)"
-            >
+              @click="handleSemak(value.jenisPendaftaran)">
               Semak
             </rs-button>
           </template>
@@ -121,22 +119,15 @@ const applications = ref([
   {
     nama: "Adnan bin Abu",
     tarikhMohon: "2024-03-20",
-    jenisPendaftaran: "Pendaftaran Lengkap  ",
+    jenisPendaftaran: "Kemaskini",
     status: "Menunggu Kelulusan",
     tindakan: "PRF-2024-001",
-  },
-  {
-    nama: "Siti binti Ali",
-    tarikhMohon: "2024-03-19",
-    jenisPendaftaran: "Self Service Pendaftaran Lengkap",
-    status: "Lulus",
-    tindakan: "PRF-2024-002",
   },
   {
     nama: "Mohd bin Ismail",
     tarikhMohon: "2024-03-18",
     jenisPendaftaran: "Pendaftaran Lengkap",
-    status: "Tidak Lulus",
+    status: "Menunggu Kelulusan",
     tindakan: "PRF-2024-003",
   },
 ]);
@@ -148,9 +139,10 @@ const filteredApplications = computed(() => {
   // Apply search filter
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase();
-    filtered = filtered.filter(app => 
-      app.nama.toLowerCase().includes(query) ||
-      app.jenisPendaftaran.toLowerCase().includes(query)
+    filtered = filtered.filter(
+      (app) =>
+        app.nama.toLowerCase().includes(query) ||
+        app.jenisPendaftaran.toLowerCase().includes(query)
     );
   }
 
@@ -161,13 +153,17 @@ const filteredApplications = computed(() => {
 const getStatusVariant = (status) => {
   const variants = {
     "Menunggu Kelulusan": "warning",
-    "Lulus": "success",
+    Lulus: "success",
     "Tidak Lulus": "danger",
   };
   return variants[status] || "default";
 };
 
-const handleSemak = (id) => {
-  navigateTo('/BF-PRF/AS/permohonan/list-semakan/semakan-data-lengkap');
+const handleSemak = (jenisPendaftaran) => {
+  navigateTo(
+    jenisPendaftaran === "Pendaftaran Lengkap"
+      ? "/BF-PRF/AS/permohonan/list-semakan/semakan-data-lengkap"
+      : "/BF-PRF/AS/permohonan/list-semakan/semakan-data-kemaskini"
+  );
 };
 </script>
