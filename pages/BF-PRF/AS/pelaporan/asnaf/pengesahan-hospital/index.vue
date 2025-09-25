@@ -10,9 +10,10 @@
       </template>
 
       <template #body>
+        <!-- Susunan 2x2: dua di atas (KP), dua di bawah (organisasi) -->
         <FormKit type="form" :actions="false" id="carianForm" @submit.prevent="onJanaSurat">
-          <div class="grid gap-6 md:grid-cols-4">
-            <!-- No. K/P Asnaf -->
+          <div class="grid gap-6 md:grid-cols-2">
+            <!-- Baris atas -->
             <FormKit
               type="text"
               label="No. K/P Asnaf"
@@ -20,14 +21,28 @@
               :classes="fkClasses"
               placeholder="Masukkan No. K/P Asnaf"
             />
-
-            <!-- No. K/P Tanggungan -->
             <FormKit
               type="text"
               label="No. K/P Tanggungan"
               v-model="filters.noKpTanggungan"
               :classes="fkClasses"
               placeholder="Masukkan No. K/P Tanggungan"
+            />
+
+            <!-- Baris bawah -->
+            <FormKit
+              type="text"
+              label="Nama Organisasi"
+              v-model="filters.namaOrganisasi"
+              :classes="fkClasses"
+              placeholder="Contoh: Hospital Sungai Buloh"
+            />
+            <FormKit
+              type="textarea"
+              label="Alamat Organisasi"
+              v-model="filters.alamatOrganisasi"
+              :classes="fkClasses"
+              placeholder="Contoh: Jalan Hospital, 47000 Sungai Buloh, Selangor"
             />
           </div>
 
@@ -43,7 +58,7 @@
               Reset
             </rs-button>
 
-            <!-- Butang Jana Surat -->
+            <!-- Butang Jana Surat (mockup: tekan terus keluar surat) -->
             <rs-button
               variant="primary"
               size="sm"
@@ -101,13 +116,6 @@
                 <div class="text-sm"><span class="font-semibold">Tarikh: </span><span class="font-semibold">{{ formatDate(generatedAt) }}</span></div>
                 <div class="text-sm"><span class="font-semibold">{{ formatDateHijri(generatedAt) }}</span></div>
                 <p class="text-xl text-gray-700 mb-3 arabic">اَلسَلامُ عَلَيْكُم وَرَحْمَةُ اَللهِ وَبَرَكَاتُهُ‎</p>
-              </div>
-
-              <div class="mt-6 text-left space-y-1">
-                <div class="font-bold text-base">{{ orgHeader.name }}</div>
-                <div v-for="(ln, i) in orgHeader.address" :key="i" class="text-sm">{{ ln }}</div>
-                <div class="text-sm mt-2">Tel: {{ orgHeader.tel }}</div>
-                <div class="text-sm">Faks: {{ orgHeader.fax }}</div>
               </div>
             </template>
           </rs-card>
@@ -214,23 +222,15 @@ const breadcrumb = [
 
 const filters = ref({
   noKpAsnaf: '',
-  noKpTanggungan: ''
+  noKpTanggungan: '',
+  namaOrganisasi: '',
+  alamatOrganisasi: ''
 })
 
 const showSurat = ref(false)
 
-const orgHeader = {
-  name: "Lembaga Zakat Selangor (MAIS)",
-  address: [
-    "Menara Zakat Sultan Idris Shah,",
-    "No. 1, Persiaran Bandar Raya, Seksyen 14,",
-    "40000 Shah Alam, Selangor Darul Ehsan."
-  ],
-  tel: "+603 8314 2222",
-  fax: "+603 8314 2233/2244"
-}
-
 const today = new Date()
+const generatedAt = today
 const noRujukan = `RP0004/${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}/1234`
 
 function formatDate(date) {
@@ -256,10 +256,7 @@ const suratView = computed(() => ({
   ],
   tempohAsnaf: "ASNAF MISKIN TAHUN 2025",
 
-  // Fix alamatJoin to correctly join address lines
-  alamatJoin: function() {
-    return this.alamat.join('\n'); // Join address lines with a newline for proper formatting
-  }
+  alamatJoin: function() { return this.alamat.join('\n') }
 }))
 
 function downloadSuratTawaran () {
@@ -268,14 +265,24 @@ function downloadSuratTawaran () {
   doc.save('Surat_Pengesahan_Asnaf_Hospital.pdf')
 }
 
-const onJanaSurat = () => {
-  showSurat.value = true
-}
+const onJanaSurat = () => { showSurat.value = true }
 
 const onReset = () => {
   filters.value.noKpAsnaf = ''
   filters.value.noKpTanggungan = ''
+  filters.value.namaOrganisasi = ''
+  filters.value.alamatOrganisasi = ''
   showSurat.value = false
+}
+
+/* FormKit classes */
+const fkClasses = {
+  outer: 'space-y-1',
+  label: 'text-sm font-medium text-gray-900',
+  inner: 'mt-1 rounded-xl border bg-white focus-within:ring-2 focus-within:ring-blue-500',
+  input: 'w-full rounded-xl border-0 px-3 py-2 text-sm placeholder-gray-400 focus:outline-none',
+  help: 'text-xs text-gray-500 mt-1',
+  messages: 'text-xs text-red-600 mt-1',
 }
 </script>
 
