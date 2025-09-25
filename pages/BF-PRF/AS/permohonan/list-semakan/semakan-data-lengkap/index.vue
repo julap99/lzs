@@ -157,19 +157,8 @@
             @save-step="handleSaveStepA11"
           />
 
-          <!-- Komen Penyemak and Dokumen Lengkap outside table -->
+          <!--  Dokumen Lengkap -->
           <div class="mb-4 flex flex-col gap-4 border-t pt-4">
-            <!-- <div>
-              <label class="font-bold block mb-1">Komen Penyemak</label>
-              <FormKit
-                type="textarea"
-                name="komen_penyemak"
-                v-model="komenPenyemak"
-                :rows="3"
-                placeholder="Masukkan komen penyemak"
-              />
-            </div> -->
-
             <div>
               <label class="font-bold block mb-2">Dokumen Lengkap?</label>
               <FormKit
@@ -207,7 +196,7 @@
           </div>
         </div>
 
-        <!-- Bottom Step Navigation (like AS/FR/02) -->
+        <!-- Bottom Step Navigation -->
         <div class="mt-8 border-t pt-4 flex items-center justify-between">
           <rs-button
             v-if="currentStepA === 1"
@@ -418,19 +407,8 @@
           />
 
 
-          <!-- Komen Penyemak and Dokumen Lengkap outside table -->
+          <!-- Dokumen Lengkap -->
           <div class="mb-4 flex flex-col gap-4 border-t pt-4">
-            <!-- <div>
-              <label class="font-bold block mb-1">Komen Penyemak</label>
-              <FormKit
-                type="textarea"
-                name="komen_penyemak"
-                v-model="komenPenyemak"
-                :rows="3"
-                placeholder="Masukkan komen penyemak"
-              />
-            </div> -->
-
             <div>
               <label class="font-bold block mb-2">Dokumen Lengkap?</label>
               <FormKit
@@ -467,7 +445,7 @@
             </div>
           </div>
         </div>
-        <!-- Bottom Step Navigation (Section B - like Section A) -->
+        <!-- Bottom Step Navigation-->
         <div class="mt-8 border-t pt-4 flex items-center justify-between">
           <rs-button
             v-if="currentStepB === 1"
@@ -845,19 +823,6 @@ const currentDokumenLengkap = computed({
     }
   }
 });
-
-// Computed properties to check if each step has dokumen lengkap selection
-const isStepCompleted = (stepId, section = 'A') => {
-  if (section === 'A') {
-    return (
-      dokumenLengkapSectionA.value[stepId] &&
-      dokumenLengkapSectionA.value[stepId] !== ""
-    );
-  } else {
-    const val = getDokumenLengkapB(stepId);
-    return !!val && val !== "";
-  }
-};
 
 // Function to get the appropriate icon based on dokumen lengkap selection
 const getDokumenLengkapIcon = (stepId, section = 'A') => {
