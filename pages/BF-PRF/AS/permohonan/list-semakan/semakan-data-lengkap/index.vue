@@ -19,11 +19,18 @@
             <div
               v-for="step in stepsA"
               :key="step.id"
-              class="text-center flex-1 cursor-pointer"
+              class="text-center flex-1 cursor-pointer flex items-center justify-center gap-1"
               :class="{ 'font-semibold': currentStepA >= step.id }"
               @click="goToStepA(step.id)"
             >
-              {{ step.label }}
+              <span>{{ step.label }}</span>
+              <svg v-if="getDokumenLengkapIcon(step.id, 'A')" 
+                   class="w-4 h-4" 
+                   :class="getDokumenLengkapIcon(step.id, 'A')?.color" 
+                   fill="currentColor" 
+                   viewBox="0 0 20 20">
+                <path fill-rule="evenodd" :d="getDokumenLengkapIcon(step.id, 'A')?.path" clip-rule="evenodd" />
+              </svg>
             </div>
           </div>
           <div class="w-full bg-gray-200 rounded-full h-2.5">
@@ -151,8 +158,8 @@
           />
 
           <!-- Komen Penyemak and Dokumen Lengkap outside table -->
-          <div class="mb-4 flex flex-col gap-4">
-            <div>
+          <div class="mb-4 flex flex-col gap-4 border-t pt-4">
+            <!-- <div>
               <label class="font-bold block mb-1">Komen Penyemak</label>
               <FormKit
                 type="textarea"
@@ -161,17 +168,18 @@
                 :rows="3"
                 placeholder="Masukkan komen penyemak"
               />
-            </div>
+            </div> -->
 
             <div>
               <label class="font-bold block mb-2">Dokumen Lengkap?</label>
               <FormKit
                 type="radio"
                 name="dokumen_lengkap"
-                v-model="dokumenLengkap"
+                v-model="currentDokumenLengkap"
                 :options="[
                   { label: 'Ya', value: 'Ya' },
                   { label: 'Tidak', value: 'Tidak' },
+                  { label: 'Tiada Keperluan', value: 'Tiada' },
                 ]"
               />
             </div>
@@ -216,6 +224,7 @@
             v-if="currentStepA < totalStepsA"
             type="button"
             variant="primary"
+            :disabled="!isDokumenLengkapSelected"
             @click="nextStepA"
           >
             {{ stepsA[currentStepA].label }}
@@ -225,6 +234,7 @@
             v-if="currentStepA === 11"
             type="button"
             variant="primary"
+            :disabled="!isDokumenLengkapSelected"
             @click="goToSectionB"
           >
             Ke Seksyen B: Tanggungan
@@ -251,11 +261,18 @@
               <div
                 v-for="step in stepsB"
                 :key="step.id"
-                class="text-center flex-1 cursor-pointer"
+                class="text-center flex-1 cursor-pointer flex items-center justify-center gap-1"
                 :class="{ 'font-semibold': currentStepB >= step.id }"
                 @click="goToStepB(step.id)"
               >
-                {{ step.label }}
+                <span>{{ step.label }}</span>
+                <svg v-if="getDokumenLengkapIcon(step.id, 'B')" 
+                     class="w-4 h-4" 
+                     :class="getDokumenLengkapIcon(step.id, 'B')?.color" 
+                     fill="currentColor" 
+                     viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" :d="getDokumenLengkapIcon(step.id, 'B')?.path" clip-rule="evenodd" />
+                </svg>
               </div>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-2.5">
@@ -425,12 +442,9 @@
             :read-only="true"
           />
 
-          <!-- all section B form here -->
-
-
           <!-- Komen Penyemak and Dokumen Lengkap outside table -->
-          <div class="mb-4 flex flex-col gap-4">
-            <div>
+          <div class="mb-4 flex flex-col gap-4 border-t pt-4">
+            <!-- <div>
               <label class="font-bold block mb-1">Komen Penyemak</label>
               <FormKit
                 type="textarea"
@@ -439,18 +453,19 @@
                 :rows="3"
                 placeholder="Masukkan komen penyemak"
               />
-            </div>
+            </div> -->
 
             <div>
               <label class="font-bold block mb-2">Dokumen Lengkap?</label>
               <FormKit
                 type="radio"
                 name="dokumen_lengkap"
-                v-model="dokumenLengkap"
+                v-model="currentDokumenLengkap"
                 :options="[
                   { label: 'Ya', value: 'Ya' },
                   { label: 'Tidak', value: 'Tidak' },
-                ]"
+                  { label: 'Tiada Keperluan', value: 'Tiada' },
+                  ]"
               />
             </div>
 
@@ -503,6 +518,7 @@
             v-if="currentStepB < totalStepsB"
             type="button"
             variant="primary"
+            :disabled="!isDokumenLengkapSelected"
             @click="nextStepB"
           >
             {{ stepsB[currentStepB].label }}
@@ -723,7 +739,7 @@ const tarikhSemakan = ref(
 );
 
 const handleHantar = () => {
-  if (dokumenLengkap.value === "Tidak") {
+  if (currentDokumenLengkap.value === "Tidak") {
     toast.success("Notifikasi sudah dihantar ke pemohon.");
     navigateTo("/BF-PRF/AS/permohonan/list-semakan");
     return;
@@ -737,7 +753,80 @@ const handleKembali = () => {
   navigateTo("/BF-PRF/AS/permohonan/list-semakan");
 };
 
-const dokumenLengkap = ref("");
+// Track dokumen lengkap selection for each step
+const dokumenLengkapSectionA = ref({});
+const dokumenLengkapSectionB = ref({});
+
+// Computed properties to check if dokumen lengkap is selected for current step
+const isDokumenLengkapSelected = computed(() => {
+  if (currentSection.value === 'A') {
+    return dokumenLengkapSectionA.value[currentStepA.value] && dokumenLengkapSectionA.value[currentStepA.value] !== "";
+  } else {
+    return dokumenLengkapSectionB.value[currentStepB.value] && dokumenLengkapSectionB.value[currentStepB.value] !== "";
+  }
+});
+
+// Computed property for current step's dokumen lengkap value
+const currentDokumenLengkap = computed({
+  get() {
+    if (currentSection.value === 'A') {
+      return dokumenLengkapSectionA.value[currentStepA.value] || "";
+    } else {
+      return dokumenLengkapSectionB.value[currentStepB.value] || "";
+    }
+  },
+  set(value) {
+    if (currentSection.value === 'A') {
+      dokumenLengkapSectionA.value[currentStepA.value] = value;
+    } else {
+      dokumenLengkapSectionB.value[currentStepB.value] = value;
+    }
+  }
+});
+
+// Computed properties to check if each step has dokumen lengkap selection
+const isStepCompleted = (stepId, section = 'A') => {
+  if (section === 'A') {
+    return dokumenLengkapSectionA.value[stepId] && dokumenLengkapSectionA.value[stepId] !== "";
+  } else {
+    return dokumenLengkapSectionB.value[stepId] && dokumenLengkapSectionB.value[stepId] !== "";
+  }
+};
+
+// Function to get the appropriate icon based on dokumen lengkap selection
+const getDokumenLengkapIcon = (stepId, section = 'A') => {
+  let selection = '';
+  if (section === 'A') {
+    selection = dokumenLengkapSectionA.value[stepId] || '';
+  } else {
+    selection = dokumenLengkapSectionB.value[stepId] || '';
+  }
+  
+  if (!selection) return null;
+  
+  switch (selection) {
+    case 'Ya':
+      return {
+        icon: 'checkmark',
+        color: 'text-green-600',
+        path: 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z'
+      };
+    case 'Tidak':
+      return {
+        icon: 'x-mark',
+        color: 'text-red-600',
+        path: 'M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'
+      };
+    case 'Tiada':
+      return {
+        icon: 'minus',
+        color: 'text-gray-600',
+        path: 'M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z'
+      };
+    default:
+      return null;
+  }
+};
 
 // Section B (Tanggungan) stepper state - match AS/FR/02 (13 steps)
 const currentStepB = ref(1);
