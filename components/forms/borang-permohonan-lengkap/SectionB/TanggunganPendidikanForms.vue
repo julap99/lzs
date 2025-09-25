@@ -27,6 +27,7 @@
               { label: 'Tidak', value: 'T' },
             ]"
             validation="required"
+            :disabled="readOnly"
             v-model="getCurrentTanggungan().masih_bersekolah"
           />
         </div>
@@ -48,6 +49,7 @@
             'Lain-lain',
           ]"
           validation="required"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().pendidikan_tertinggi"
         />
 
@@ -61,6 +63,7 @@
           name="lain_pendidikan_tertinggi_tanggungan"
           label="Lain-lain Pendidikan Tertinggi"
           validation="required"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().lain_pendidikan_tertinggi_tanggungan"
         />
       </div>
@@ -87,6 +90,7 @@
             'Lain-lain',
           ]"
           validation="required|min:1"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().tahap_pendidikan_dicapai"
           :validation-messages="{
             required: 'Sila pilih sekurang-kurangnya satu tahap pendidikan',
@@ -109,6 +113,7 @@
         name="lain_tahap_pendidikan_tanggungan"
         label="Lain-lain Tahap Pendidikan yang Dicapai"
         validation="required"
+        :disabled="readOnly"
         v-model="getCurrentTanggungan().lain_tahap_pendidikan_dicapai"
       />
     </div>
@@ -122,6 +127,7 @@
         multiple="true"
         accept=".pdf,.jpg,.jpeg,.png"
         help="Format yang diterima: PDF, JPG, JPEG, PNG"
+        :disabled="readOnly"
         v-model="getCurrentTanggungan().sijil_pendidikan_tanggungan"
       />
     </div>
@@ -164,6 +170,7 @@
                 { label: 'Peringkat Rendah', value: 'rendah' },
                 { label: 'Peringkat Tinggi', value: 'tinggi' },
               ]"
+              :disabled="readOnly"
               v-model="edu.jenis_sekolah"
             />
 
@@ -174,6 +181,7 @@
               label="Kategori Sekolah / Institusi"
               placeholder="Pilih Kategori Sekolah / Institusi"
               :options="['SEK.MEN', 'SRK', 'IPT', 'SRA', 'KAFA']"
+              :disabled="readOnly"
               v-model="edu.kategori_sekolah"
             />
           </div>
@@ -186,12 +194,14 @@
               type="date"
               :name="`eduTanggungan${index}TarikhMulaPengajian`"
               label="Tarikh Mula Pengajian"
+              :disabled="readOnly"
               v-model="edu.tarikh_mula_pengajian"
             />
             <FormKit
               type="date"
               :name="`eduTanggungan${index}TarikhTamatPengajian`"
               label="Tarikh Tamat Pengajian"
+              :disabled="readOnly"
               v-model="edu.tarikh_tamat_pengajian"
             />
           </div>
@@ -204,6 +214,7 @@
                 label="Tahun Bersekolah (YYYY)"
                 validation="required"
                 placeholder="Contoh: 2024"
+                :disabled="readOnly"
                 v-model="edu.tahun_bersekolah"
               />
 
@@ -213,6 +224,7 @@
                 label="Tahun / Tingkatan / Tahun Pengajian / Semester"
                 validation="required"
                 placeholder="Contoh: Tingkatan 3, Tahun 2, Semester 1"
+                :disabled="readOnly"
                 v-model="edu.tahun_tingkatan"
               />
             </div>
@@ -225,6 +237,7 @@
                 placeholder="Pilih sekolah / institusi"
                 :options="getFilteredSchoolOptions(edu.kategori_sekolah)"
                 validation="required"
+                :disabled="readOnly"
                 v-model="edu.nama_sekolah"
                 @input="onSelectSchool(index, $event)"
               />
@@ -247,6 +260,7 @@
                   { label: 'Sekolah Agama', value: 'agama' },
                   { label: 'Sekolah Kebangsaan', value: 'kebangsaan' },
                 ]"
+                :disabled="readOnly"
                 v-model="edu.sekolah_rendah_kategori"
               />
             </div>
@@ -257,6 +271,7 @@
                 :name="`eduTanggungan${index}Alamat1`"
                 label="Alamat 1"
                 validation="required"
+                :disabled="readOnly"
                 v-model="edu.alamat_sekolah_1"
               />
 
@@ -264,6 +279,7 @@
                 type="text"
                 :name="`eduTanggungan${index}Alamat2`"
                 label="Alamat 2"
+                :disabled="readOnly"
                 v-model="edu.alamat_sekolah_2"
                 v-if="edu.alamat_sekolah_1"
               />
@@ -273,6 +289,7 @@
                   type="text"
                   :name="`eduTanggungan${index}Alamat3`"
                   label="Alamat 3"
+                  :disabled="readOnly"
                   v-model="edu.alamat_sekolah_3"
                   v-if="edu.alamat_sekolah_1"
                 />
@@ -284,6 +301,7 @@
                   :name="`eduTanggungan${index}Daerah`"
                   label="Daerah"
                   validation="required"
+                  :disabled="readOnly"
                   v-model="edu.daerah_sekolah"
                 />
 
@@ -292,6 +310,7 @@
                   :name="`eduTanggungan${index}Bandar`"
                   label="Bandar"
                   validation="required"
+                  :disabled="readOnly"
                   v-model="edu.bandar_sekolah"
                 />
 
@@ -300,6 +319,7 @@
                   :name="`eduTanggungan${index}Poskod`"
                   label="Poskod"
                   validation="required"
+                  :disabled="readOnly"
                   v-model="edu.poskod_sekolah"
                 />
               </div>
@@ -311,6 +331,7 @@
                 :name="`eduTanggungan${index}BidangKursus`"
                 label="Bidang / Kursus Pengajian"
                 :options="['Sijil', 'SKM', 'Diploma', 'Ijazah Sarjana Muda']"
+                :disabled="readOnly"
                 v-model="edu.bidang_kursus"
               />
             </div>
@@ -321,6 +342,7 @@
                 :name="`eduTanggungan${index}JurusanBidang`"
                 label="Jurusan / Bidang"
                 validation="required"
+                :disabled="readOnly"
                 v-model="edu.jurusan_bidang"
               />
             </div>
@@ -336,6 +358,7 @@
                   :name="`eduTanggungan${index}PembiayaanPengajian`"
                   :options="['JPA', 'PTPTN', 'LZS', 'Tiada', 'Lain-lain']"
                   validation="required|min:1"
+                  :disabled="readOnly"
                   v-model="edu.pembiayaan_pengajian"
                   :validation-messages="{
                     required: 'Sila pilih sekurang-kurangnya satu pembiayaan',
@@ -358,6 +381,7 @@
                 :name="`eduTanggungan${index}LainPembiayaan`"
                 label="Lain-lain Pembiayaan Pengajian"
                 validation="required"
+                :disabled="readOnly"
                 v-model="edu.lain_pembiayaan"
               />
             </div>
@@ -368,6 +392,7 @@
                 type="textarea"
                 :name="`eduTanggungan${index}Catatan`"
                 label="Catatan"
+                :disabled="readOnly"
                 v-model="edu.catatan"
                 rows="3"
               />
@@ -380,6 +405,7 @@
             variant="secondary"
             @click="addEducationEntry"
             type="button"
+            :disabled="readOnly"
           >
             <Icon name="mdi:plus" class="mr-1" size="1rem" />
             Tambah Sekolah / Institusi
@@ -419,6 +445,7 @@
                 { label: 'Tidak', value: 'T' },
               ]"
               validation="required"
+              :disabled="readOnly"
               v-model="getCurrentTanggungan().tinggal_bersama_keluarga"
             />
           </div>
@@ -430,6 +457,7 @@
               name="asrama_rumah_sewa_tanggungan"
               label="Asrama/Rumah Sewa"
               validation="required"
+              :disabled="readOnly"
               v-model="getCurrentTanggungan().asrama_rumah_sewa"
             />
             <FormKit
@@ -437,6 +465,7 @@
               type="text"
               name="nama_baitul_tanggungan"
               label="Nama Baitul"
+              :disabled="readOnly"
               v-model="getCurrentTanggungan().nama_baitul"
             />
           </div>
@@ -444,7 +473,7 @@
       </div>
     </div>
 
-    <div class="flex justify-between gap-3 mt-6">
+    <div v-if="showFooterButtons" class="flex justify-between gap-3 mt-6">
       <rs-button
         type="button"
         variant="primary-outline"
@@ -471,6 +500,14 @@ const props = defineProps({
     type: Function,
     required: true,
   },
+  readOnly: {
+    type: Boolean,
+    default: false
+  },
+  showFooterButtons: {
+    type: Boolean,
+    default: true
+  }
 });
 
 // Emits (navigation + save only)
