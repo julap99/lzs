@@ -30,6 +30,7 @@
               'Lain-lain',
             ]"
             validation="required"
+            :disabled="readOnly"
             v-model="getCurrentTanggungan().kemahiran_tanggungan"
           />
         </div>
@@ -45,10 +46,11 @@
         getCurrentTanggungan().kemahiran_tanggungan &&
         getCurrentTanggungan().kemahiran_tanggungan.includes('Lain-lain')
       "
+      :disabled="readOnly"
       v-model="getCurrentTanggungan().lain_kemahiran_tanggungan"
     />
 
-    <div class="flex justify-between gap-3 mt-6">
+    <div class="flex justify-between gap-3 mt-6" v-if="showFooterButtons">
       <rs-button
         type="button"
         variant="primary-outline"
@@ -76,6 +78,14 @@ const props = defineProps({
   getCurrentTanggungan: {
     type: Function,
     required: true
+  },
+  readOnly: {
+    type: Boolean,
+    default: false
+  },
+  showFooterButtons: {
+    type: Boolean,
+    default: true
   }
 })
 

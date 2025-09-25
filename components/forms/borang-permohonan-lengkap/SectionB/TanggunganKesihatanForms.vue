@@ -17,6 +17,7 @@
           label="Tahap Kesihatan "
           :options="['Sihat', 'Sakit Kronik', 'OKU', 'Uzur']"
           validation="required"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().tahap_kesihatan_tanggungan"
           placeholder="Pilih tahap kesihatan"
           help="Pilih status kesihatan tanggungan"
@@ -41,6 +42,7 @@
             label="Keadaan Kesihatan "
             :options="['Terlantar', 'Tidak Terlantar']"
             validation="required"
+            :disabled="readOnly"
             v-model="
               getCurrentTanggungan().keadaan_kesihatan_sakit_tanggungan
             "
@@ -218,7 +220,7 @@
       </div>
     </div>
 
-    <div class="flex justify-between gap-3 mt-6">
+    <div v-if="showFooterButtons" class="flex justify-between gap-3 mt-6">
       <rs-button
         type="button"
         variant="primary-outline"
@@ -246,6 +248,14 @@ const props = defineProps({
   getCurrentTanggungan: {
     type: Function,
     required: true
+  },
+  readOnly: {
+    type: Boolean,
+    default: false
+  },
+  showFooterButtons: {
+    type: Boolean,
+    default: true
   }
 })
 

@@ -395,6 +395,46 @@
             :read-only="true"
           />
 
+          <!-- Section B Form - Step 5: Maklumat Kesihatan Tanggungan -->
+          <TanggunganKesihatanForms
+            v-if="currentStepB === 5"
+            :get-current-tanggungan="getCurrentTanggungan"
+            :show-footer-buttons="false"
+            :read-only="true"
+          />
+
+          <!-- Section B Form - Step 6: Maklumat Kemahiran Tanggungan -->
+          <TanggunganKemahiranForms
+            v-if="currentStepB === 6"
+            :get-current-tanggungan="getCurrentTanggungan"
+            :show-footer-buttons="false"
+            :read-only="true"
+          />
+
+          <!-- Section B Form - Step 7: Maklumat Pemilikan Aset Tanggungan -->
+          <TanggunganPemilikanAsetForms
+            v-if="currentStepB === 7"
+            :get-current-tanggungan="getCurrentTanggungan"
+            :show-footer-buttons="false"
+            :read-only="true"
+          />
+
+          <!-- Section B Form - Step 8: Maklumat Pinjaman Harta Tanggungan -->
+          <TanggunganPinjamanHartaForms
+            v-if="currentStepB === 8"
+            :get-current-tanggungan="getCurrentTanggungan"
+            :show-footer-buttons="false"
+            :read-only="true"
+          />
+
+          <!-- Section B Form - Step 9: Maklumat Pekerjaan Tanggungan -->
+          <TanggunganPekerjaanForms
+            v-if="currentStepB === 9"
+            :get-current-tanggungan="getCurrentTanggungan"
+            :show-footer-buttons="false"
+            :read-only="true"
+          />
+
           <!-- all section B form here -->
 
 
@@ -501,6 +541,11 @@ import TanggunganPeribadiForms from "~/components/forms/borang-permohonan-lengka
 import TanggunganPengislamanForms from "~/components/forms/borang-permohonan-lengkap/SectionB/TanggunganPengislamanForms.vue";
 import TanggunganPerbankanForms from "~/components/forms/borang-permohonan-lengkap/SectionB/TanggunganPerbankanForms.vue";
 import TanggunganPendidikanForms from "~/components/forms/borang-permohonan-lengkap/SectionB/TanggunganPendidikanForms.vue";
+import TanggunganKesihatanForms from "~/components/forms/borang-permohonan-lengkap/SectionB/TanggunganKesihatanForms.vue";
+import TanggunganKemahiranForms from "~/components/forms/borang-permohonan-lengkap/SectionB/TanggunganKemahiranForms.vue";
+import TanggunganPemilikanAsetForms from "~/components/forms/borang-permohonan-lengkap/SectionB/TanggunganPemilikanAsetForms.vue";
+import TanggunganPinjamanHartaForms from "~/components/forms/borang-permohonan-lengkap/SectionB/TanggunganPinjamanHartaForms.vue";
+import TanggunganPekerjaanForms from "~/components/forms/borang-permohonan-lengkap/SectionB/TanggunganPekerjaanForms.vue";
 
 const toast = useToast();
 
@@ -961,6 +1006,45 @@ onMounted(() => {
       asrama_rumah_sewa: "",
       nama_baitul: "",
       
+      // Kesihatan data
+      tahap_kesihatan_tanggungan: "Sihat",
+      
+      // Kemahiran data
+      kemahiran_tanggungan: ["Memasak", "Mengasuh", "Perkhidmatan"],
+      lain_kemahiran_tanggungan: "",
+      
+      // Pemilikan Aset data
+      wang_simpanan: 5000.00,
+      emas: 2000.00,
+      saham: 0.00,
+      kenderaan: "Proton Saga 2018",
+      rumah: "Rumah Teres 2 Tingkat, Shah Alam",
+      tanah_sawah: "",
+      dokumen_pemilikan: [],
+      
+      // Pinjaman Harta data
+      nama_institusi_pemberi_pinjaman: "Bank Islam Malaysia Berhad",
+      jenis_pinjaman: "Perumahan",
+      amaun_bayaran_bulanan: 1200.00,
+      jumlah_keseluruhan_perbelanjaan: 180000.00,
+      tahun_mula_pinjaman: "2020-01-01",
+      tahun_akhir_pinjaman: "2035-01-01",
+      dokumen_perjanjian_pinjaman: [],
+      
+      // Pekerjaan data
+      pekerjaan_status: "Tidak Bekerja",
+      sumber_pendapatan: ["Sumbangan Keluarga"],
+      lain_lain_sumber_pendapatan: "",
+      jenis_pekerjaan: "",
+      sektor_pekerjaan: "",
+      jawatan: "",
+      status_jawatan: "",
+      pendapatan_kasar: 0.00,
+      lain_lain_sektor_pekerjaan: "",
+      pengesahan_pendapatan: [],
+      sebab_tidak_bekerja: "Suri Rumah",
+      lain_lain_sebab_tidak_bekerja: "",
+      
       // Perbankan data
       ada_akaun_bank_tanggungan: "Y",
       muflis_disenarai_hitam: "T",
@@ -1041,6 +1125,45 @@ onMounted(() => {
       asrama_rumah_sewa: "",
       nama_baitul: "",
       
+      // Kesihatan data
+      tahap_kesihatan_tanggungan: "Sihat",
+      
+      // Kemahiran data
+      kemahiran_tanggungan: ["Pertukangan", "Perniagaan", "Perkhidmatan"],
+      lain_kemahiran_tanggungan: "",
+      
+      // Pemilikan Aset data
+      wang_simpanan: 2000.00,
+      emas: 0.00,
+      saham: 1000.00,
+      kenderaan: "",
+      rumah: "",
+      tanah_sawah: "",
+      dokumen_pemilikan: [],
+      
+      // Pinjaman Harta data
+      nama_institusi_pemberi_pinjaman: "PTPTN",
+      jenis_pinjaman: "Pendidikan",
+      amaun_bayaran_bulanan: 300.00,
+      jumlah_keseluruhan_perbelanjaan: 50000.00,
+      tahun_mula_pinjaman: "2020-09-01",
+      tahun_akhir_pinjaman: "2030-09-01",
+      dokumen_perjanjian_pinjaman: [],
+      
+      // Pekerjaan data
+      pekerjaan_status: "Bekerja",
+      sumber_pendapatan: ["Pengajian", "Sumbangan Keluarga"],
+      lain_lain_sumber_pendapatan: "",
+      jenis_pekerjaan: "Pekerja Sambilan",
+      sektor_pekerjaan: "Swasta",
+      jawatan: "Pembantu Kedai",
+      status_jawatan: "Kontrak",
+      pendapatan_kasar: 800.00,
+      lain_lain_sektor_pekerjaan: "",
+      pengesahan_pendapatan: [],
+      sebab_tidak_bekerja: "",
+      lain_lain_sebab_tidak_bekerja: "",
+      
       // Perbankan data
       ada_akaun_bank_tanggungan: "Y",
       muflis_disenarai_hitam: "T",
@@ -1120,6 +1243,30 @@ onMounted(() => {
       tinggal_bersama_keluarga: "Y",
       asrama_rumah_sewa: "",
       nama_baitul: "",
+      
+      // Kesihatan data
+      tahap_kesihatan_tanggungan: "Sihat",
+      
+      // Kemahiran data
+      // dont have data since underage
+      
+      // Pemilikan Aset data - No assets (underage)
+      
+      // Pinjaman Harta data - No loans (underage)
+      
+      // Pekerjaan data - No employment (underage)
+      pekerjaan_status: "Tidak Bekerja",
+      sumber_pendapatan: ["Sumbangan Keluarga"],
+      lain_lain_sumber_pendapatan: "",
+      jenis_pekerjaan: "",
+      sektor_pekerjaan: "",
+      jawatan: "",
+      status_jawatan: "",
+      pendapatan_kasar: 0.00,
+      lain_lain_sektor_pekerjaan: "",
+      pengesahan_pendapatan: [],
+      sebab_tidak_bekerja: "Pelajar",
+      lain_lain_sebab_tidak_bekerja: "",
       
       // Perbankan data - No bank account (underage)
       ada_akaun_bank_tanggungan: "T",
