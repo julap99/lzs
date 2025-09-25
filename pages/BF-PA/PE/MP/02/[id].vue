@@ -4,15 +4,21 @@
 
     <rs-card class="mt-4">
       <template #header>
-        <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Kiraan Jumlah Elaun Mengikut Penolong Amil</h2>
-          <rs-badge
-            v-if="formData.status"
-            :variant="getStatusVariant(formData.status)"
-          >
-            {{ formData.status }}
-          </rs-badge>
-        </div>
+        <header class="flex flex-wrap items-center justify-between gap-4">
+          <div class="space-y-1">
+            <h1 class="text-2xl font-semibold text-slate-900">Kiraan Jumlah Elaun Mengikut Penolong Amil</h1>
+            <p class="text-sm text-slate-500">{{ formData.namaAktiviti || '-' }}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <rs-badge v-if="formData.status" :variant="getStatusVariant(formData.status)">
+              {{ formData.status }}
+            </rs-badge>
+            <rs-button variant="ghost" class="flex items-center gap-2" @click="navigateTo(`/BF-PA/PE/MP/${activityId}`)">
+              <Icon name="ph:arrow-left" class="h-4 w-4" />
+              Kembali
+            </rs-button>
+          </div>
+        </header>
       </template>
 
       <template #body>
