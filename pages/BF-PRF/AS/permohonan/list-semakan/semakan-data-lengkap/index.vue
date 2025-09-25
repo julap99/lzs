@@ -371,6 +371,70 @@
             :read-only="true"
           />
 
+          <!-- Section B Form - Step 2: Maklumat Pengislaman Tanggungan -->
+          <TanggunganPengislamanForms
+            v-if="currentStepB === 2"
+            :get-current-tanggungan="getCurrentTanggungan"
+            :show-footer-buttons="false"
+            :read-only="true"
+          />
+
+          <!-- Section B Form - Step 3: Maklumat Perbankan Tanggungan -->
+          <TanggunganPerbankanForms
+            v-if="currentStepB === 3"
+            :get-current-tanggungan="getCurrentTanggungan"
+            :show-footer-buttons="false"
+            :read-only="true"
+          />
+
+          <!-- Section B Form - Step 4: Maklumat Pendidikan Tanggungan -->
+          <TanggunganPendidikanForms
+            v-if="currentStepB === 4"
+            :get-current-tanggungan="getCurrentTanggungan"
+            :show-footer-buttons="false"
+            :read-only="true"
+          />
+
+          <!-- Section B Form - Step 5: Maklumat Kesihatan Tanggungan -->
+          <TanggunganKesihatanForms
+            v-if="currentStepB === 5"
+            :get-current-tanggungan="getCurrentTanggungan"
+            :show-footer-buttons="false"
+            :read-only="true"
+          />
+
+          <!-- Section B Form - Step 6: Maklumat Kemahiran Tanggungan -->
+          <TanggunganKemahiranForms
+            v-if="currentStepB === 6"
+            :get-current-tanggungan="getCurrentTanggungan"
+            :show-footer-buttons="false"
+            :read-only="true"
+          />
+
+          <!-- Section B Form - Step 7: Maklumat Pemilikan Aset Tanggungan -->
+          <TanggunganPemilikanAsetForms
+            v-if="currentStepB === 7"
+            :get-current-tanggungan="getCurrentTanggungan"
+            :show-footer-buttons="false"
+            :read-only="true"
+          />
+
+          <!-- Section B Form - Step 8: Maklumat Pinjaman Harta Tanggungan -->
+          <TanggunganPinjamanHartaForms
+            v-if="currentStepB === 8"
+            :get-current-tanggungan="getCurrentTanggungan"
+            :show-footer-buttons="false"
+            :read-only="true"
+          />
+
+          <!-- Section B Form - Step 9: Maklumat Pekerjaan Tanggungan -->
+          <TanggunganPekerjaanForms
+            v-if="currentStepB === 9"
+            :get-current-tanggungan="getCurrentTanggungan"
+            :show-footer-buttons="false"
+            :read-only="true"
+          />
+
           <!-- all section B form here -->
 
 
@@ -474,6 +538,14 @@ import PemilikanAsetForms from "~/components/forms/borang-permohonan-lengkap/Sec
 import PekerjaanForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PekerjaanForms.vue";
 import PendapatanPerbelanjaanForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PendapatanPerbelanjaanForms.vue";
 import TanggunganPeribadiForms from "~/components/forms/borang-permohonan-lengkap/SectionB/TanggunganPeribadiForms.vue";
+import TanggunganPengislamanForms from "~/components/forms/borang-permohonan-lengkap/SectionB/TanggunganPengislamanForms.vue";
+import TanggunganPerbankanForms from "~/components/forms/borang-permohonan-lengkap/SectionB/TanggunganPerbankanForms.vue";
+import TanggunganPendidikanForms from "~/components/forms/borang-permohonan-lengkap/SectionB/TanggunganPendidikanForms.vue";
+import TanggunganKesihatanForms from "~/components/forms/borang-permohonan-lengkap/SectionB/TanggunganKesihatanForms.vue";
+import TanggunganKemahiranForms from "~/components/forms/borang-permohonan-lengkap/SectionB/TanggunganKemahiranForms.vue";
+import TanggunganPemilikanAsetForms from "~/components/forms/borang-permohonan-lengkap/SectionB/TanggunganPemilikanAsetForms.vue";
+import TanggunganPinjamanHartaForms from "~/components/forms/borang-permohonan-lengkap/SectionB/TanggunganPinjamanHartaForms.vue";
+import TanggunganPekerjaanForms from "~/components/forms/borang-permohonan-lengkap/SectionB/TanggunganPekerjaanForms.vue";
 
 const toast = useToast();
 
@@ -691,9 +763,9 @@ const stepsB = [
   { id: 4, label: "Pendidikan" },
   { id: 5, label: "Kesihatan" },
   { id: 6, label: "Kemahiran" },
-  { id: 7, label: "Pekerjaan" },
-  { id: 8, label: "Pemilikan Aset" },
-  { id: 9, label: "Pinjaman Harta" },
+  { id: 7, label: "Pemilikan Aset" },
+  { id: 8, label: "Pinjaman Harta" },
+  { id: 9, label: "Pekerjaan" },
   { id: 10, label: "Pengesahan" },
   { id: 11, label: "Pengesahan Pendapatan" },
   { id: 12, label: "Pengesahan Bermastautin" },
@@ -898,6 +970,96 @@ onMounted(() => {
       no_pengenalan_tanggungan: "801004035672",
       tempoh_menetap_selangor: "20",
       no_telefon_tanggungan: "0138202398",
+
+      // Islamic Information
+      adakah_muallaf_tanggungan: "T",
+      
+      // Pendidikan data
+      masih_bersekolah: "T",
+      pendidikan_tertinggi: "SPM",
+      tahap_pendidikan_dicapai: ["SPM"],
+      sijil_pendidikan: [],
+      education_entries: [
+        {
+          jenis_sekolah: "tinggi",
+          kategori_sekolah: "SEK.MEN",
+          tarikh_mula_pengajian: "2018-01-01",
+          tarikh_tamat_pengajian: "2019-12-31",
+          tahun_bersekolah: "2018",
+          tingkatan: "Tingkatan 5",
+          nama_sekolah: "SMK Seksyen 7",
+          kategori_rendah: [],
+          alamat1: "Jalan Masjid",
+          alamat2: "Seksyen 7",
+          alamat3: "",
+          daerah: "Shah Alam",
+          bandar: "Shah Alam",
+          poskod: "40000",
+          bidang_kursus: "sains",
+          jurusan_bidang: "Sains Tulen",
+          pembiayaan_pengajian: ["Tiada"],
+          lain_pembiayaan: "",
+          catatan: "Lulus dengan cemerlang"
+        }
+      ],
+      tinggal_bersama_keluarga: "Y",
+      asrama_rumah_sewa: "",
+      nama_baitul: "",
+      
+      // Kesihatan data
+      tahap_kesihatan_tanggungan: "Sihat",
+      
+      // Kemahiran data
+      kemahiran_tanggungan: ["Memasak", "Mengasuh", "Perkhidmatan"],
+      lain_kemahiran_tanggungan: "",
+      
+      // Pemilikan Aset data
+      wang_simpanan: 5000.00,
+      emas: 2000.00,
+      saham: 0.00,
+      kenderaan: "Proton Saga 2018",
+      rumah: "Rumah Teres 2 Tingkat, Shah Alam",
+      tanah_sawah: "",
+      dokumen_pemilikan: [],
+      
+      // Pinjaman Harta data
+      nama_institusi_pemberi_pinjaman: "Bank Islam Malaysia Berhad",
+      jenis_pinjaman: "Perumahan",
+      amaun_bayaran_bulanan: 1200.00,
+      jumlah_keseluruhan_perbelanjaan: 180000.00,
+      tahun_mula_pinjaman: "2020-01-01",
+      tahun_akhir_pinjaman: "2035-01-01",
+      dokumen_perjanjian_pinjaman: [],
+      
+      // Pekerjaan data
+      pekerjaan_status: "Tidak Bekerja",
+      sumber_pendapatan: ["Sumbangan Keluarga"],
+      lain_lain_sumber_pendapatan: "",
+      jenis_pekerjaan: "",
+      sektor_pekerjaan: "",
+      jawatan: "",
+      status_jawatan: "",
+      pendapatan_kasar: 0.00,
+      lain_lain_sektor_pekerjaan: "",
+      pengesahan_pendapatan: [],
+      sebab_tidak_bekerja: "Suri Rumah",
+      lain_lain_sebab_tidak_bekerja: "",
+      
+      // Perbankan data
+      ada_akaun_bank_tanggungan: "Y",
+      muflis_disenarai_hitam: "T",
+      bank_accounts_tanggungan: [
+        {
+          nama_bank: "bank-islam",
+          no_akaun_bank: "3063020371171",
+          nama_pemegang_akaun: "ROHANA BINTI AHMAD",
+          jenis_akaun: "individu",
+          id_pengenalan: "801004035672",
+          nama_bersama: "",
+          hubungan: "",
+          pengenalan_ids: []
+        }
+      ]
     };
 
     // 2) Anak Perempuan Dewasa
@@ -928,6 +1090,95 @@ onMounted(() => {
       no_pengenalan_tanggungan: "060802030272",
       tempoh_menetap_selangor: "19",
       no_telefon_tanggungan: "0197883456",
+
+      adakah_muallaf_tanggungan: "T",
+      
+      // Pendidikan data
+      masih_bersekolah: "T",
+      pendidikan_tertinggi: "Ijazah",
+      tahap_pendidikan_dicapai: ["SPM", "Ijazah"],
+      sijil_pendidikan: [],
+      education_entries: [
+        {
+          jenis_sekolah: "tinggi",
+          kategori_sekolah: "IPT",
+          tarikh_mula_pengajian: "2020-09-01",
+          tarikh_tamat_pengajian: "2024-06-30",
+          tahun_bersekolah: "2020",
+          tingkatan: "Tahun 4",
+          nama_sekolah: "Universiti Teknologi MARA",
+          kategori_rendah: [],
+          alamat1: "Jalan Ilmu",
+          alamat2: "Kampus Shah Alam",
+          alamat3: "",
+          daerah: "Shah Alam",
+          bandar: "Shah Alam",
+          poskod: "40450",
+          bidang_kursus: "teknologi-maklumat",
+          jurusan_bidang: "Sains Komputer",
+          pembiayaan_pengajian: ["PTPTN"],
+          lain_pembiayaan: "",
+          catatan: "Mendapat CGPA 3.5"
+        }
+      ],
+      tinggal_bersama_keluarga: "Y",
+      asrama_rumah_sewa: "",
+      nama_baitul: "",
+      
+      // Kesihatan data
+      tahap_kesihatan_tanggungan: "Sihat",
+      
+      // Kemahiran data
+      kemahiran_tanggungan: ["Pertukangan", "Perniagaan", "Perkhidmatan"],
+      lain_kemahiran_tanggungan: "",
+      
+      // Pemilikan Aset data
+      wang_simpanan: 2000.00,
+      emas: 0.00,
+      saham: 1000.00,
+      kenderaan: "",
+      rumah: "",
+      tanah_sawah: "",
+      dokumen_pemilikan: [],
+      
+      // Pinjaman Harta data
+      nama_institusi_pemberi_pinjaman: "PTPTN",
+      jenis_pinjaman: "Pendidikan",
+      amaun_bayaran_bulanan: 300.00,
+      jumlah_keseluruhan_perbelanjaan: 50000.00,
+      tahun_mula_pinjaman: "2020-09-01",
+      tahun_akhir_pinjaman: "2030-09-01",
+      dokumen_perjanjian_pinjaman: [],
+      
+      // Pekerjaan data
+      pekerjaan_status: "Bekerja",
+      sumber_pendapatan: ["Pengajian", "Sumbangan Keluarga"],
+      lain_lain_sumber_pendapatan: "",
+      jenis_pekerjaan: "Pekerja Sambilan",
+      sektor_pekerjaan: "Swasta",
+      jawatan: "Pembantu Kedai",
+      status_jawatan: "Kontrak",
+      pendapatan_kasar: 800.00,
+      lain_lain_sektor_pekerjaan: "",
+      pengesahan_pendapatan: [],
+      sebab_tidak_bekerja: "",
+      lain_lain_sebab_tidak_bekerja: "",
+      
+      // Perbankan data
+      ada_akaun_bank_tanggungan: "Y",
+      muflis_disenarai_hitam: "T",
+      bank_accounts_tanggungan: [
+        {
+          nama_bank: "maybank",
+          no_akaun_bank: "512345678901",
+          nama_pemegang_akaun: "NUR NAJWA BINTI ADNAN",
+          jenis_akaun: "individu",
+          id_pengenalan: "060802030272",
+          nama_bersama: "",
+          hubungan: "",
+          pengenalan_ids: []
+        }
+      ]
     };
 
     // 3) Anak Perempuan Sekolah
@@ -958,6 +1209,71 @@ onMounted(() => {
       no_pengenalan_tanggungan: "091108030442",
       tempoh_menetap_selangor: "16",
       no_telefon_tanggungan: "01299982378",
+
+      adakah_muallaf_tanggungan: "T",
+      
+      // Pendidikan data
+      masih_bersekolah: "Y",
+      pendidikan_tertinggi: "Peringkat Rendah",
+      tahap_pendidikan_dicapai: ["Peringkat Rendah"],
+      sijil_pendidikan: [],
+      education_entries: [
+        {
+          jenis_sekolah: "rendah",
+          kategori_sekolah: "SRK",
+          tarikh_mula_pengajian: "2023-01-01",
+          tarikh_tamat_pengajian: "",
+          tahun_bersekolah: "2023",
+          tingkatan: "Tingkatan 1",
+          nama_sekolah: "SK Seksyen 7",
+          kategori_rendah: ["SRK"],
+          alamat1: "Jalan Pendidikan",
+          alamat2: "Seksyen 7",
+          alamat3: "",
+          daerah: "Shah Alam",
+          bandar: "Shah Alam",
+          poskod: "40000",
+          bidang_kursus: "",
+          jurusan_bidang: "",
+          pembiayaan_pengajian: ["Tiada"],
+          lain_pembiayaan: "",
+          catatan: "Masih bersekolah"
+        }
+      ],
+      tinggal_bersama_keluarga: "Y",
+      asrama_rumah_sewa: "",
+      nama_baitul: "",
+      
+      // Kesihatan data
+      tahap_kesihatan_tanggungan: "Sihat",
+      
+      // Kemahiran data
+      // dont have data since underage
+      
+      // Pemilikan Aset data - No assets (underage)
+      
+      // Pinjaman Harta data - No loans (underage)
+      
+      // Pekerjaan data - No employment (underage)
+      pekerjaan_status: "Tidak Bekerja",
+      sumber_pendapatan: ["Sumbangan Keluarga"],
+      lain_lain_sumber_pendapatan: "",
+      jenis_pekerjaan: "",
+      sektor_pekerjaan: "",
+      jawatan: "",
+      status_jawatan: "",
+      pendapatan_kasar: 0.00,
+      lain_lain_sektor_pekerjaan: "",
+      pengesahan_pendapatan: [],
+      sebab_tidak_bekerja: "Pelajar",
+      lain_lain_sebab_tidak_bekerja: "",
+      
+      // Perbankan data - No bank account (underage)
+      ada_akaun_bank_tanggungan: "T",
+      muflis_disenarai_hitam: "T",
+      bank_accounts_tanggungan: [],
+      sebab_tiada_akaun: "belum-cukup-umur",
+      lain_lain_sebab_tiada_akaun: ""
     };
 
     currentTanggunganIndex.value = 0;

@@ -15,6 +15,7 @@
         label="Wang Simpanan (RM)"
         step="0.01"
         min="0"
+        :disabled="readOnly"
         v-model="getCurrentTanggungan().wang_simpanan"
       />
 
@@ -24,6 +25,7 @@
         label="Emas (RM)"
         step="0.01"
         min="0"
+        :disabled="readOnly"
         v-model="getCurrentTanggungan().emas"
       />
 
@@ -33,6 +35,7 @@
         label="Saham (RM)"
         step="0.01"
         min="0"
+        :disabled="readOnly"
         v-model="getCurrentTanggungan().saham"
       />
     </div>
@@ -44,6 +47,7 @@
         name="kenderaan_tanggungan"
         label="Kenderaan"
         placeholder="Contoh: Proton Saga (2018)"
+        :disabled="readOnly"
         v-model="getCurrentTanggungan().kenderaan"
       />
 
@@ -52,6 +56,7 @@
         name="rumah_tanggungan"
         label="Rumah / Harta Tanah"
         placeholder="Contoh: Teres 2 tingkat, Shah Alam"
+        :disabled="readOnly"
         v-model="getCurrentTanggungan().rumah"
       />
 
@@ -60,6 +65,7 @@
         name="tanah_sawah_tanggungan"
         label="Tanah / Sawah"
         placeholder="Contoh: 1 ekar di Kuala Selangor"
+        :disabled="readOnly"
         v-model="getCurrentTanggungan().tanah_sawah"
       />
 
@@ -70,11 +76,12 @@
         accept=".pdf,.jpg,.jpeg,.png"
         help="Format dibenarkan: PDF, JPG, PNG. Saiz maks: 5MB"
         validation="max:5|mime:application/pdf,image/jpeg,image/png"
+        :disabled="readOnly"
         v-model="getCurrentTanggungan().dokumen_pemilikan"
       />
     </div>
 
-    <div class="flex justify-between gap-3 mt-6">
+    <div v-if="showFooterButtons" class="flex justify-between gap-3 mt-6">
       <rs-button
         type="button"
         variant="primary-outline"
@@ -102,6 +109,14 @@ const props = defineProps({
   getCurrentTanggungan: {
     type: Function,
     required: true
+  },
+  readOnly: {
+    type: Boolean,
+    default: false
+  },
+  showFooterButtons: {
+    type: Boolean,
+    default: true
   }
 })
 

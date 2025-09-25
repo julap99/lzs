@@ -869,7 +869,19 @@
           <!-- Modal: Tambah Penerima Baharu -->
           <rs-modal v-model="showAddRegistration" title="Tambah Penerima Baharu">
             <div class="space-y-3">
+              <!-- Hide existing fields and show only Kategori Penerima -->
               <div>
+                <label class="text-xs font-medium text-gray-600">Kategori Penerima <span class="text-red-500">*</span></label>
+                <select v-model="newRegistration.kategoriPenerima" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <option value="">-- Sila Pilih --</option>
+                  <option value="organisasi">Organisasi</option>
+                  <option value="syarikat">Syarikat</option>
+                  <option value="recipient">Recipient</option>
+                </select>
+              </div>
+              
+              <!-- Hidden fields (commented out but kept for reference) -->
+              <!-- <div>
                 <label class="text-xs font-medium text-gray-600">Nama Penuh</label>
                 <input v-model="newRegistration.namaPenuh" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md" />
               </div>
@@ -900,12 +912,12 @@
               <div>
                 <label class="text-xs font-medium text-gray-600">No Akaun Bank</label>
                 <input v-model="newRegistration.noAkaun" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md" />
-              </div>
+              </div> -->
             </div>
             <template #footer>
               <div class="flex justify-end gap-2">
                 <rs-button variant="secondary" @click="showAddRegistration = false">Batal</rs-button>
-                <rs-button variant="success" @click="saveNewRegistration">Simpan</rs-button>
+                <rs-button variant="primary" @click="proceedToNextStep">Seterusnya</rs-button>
               </div>
             </template>
           </rs-modal>
@@ -3162,7 +3174,47 @@ const loadEditingAsnafByName = () => {
 
 // Add new registration modal state and handler
 const showAddRegistration = ref(false)
-const newRegistration = ref({ namaPenuh:'', jenisPengenalan:'IC', noPengenalan:'', namaPemegangAkaun:'', bank:'', noAkaun:'' })
+const newRegistration = ref({ 
+  kategoriPenerima: '',
+  namaPenuh:'', 
+  jenisPengenalan:'IC', 
+  noPengenalan:'', 
+  namaPemegangAkaun:'', 
+  bank:'', 
+  noAkaun:'' 
+})
+
+const proceedToNextStep = () => {
+  // Validate that kategori penerima is selected
+  if (!newRegistration.value.kategoriPenerima) {
+    // You can add a toast notification here if needed
+    return;
+  }
+  
+  // Close the current modal
+  showAddRegistration.value = false;
+  
+  // Navigate based on selected category (open in new tab)
+  if (newRegistration.value.kategoriPenerima === 'organisasi') {
+    // Navigate to organisation page in new tab
+    window.open('/BF-PRF/OR/PP/kemaskini/ORG-240501', '_blank');
+  } else {
+    // For syarikat and recipient, navigate to third party page in new tab
+    window.open('/BF-PRF/TP/PP/02', '_blank');
+  }
+  
+  // Reset the form
+  newRegistration.value = { 
+    kategoriPenerima: '',
+    namaPenuh:'', 
+    jenisPengenalan:'IC', 
+    noPengenalan:'', 
+    namaPemegangAkaun:'', 
+    bank:'', 
+    noAkaun:'' 
+  };
+}
+
 const saveNewRegistration = () => {
   const label = `${newRegistration.value.noPengenalan} -${newRegistration.value.namaPenuh}`
   if (!registrationOptions.value.includes(label)) registrationOptions.value.push(label)
@@ -3177,7 +3229,15 @@ const saveNewRegistration = () => {
     d.penerimaBayaran.status = 'unverified'
   }
   showAddRegistration.value = false
-  newRegistration.value = { namaPenuh:'', jenisPengenalan:'IC', noPengenalan:'', namaPemegangAkaun:'', bank:'', noAkaun:'' }
+  newRegistration.value = { 
+    kategoriPenerima: '',
+    namaPenuh:'', 
+    jenisPengenalan:'IC', 
+    noPengenalan:'', 
+    namaPemegangAkaun:'', 
+    bank:'', 
+    noAkaun:'' 
+  }
 }
 
 // Load penerima data based on category selection
