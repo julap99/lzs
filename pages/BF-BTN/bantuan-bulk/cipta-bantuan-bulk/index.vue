@@ -122,7 +122,7 @@
               </template>
 
               <template v-slot:status="data">
-                <rs-badge variant="info">
+                <rs-badge :variant="getStatusVariant(data.text)">
                   {{ data.text }}
                 </rs-badge>
               </template>
@@ -507,13 +507,13 @@ const formatDate = (dateString) => {
 const getStatusVariant = (status) => {
   switch (status) {
     case 'Draf':
-      return 'warning';
+      return 'disabled';
     case 'Lulus':
       return 'success';
     case 'Ditolak':
       return 'danger';
     case 'Dalam Proses':
-      return 'info';
+      return 'warning';
     case 'Baru':
       return 'primary';
     default:
