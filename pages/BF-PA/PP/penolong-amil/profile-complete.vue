@@ -69,6 +69,10 @@ const profileForm = ref({
   namaWaris: "",
   hubungan: "",
   noTelefonWaris: "",
+
+  // Akuan Konflik
+  conflictHasRelation: false,
+  conflictPegawaiLzs: "",
 });
 
 // --------- Options ---------
@@ -146,6 +150,15 @@ const bankOptions = [
   { label: "CIMB Bank", value: "CIMB Bank" },
   { label: "Public Bank", value: "Public Bank" },
   { label: "RHB Bank", value: "RHB Bank" },
+];
+
+// --- Pegawai LZS (untuk Akuan Konflik)
+const pegawaiLzsOptions = [
+  { label: "Sila pilih...", value: "" },
+  { label: "Ahmad bin Ali", value: "Ahmad bin Ali" },
+  { label: "Siti binti Abu", value: "Siti binti Abu" },
+  { label: "Zulkifli bin Osman", value: "Zulkifli bin Osman" },
+  { label: "Noraini binti Rahman", value: "Noraini binti Rahman" },
 ];
 
 // --------- Direktori & Config Validasi ---------
@@ -276,6 +289,15 @@ watch(
   }
 );
 
+watch(
+  () => profileForm.value.conflictHasRelation,
+  (hasRelation) => {
+    if (!hasRelation) {
+      profileForm.value.conflictPegawaiLzs = "";
+    }
+  }
+);
+
 // --------- Mock Data (pre-fill) ---------
 onMounted(() => {
   // Data asas (nama & IC dari rekod — read-only)
@@ -360,6 +382,11 @@ const handleSubmit = async () => {
     return;
   }
 
+  if (profileForm.value.conflictHasRelation && !profileForm.value.conflictPegawaiLzs) {
+    $swal.fire({ icon: "error", title: "Maklumat konflik diperlukan", text: "Sila pilih nama pegawai LZS." });
+    return;
+  }
+
   // PDPA & Akuan Konflik
   const result = await $swal.fire({
     title: "Terma dan Syarat",
@@ -370,22 +397,15 @@ const handleSubmit = async () => {
           <p class="text-sm text-gray-700 leading-relaxed">
             Saya dengan ini bersetuju memberi persetujuan secara nyata (explicit consent) kepada Lembaga Zakat Selangor untuk mengumpul, memproses, menggunakan data peribadi saya bagi tujuan pentadbiran, kajian, dakwah, promosi dan aktiviti-aktiviti lain berkaitan fungsi Zakat Selangor seperti yang dinyatakan di dalam Notis Privasi Zakat Selangor di www.zakatselangor.com.my
           </p>
+          <p class="text-sm text-gray-700 leading-relaxed mt-2">
+            Saya mengesahkan bahawa segala maklumat dan data yang diberikan adalah BENAR, TEPAT, LENGKAP dan
+TERKINI. Saya faham dan bersetuju sekiranya saya memberi maklumat palsu dan tidak benar, pihak Lembaga Zakat
+Selangor berhak mengambil tindakan ke atas saya.
+
           <div class="mt-3">
             <label class="flex items-center">
               <input type="checkbox" id="pdpa-consent" class="mr-2 rounded border-gray-300 text-primary focus:ring-primary">
               <span class="text-sm text-gray-700">Saya bersetuju dengan terma PDPA</span>
-            </label>
-          </div>
-        </div>
-        <div>
-          <h4 class="font-semibold text-gray-900 mb-2">Akuan Konflik</h4>
-          <p class="text-sm text-gray-700 leading-relaxed">
-            Saya mengesahkan bahawa segala maklumat dan data yang diberikan adalah BENAR, TEPAT, LENGKAP dan TERKINI. Saya faham dan bersetuju sekiranya saya memberi maklumat palsu dan tidak benar, pihak Lembaga Zakat Selangor berhak mengambil tindakan ke atas saya.
-          </p>
-          <div class="mt-3">
-            <label class="flex items-center">
-              <input type="checkbox" id="conflict-consent" class="mr-2 rounded border-gray-300 text-primary focus:ring-primary">
-              <span class="text-sm text-gray-700">Saya mengesahkan maklumat adalah benar dan tepat</span>
             </label>
           </div>
         </div>
@@ -405,10 +425,9 @@ const handleSubmit = async () => {
         confirmButton.classList.add("opacity-50", "cursor-not-allowed");
       }
       const pdpaCheckbox = document.getElementById("pdpa-consent");
-      const conflictCheckbox = document.getElementById("conflict-consent");
       const updateButtonState = () => {
-        if (pdpaCheckbox && conflictCheckbox && confirmButton) {
-          if (pdpaCheckbox.checked && conflictCheckbox.checked) {
+        if (pdpaCheckbox && confirmButton) {
+          if (pdpaCheckbox.checked) {
             confirmButton.disabled = false;
             confirmButton.classList.remove("opacity-50", "cursor-not-allowed");
           } else {
@@ -418,7 +437,14 @@ const handleSubmit = async () => {
         }
       };
       pdpaCheckbox?.addEventListener("change", updateButtonState);
-      conflictCheckbox?.addEventListener("change", updateButtonState);
+    },
+    preConfirm: () => {
+      const pdpaChecked = document.getElementById("pdpa-consent")?.checked;
+      if (!pdpaChecked) {
+        $swal.showValidationMessage("Sila setuju dengan terma PDPA.");
+        return false;
+      }
+      return true;
     },
   });
 
@@ -718,6 +744,36 @@ const handleBack = () => {
             </div>
           </div>
 
+          <!-- Akuan Konflik -->
+          <div class="space-y-6">
+            <h3 class="text-lg font-semibold text-gray-900 border-b pb-2">Akuan Konflik</h3>
+
+            <div class="space-y-4">
+              <div class="flex items-center gap-6 text-sm text-gray-700">
+                <label class="flex items-center gap-2">
+                  <input type="radio" :value="false" v-model="profileForm.conflictHasRelation" class="rounded border-gray-300 text-primary focus:ring-primary" />
+                  Tiada kaitan dengan pegawai LZS
+                </label>
+                <label class="flex items-center gap-2">
+                  <input type="radio" :value="true" v-model="profileForm.conflictHasRelation" class="rounded border-gray-300 text-primary focus:ring-primary" />
+                  Ada kaitan
+                </label>
+              </div>
+
+              <div v-if="profileForm.conflictHasRelation" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormKit
+                  type="select"
+                  name="conflictPegawaiLzs"
+                  label="Nama Pegawai LZS Terlibat"
+                  v-model="profileForm.conflictPegawaiLzs"
+                  :options="pegawaiLzsOptions"
+                  :classes="{ input: '!py-2' }"
+                />
+                <p v-if="!profileForm.conflictPegawaiLzs" class="text-sm text-red-600 md:col-span-2">Sila pilih nama pegawai jika ada kaitan.</p>
+              </div>
+            </div>
+          </div>
+
           <!-- Photo Upload -->
           <div class="space-y-6">
             <h3 class="text-lg font-semibold text-gray-900 border-b pb-2">Foto Profil</h3>
@@ -771,4 +827,4 @@ const handleBack = () => {
 <style scoped>
 /* Custom styles (optional) */
 </style>
-```
+

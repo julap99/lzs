@@ -319,7 +319,7 @@
               />
               <label for="accept-terms" class="text-sm text-gray-700">
                 <span v-if="!hasScrolledToBottom" class="text-gray-500">
-                  Sila tatal ke bahagian bawah terma dan syarat untuk membaca keseluruhan kandungan sebelum menandatangani.
+                  Sila skrol ke bahagian bawah terma dan syarat untuk membaca keseluruhan kandungan sebelum menandatangani.
                 </span>
                 <span v-else class="text-gray-700">
                   Saya telah membaca dan bersetuju dengan terma-terma dan syarat-syarat yang dinyatakan di atas. 

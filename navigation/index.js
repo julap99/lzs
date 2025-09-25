@@ -1383,6 +1383,13 @@ export default [
             child: [],
             meta: {},
           },
+          {
+            title: "Kandungan Dokumen",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PA/KF/KD",
+            child: [],
+            meta: {},
+          },
         ],
         meta: {},
       },
@@ -1406,7 +1413,7 @@ export default [
             meta: {},
           },
           {
-            title: "Penamatan Jawatan",
+            title: "Penamatan Lantikan",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PA/PP/KP",
             child: [],

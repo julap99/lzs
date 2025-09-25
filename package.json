@@ -10,7 +10,6 @@
   "resolutions": {
     "entities": "^4.5.0"
   },
-
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.8.0",
     "@nuxtjs/vercel-builder": "^0.25.0",
@@ -51,7 +50,7 @@
     "@popperjs/core": "^2.11.8",
     "@shimyshack/uid": "^0.1.7",
     "@sweetalert2/theme-dark": "^5.0.14",
-    "@vueup/vue-quill": "^1.0.0",
+    "@vueup/vue-quill": "^1.2.0",
     "@vueuse/core": "^9.5.0",
     "@vueuse/nuxt": "^9.5.0",
     "apexcharts": "3.41.0",
@@ -66,6 +65,7 @@
     "jspdf-autotable": "^5.0.2",
     "luxon": "^2.5.2",
     "maska": "^1.5.0",
+    "papaparse": "^5.5.3",
     "pinia": "^2.1.6",
     "prettier": "^2.8.1",
     "sass": "^1.90.0",
@@ -88,6 +88,7 @@
     "vue3-dropzone": "^2.0.1",
     "vue3-recaptcha-v2": "^2.0.2",
     "vue3-signature-pad": "^1.0.7",
-    "vuedraggable": "^4.1.0"
+    "vuedraggable": "^4.1.0",
+    "xlsx": "^0.18.5"
   }
 }
