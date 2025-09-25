@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="text-2xl font-bold text-center mb-6">
+    <h1 class="text-2xl font-bold text-left mb-6">
       Butiran Permohonan Kategori Masalah
     </h1>
 

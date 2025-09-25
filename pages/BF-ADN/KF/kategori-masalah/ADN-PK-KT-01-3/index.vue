@@ -9,7 +9,7 @@
       </template>
 
       <template #body>
-        <div v-if="data" class="p-4 md:p-6 bg-white border-l-4 border-blue-600 rounded">
+        <div v-if="data" class="p-4 md:p-6 bg-white  rounded">
           <div class="text-2xl font-extrabold mb-4">{{ data.namaMasalah }}</div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -111,19 +111,19 @@ const data = computed(() => (kategoriId.value != null ? mockById[kategoriId.valu
 // ===== Senarai perubahan (mock ikut contoh UI) =====
 const changeHistoryById = {
   1: [
-    { no: '1',           kategoriMasalah: 'Tiada Tempat Tinggal', tahapAduan: 'Merah',  status: 'Aktif',       dikemaskiniOleh: 'Eksekutif_A', tarikhKemaskini: '2025-09-10', catatan: 'Kemaskini tahap aduan dan penerangan', statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-12' },
-    { no: 'KM-V1-0002',  kategoriMasalah: 'Tiada Makanan',        tahapAduan: 'Merah',  status: 'Aktif',       dikemaskiniOleh: 'Eksekutif_B', tarikhKemaskini: '2025-09-06', catatan: 'Penetapan semula label kategori',     statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-08' },
-    { no: 'KM-V1-0003',  kategoriMasalah: 'Kekurangan Sumber Pendapatan', tahapAduan: 'Kuning', status: 'Tidak Aktif', dikemaskiniOleh: 'Eksekutif_C', tarikhKemaskini: '2025-08-30', catatan: 'Dinonaktifkan sementara untuk semakan', statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-01' },
+    { no: '1',          kategoriMasalah: 'Tiada Tempat Tinggal', tahapAduan: 'Merah',  status: 'Aktif',       dikemaskiniOleh: 'Eksekutif_A', tarikhKemaskini: '2025-09-10', catatan: 'Kemaskini tahap aduan dan penerangan', statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-12' },
+    { no: '2',  kategoriMasalah: 'Tiada Makanan',        tahapAduan: 'Merah',  status: 'Aktif',       dikemaskiniOleh: 'Eksekutif_B', tarikhKemaskini: '2025-09-06', catatan: 'Penetapan semula label kategori',     statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-08' },
+    { no: '3',  kategoriMasalah: 'Kekurangan Sumber Pendapatan', tahapAduan: 'Kuning', status: 'Tidak Aktif', dikemaskiniOleh: 'Eksekutif_C', tarikhKemaskini: '2025-08-30', catatan: 'Dinonaktifkan sementara untuk semakan', statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-01' },
   ],
   2: [
     { no: '1',           kategoriMasalah: 'Kurang Sumber Pendapatan', tahapAduan: 'Kuning', status: 'Aktif', dikemaskiniOleh: 'Eksekutif_A', tarikhKemaskini: '2025-09-10', catatan: 'Penetapan kadar bantuan', statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-12' },
-    { no: 'KM-V1-0002',  kategoriMasalah: 'Tiada Makanan',            tahapAduan: 'Merah',  status: 'Aktif', dikemaskiniOleh: 'Eksekutif_B', tarikhKemaskini: '2025-09-06', catatan: 'Tambah label kritikal',  statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-08' },
-    { no: 'KM-V1-0003',  kategoriMasalah: 'Pekerjaan Tidak Stabil',   tahapAduan: 'Kuning', status: 'Tidak Aktif', dikemaskiniOleh: 'Eksekutif_C', tarikhKemaskini: '2025-08-30', catatan: 'Dinonaktifkan sementara', statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-01' },
+    { no: '2',  kategoriMasalah: 'Tiada Makanan',            tahapAduan: 'Merah',  status: 'Aktif', dikemaskiniOleh: 'Eksekutif_B', tarikhKemaskini: '2025-09-06', catatan: 'Tambah label kritikal',  statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-08' },
+    { no: '3',  kategoriMasalah: 'Pekerjaan Tidak Stabil',   tahapAduan: 'Kuning', status: 'Tidak Aktif', dikemaskiniOleh: 'Eksekutif_C', tarikhKemaskini: '2025-08-30', catatan: 'Dinonaktifkan sementara', statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-01' },
   ],
   3: [
     { no: '1',           kategoriMasalah: 'Masalah Sosial Am',   tahapAduan: 'Hijau',  status: 'Tidak Aktif', dikemaskiniOleh: 'Eksekutif_X', tarikhKemaskini: '2025-09-10', catatan: 'Semakan semula skop masalah', statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-12' },
-    { no: 'KM-V1-0002',  kategoriMasalah: 'Isu Sosial Ringan',   tahapAduan: 'Hijau',  status: 'Aktif',       dikemaskiniOleh: 'Eksekutif_Y', tarikhKemaskini: '2025-09-06', catatan: 'Aktifkan sementara',           statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-08' },
-    { no: 'KM-V1-0003',  kategoriMasalah: 'Persekitaran Tidak Sihat', tahapAduan: 'Kuning', status: 'Tidak Aktif', dikemaskiniOleh: 'Eksekutif_Z', tarikhKemaskini: '2025-08-30', catatan: 'Nonaktif untuk semakan', statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-01' },
+    { no: '2',  kategoriMasalah: 'Isu Sosial Ringan',   tahapAduan: 'Hijau',  status: 'Aktif',       dikemaskiniOleh: 'Eksekutif_Y', tarikhKemaskini: '2025-09-06', catatan: 'Aktifkan sementara',           statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-08' },
+    { no: '3',  kategoriMasalah: 'Persekitaran Tidak Sihat', tahapAduan: 'Kuning', status: 'Tidak Aktif', dikemaskiniOleh: 'Eksekutif_Z', tarikhKemaskini: '2025-08-30', catatan: 'Nonaktif untuk semakan', statusPermohonan: 'Diluluskan', diluluskanOleh: 'Ketua Jabatan', tarikhKelulusan: '2025-09-01' },
   ],
 }
 

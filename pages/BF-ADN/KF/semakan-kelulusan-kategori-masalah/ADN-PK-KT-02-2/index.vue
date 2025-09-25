@@ -2,7 +2,7 @@
   <div>
     <layouts-breadcrumb :items="breadcrumb" />
 
-    <h1 class="text-2xl font-bold text-center mb-6">
+    <h1 class="text-2xl font-bold text-left mb-6">
       Semakan & Kelulusan Kategori Masalah
     </h1>
 
