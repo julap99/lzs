@@ -210,6 +210,15 @@
         <!-- Bottom Step Navigation (like AS/FR/02) -->
         <div class="mt-8 border-t pt-4 flex items-center justify-between">
           <rs-button
+            v-if="currentStepA === 1"
+            type="button"
+            variant="primary-outline"
+            @click="handleKembali"
+          >
+            Kembali
+          </rs-button>
+
+          <rs-button
             v-if="currentStepA > 1"
             type="button"
             variant="primary-outline"
@@ -294,74 +303,40 @@
             v-if="currentStepB >= 1 && currentStepB <= 9"
             class="mb-6 p-4 bg-gray-50 rounded-lg"
           >
-            <div class="flex justify-between items-center mb-4">
-              <h4 class="text-lg font-semibold">Senarai Tanggungan</h4>
-            </div>
+            <div class="flex items-end gap-4 mb-4">
+              <div class="flex-1">
+                <h4 class="text-lg font-semibold mb-2">Senarai Tanggungan</h4>
+                <FormKit
+                  v-if="tanggunganList.length > 0"
+                  type="select"
+                  name="pilih_tanggungan"
+                  label="Pilih Tanggungan"
+                  :options="tanggunganOptions"
+                  v-model="selectedTanggunganId"
+                />
+              </div>
 
-            <!-- Tanggungan Cards Display -->
-            <div
-              v-if="tanggunganList.length > 0"
-              class="grid grid-cols-1 md:grid-cols-3 gap-4"
-            >
-              <div
-                v-for="(tanggungan, index) in tanggunganList"
-                :key="tanggungan.id"
-                class="p-4 bg-white rounded-lg border cursor-pointer hover:shadow-md transition-all"
-                :class="{
-                  'ring-2 ring-blue-500 border-blue-300':
-                    currentTanggunganIndex === index,
-                  'border-green-300 bg-green-50':
-                    isTanggunganComplete(tanggungan) &&
-                    currentTanggunganIndex !== index,
-                  'border-yellow-300 bg-yellow-50':
-                    !isTanggunganComplete(tanggungan) &&
-                    currentTanggunganIndex !== index,
-                  'border-gray-200':
-                    currentTanggunganIndex !== index &&
-                    !isTanggunganComplete(tanggungan),
-                }"
-                @click="selectTanggungan(index)"
-              >
-                <!-- Card Header -->
-                <div class="flex justify-between items-start mb-3">
-                  <div class="flex-1 text-center">
-                    <p class="text-sm text-gray-600">
-                      {{ tanggungan.nama_tanggungan || "Nama belum diisi" }}
-                    </p>
-                    <p class="text-sm text-gray-600">
-                      {{ tanggungan.hubungan_pemohon || "Hubungan belum diisi" }}
-                    </p>
-                  </div>
-
-                  <!-- Status Badge -->
+              <div class="text-sm text-gray-600 mb-4">
+                <div>
+                  Jumlah: <span class="font-semibold">{{ tanggunganList.length }}</span>
+                </div>
+                <div v-if="selectedTanggunganId" class="mt-2">
                   <span
-                    class="px-2 py-1 text-xs rounded-full"
-                    :class="{
-                      'bg-green-100 text-green-800':
-                        isTanggunganComplete(tanggungan),
-                      'bg-yellow-100 text-yellow-800':
-                        !isTanggunganComplete(tanggungan),
-                    }"
+                    class="px-2 py-1 rounded text-xs"
+                    :class="isAllStepsCompletedForTanggungan(selectedTanggunganId) ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'"
                   >
-                    {{
-                      isTanggunganComplete(tanggungan)
-                        ? "Lengkap"
-                        : "Tidak Lengkap"
-                    }}
+                    {{ isAllStepsCompletedForTanggungan(selectedTanggunganId) ? 'Lengkap' : 'Belum Lengkap' }}
                   </span>
                 </div>
+              </div>
+            </div>
 
-                <!-- Action Buttons -->
-                <div class="flex gap-2 mt-4">
-                  <button
-                    @click.stop="selectTanggungan(index)"
-                    class="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
-                  >
-                    {{
-                      currentTanggunganIndex === index ? "Sedang Edit" : "Edit"
-                    }}
-                  </button>
-                </div>
+            <!-- Optional: brief summary of selected tanggungan -->
+            <div v-if="getCurrentTanggungan()" class="p-3 bg-white border rounded">
+              <div class="flex flex-wrap gap-4 text-sm text-gray-700">
+                <div><span class="font-semibold">Nama:</span> {{ getCurrentTanggungan().nama_tanggungan || '-' }}</div>
+                <div><span class="font-semibold">Hubungan:</span> {{ getCurrentTanggungan().hubungan_pemohon || '-' }}</div>
+                <!-- <div><span class="font-semibold">No. ID:</span> {{ getCurrentTanggungan().pengenalan_id_tanggungan || '-' }}</div> -->
               </div>
             </div>
           </div>
@@ -442,6 +417,7 @@
             :read-only="true"
           />
 
+
           <!-- Komen Penyemak and Dokumen Lengkap outside table -->
           <div class="mb-4 flex flex-col gap-4 border-t pt-4">
             <!-- <div>
@@ -491,7 +467,6 @@
             </div>
           </div>
         </div>
-        
         <!-- Bottom Step Navigation (Section B - like Section A) -->
         <div class="mt-8 border-t pt-4 flex items-center justify-between">
           <rs-button
@@ -515,6 +490,16 @@
           <div class="flex-1"></div>
 
           <rs-button
+            v-if="currentStepB === 9"
+            type="button"
+            variant="primary-outline"
+            @click="goToSectionC"
+            class="mr-2"
+          >
+            Komen Penyemak
+          </rs-button>
+
+          <rs-button
             v-if="currentStepB < totalStepsB"
             type="button"
             variant="primary"
@@ -526,11 +511,47 @@
         </div>
       </template>
     </rs-card>
+        
+    <!-- Section C: Komen Penyemak + Hantar -->
+    <rs-card class="mt-4" v-if="currentSection === 'C'">
+      <template #header>
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-semibold">Semakan & Hantar</h2>
+        </div>
+      </template>
+
+      <template #body>
+        <div class="flex flex-col gap-4">
+          <div>
+            <label class="font-bold block mb-2">Komen Penyemak</label>
+            <FormKit
+              type="textarea"
+              name="komen_penyemak_c"
+              v-model="komenPenyemakC"
+              :rows="5"
+              placeholder="Masukkan komen penyemak keseluruhan"
+            />
+          </div>
+
+          <div class="flex justify-between items-center border-t pt-4">
+            <rs-button type="button" variant="primary-outline" @click="kembaliKeSectionB">
+              Kembali ke Seksyen B
+            </rs-button>
+            <div class="flex-1"></div>
+            <rs-button type="button" variant="danger" @click="tidakLengkap">Tidak Lengkap</rs-button>
+            <rs-button type="button" variant="primary" @click="kiraHadKifayah">
+              Kira Had Kifayah
+            </rs-button>
+          </div>
+        </div>
+      </template>
+    </rs-card>
+
   </div>
 </template>
 
 <script setup>
-import { ref, watch, watchEffect, onMounted, computed } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useToast } from "vue-toastification";
 import PeribadiForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PeribadiForms.vue";
 import AlamatForms from "~/components/forms/borang-permohonan-lengkap/SectionA/AlamatForms.vue";
@@ -727,8 +748,6 @@ const formData = ref({
 });
 
 
-
-const komenPenyemak = ref("");
 const disemakOleh = ref("penyemak");
 const tarikhSemakan = ref(
   new Date().toLocaleDateString("ms-MY", {
@@ -738,12 +757,7 @@ const tarikhSemakan = ref(
   })
 );
 
-const handleHantar = () => {
-  if (currentDokumenLengkap.value === "Tidak") {
-    toast.success("Notifikasi sudah dihantar ke pemohon.");
-    navigateTo("/BF-PRF/AS/permohonan/list-semakan");
-    return;
-  }
+const kiraHadKifayah = () => {
 
   toast.success("Notifikasi sudah dihantar ke pemohon.");
   navigateTo("/BF-PRF/AS/FR/04");
@@ -753,16 +767,64 @@ const handleKembali = () => {
   navigateTo("/BF-PRF/AS/permohonan/list-semakan");
 };
 
+  // Section C navigation/state
+  const goToSectionC = () => {
+    currentSection.value = 'C';
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+  const kembaliKeSectionB = () => {
+    currentSection.value = 'B';
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+  const komenPenyemakC = ref("");
+
+  const tidakLengkap = () => {
+    toast.success("Notifikasi sudah dihantar.");
+    navigateTo('/BF-PRF/AS/permohonan/list-semakan');
+  };
+
+
 // Track dokumen lengkap selection for each step
 const dokumenLengkapSectionA = ref({});
 const dokumenLengkapSectionB = ref({});
 
+// Helpers for Section B: work per tanggungan and per step
+const getCurrentTanggunganId = () => {
+  const current = tanggunganList.value[currentTanggunganIndex.value];
+  if (!current) return null;
+  return current.id ?? currentTanggunganIndex.value + 1;
+};
+
+const getDokumenLengkapB = (stepId) => {
+  const tid = getCurrentTanggunganId();
+  if (!tid) return "";
+  const map = dokumenLengkapSectionB.value || {};
+  return map[tid]?.[stepId] || "";
+};
+
+const setDokumenLengkapB = (stepId, value) => {
+  const tid = getCurrentTanggunganId();
+  if (!tid) return;
+  const map = dokumenLengkapSectionB.value || {};
+  if (!map[tid]) map[tid] = {};
+  map[tid][stepId] = value;
+  dokumenLengkapSectionB.value = { ...map };
+};
+
 // Computed properties to check if dokumen lengkap is selected for current step
 const isDokumenLengkapSelected = computed(() => {
   if (currentSection.value === 'A') {
-    return dokumenLengkapSectionA.value[currentStepA.value] && dokumenLengkapSectionA.value[currentStepA.value] !== "";
+    return (
+      dokumenLengkapSectionA.value[currentStepA.value] &&
+      dokumenLengkapSectionA.value[currentStepA.value] !== ""
+    );
   } else {
-    return dokumenLengkapSectionB.value[currentStepB.value] && dokumenLengkapSectionB.value[currentStepB.value] !== "";
+    const val = getDokumenLengkapB(currentStepB.value);
+    return !!val && val !== "";
   }
 });
 
@@ -772,14 +834,14 @@ const currentDokumenLengkap = computed({
     if (currentSection.value === 'A') {
       return dokumenLengkapSectionA.value[currentStepA.value] || "";
     } else {
-      return dokumenLengkapSectionB.value[currentStepB.value] || "";
+      return getDokumenLengkapB(currentStepB.value) || "";
     }
   },
   set(value) {
     if (currentSection.value === 'A') {
       dokumenLengkapSectionA.value[currentStepA.value] = value;
     } else {
-      dokumenLengkapSectionB.value[currentStepB.value] = value;
+      setDokumenLengkapB(currentStepB.value, value);
     }
   }
 });
@@ -787,9 +849,13 @@ const currentDokumenLengkap = computed({
 // Computed properties to check if each step has dokumen lengkap selection
 const isStepCompleted = (stepId, section = 'A') => {
   if (section === 'A') {
-    return dokumenLengkapSectionA.value[stepId] && dokumenLengkapSectionA.value[stepId] !== "";
+    return (
+      dokumenLengkapSectionA.value[stepId] &&
+      dokumenLengkapSectionA.value[stepId] !== ""
+    );
   } else {
-    return dokumenLengkapSectionB.value[stepId] && dokumenLengkapSectionB.value[stepId] !== "";
+    const val = getDokumenLengkapB(stepId);
+    return !!val && val !== "";
   }
 };
 
@@ -799,7 +865,7 @@ const getDokumenLengkapIcon = (stepId, section = 'A') => {
   if (section === 'A') {
     selection = dokumenLengkapSectionA.value[stepId] || '';
   } else {
-    selection = dokumenLengkapSectionB.value[stepId] || '';
+    selection = getDokumenLengkapB(stepId) || '';
   }
   
   if (!selection) return null;
@@ -888,23 +954,44 @@ const goToSectionA = () => {
 const currentTanggunganIndex = ref(0);
 const tanggunganList = ref([]);
 
-const isTanggunganComplete = (tanggungan) => {
-  return (
-    tanggungan.nama_tanggungan &&
-    tanggungan.hubungan_pemohon &&
-    tanggungan.jenis_id_tanggungan &&
-    tanggungan.jantina_tanggungan &&
-    tanggungan.tarikh_lahir_tanggungan
-  );
-};
+  // Options for tanggungan select input
+  const tanggunganOptions = computed(() => {
+    return (tanggunganList.value || []).map((t, idx) => {
+      const id = t.id ?? idx + 1;
+      const lengkap = isAllStepsCompletedForTanggungan(id);
+      const base = `${t.nama_tanggungan || 'Nama belum diisi'} — ${t.hubungan_pemohon || 'Hubungan belum diisi'}`;
+      const label = lengkap ? `${base} (Lengkap ✓)` : base;
+      return { label, value: id };
+    });
+  });
+
+  // Two-way computed binding for selected tanggungan by id
+  const selectedTanggunganId = computed({
+    get() {
+      const current = tanggunganList.value[currentTanggunganIndex.value];
+      return current ? (current.id ?? currentTanggunganIndex.value + 1) : null;
+    },
+    set(val) {
+      const index = tanggunganList.value.findIndex((t, idx) => (t.id ?? idx + 1) === val);
+      if (index !== -1) {
+        currentTanggunganIndex.value = index;
+        currentStepB.value = 1;
+      }
+    },
+  });
+
+  // Check if all steps (1..totalStepsB) have a dokumen lengkap selection for a tanggungan id
+  const isAllStepsCompletedForTanggungan = (tanggunganId) => {
+    const map = dokumenLengkapSectionB.value || {};
+    const stepsMap = map[tanggunganId] || {};
+    for (let s = 1; s <= totalStepsB; s++) {
+      if (!stepsMap[s] || stepsMap[s] === '') return false;
+    }
+    return true;
+  };
 
 const getCurrentTanggungan = () => {
   return tanggunganList.value[currentTanggunganIndex.value];
-};
-
-const selectTanggungan = (index) => {
-  currentTanggunganIndex.value = index;
-  currentStepB.value = 1;
 };
 
 
