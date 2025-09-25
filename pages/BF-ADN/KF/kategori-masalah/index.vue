@@ -68,10 +68,11 @@
       </template>
     </rs-card>
 
-    <!-- MODAL: TAMBAH -->
+    <!-- MODAL: TAMBAH (dikemaskini ikut URS) -->
     <rs-modal v-model="showAdd" title="Tambah Kategori Masalah" size="lg">
       <form @submit.prevent="saveAdd">
         <div class="grid grid-cols-2 gap-4">
+          <!-- 3.1.1: Tahap Aduan -->
           <div>
             <label class="rs-label">Tahap Aduan</label>
             <select v-model="formAdd.tahap" class="rs-input w-full" required>
@@ -81,60 +82,170 @@
               <option>Hijau</option>
             </select>
           </div>
+
+          <!-- 3.1.3: Tarikh Mula Kuasa (Required) -->
           <div>
-            <label class="rs-label">Status</label>
-            <select v-model="formAdd.status" class="rs-input w-full" required>
-              <option>Aktif</option>
-              <option>Tidak Aktif</option>
-            </select>
+            <label class="rs-label">Tarikh Mula Kuasa</label>
+            <input
+              type="date"
+              v-model="formAdd.tarikhMulaKuasa"
+              class="rs-input w-full"
+              required
+            />
           </div>
+
+          <!-- 3.1.2: Nama Kategori Masalah (Required) -->
           <div class="col-span-2">
             <label class="rs-label">Nama Kategori Masalah</label>
             <input v-model.trim="formAdd.nama" class="rs-input w-full" required />
           </div>
+
+          <!-- 3.1.4: Status Konfigurasi (Toggle, Required) -->
+          <div class="col-span-2">
+            <label class="rs-label">Status Konfigurasi</label>
+            <div class="flex items-center gap-3">
+              <!-- Tukar ke <rs-switch v-model="formAdd.statusKonfigurasi" required /> jika komponen wujud -->
+              <input
+                type="checkbox"
+                v-model="formAdd.statusKonfigurasi"
+                class="rs-switch"
+                required
+              />
+              <span class="text-sm" :class="formAdd.statusKonfigurasi ? 'text-green-600' : 'text-gray-500'">
+                {{ formAdd.statusKonfigurasi ? 'Diaktifkan' : 'Dinonaktifkan' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- 3.1.6: Catatan (Textarea) -->
+          <div class="col-span-2">
+            <label class="rs-label">Catatan</label>
+            <textarea
+              v-model.trim="formAdd.catatan"
+              class="rs-input w-full"
+              rows="3"
+              placeholder="Masukkan catatan (jika ada)"
+            ></textarea>
+          </div>
         </div>
       </form>
+
       <!-- footer pada aras rs-modal -->
       <template #footer>
-        <div class="flex justify-end gap-2">
-          <rs-button variant="light" @click="showAdd=false">Tutup</rs-button>
-          <rs-button variant="primary" @click="saveAdd">Simpan</rs-button>
+        <div class="flex justify-between w-full">
+          <rs-button variant="light" @click="resetAdd">Set Semula</rs-button>
+          <div class="flex gap-2">
+            <rs-button variant="light" @click="showAdd=false">Tutup</rs-button>
+            <!-- Hantar Permohonan: set status & panggil saveAdd tanpa ubah logik dalaman -->
+            <rs-button
+              variant="primary"
+              @click="formAdd.statusPermohonan = 'Menunggu Kelulusan'; saveAdd()"
+            >
+              Hantar Permohonan
+            </rs-button>
+          </div>
         </div>
       </template>
     </rs-modal>
 
-    <!-- MODAL: KEMASKINI (papar id) -->
-    <rs-modal v-model="showEdit" :title="`Kemaskini Kategori #${editId ?? '-'}`" size="lg">
-      <form @submit.prevent="saveEdit">
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="rs-label">Tahap Aduan</label>
-            <select v-model="formEdit.tahap" class="rs-input w-full" required>
-              <option>Merah</option>
-              <option>Kuning</option>
-              <option>Hijau</option>
-            </select>
-          </div>
-          <div>
-            <label class="rs-label">Status</label>
-            <select v-model="formEdit.status" class="rs-input w-full" required>
-              <option>Aktif</option>
-              <option>Tidak Aktif</option>
-            </select>
-          </div>
-          <div class="col-span-2">
-            <label class="rs-label">Nama Kategori Masalah</label>
-            <input v-model.trim="formEdit.nama" class="rs-input w-full" required />
-          </div>
+    <!-- MODAL: KEMASKINI (ikut URS) -->
+<rs-modal v-model="showEdit" title="Kemaskini Kategori Masalah" size="lg">
+  <form @submit.prevent="saveEdit">
+    <div class="grid grid-cols-2 gap-4">
+      <!-- 3.1.1: Tahap Aduan -->
+      <div>
+        <label class="rs-label">Tahap Aduan</label>
+        <select v-model="formEdit.tahap" class="rs-input w-full" required>
+          <option>Merah</option>
+          <option>Kuning</option>
+          <option>Hijau</option>
+        </select>
+      </div>
+
+      <!-- 3.1.3: Tarikh Mula Kuasa (Date, Required) -->
+      <div>
+        <label class="rs-label">Tarikh Mula Kuasa</label>
+        <input
+          type="date"
+          v-model="formEdit.tarikhMulaKuasa"
+          class="rs-input w-full"
+          required
+        />
+      </div>
+
+      <!-- 3.1.2: Nama Kategori Masalah (Text, Required) -->
+      <div class="col-span-2">
+        <label class="rs-label">Nama Kategori Masalah</label>
+        <input v-model.trim="formEdit.nama" class="rs-input w-full" required />
+      </div>
+
+      <!-- 3.1.4: Status Konfigurasi (Toggle, Required) -->
+      <div class="col-span-2">
+        <label class="rs-label">Status Konfigurasi</label>
+        <div class="flex items-center gap-3">
+          <!-- Jika ada komponen <rs-switch>, boleh tukar input ini -->
+          <input
+            type="checkbox"
+            v-model="formEdit.statusKonfigurasi"
+            class="rs-switch"
+            required
+          />
+          <span class="text-sm" :class="formEdit.statusKonfigurasi ? 'text-green-600' : 'text-gray-500'">
+            {{ formEdit.statusKonfigurasi ? 'Diaktifkan' : 'Dinonaktifkan' }}
+          </span>
         </div>
-      </form>
-      <template #footer>
-        <div class="flex justify-end gap-2">
-          <rs-button variant="light" @click="showEdit=false">Tutup</rs-button>
-          <rs-button variant="primary" @click="saveEdit">Simpan</rs-button>
-        </div>
-      </template>
-    </rs-modal>
+      </div>
+
+      <!-- 3.1.6: Catatan Kemaskini (Textarea) -->
+      <div class="col-span-2">
+        <label class="rs-label">Catatan Kemaskini</label>
+        <textarea
+          v-model.trim="formEdit.catatanKemaskini"
+          class="rs-input w-full"
+          rows="3"
+          placeholder="Masukkan catatan kemaskini (jika ada)"
+        ></textarea>
+      </div>
+
+      <!-- (Pilihan) Status semasa untuk rujukan/tetapan -->
+      <input v-model="formEdit.status" type="hidden" />
+    </div>
+  </form>
+
+  <!-- Footer -->
+  <template #footer>
+    <div class="flex justify-between w-full">
+      <!-- Set Semula: reset field kemaskini sahaja (tanpa guna function baru) -->
+      <rs-button
+        variant="light"
+        @click="
+          formEdit.tarikhMulaKuasa = '';
+          formEdit.statusKonfigurasi = false;
+          formEdit.catatanKemaskini = '';
+        "
+      >
+        Set Semula
+      </rs-button>
+
+      <div class="flex gap-2">
+        <rs-button variant="light" @click="showEdit=false">Tutup</rs-button>
+
+        <!-- Hantar Permohonan Kemaskini:
+             set statusPermohonan & panggil saveEdit() (tiada ubah fungsi sedia ada) -->
+        <rs-button
+          variant="primary"
+          @click="
+            formEdit.statusPermohonan = 'Menunggu Kelulusan';
+            saveEdit();
+          "
+        >
+          Hantar Permohonan Kemaskini
+        </rs-button>
+      </div>
+    </div>
+  </template>
+</rs-modal>
+
   </div>
 </template>
 
@@ -192,11 +303,30 @@ const showAdd  = ref(false)
 const showEdit = ref(false)
 const editId   = ref(null)
 
-const formAdd  = ref({ tahap: '', status: 'Aktif', nama: '' })
+/** Form Tambah (ditambah field ikut URS) */
+const formAdd  = ref({
+  tahap: '',
+  status: 'Aktif',
+  nama: '',
+  tarikhMulaKuasa: '',
+  statusKonfigurasi: false,
+  catatan: '',
+  statusPermohonan: 'Draf' // akan jadi 'Menunggu Kelulusan' ketika Hantar
+})
+
+/** Form Edit (kekal) */
 const formEdit = ref({ tahap: 'Merah', status: 'Aktif', nama: '' })
 
 function openAddModal(){
-  formAdd.value = { tahap: '', status: 'Aktif', nama: '' }
+  formAdd.value = {
+    tahap: '',
+    status: 'Aktif',
+    nama: '',
+    tarikhMulaKuasa: '',
+    statusKonfigurasi: false,
+    catatan: '',
+    statusPermohonan: 'Draf'
+  }
   showAdd.value = true
 }
 
@@ -242,6 +372,17 @@ function toId(v){
   const n = m ? Number(m[0]) : NaN
   return Number.isFinite(n) && n > 0 ? n : 0
 }
+
+/** Reset untuk butang "Set Semula" di modal Tambah */
+function resetAdd(){
+  formAdd.value.tahap = ''
+  formAdd.value.status = 'Aktif'
+  formAdd.value.nama = ''
+  formAdd.value.tarikhMulaKuasa = ''
+  formAdd.value.statusKonfigurasi = false
+  formAdd.value.catatan = ''
+  formAdd.value.statusPermohonan = 'Draf'
+}
 </script>
 
 <style scoped>
@@ -251,6 +392,7 @@ function toId(v){
   text-align:center;
   padding-right:0;
 }
+
 .rs-input{
   display:inline-block;
   border:1px solid #dcdfe6;
@@ -259,4 +401,30 @@ function toId(v){
   background:#fff;
 }
 .rs-label{ display:block; margin-bottom:6px; font-weight:600; }
+
+/* Optional: gaya asas untuk toggle jika tiada rs-switch */
+.rs-switch{
+  width: 2.75rem;
+  height: 1.5rem;
+  appearance: none;
+  background: #e5e7eb;
+  border-radius: 9999px;
+  position: relative;
+  outline: none;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+.rs-switch:checked{ background: #10b981; }
+.rs-switch::after{
+  content: '';
+  position: absolute;
+  top: .125rem;
+  left: .125rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  background: #fff;
+  border-radius: 9999px;
+  transition: transform .2s ease;
+}
+.rs-switch:checked::after{ transform: translateX(1.25rem); }
 </style>
