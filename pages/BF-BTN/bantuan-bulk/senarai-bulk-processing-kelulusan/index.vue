@@ -304,7 +304,7 @@ const totalAmount = computed(() => {
 
 // Methods
 const handleProses = (kodBP) => {
-  navigateTo(`/BF-BTN/bantuan-bulk/senarai-bantuan-bulk-kelulusan/${kodBP}`);
+  navigateTo(`/BF-BTN/bantuan-bulk/senarai-bulk-processing-kelulusan/${kodBP}`);
 };
 
 const getStatusVariant = (status) => {

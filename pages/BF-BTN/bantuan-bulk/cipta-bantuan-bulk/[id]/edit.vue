@@ -158,15 +158,28 @@
                 :disabled="!formData.productPackage"
             />
 
-            <!-- Penyiasat -->
             <FormKit
-              type="select"
-              name="penyiasat"
-              label="Penyiasat"
-              :options="penyiasatOptions"
-              placeholder="Pilih penyiasat"
+              type="date"
+              name="tarikhJangkaanBayaran"
+              label="Tarikh Jangkaan Bayaran"
+              placeholder="Pilih tarikh jangkaan bayaran"
               validation="required"
-              v-model="formData.penyiasat"
+              :validation-messages="{
+                required: 'Sila pilih tarikh jangkaan bayaran',
+              }"
+              v-model="formData.tarikhJangkaanBayaran"
+            />
+
+            <FormKit
+              type="radio"
+              name="modeOfPayment"
+              label="Mode Of Payment"
+              v-model="formData.modeOfPayment"
+              :options="[
+                { label: 'Tunai', value: 'Tunai' },
+                { label: 'Profile', value: 'Profile' },
+              ]"
+              validation="required"
             />
 
             <!-- Cawangan (CustomSelect) -->
@@ -176,6 +189,9 @@
               label="Cawangan"
               search-placeholder="Cari cawangan..."
               :disabled="false"
+              :classes="{
+                outer: 'md:col-span-2',
+              }"
             />
           </div>
         </template>
@@ -231,7 +247,7 @@
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">Maklumat Bayaran Kepada (Payable To)</h2>
 
-            <div v-if="paymentList.length >= 1" class="flex items-center gap-2">
+            <div class="flex items-center gap-2">
 
               <rs-button
                 
@@ -291,8 +307,9 @@
         </template>
       </rs-card>
 
+      
       <!-- Maklumat Data Rosak Section -->
-      <rs-card>
+      <rs-card v-if="showImportCards">
         <template #header>
           <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Maklumat Data Rosak</h2>
@@ -364,15 +381,14 @@
               </div>
         </template>
       </rs-card>
+      
 
+      
       <!-- Maklumat Senarai Penerima Section -->
-      <rs-card>
+      <rs-card v-if="showImportCards">
         <template #header>
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">Maklumat Senarai Penerima (Beneficiary List)</h2>
-            <rs-button variant="primary" @click="handleAddRecipient">
-              <Icon name="material-symbols:add" class="mr-1" /> Tambah
-            </rs-button>
           </div>
         </template>
         <template #body>
@@ -601,10 +617,14 @@
 
         <!-- Tarikh Bayaran -->
         <FormKit
-          type="date"
-          name="tarikhBayaran"
-          label="Tarikh Bayaran"
-          v-model="paymentForm.tarikhBayaran"
+          type="radio"
+          name="modeOfPayment"
+          label="Mode Of Payment"
+          v-model="paymentForm.modeOfPayment"
+          :options="[
+            { label: 'Tunai', value: 'Tunai' },
+            { label: 'Akaun', value: 'Akaun' },
+          ]"
           validation="required"
         />
 
@@ -636,21 +656,6 @@
           label="No. Akaun"
           v-model="paymentForm.bankAccount"
           placeholder="1234-56-789012"
-          validation="required"
-        />
-
-        <!-- Status -->
-        <FormKit
-          type="select"
-          name="status"
-          label="Status"
-          v-model="paymentForm.status"
-          :options="[
-            { label: 'Baru', value: 'Baru' },
-            { label: 'Dalam Proses', value: 'Dalam Proses' },
-            { label: 'Selesai', value: 'Selesai' },
-            { label: 'Batal', value: 'Batal' }
-          ]"
           validation="required"
         />
       </div>
@@ -1110,7 +1115,7 @@ const breadcrumb = ref([
     path: "/BF-BTN/bantuan-bulk",
   },
   {
-    name: "Bantuan Bulk",
+    name: "Bulk Processing",
     type: "link",
     path: "/BF-BTN/bantuan-bulk/cipta-bantuan-bulk",
   },
@@ -1138,7 +1143,8 @@ const getBantuanData = (id) => {
       productPackage: 'KPIPT (Fakir)',
       productEntitlement: 'Bantuan Wang Saku',
       penyiasat: 'ahmad_hassan',
-      cawangan: 'hq'
+      cawangan: 'hq',
+      tarikhJangkaanBayaran: '2025-05-04'
     },
     'BP-2025-00002': {
       kodBP: 'BP-2025-00002',
@@ -1154,7 +1160,8 @@ const getBantuanData = (id) => {
       productPackage: 'KPIPT (Fakir)',
       productEntitlement: 'Bantuan Wang Saku',
       penyiasat: 'ahmad_hassan',
-      cawangan: 'hq'
+      cawangan: 'hq',
+      tarikhJangkaanBayaran: '2025-05-04'
     },
     'BP-2025-00003': {
       kodBP: 'BP-2025-00003',
@@ -1170,7 +1177,8 @@ const getBantuanData = (id) => {
       productPackage: 'KPIPT (Miskin)',
       productEntitlement: 'Bantuan Wang Saku',
       penyiasat: 'ahmad_hassan',
-      cawangan: 'hq'
+      cawangan: 'hq',
+      tarikhJangkaanBayaran: '2025-05-04'
     },
     'BP-2025-00004': {
       kodBP: 'BP-2025-00004',
@@ -1186,7 +1194,8 @@ const getBantuanData = (id) => {
       productPackage: 'BANTUAN BANJIR (FAKIR)',
       productEntitlement: 'Bantuan Banjir',
       penyiasat: 'ahmad_hassan',
-      cawangan: 'hq'
+      cawangan: 'hq',
+      tarikhJangkaanBayaran: '2025-05-04'
     },
     'BP-2025-00005': {
       kodBP: 'BP-2025-00005',
@@ -1202,7 +1211,8 @@ const getBantuanData = (id) => {
       productPackage: 'KPIPT (Miskin)',
       productEntitlement: 'Bantuan Wang Saku',
       penyiasat: 'ahmad_hassan',
-      cawangan: 'hq'
+      cawangan: 'hq',
+      tarikhJangkaanBayaran: '2025-05-04'
     },
     'BP-2025-00006': {
       kodBP: 'BP-2025-00006',
@@ -1234,7 +1244,8 @@ const getBantuanData = (id) => {
       productPackage: 'BANTUAN RUMAH',
       productEntitlement: 'Bantuan Rumah',
       penyiasat: 'ahmad_hassan',
-      cawangan: 'hq'
+      cawangan: 'hq',
+      tarikhJangkaanBayaran: '2025-05-04'
     },
     'BP-2025-00008': {
       kodBP: 'BP-2025-00008',
@@ -1250,7 +1261,8 @@ const getBantuanData = (id) => {
       productPackage: 'BANTUAN MAKANAN',
       productEntitlement: 'Bantuan Makanan',
       penyiasat: 'ahmad_hassan',
-      cawangan: 'hq'
+      cawangan: 'hq',
+      tarikhJangkaanBayaran: '2025-05-04'
     }
   };
   
@@ -1385,6 +1397,7 @@ const selectedPayments = ref([]);
 const confirmedPayments = ref([]);
 const isLoading = ref(false);
 const isSubmitting = ref(false);
+const showImportCards = ref(false);
 
 // State for editing
 const editingPayment = ref(null);
@@ -1406,10 +1419,9 @@ const paymentForm = ref({
   recipient: "",
   organization: "",
   amaun: 0,
-  tarikhBayaran: new Date().toLocaleDateString("ms-MY"),
+  modeOfPayment: "",
   bankName: "",
   bankAccount: "",
-  status: "Dalam Proses",
 });
 
 const recipientForm = ref({
@@ -1635,9 +1647,15 @@ const generateUniqueId = (prefix) => {
     .slice(-4)}`;
 };
 
+// Function to hide import cards
+const hideImportCards = () => {
+  showImportCards.value = false;
+};
+
 const handleImport = async () => {
   try {
     isLoading.value = true;
+    showImportCards.value = false; // Reset cards visibility before import
 
     // Dummy data import (simulasi data dari Excel)
     recipientList.value = [
@@ -1691,12 +1709,12 @@ const handleImport = async () => {
       {
         kod: "PT-2025-30371",
         idPermohonan: "PRM-2025-00001",
-        bayaranKepada: "Nur Hazimah Binti Mohd Hafiz",
+        bayaranKepada: "recipient",
         asnaf: "Muallaf",
-        recipient: "",
+        recipient: "Nur Hazimah Binti Mohd Hafiz",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
-        tarikhBayaran: "2025-04-17",
+        modeOfPayment: "Tunai",
         bankName: "Maybank",
         bankAccount: "1623-44-889901",
         checkbox: '',
@@ -1704,12 +1722,12 @@ const handleImport = async () => {
       {
         kod: "PT-2025-30372",
         idPermohonan: "PRM-2025-00002",           // ← duplicate key
-        bayaranKepada: "Nur safiyya Binti Rosly",
+        bayaranKepada: "recipient",
         asnaf: "Fakir",
-        recipient: "",
+        recipient: "Nur safiyya Binti Rosly",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
-        tarikhBayaran: "2025-04-17",
+        tarikhBayaran: "Akaun",
         bankName: "Maybank",
         bankAccount: "16A3-44-889901",            // ← WRONG (letter)
         checkbox: '',
@@ -1717,12 +1735,12 @@ const handleImport = async () => {
       {
         kod: "PT-2025-30373",
         idPermohonan: "PRM-2025-00003",
-        bayaranKepada: "Mohd Nazrin Bin Mokhtar",
+        bayaranKepada: "recipient",
         asnaf: "Non-FM",
-        recipient: "",
+        recipient: "Mohd Nazrin Bin Mokhtar",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 240,                               // ← WRONG amount
-        tarikhBayaran: "2025-04-17",
+        modeOfPayment: "Akaun",
         bankName: "CIMB",
         bankAccount: "7600-11-222222",
         checkbox: '',
@@ -1730,12 +1748,12 @@ const handleImport = async () => {
       {
         kod: "PT-2025-30374",
         idPermohonan: "PRM-2025-00004",
-        bayaranKepada: "Intan Nadia Binti Mohd Zamri",
+        bayaranKepada: "recipient",
         asnaf: "Miskin", 
-        recipient: "",
+        recipient: "Intan Nadia Binti Mohd Zamri",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
-        tarikhBayaran: "2025-04-17",
+        modeOfPayment: "Tunai",
         bankName: "maybnk",                       // ← WRONG spelling
         bankAccount: "7600-11-333333",
         checkbox: '',
@@ -1743,12 +1761,12 @@ const handleImport = async () => {
       {
         kod: "PT-2025-30375",
         idPermohonan: "PRM-2025-00002",           // ← duplicate of …30372
-        bayaranKepada: "Nur safiyya Binti Rosly",
+        bayaranKepada: "recipient",
         asnaf: "Fakir",
-        recipient: "",
+        recipient: "Nur safiyya Binti Rosly",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
-        tarikhBayaran: "2025-04-17",
+        modeOfPayment: "Akaun",
         bankName: "Maybank",
         bankAccount: "1623-44-889901",
         checkbox: '',
@@ -1763,6 +1781,7 @@ const handleImport = async () => {
     formData.value.jumlahAmaun = formatNumber(jumlah);
 
     alert("success", "Fail berjaya diimport dan data dimasukkan.");
+    showImportCards.value = true;
   } catch (error) {
     console.error("Error importing file:", error);
     alert("error", "Gagal mengimport fail");
@@ -1826,7 +1845,6 @@ const handleAddPayment = () => {
     tarikhBayaran: new Date().toLocaleDateString("ms-MY"),
     bankName: "",
     bankAccount: "",
-    status: "Dalam Proses",
   };
 
   paymentModalMode.value = "add";
@@ -1840,9 +1858,44 @@ const handleEditPaymentModal = (payment) => {
 };
 
 const handleSavePaymentModal = () => {
+  console.log("handleSavePaymentModal called");
+  console.log("paymentForm.value:", paymentForm.value);
+  console.log("paymentModalMode.value:", paymentModalMode.value);
+  
+  // Validate required fields
+  if (!paymentForm.value.bayaranKepada) {
+    alert("error", "Sila isi bayaran kepada");
+    return;
+  }
+  if (!paymentForm.value.asnaf) {
+    alert("error", "Sila pilih asnaf");
+    return;
+  }
+  if (!paymentForm.value.amaun || paymentForm.value.amaun <= 0) {
+    alert("error", "Sila isi amaun yang sah");
+    return;
+  }
+  if (!paymentForm.value.modeOfPayment) {
+    alert("error", "Sila pilih mode of payment");
+    return;
+  }
+  if (!paymentForm.value.idPermohonan) {
+    alert("error", "Sila isi ID permohonan");
+    return;
+  }
+  if (!paymentForm.value.bankName) {
+    alert("error", "Sila pilih bank");
+    return;
+  }
+  if (!paymentForm.value.bankAccount) {
+    alert("error", "Sila isi no. akaun");
+    return;
+  }
+
   if (paymentModalMode.value === "add") {
     // Add new payment
     paymentList.value.push({ ...paymentForm.value });
+    console.log("Payment added to list:", paymentList.value);
     alert("success", "Maklumat bayaran baru ditambah");
   } else {
     // Update existing payment
@@ -1856,6 +1909,21 @@ const handleSavePaymentModal = () => {
   }
 
   showPaymentModal.value = false;
+  
+  // Reset form for next use
+  paymentForm.value = {
+    kod: "",
+    idPermohonan: "",
+    bayaranKepada: "",
+    asnaf: "",
+    contributor: "",
+    recipient: "",
+    organization: "",
+    amaun: 0,
+    modeOfPayment: "Tunai",
+    bankName: "",
+    bankAccount: "",
+  };
 };
 
 const handleDeletePayment = async (payment) => {
@@ -2250,10 +2318,10 @@ const onOpenApplication = (idPermohonan) => {
 const getStatusVariant = (status) => {
   switch (status) {
     case 'Draf':
-      return 'warning';
+      return 'disabled';
     case 'Sedang Diproses':
     case 'Dalam Proses':
-      return 'info';
+      return 'warning';
     case 'Ditolak':
       return 'danger';
     case 'Baru':
