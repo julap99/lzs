@@ -4,15 +4,25 @@
 
     <rs-card class="mt-4">
       <template #header>
-        <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">
-            Maklumat Aktiviti Mesyuarat/Program
-          </h2>
-        </div>
+        <header class="flex flex-wrap items-center justify-between gap-4">
+          <div class="space-y-1">
+            <h1 class="text-2xl font-semibold text-slate-900">Maklumat Aktiviti Mesyuarat/Program</h1>
+            <p class="text-sm text-slate-500">{{ activityInfo.NamaAktiviti || '-' }}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <rs-badge :variant="statusBadgeVariant">{{ activityInfo.status || '-' }}</rs-badge>
+            <rs-button variant="ghost" class="flex items-center gap-2" @click="navigateTo('/BF-PA/PE/MP')">
+              <Icon name="ph:arrow-left" class="h-4 w-4" />
+              Kembali
+            </rs-button>
+          </div>
+        </header>
       </template>
 
       <template #body>
         <div class="p-4">
+          <div class="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
+            <div class="space-y-6">
           <!-- Activity Information -->
           <div class="mb-6">
             <h3 class="text-lg font-semibold mb-4">Maklumat Aktiviti</h3>
@@ -293,6 +303,34 @@
                </div>
              </div>
            </div>
+           <aside class="space-y-5 lg:sticky lg:top-24">
+             <div class="rounded-lg border border-slate-200 bg-white p-4">
+               <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-600 mb-3">Ringkasan Kehadiran</h3>
+               <div class="grid grid-cols-2 gap-3 text-sm">
+                 <div>
+                   <p class="text-slate-500">Jumlah Diundang</p>
+                   <p class="font-semibold text-slate-900">{{ attendanceSummary.totalInvited }}</p>
+                 </div>
+                 <div>
+                   <p class="text-slate-500">Jumlah Hadir</p>
+                   <p class="font-semibold text-slate-900">{{ attendanceSummary.totalAttended }}</p>
+                 </div>
+                 <div>
+                   <p class="text-slate-500">Peratusan</p>
+                   <p class="font-semibold text-slate-900">{{ attendanceSummary.attendanceRate }}%</p>
+                 </div>
+                 <div>
+                   <p class="text-slate-500">Jumlah Elaun</p>
+                   <p class="font-semibold text-slate-900">RM {{ totalAllowance }}</p>
+                 </div>
+               </div>
+             </div>
+             <div class="rounded-lg border border-slate-200 bg-white p-4">
+               <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-600 mb-3">Dokumen Sokongan</h3>
+               <p class="text-xs text-slate-500">Tiada dokumen dimuat naik.</p>
+             </div>
+           </aside>
+         </div>
 
                      <!-- Action Buttons -->
            <div class="flex justify-end gap-4 mt-6">
@@ -423,7 +461,8 @@
                  </div>
              </FormKit>
            </div>
-        </div>
+         </div>
+         </div>
       </template>
     </rs-card>
   </div>
@@ -504,6 +543,18 @@ const totalAllowance = computed(() => {
   return sum
     .toFixed(2)
     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+});
+
+// Badge variant for PD-style header
+const statusBadgeVariant = computed(() => {
+  switch (activityInfo.value?.status) {
+    case 'Belum Disemak': return 'secondary';
+    case 'Menunggu Sokongan Eksekutif': return 'warning';
+    case 'Menunggu Kelulusan Ketua Jabatan': return 'info';
+    case 'Diluluskan': return 'success';
+    case 'Ditolak': return 'danger';
+    default: return 'secondary';
+  }
 });
 
 // Current role from dashboard (read from URL query parameter)
