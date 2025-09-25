@@ -333,8 +333,8 @@
           @save-step="handleSaveStepB6"
         />
 
-        <!-- Section B Form - Step 7: Maklumat Pekerjaan Tanggungan -->
-        <TanggunganPekerjaanForms
+        <!-- Section B Form - Step 7: Maklumat Pemilikan Aset (Tanggungan) -->
+        <TanggunganPemilikanAsetForms
           v-if="currentStepB === 7"
           :get-current-tanggungan="getCurrentTanggungan"
           @next-step="nextStepB"
@@ -342,8 +342,8 @@
           @save-step="handleSaveStepB7"
         />
 
-        <!-- Section B Form - Step 8: Maklumat Pemilikan Aset (Tanggungan) -->
-        <TanggunganPemilikanAsetForms
+        <!-- Section B Form - Step 8: Maklumat Pinjaman Harta (Tanggungan) -->
+        <TanggunganPinjamanHartaForms
           v-if="currentStepB === 8"
           :get-current-tanggungan="getCurrentTanggungan"
           @next-step="nextStepB"
@@ -351,8 +351,8 @@
           @save-step="handleSaveStepB8"
         />
 
-        <!-- Section B Form - Step 9: Maklumat Pinjaman Harta (Tanggungan) -->
-        <TanggunganPinjamanHartaForms
+         <!-- Section B Form - Step 9: Maklumat Pekerjaan Tanggungan -->
+         <TanggunganPekerjaanForms
           v-if="currentStepB === 9"
           :get-current-tanggungan="getCurrentTanggungan"
           @next-step="nextStepB"
@@ -492,9 +492,9 @@ const stepsB = [
   { id: 4, label: "Pendidikan" },
   { id: 5, label: "Kesihatan" },
   { id: 6, label: "Kemahiran" },
-  { id: 7, label: "Pekerjaan" },
-  { id: 8, label: "Pemilikan Aset" },
-  { id: 9, label: "Pinjaman Harta" },
+  { id: 7, label: "Pemilikan Aset" },
+  { id: 8, label: "Pinjaman Harta" },
+  { id: 9, label: "Pekerjaan" },
   { id: 10, label: "Pengesahan" },
   {
     id: 11,
@@ -792,20 +792,7 @@ const formData = ref({
   tanggungan: [],
 });
 
-// Mock file data for demonstration
-onMounted(() => {
-  // Set mock file data
-  formData.value.dokumen_surat_nikah = [
-    {
-      name: "surat_nikah_sample.pdf",
-      size: 2048576, // 2MB in bytes
-      type: "application/pdf",
-      file: new File(["mock content"], "surat_nikah_sample.pdf", {
-        type: "application/pdf",
-      }),
-    },
-  ];
-});
+// Mock file data removed to reduce script size
 
 // ============================================================================
 // OPTIONS DATA
@@ -962,12 +949,7 @@ watch(
   { deep: true }
 );
 
-watch(
-  () => formData.value.nama_bank,
-  () => {
-    // handled within PerbankanForms
-  }
-);
+// Removed no-op watcher for `nama_bank`
 
 // Ensure at least one bank account entry when method is 'ya'
 watch(
@@ -1047,12 +1029,7 @@ watch(
   { immediate: true }
 );
 
-watch(
-  () => formData.value.nama_bank_tanggungan,
-  () => {
-    // handled within TanggunganPerbankanForms
-  }
-);
+// Removed no-op watcher for `nama_bank_tanggungan`
 
 // Watch for employment status changes to handle conditional validation
 watch(
@@ -1170,15 +1147,7 @@ watch(
         { deep: true }
       );
 
-      // Watch for bank selection to auto-populate Swift Code
-      watch(
-        () => getCurrentTanggungan()?.nama_bank_tanggungan,
-        (newBankName) => {
-          const currentTanggungan = getCurrentTanggungan();
-        // handled within TanggunganPerbankanForms
-        },
-        { deep: true }
-      );
+  // Removed no-op watcher that was handled within TanggunganPerbankanForms
       formData.value.lain_lain_sumber_pendapatan = "";
     }
   }
@@ -2371,7 +2340,7 @@ const handleSaveStepB6 = async () => {
 
 const handleSaveStepB7 = async () => {
   try {
-    toast.success("Maklumat Pekerjaan Tanggungan berjaya disimpan");
+    toast.success("Maklumat Pemilikan Aset Tanggungan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
   }
@@ -2379,7 +2348,7 @@ const handleSaveStepB7 = async () => {
 
 const handleSaveStepB8 = async () => {
   try {
-    toast.success("Maklumat Pemilikan Aset berjaya disimpan");
+    toast.success("Maklumat Pinjaman Harta Tanggungan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
   }
@@ -2387,7 +2356,7 @@ const handleSaveStepB8 = async () => {
 
 const handleSaveStepB9 = async () => {
   try {
-    toast.success("Maklumat Pinjaman Harta berjaya disimpan");
+    toast.success("Maklumat Pekerjaan Tanggungan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
   }
