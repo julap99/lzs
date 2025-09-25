@@ -336,88 +336,96 @@ export default [
         path: "/BF-ADN/KF",
         child: [
           {
-            title: "Senarai Kategori Masalah",
+            title: "Kategori Masalah",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-ADN/KF/kategori-masalah",
+            child: [
+              {
+                title: "Senarai Kategori Masalah",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-ADN/KF/kategori-masalah",
+              },
+              {
+                title: "Semakan Kelulusan Kategori Masalah",
+              icon: "iconamoon:arrow-right-2-duotone",
+              path: "/BF-ADN/KF/semakan-kelulusan-kategori-masalah",
+              }
+            ],
           },
           {
-            title: "Semakan Kelulusan Kategori Masalah",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-ADN/KF/semakan-kelulusan-kategori-masalah",
-          },
-          {
-            title: "Senarai Validasi Input",
+            title: "Validasi Input",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-ADN/KF/validasi-input",
+            child: [
+              {
+                title: "Senarai Validasi Input",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-ADN/KF/validasi-input",
+              },
+              {
+                title: "Senarai Permohonan Kelulusan Kawalan Validasi",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-ADN/KF/senarai-permohonan-kelulusan-kawalan-validasi",
+              }
+            ]
           },
           {
-            title: "Senarai Permohonan Kelulusan Kawalan Validasi",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-ADN/KF/senarai-permohonan-kelulusan-kawalan-validasi",
-          },
-          {
-            title: "Senarai Akses Peranan",
+            title: "Akses Peranan",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-ADN/KF/akses-peranan",
-          },
-          {
-            title: "Senarai Permohonan Kelulusan Akses Peranan",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-ADN/KF/senarai-permohonan-kelulusan-akses-peranan",
+            child: [
+              {
+                title: "Senarai Akses Peranan",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-ADN/KF/akses-peranan",
+              },
+              {
+                title: "Senarai Permohonan Kelulusan Akses Peranan",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-ADN/KF/senarai-permohonan-kelulusan-akses-peranan",
+              }
+            ]
           },
 	        {
             title: "Senarai SLA",
             icon: "iconamoon:file-document",
             path: "/BF-ADN/PK",
-            child: [{
-              title: "Senarai Permohonan Kelulusan SLA",
-              icon: "iconamoon:file-document",
-              path: "/BF-ADN/PK/KS/02/01",
-             
+            child: [
+                {
+                title: "Senarai Permohonan Kelulusan SLA",
+                icon: "iconamoon:file-document",
+                path: "/BF-ADN/PK/KS/02/01",
+                },
+                {
+                  title: "Butiran Permohonan Kelulusan SLA",
+                  icon: "iconamoon:file-document",
+                  path: "/BF-ADN/PK/KS/02/03",
+                
+                },            
+          ],
+          },
+          {
+            title: "Penutupan Aduan",
+            icon: "iconamoon:file-document",
+            path: "/BF-ADN/PK/KP/01/01",
+            child: [
+              {
+                title: "Senarai Konfigurasi Penutupan Aduan",
+                icon: "iconamoon:file-document",
+                path: "/BF-ADN/PK/KP/01/01", 
             },
             {
-              title: "Butiran Permohonan Kelulusan SLA",
-              icon: "iconamoon:file-document",
-              path: "/BF-ADN/PK/KS/02/03",
-             
-            },
-            {
-              title: "Senarai Kategori Masalah",
-              icon: "iconamoon:file-document",
-              path: "/BF-ADN/PK/KT/01/01",
-             
-            },
-            {
-              title: "Senarai Permohonan Kelulusan Kategori",
-              icon: "iconamoon:file-document",
-              path: "/BF-ADN/PK/KT/02/01",
-              
-            },
-            {
-              title: "Butiran Permohonan Kategori Masalah",
-              icon: "iconamoon:file-document",
-              path: "/BF-ADN/PK/KT/02/03",
-             
-            },
-            {
-            title: "Senarai Konfigurasi Penutupan Aduan",
-              icon: "iconamoon:file-document",
-              path: "/BF-ADN/PK/KP/01/01",
-             
-            },
-            {
-            title: "Butiran Konfigurasi Penutupan Aduan",
+              title: "Butiran Konfigurasi Penutupan Aduan",
               icon: "iconamoon:file-document",
               path: "/BF-ADN/PK/KP/01/03",
-              
             },
             {
             title: "Senarai Permohonan Kelulusan Konfigurasi Penutupan Aduan",
               icon: "iconamoon:file-document",
               path: "/BF-ADN/PK/KP/02/01",
-              
-            },],
-          },
+            },
+            ]
+          }
         ],
         meta: {},
       },
