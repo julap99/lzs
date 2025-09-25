@@ -1,5 +1,7 @@
 
 <template>
+  <div>
+    <LayoutsBreadcrumb :items="breadcrumb" />
     <div class="container mx-auto px-4 py-6">
       <h2 class="text-2xl font-bold mb-4">Ringkasan Had Kifayah & Multidimensi</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -25,6 +27,7 @@
         <rs-button variant="primary" @click="handleSeterusnya">Seterusnya</rs-button>
       </div>
     </div>
+  </div>
   </template>
   
   <script setup>
@@ -35,5 +38,17 @@
   const handleSeterusnya = () => {
     navigateTo('/BF-PRF/AS/FR/07_1')
   }
+  const breadcrumb = ref([
+    {
+      name: "Profiling",
+      type: "link",
+      path: "/BF-PRF/AS/FR/05",
+    },
+    {
+      name: "Ringkasan",
+      type: "current",
+      path: "/BF-PRF/AS/FR/05_01",
+    }
+  ]);
   </script>
   
