@@ -18,17 +18,6 @@
       </template>
 
       <template #body>
-        <!-- Penapis ringkas -->
-        <div class="flex items-center gap-3 mb-3">
-          <label class="font-medium">Tapis Mengikut Tahap Aduan:</label>
-          <select v-model="filterTahap" class="rs-input w-64">
-            <option value="">-- Semua Kelas --</option>
-            <option value="Merah">Merah</option>
-            <option value="Kuning">Kuning</option>
-            <option value="Hijau">Hijau</option>
-          </select>
-        </div>
-
         <rs-table
           :data="rowsForTable"
           :columns="tableColumns"
