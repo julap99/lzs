@@ -23,6 +23,19 @@
       </template>
 
       <template #body>
+        <header class="flex flex-wrap items-center justify-between gap-4 mb-4">
+          <div class="space-y-1">
+            <h1 class="text-2xl font-semibold text-slate-900">Elaun Tahunan — Senarai Nama PA</h1>
+            <p class="text-sm text-slate-500">{{ typeLabel || 'Jenis Elaun' }}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <rs-badge :variant="statusBadgeVariant">{{ status }}</rs-badge>
+            <rs-button variant="ghost" class="flex items-center gap-2" @click="goBack">
+              <Icon name="ph:arrow-left" class="h-4 w-4" />
+              Kembali
+            </rs-button>
+          </div>
+        </header>
         <!-- Dokumen Sokongan (Wajib) - Dropzone di atas -->
         <div class="mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2">Dokumen Sokongan (Wajib)</label>
@@ -1262,6 +1275,17 @@ const allowanceTypeInfo = computed(() => {
     return `Elaun Boleh Diubah: RM${min.toFixed(2)} - RM${max.toFixed(2)} (default: RM${defaultValue.toFixed(2)})`;
   }
   return 'Elaun: Boleh diubah';
+});
+
+// Badge variant for PD-style header
+const statusBadgeVariant = computed(() => {
+  switch (status.value) {
+    case 'DRAF': return 'secondary';
+    case 'MENUNGGU KELULUSAN': return 'warning';
+    case 'LULUS': return 'success';
+    case 'DITOLAK': return 'danger';
+    default: return 'secondary';
+  }
 });
 
 /* Simpan draf → persist penerima & status, count, balik ke skrin 1 */

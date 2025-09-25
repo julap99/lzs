@@ -15,8 +15,60 @@ const userStore = useUserStore();
 const togglePasswordVisibility = ref(false);
 
 const login = async () => {
-  // Simple redirect for presentation
-  // In real implementation, this would validate credentials
+  // Check for blocked user (case-insensitive)
+  const blockedUsernames = ["padigantung", "pa_digantung", "pa-digantung", "penolongamil_digantung"];
+  const currentUsername = username.value.toLowerCase().trim();
+  
+  if (blockedUsernames.includes(currentUsername)) {
+    try {
+      // Show blocked user alert
+      await $swal.fire({
+        title: "Akses Ditolak",
+        html: `
+          <div class="text-center">
+            <div class="mb-4">
+              <Icon name="ph:warning-circle" class="text-red-500 text-6xl mx-auto mb-4" />
+            </div>
+            <p class="text-lg font-semibold text-gray-800 mb-3">
+              Akses anda telah dibatalkan
+            </p>
+            <p class="text-gray-600 mb-4">
+              Akaun Penolong Amil anda telah dihentikan kerana pelanggaran peraturan atau tindakan yang tidak sesuai.
+            </p>
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+              <p class="text-sm text-red-700 font-medium mb-2">
+                Untuk maklumat lanjut, sila hubungi:
+              </p>
+              <p class="text-sm text-red-600">
+                • PYB atau PIC masjid anda<br/>
+                • Lembaga Zakat Selangor hotline: 03-5514 1800
+              </p>
+            </div>
+          </div>
+        `,
+        icon: "error",
+        confirmButtonText: "Tutup",
+        confirmButtonColor: "#dc2626",
+        allowOutsideClick: true,
+        allowEscapeKey: true,
+        showCloseButton: true,
+        showConfirmButton: true,
+        customClass: {
+          popup: 'swal-wide',
+          title: 'text-red-600',
+          confirmButton: 'px-6 py-2'
+        }
+      });
+      
+      return; // Prevent further execution
+    } catch (error) {
+      // Fallback: show simple alert if SweetAlert fails
+      alert("Akses Ditolak\n\nAkaun Penolong Amil anda telah dihentikan kerana pelanggaran peraturan atau tindakan yang tidak sesuai.\n\nUntuk maklumat lanjut, sila hubungi PYB atau PIC masjid anda atau Lembaga Zakat Selangor hotline: 03-5514 1800");
+      return;
+    }
+  }
+
+  // Normal login flow for non-blocked users
   userStore.setUsername("penolong_amil_user");
   userStore.setRoles(["penolong-amil"]);
   userStore.setIsAuthenticated(true);
@@ -162,5 +214,29 @@ const handleLoadCallback = (response) => {
 .rs-card {
   backdrop-filter: blur(10px);
   background: rgba(255, 255, 255, 0.95);
+}
+</style>
+
+<style>
+/* SweetAlert custom styles for blocked user modal */
+.swal-wide {
+  width: 500px !important;
+  max-width: 90vw !important;
+}
+
+.swal-wide .swal2-html-container {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.swal-wide .swal2-title {
+  margin-bottom: 1rem !important;
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+}
+
+.swal-wide .swal2-confirm {
+  font-weight: 500 !important;
+  border-radius: 0.5rem !important;
 }
 </style> 

@@ -447,7 +447,7 @@
             <FormKit
               type="textarea"
               v-model="warningLetterData.customReason"
-              placeholder="Nyatakan sebab khusus surat amaran..."
+              
               :classes="{
                 input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
                 wrapper: 'w-full'
@@ -457,14 +457,7 @@
               validation="required|length:10,500"
               validation-label="Sebab lain-lain"
             />
-            <div class="flex justify-between items-center mt-1">
-              <p class="text-xs text-gray-500">
-                Minimum 10 aksara, maksimum 500 aksara
-              </p>
-              <span class="text-xs" :class="getCounterClass(warningLetterData.customReason?.length || 0)">
-                {{ warningLetterData.customReason?.length || 0 }}/500
-              </span>
-            </div>
+            
           </div>
 
           <!-- File Upload Field -->
@@ -486,9 +479,7 @@
               validation="required"
               validation-label="Fail surat amaran"
             />
-            <p class="mt-1 text-xs text-gray-500">
-              Seret & lepas atau klik untuk muat naik (PDF/DOC/DOCX, maksimum 5MB)
-            </p>
+            
           </div>
           
           <!-- Notes Field -->
@@ -499,7 +490,7 @@
             <FormKit
               type="textarea"
               v-model="warningLetterData.notes"
-              placeholder="Masukkan catatan atau arahan tambahan untuk surat amaran ini..."
+              
               :classes="{
                 input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
                 wrapper: 'w-full'
@@ -510,14 +501,7 @@
               validation-label="Catatan"
               @input="validateNotes"
             />
-            <div class="flex justify-between items-center mt-1">
-              <p class="text-xs text-gray-500">
-                Minimum 10 aksara, maksimum 500 aksara
-              </p>
-              <span class="text-xs" :class="getCounterClass(warningLetterData.notes.length)">
-                {{ warningLetterData.notes.length }}/500
-              </span>
-            </div>
+            
           </div>
         </div>
       </div>
@@ -654,7 +638,6 @@
             <FormKit
               type="textarea"
               v-model="terminateData.customReason"
-              placeholder="Sila nyatakan sebab penamatan yang lain..."
               :classes="{
                 input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
                 wrapper: 'w-full'
@@ -664,14 +647,7 @@
               validation="required|length:10,500"
               validation-label="Sebab lain-lain"
             />
-            <div class="flex justify-between items-center mt-1">
-              <p class="text-xs text-gray-500">
-                Minimum 10 aksara, maksimum 500 aksara
-              </p>
-              <span class="text-xs" :class="getTerminateNotesCounterClass()">
-                {{ terminateData.customReason.length }}/500
-              </span>
-            </div>
+            
           </div>
 
           <!-- Supporting Documents Upload -->
@@ -692,9 +668,7 @@
               validation="required"
               validation-label="Dokumen sokongan"
             />
-            <p class="mt-1 text-xs text-gray-500">
-              Seret & lepas atau klik untuk memuat naik berbilang dokumen (PDF, DOC, DOCX, JPG, JPEG, PNG sehingga 5MB setiap satu)
-            </p>
+            
           </div>
 
           <!-- Additional Notes Field -->
@@ -705,7 +679,6 @@
             <FormKit
               type="textarea"
               v-model="terminateData.additionalNotes"
-              placeholder="Masukkan catatan tambahan jika perlu..."
               :classes="{
                 input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
                 wrapper: 'w-full'
@@ -715,14 +688,7 @@
               validation="length:0,500"
               validation-label="Catatan tambahan"
             />
-            <div class="flex justify-between items-center mt-1">
-              <p class="text-xs text-gray-500">
-                Maksimum 500 aksara
-              </p>
-              <span class="text-xs" :class="getTerminateNotesCounterClass()">
-                {{ terminateData.additionalNotes.length }}/500
-              </span>
-            </div>
+            
           </div>
 
           <!-- Confirmation Checkbox -->
@@ -741,9 +707,7 @@
               <label class="font-medium text-gray-700">
                 Saya mengesahkan bahawa saya telah mempertimbangkan semua aspek sebelum menamatkan perkhidmatan ini
               </label>
-              <p class="text-gray-500 mt-1">
-                Tindakan ini tidak boleh dibatalkan dan akan menamatkan perkhidmatan Penolong Amil secara kekal.
-              </p>
+              
             </div>
           </div>
         </div>
@@ -896,10 +860,10 @@ const terminationCategoryOptions = [
 
 // NEW: dropdown options sebab bagi Tamatkan Lantikan
 const terminationReasonMoveOptions = [
-  { label: "Berpindah alamat/kariah", value: "berpindah_alamat" },
-  { label: "Pertukaran institusi (masjid/Masjid)", value: "pertukaran_institusi" },
-  { label: "Penggabungan/penutupan institusi", value: "penggabungan_penutupan" },
-  { label: "Pertukaran kategori (PAK → KPAK dll.)", value: "pertukaran_kategori" },
+  { label: "Berpindah alamat", value: "berpindah_alamat" },
+  { label: "Pertukaran institusi", value: "pertukaran_institusi" },
+  { label: "Penutupan institusi", value: "penggabungan_penutupan" },
+  { label: "Pertukaran Jawatan", value: "pertukaran_kategori" },
   { label: "Lain-lain", value: "lain-lain" },
 ];
 

@@ -4,11 +4,19 @@
 
     <rs-card class="mt-4">
       <template #header>
-        <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">
-            Maklumat Aktiviti Mesyuarat/Program
-          </h2>
-        </div>
+        <header class="flex flex-wrap items-center justify-between gap-4">
+          <div class="space-y-1">
+            <h1 class="text-2xl font-semibold text-slate-900">Maklumat Aktiviti Mesyuarat/Program</h1>
+            <p class="text-sm text-slate-500">{{ activityInfo.NamaAktiviti || '-' }}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <rs-badge :variant="statusBadgeVariant">{{ activityInfo.status || '-' }}</rs-badge>
+            <rs-button variant="ghost" class="flex items-center gap-2" @click="navigateTo('/BF-PA/PE/MP')">
+              <Icon name="ph:arrow-left" class="h-4 w-4" />
+              Kembali
+            </rs-button>
+          </div>
+        </header>
       </template>
 
       <template #body>
@@ -504,6 +512,18 @@ const totalAllowance = computed(() => {
   return sum
     .toFixed(2)
     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+});
+
+// Badge variant for PD-style header
+const statusBadgeVariant = computed(() => {
+  switch (activityInfo.value?.status) {
+    case 'Belum Disemak': return 'secondary';
+    case 'Menunggu Sokongan Eksekutif': return 'warning';
+    case 'Menunggu Kelulusan Ketua Jabatan': return 'info';
+    case 'Diluluskan': return 'success';
+    case 'Ditolak': return 'danger';
+    default: return 'secondary';
+  }
 });
 
 // Current role from dashboard (read from URL query parameter)
