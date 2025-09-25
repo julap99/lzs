@@ -279,16 +279,6 @@
           >
             <div class="flex justify-between items-center mb-4">
               <h4 class="text-lg font-semibold">Senarai Tanggungan</h4>
-              <rs-button
-                type="button"
-                variant="primary"
-                @click="addTanggungan"
-                class="text-sm"
-                :disabled="tanggunganList.length >= 3"
-              >
-                + Tambah Tanggungan
-                {{ tanggunganList.length >= 3 ? "(Maksimum 3)" : "" }}
-              </rs-button>
             </div>
 
             <!-- Tanggungan Cards Display -->
@@ -743,10 +733,6 @@ const handleHantar = () => {
   navigateTo("/BF-PRF/AS/FR/04");
 };
 
-const handleSimpanDraf = () => {
-  toast.success("Permohonan disimpan sebagai draf.");
-};
-
 const handleKembali = () => {
   navigateTo("/BF-PRF/AS/permohonan/list-semakan");
 };
@@ -755,7 +741,7 @@ const dokumenLengkap = ref("");
 
 // Section B (Tanggungan) stepper state - match AS/FR/02 (13 steps)
 const currentStepB = ref(1);
-const totalStepsB = 13;
+const totalStepsB = 9;
 const stepsB = [
   { id: 1, label: "Peribadi" },
   { id: 2, label: "Pengislaman" },
@@ -766,10 +752,6 @@ const stepsB = [
   { id: 7, label: "Pemilikan Aset" },
   { id: 8, label: "Pinjaman Harta" },
   { id: 9, label: "Pekerjaan" },
-  { id: 10, label: "Pengesahan" },
-  { id: 11, label: "Pengesahan Pendapatan" },
-  { id: 12, label: "Pengesahan Bermastautin" },
-  { id: 13, label: "Pegawai Pendaftar" },
 ];
 
 const goToStepB = (stepId) => {
@@ -828,9 +810,6 @@ const isTanggunganComplete = (tanggungan) => {
 };
 
 const getCurrentTanggungan = () => {
-  if (tanggunganList.value.length === 0) {
-    addTanggungan(false);
-  }
   return tanggunganList.value[currentTanggunganIndex.value];
 };
 
@@ -839,61 +818,6 @@ const selectTanggungan = (index) => {
   currentStepB.value = 1;
 };
 
-const addTanggungan = (showNotification = true) => {
-  if (tanggunganList.value.length >= 3) {
-    toast.error("Maksimum 3 tanggungan sahaja dibenarkan");
-    return;
-  }
-
-  const newTanggungan = {
-    id: Date.now(),
-    // Step 1: Peribadi ringkas
-    hubungan_pemohon: "",
-    lain_lain_hubungan: "",
-    nama_tanggungan: "",
-    jenis_pengenalan_tanggungan: "",
-    pengenalan_id_tanggungan: "",
-    warganegara_tanggungan: "",
-    lain_lain_warganegara: "",
-    no_pasport_lama: "",
-    taraf_penduduk_tetap: "",
-    no_pasport: "",
-    tarikh_mula_pasport: "",
-    tarikh_tamat_pasport: "",
-    tarikh_lahir_tanggungan: "",
-    umur_tanggungan: "",
-    mohon_ketua_keluarga: false,
-    tempat_lahir_tanggungan: "",
-    jantina_tanggungan: "",
-    agama_tanggungan: "",
-    lain_lain_agama: "",
-    bangsa_tanggungan: "",
-    lain_lain_bangsa: "",
-    no_telefon_bimbit_tanggungan: "",
-    no_telefon_rumah_tanggungan: "",
-    emel_tanggungan: "",
-    tempoh_menetap_selangor_tanggungan: "",
-    tempoh_menetap_selangor_tanggungan_nilai: "",
-    tempoh_menetap_selangor_tanggungan_unit: "",
-    status_perkahwinan_tanggungan: "",
-    lain_lain_status_perkahwinan: "",
-    jumlah_tanggungan: "",
-    situasi_kelulusan_khas: "",
-    kelulusan_khas: "",
-    jenis_id_tanggungan: "",
-    no_pengenalan_tanggungan: "",
-    tempoh_menetap_selangor: "",
-    no_telefon_tanggungan: "",
-  };
-
-  tanggunganList.value.push(newTanggungan);
-  currentTanggunganIndex.value = tanggunganList.value.length - 1;
-  currentStepB.value = 1;
-
-  if (showNotification) {
-    toast.success(`Tanggungan ${tanggunganList.value.length} berjaya ditambah`);
-  }
-};
 
 // Helper functions used by Peribadi form
 const calculateAge = (birthDate) => {
@@ -938,13 +862,16 @@ const calculateTotalTanggungan = () => {
 // Initialize with 3 tanggungan (mock data like AS/FR/02)
 onMounted(() => {
   if (tanggunganList.value.length === 0) {
-    addTanggungan(false);
-    addTanggungan(false);
-    addTanggungan(false);
+    // Initialize with 3 empty objects
+    tanggunganList.value = [
+      { id: 1 },
+      { id: 2 },
+      { id: 3 }
+    ];
 
     // 1) Pasangan Pemohon
     tanggunganList.value[0] = {
-      ...tanggunganList.value[0],
+      id: 1,
       hubungan_pemohon: "Pasangan Pemohon",
       nama_tanggungan: "ROHANA BINTI AHMAD",
       jenis_pengenalan_tanggungan: "MyKad",
@@ -1064,7 +991,7 @@ onMounted(() => {
 
     // 2) Anak Perempuan Dewasa
     tanggunganList.value[1] = {
-      ...tanggunganList.value[1],
+      id: 2,
       hubungan_pemohon: "Anak",
       nama_tanggungan: "NUR NAJWA BINTI ADNAN",
       jenis_pengenalan_tanggungan: "MyKad",
@@ -1183,7 +1110,7 @@ onMounted(() => {
 
     // 3) Anak Perempuan Sekolah
     tanggunganList.value[2] = {
-      ...tanggunganList.value[2],
+      id: 3,
       hubungan_pemohon: "Anak",
       nama_tanggungan: "NUR QISTINA BINTI ADNAN",
       jenis_pengenalan_tanggungan: "MyKad",
