@@ -141,6 +141,11 @@ const processing = ref(false);
 
 const breadcrumb = ref([
   {
+    name: "Proses Keluar",
+    type: "link",
+    path: "/BF-PRF/AS/KA/proses-keluar/hadkifayah",
+  },
+  {
     name: "Pengiraan Had Kifayah",
     type: "current",
     path: "/kifayah-analysis",

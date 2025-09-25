@@ -65,7 +65,7 @@
           }"
           :options-advanced="{
             sortable: true,
-            filterable: true,
+            filterable: false,
           }"
           advanced
         >

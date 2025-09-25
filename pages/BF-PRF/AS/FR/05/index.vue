@@ -1,124 +1,139 @@
 <template>
   <div>
+    <LayoutsBreadcrumb :items="breadcrumb" />
     <!-- Multi-dimensional Merit Breakdown -->
     <rs-card class="mt-4">
-    <template #header>
-      <h3 class="text-lg font-semibold text-gray-800">
-        Perincian Pengiraan Merit Multidimensi Keluarga
-      </h3>
-    </template>
+      <template #header>
+        <h3 class="text-lg font-semibold text-gray-800">
+          Perincian Pengiraan Merit Multidimensi Keluarga
+        </h3>
+      </template>
 
-    <div v-for="(member, idx) in family" :key="member.ic" class="mb-8 ">
-      <div class="mr-4">
-        <h4 class="text-lg font-semibold text-blue-800 mb-2">
-        {{ member.nama }} ({{ member.ic }})
-      </h4>
+      <div v-for="(member, idx) in family" :key="member.ic" class="mb-8">
+        <div class="mr-4">
+          <h4 class="text-lg font-semibold text-blue-800 mb-2">
+            {{ member.nama }} ({{ member.ic }})
+          </h4>
+        </div>
+
+        <rs-table
+          :data="meritBreakdown[idx]"
+          :field="[
+            'kriteria',
+            'nilai',
+            'skor',
+            'maxSkor',
+            'pemberat',
+            'formula',
+            'merit',
+          ]"
+          :columns="[
+            { key: 'kriteria', label: 'Kriteria' },
+            { key: 'nilai', label: 'Nilai' },
+            { key: 'skor', label: 'Skor LOV' },
+            { key: 'maxSkor', label: 'Skor Tertinggi' },
+            { key: 'pemberat', label: 'Pemberat' },
+            { key: 'formula', label: 'Formula' },
+            { key: 'merit', label: 'Merit' },
+          ]"
+          :options="{
+            variant: 'default',
+            striped: true,
+            bordered: false,
+            hover: true,
+          }"
+          class="mb-2">
+          <template #merit="{ text }">
+            <span class="font-bold">{{ text }}</span>
+          </template>
+        </rs-table>
+
+        <div class="text-sm text-gray-700 mb-2">
+          Merit Individu:
+          <span class="font-bold text-blue-700">{{
+            merits[idx].toFixed(2)
+          }}</span>
+        </div>
+        <div class="text-sm text-gray-700 mb-2">
+          Status Multidimensi:
+          <span class="font-bold text-green-700">{{
+            getStatus(merits[idx])
+          }}</span>
+        </div>
+        <div class="text-sm text-gray-700 mb-2">
+          Quadrant:
+          <span class="font-bold text-purple-700">{{
+            getQuadrant(merits[idx])
+          }}</span>
+        </div>
       </div>
+    </rs-card>
 
-      <rs-table
-        :data="meritBreakdown[idx]"
-        :field="[
-          'kriteria',
-          'nilai',
-          'skor',
-          'maxSkor',
-          'pemberat',
-          'formula',
-          'merit',
-        ]"
-        :columns="[
-          { key: 'kriteria', label: 'Kriteria' },
-          { key: 'nilai', label: 'Nilai' },
-          { key: 'skor', label: 'Skor LOV' },
-          { key: 'maxSkor', label: 'Skor Tertinggi' },
-          { key: 'pemberat', label: 'Pemberat' },
-          { key: 'formula', label: 'Formula' },
-          { key: 'merit', label: 'Merit' },
-        ]"
-        :options="{
-          variant: 'default',
-          striped: true,
-          bordered: false,
-          hover: true,
-        }"
-        class="mb-2"
-      >
-        <template #merit="{ text }">
-          <span class="font-bold">{{ text }}</span>
-        </template>
-      </rs-table>
+    <!-- Household Merit & Status Summary -->
+    <rs-card class="mb-6">
+      <template #header>
+        <h2 class="text-xl font-semibold text-blue-900">
+          Ringkasan Merit Keluarga
+        </h2>
+      </template>
 
-      <div class="text-sm text-gray-700 mb-2">
-        Merit Individu:
-        <span class="font-bold text-blue-700">{{
-          merits[idx].toFixed(2)
-        }}</span>
+      <div class="mb-2">
+        Merit Keluarga:
+        <span class="font-bold text-blue-700">{{ householdMerit }}</span>
       </div>
-      <div class="text-sm text-gray-700 mb-2">
+      <div class="mb-2">
         Status Multidimensi:
         <span class="font-bold text-green-700">{{
-          getStatus(merits[idx])
+          getStatus(householdMerit)
         }}</span>
       </div>
-      <div class="text-sm text-gray-700 mb-2">
+      <div class="mb-2">
         Quadrant:
         <span class="font-bold text-purple-700">{{
-          getQuadrant(merits[idx])
+          getQuadrant(householdMerit)
         }}</span>
       </div>
-    </div>
-  </rs-card>
 
-  <!-- Household Merit & Status Summary -->
-  <rs-card class="mb-6">
-    <template #header>
-      <h2 class="text-xl font-semibold text-blue-900">
-        Ringkasan Merit Keluarga
-      </h2>
-    </template>
+      <div class="flex justify-between items-center mt-6">
+        <rs-button
+          variant="primary-outline"
+          @click="navigateTo('/BF-PRF/AS/FR/04')">
+          Kembali
+        </rs-button>
 
-    <div class="mb-2">
-      Merit Keluarga:
-      <span class="font-bold text-blue-700">{{ householdMerit }}</span>
-    </div>
-    <div class="mb-2">
-      Status Multidimensi:
-      <span class="font-bold text-green-700">{{
-        getStatus(householdMerit)
-      }}</span>
-    </div>
-    <div class="mb-2">
-      Quadrant:
-      <span class="font-bold text-purple-700">{{
-        getQuadrant(householdMerit)
-      }}</span>
-    </div>
-
-    <div class="flex justify-between items-center mt-6">
-      <rs-button
-        variant="primary-outline"
-        @click="navigateTo('/BF-PRF/AS/FR/04')"
-      > 
-        Kembali
-      </rs-button>
-
-      <rs-button
-        variant="primary"
-        @click="navigateTo('/BF-PRF/AS/FR/05_01')"
-        :disabled="processing"
-      >
-        <span v-if="processing">
-          <Icon name="eos-icons:loading" class="ml-1" size="1rem" />
-        </span>
-        <span v-else>Seterusnya</span>
-      </rs-button>
-    </div>
-  </rs-card>
+        <rs-button
+          variant="primary"
+          @click="navigateTo('/BF-PRF/AS/FR/05_01')"
+          :disabled="processing">
+          <span v-if="processing">
+            <Icon name="eos-icons:loading" class="ml-1" size="1rem" />
+          </span>
+          <span v-else>Seterusnya</span>
+        </rs-button>
+      </div>
+    </rs-card>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
+
+definePageMeta({
+  title: "Multidimensi",
+});
+
+const breadcrumb = ref([
+  {
+    name: "Profiling",
+    type: "link",
+    path: "/BF-PRF/AS/FR/05",
+  },
+  {
+    name: "Multidimensi",
+    type: "current",
+    path: "/BF-PRF/AS/FR/05_01",
+  },
+]);
 
 const processing = ref(false);
 
