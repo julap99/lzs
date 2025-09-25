@@ -561,12 +561,12 @@ const breadcrumb = ref([
     path: '/BF-BTN/bantuan-bulk',
   },
   {
-    name: 'Bantuan Bulk',
+    name: 'Bulk Processing',
     type: 'link',
     path: '/BF-BTN/bantuan-bulk',
   },
   {
-    name: 'Cipta Bantuan Bulk',
+    name: 'Cipta Bulk Processing',
     type: 'link',
     path: '/BF-BTN/bantuan-bulk/cipta-bantuan-bulk',
   },
@@ -659,9 +659,9 @@ const getBantuanData = (id) => {
       tarikhMohon: '04/05/2025',
       kategoriBantuan: 'Pendidikan (Muallaf)',
       subKategori: 'Elaun/Imbuhan (Muallaf - Pendidikan)',
-      bantuan: '(HQ) ELAUN KEHADIRAN KELAS AGAM ASAS (MUALLAF)',
+      bantuan: '(HQ) ELAUN KEHADIRAN KELAS AGAMA ASAS (MUALLAF)',
       kodBantuan: 'B309',
-      produkBantuan: '(HQ) ELAUN KEHADIRAN KELAS AGAM ASAS (MUALLAF)',
+      produkBantuan: '(HQ) ELAUN KEHADIRAN KELAS AGAMA ASAS (MUALLAF)',
       penyiasat: 'Muhammad Yazid Bin Abdullah',
       cawangan: 'Cawangan Ibu Pejabat LZS'
     },

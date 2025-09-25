@@ -567,19 +567,19 @@ const breadcrumb = ref([
     path: "/BF-BTN",
   },
   {
-    name: "Bantuan Bulk",
+    name: "Bulk Processing",
     type: "link",
     path: "/BF-BTN/bantuan-bulk",
   },
   {
     name: "Kelulusan",
     type: "link",
-    path: "/BF-BTN/bantuan-bulk/senarai-bantuan-bulk-kelulusan",
+    path: "/BF-BTN/bantuan-bulk/senarai-bulk-processing-kelulusan",
   },
   {
     name: `Maklumat ${route.params.id}`,
     type: "current",
-    path: `/BF-BTN/bantuan-bulk/senarai-bantuan-bulk-kelulusan/${route.params.id}`,
+    path: `/BF-BTN/bantuan-bulk/senarai-bulk-processing-kelulusan/${route.params.id}`,
   },
 ]);
 
@@ -1043,7 +1043,7 @@ const selectedRecipient = ref(null);
 
 // Methods
 const handleKembali = () => {
-  navigateTo("/BF-BTN/bantuan-bulk/senarai-bantuan-bulk-kelulusan");
+  navigateTo("/BF-BTN/bantuan-bulk/senarai-bulk-processing-kelulusan");
 };
 
 const handleSimpan = async () => {
@@ -1076,7 +1076,7 @@ const handleHantar = async () => {
     alert("Sokongan berjaya dihantar!");
 
     // Navigate back to listing
-    await navigateTo("/BF-BTN/bantuan-bulk/senarai-bantuan-bulk-kelulusan");
+    await navigateTo("/BF-BTN/bantuan-bulk/senarai-bulk-processing-kelulusan");
   } catch (error) {
     console.error("Error submitting sokongan:", error);
     alert("Ralat semasa menghantar sokongan. Sila cuba lagi.");

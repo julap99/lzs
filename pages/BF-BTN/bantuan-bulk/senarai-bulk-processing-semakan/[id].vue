@@ -93,80 +93,138 @@
               label="Dicipta Pada"
               v-model="bantuanDetail.diciptaPada"
               disabled
+              :classes="{
+                outer: 'md:col-span-2',
+              }"
             />
           </div>
         </template>
       </rs-card>
 
-      <!-- Maklumat Bantuan Section -->
-      <rs-card>
+       <!-- Maklumat Bantuan Section -->
+       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Maklumat Bantuan</h2>
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold">Maklumat Bantuan</h2>
+            <div class="flex gap-2">
+              <rs-button
+                v-if="!isEditing"
+                variant="primary"
+                size="sm"
+                @click="handleEdit"
+              >
+                <Icon name="mdi:pen" size="1.5rem" class="mr-1" />
+                Edit
+              </rs-button>
+              <template v-else>
+                <rs-button
+                  variant="success"
+                  size="sm"
+                  @click="handleSave"
+                >
+                  <Icon name="mdi:check" size="1.5rem" class="mr-1" />
+                  Save
+                </rs-button>
+                <rs-button
+                  variant="secondary"
+                  size="sm"
+                  @click="handleCancel"
+                >
+                  <Icon name="mdi:close" size="1.5rem" class="mr-1" />
+                  Cancel
+                </rs-button>
+              </template>
+            </div>
+          </div>
         </template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Kategori Bantuan -->
+            <CustomSelect
+                v-model="bantuanDetail.aid"
+                :options="aid"
+                label="Aid"
+                search-placeholder="Cari aid..."
+                :disabled="!isEditing"
+              />
             <FormKit
-              type="text"
-              name="kategoriBantuan"
-              label="Kategori Bantuan"
-              v-model="bantuanDetail.kategoriBantuan"
-              disabled
+                type="select"
+                name="aidProduct"
+                label="Aid Product"
+                v-model="bantuanDetail.aidProduct"
+                :options="aidProductOptions"
+                searchable
+                :search-attributes="['label']"
+                :search-filter="(option, search) => option.label.toLowerCase().includes(search.toLowerCase())"
+                validation="required"
+                :validation-messages="{
+                  required: 'Sila pilih aid product',
+                }"
+                :disabled="!isEditing || !bantuanDetail.aid"
+              />
+            <FormKit
+                type="select"
+                name="productPackage"
+                label="Product Package"
+                v-model="bantuanDetail.productPackage"
+                :options="productPackageOptions"
+                searchable
+                :search-attributes="['label']"
+                :search-filter="(option, search) => option.label.toLowerCase().includes(search.toLowerCase())"
+                validation="required"
+                :validation-messages="{
+                  required: 'Sila pilih product package',
+                }"
+                :disabled="!isEditing || !bantuanDetail.aidProduct"
+              />
+            <FormKit
+                type="select"
+                name="productEntitlement"
+                label="Product Entitlement"
+                v-model="bantuanDetail.productEntitlement"
+                :options="productEntitlementOptions"
+                searchable
+                :search-attributes="['label']"
+                :search-filter="(option, search) => option.label.toLowerCase().includes(search.toLowerCase())"
+                validation="required"
+                :validation-messages="{
+                  required: 'Sila pilih product Entitlement',
+                }"
+                :disabled="!isEditing || !bantuanDetail.productPackage"
             />
 
-            <!-- Sub-Kategori -->
-            <FormKit
-              type="text"
-              name="subKategori"
-              label="Sub-Kategori"
-              v-model="bantuanDetail.subKategori"
-              disabled
-            />
-
-            <!-- Bantuan -->
-            <FormKit
-              type="text"
-              name="bantuan"
-              label="Bantuan *"
-              v-model="bantuanDetail.bantuan"
-              disabled
-            />
-
-            <!-- Kod Bantuan -->
-            <FormKit
-              type="text"
-              name="kodBantuan"
-              label="Kod Bantuan"
-              v-model="bantuanDetail.kodBantuan"
-              disabled
-            />
-
-            <!-- Produk Bantuan -->
-            <FormKit
-              type="text"
-              name="produkBantuan"
-              label="Produk Bantuan *"
-              v-model="bantuanDetail.produkBantuan"
-              disabled
-            />
-
-            <!-- Tarikh Jangkaan Bayaran -->
             <FormKit
               type="date"
               name="tarikhJangkaanBayaran"
               label="Tarikh Jangkaan Bayaran"
               placeholder="Pilih tarikh jangkaan bayaran"
+              validation="required"
+              :validation-messages="{
+                required: 'Sila pilih tarikh jangkaan bayaran',
+              }"
               v-model="bantuanDetail.tarikhJangkaanBayaran"
-              disabled
+              :disabled="!isEditing"
             />
 
-            <!-- Cawangan -->
             <FormKit
-              type="text"
-              name="cawangan"
-              label="Cawangan *"
+              type="radio"
+              name="modeOfPayment"
+              label="Mode Of Payment"
+              v-model="bantuanDetail.modeOfPayment"
+              :options="[
+                { label: 'Tunai', value: 'Tunai' },
+                { label: 'Profile', value: 'Profile' },
+              ]"
+              validation="required"
+              :disabled="!isEditing"
+            />
+
+            <!-- Cawangan (CustomSelect) -->
+            <CustomSelect
               v-model="bantuanDetail.cawangan"
-              disabled
+              :options="cawanganOptions"
+              label="Cawangan"
+              search-placeholder="Cari cawangan..."
+              :disabled="!isEditing"
               :classes="{
                 outer: 'md:col-span-2',
               }"
@@ -490,9 +548,193 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
+const { navigateTo } = useRouter();
+
+// Simple alert function
+const alert = (type, message) => {
+  if (type === "error") {
+    console.error(message);
+  } else if (type === "success") {
+    console.log("✅", message);
+  } else {
+    console.log(message);
+  }
+};
+
+const bantuanData = ref({});
+
+import bantuanJson from "./aid-options.json";
+
+// Set the bantuan data on component mount
+onMounted(() => {
+  try {
+    bantuanData.value = bantuanJson;
+    console.log("Loaded bantuan data:", bantuanData.value);
+    console.log("Available aids:", Object.keys(bantuanData.value.bantuan || {}));
+  } catch (error) {
+    console.error("Error loading bantuan data:", error);
+  }
+});
+
+// Compute jenis bantuan options from the JSON data
+const aid = computed(() => {
+  if (!bantuanData.value.bantuan) return [];
+  
+  const options = Object.entries(bantuanData.value.bantuan).map(([categoryName]) => ({
+    label: categoryName,
+    value: categoryName,
+  }));
+
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
+});
+
+// Compute aid product options based on selected jenis bantuan
+const aidProductOptions = computed(() => {
+  if (!bantuanDetail.value.aid || !bantuanData.value.bantuan) {
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+
+  const aidNode = bantuanData.value.bantuan[bantuanDetail.value.aid];
+  if (!aidNode) return [{ label: "-- Pilih --", value: "", disabled: true }];
+
+  const options = Object.keys(aidNode).map((productName) => ({
+    label: productName,
+    value: productName,
+  }));
+
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
+});
+
+
+// Compute product package options based on selected aid product
+const productPackageOptions = computed(() => {
+  console.log('=== Product Package Debug ===');
+  console.log('bantuanDetail.aid:', bantuanDetail.value.aid);
+  console.log('bantuanDetail.aidProduct:', bantuanDetail.value.aidProduct);
+  console.log('bantuanData.bantuan:', bantuanData.value.bantuan);
+  
+  if (!bantuanDetail.value.aid || !bantuanDetail.value.aidProduct || !bantuanData.value.bantuan) {
+    console.log('Early return: missing required data');
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+  
+  const aidNode = bantuanData.value.bantuan[bantuanDetail.value.aid];
+  console.log('aidNode:', aidNode);
+  if (!aidNode || !aidNode[bantuanDetail.value.aidProduct]) {
+    console.log('No aidNode or product found');
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+  
+  const productNode = aidNode[bantuanDetail.value.aidProduct];
+  console.log('productNode:', productNode);
+  const options = Object.keys(productNode).map((pkg) => ({ 
+    label: pkg, 
+    value: pkg 
+  }));
+  console.log('Final package options:', options);
+  
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
+});
+ 
+const productEntitlementOptions = computed(() => {
+  console.log('=== Product Entitlement Debug ===');
+  console.log('bantuanDetail.aid:', bantuanDetail.value.aid);
+  console.log('bantuanDetail.aidProduct:', bantuanDetail.value.aidProduct);
+  console.log('bantuanDetail.productPackage:', bantuanDetail.value.productPackage);
+  console.log('bantuanData.bantuan:', bantuanData.value.bantuan);
+  
+  if (!bantuanDetail.value.aid || !bantuanDetail.value.aidProduct || !bantuanDetail.value.productPackage || !bantuanData.value.bantuan) {
+    console.log('Early return: missing required data');
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+  
+  const aidNode = bantuanData.value.bantuan[bantuanDetail.value.aid];
+  console.log('aidNode:', aidNode);
+  if (!aidNode) {
+    console.log('No aidNode found');
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+  
+  const productNode = aidNode[bantuanDetail.value.aidProduct];
+  console.log('productNode:', productNode);
+  if (!productNode) {
+    console.log('No productNode found');
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+  
+  const entitlements = productNode[bantuanDetail.value.productPackage] || [];
+  console.log('entitlements:', entitlements);
+  if (!Array.isArray(entitlements) || entitlements.length === 0) {
+    console.log('No valid entitlements found');
+    return [{ label: "Tiada entitlements", value: "", disabled: true }];
+  }
+  
+  const options = entitlements.map((e) => ({ 
+    label: e, 
+    value: e 
+  }));
+  console.log('Final options:', options);
+  
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
+});
+
+const cawanganOptions = ref([
+  // Gombak
+  { label: "Taman Melawati (Gombak)", value: "Taman Melawati" },
+  { label: "Bandar Baru Selayang (Gombak)", value: "Bandar Baru Selayang" },
+  { label: "UNIVERSITI ISLAM ANTARABANGSA MALAYSIA (UIAM)", value: "UNIVERSITI ISLAM ANTARABANGSA MALAYSIA (UIAM)" },
+  // Hulu Langat
+  { label: "Kajang (Hulu Langat)", value: "Kajang" },
+  { label: "Bandar Baru Bangi (Hulu Langat)", value: "Bandar Baru Bangi" },
+  { label: "Bandar Baru Ampang (Hulu Langat)", value: "Bandar Baru Ampang" },
+  { label: "UNIVERSITI KEBANGSAAN MALAYSIA (UKM)", value: "UNIVERSITI KEBANGSAAN MALAYSIA (UKM)" },
+  { label: "UNIVERSITI TENAGA NASIONAL (UNITEN)", value: "UNIVERSITI TENAGA NASIONAL (UNITEN)" },
+  { label: "KOLEJ UNIVERSITI ISLAM ANTARABANGSA SELANGOR (KUIS)", value: "KOLEJ UNIVERSITI ISLAM ANTARABANGSA SELANGOR (KUIS)" },
+  { label: "INFRASTRUCTURE UNIVERSITY KUALA LUMPUR (IUKL)", value: "INFRASTRUCTURE UNIVERSITY KUALA LUMPUR (IUKL)" },
+  // Kuala Selangor
+  { label: "UNIVERSITI SELANGOR (UNISEL)", value: "UNIVERSITI SELANGOR (UNISEL)" },
+  { label: "Cawangan Zakat LZS, Kuala Selangor", value: "Cawangan Zakat LZS, Kuala Selangor" },
+  // Sabak Bernam
+  { label: "Cawangan Zakat LZS, Sungai Besar", value: "Cawangan Zakat LZS, Sungai Besar" },
+  // Petaling
+  { label: "UNIVERSITI TEKNOLOGI MARA (UiTM)", value: "UNIVERSITI TEKNOLOGI MARA (UiTM)" },
+  { label: "UNITAR INTERNATIONAL UNIVERSITY (UNITAR)", value: "UNITAR INTERNATIONAL UNIVERSITY (UNITAR)" },
+  { label: "UNIVERSITI PUTRA MALAYSIA (UPM)", value: "UNIVERSITI PUTRA MALAYSIA (UPM)" },
+  { label: "MANAGEMENT AND SCIENCE UNIVERSITY (MSU)", value: "MANAGEMENT AND SCIENCE UNIVERSITY (MSU)" },
+  { label: "Damansara (Petaling)", value: "Damansara" },
+  { label: "Cawangan Ibu Pejabat LZS", value: "Cawangan Ibu Pejabat LZS" },
+  // Sepang
+  { label: "UNIVERSITI MULTIMEDIA (MMU)", value: "UNIVERSITI MULTIMEDIA (MMU)" },
+  { label: "Saujana KLIA", value: "Saujana KLIA" },
+  // Kuala Langat
+  { label: "Banting", value: "Banting" },
+  // Hulu Selangor
+  { label: "Kuala Kubu Bharu", value: "Kuala Kubu Bharu" },
+  // Klang
+  { label: "Kompleks MAIS Klang", value: "Kompleks MAIS Klang" },
+]);
+
+const statusSemakanOptions = ref([
+  { label: "Sokong", value: "Sokong" },
+  { label: "Tidak Sokong", value: "Tidak Sokong" },
+  { label: "Perlu Semakan Lanjut", value: "Perlu Semakan Lanjut" }
+]);
 
 definePageMeta({
   title: "Maklumat Bulk Processing",
@@ -541,7 +783,13 @@ const getBantuanData = (id) => {
       produkBantuan: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
       penyiasat: 'Ahmad bin Hassan',
       cawangan: 'Cawangan Ibu Pejabat LZS',
-      tarikhJangkaanBayaran: '2025-05-04'
+      tarikhJangkaanBayaran: '2025-05-04',
+      // Maklumat Bantuan fields
+      aid: 'Bantuan Pendidikan',
+      aidProduct: 'Wang Saku',
+      productPackage: 'Standard Package',
+      productEntitlement: 'Full Entitlement',
+      modeOfPayment: 'Tunai'
     },
     'BP-2025-00002': {
       kodBP: 'BP-2025-00002',
@@ -560,7 +808,13 @@ const getBantuanData = (id) => {
       produkBantuan: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
       penyiasat: 'Ahmad bin Hassan',
       cawangan: 'Cawangan Ibu Pejabat LZS',
-      tarikhJangkaanBayaran: '2025-05-04'
+      tarikhJangkaanBayaran: '2025-05-04',
+      // Maklumat Bantuan fields
+      aid: 'Bantuan Pendidikan',
+      aidProduct: 'Wang Saku',
+      productPackage: 'Standard Package',
+      productEntitlement: 'Full Entitlement',
+      modeOfPayment: 'Profile'
     },
     'BP-2025-00003': {
       kodBP: 'BP-2025-00003',
@@ -579,7 +833,13 @@ const getBantuanData = (id) => {
       produkBantuan: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
       penyiasat: 'Ahmad bin Hassan',
       cawangan: 'Cawangan Ibu Pejabat LZS',
-      tarikhJangkaanBayaran: '2025-05-04'
+      tarikhJangkaanBayaran: '2025-05-04',
+      // Maklumat Bantuan fields
+      aid: 'Bantuan Pendidikan',
+      aidProduct: 'Wang Saku',
+      productPackage: 'Premium Package',
+      productEntitlement: 'Full Entitlement',
+      modeOfPayment: 'Tunai'
     },
     'BP-2025-00004': {
       kodBP: 'BP-2025-00004',
@@ -598,7 +858,13 @@ const getBantuanData = (id) => {
       produkBantuan: '(HQ) BANTUAN BANJIR (FAKIR)',
       penyiasat: 'Ahmad bin Hassan',
       cawangan: 'Cawangan Ibu Pejabat LZS',
-      tarikhJangkaanBayaran: '2025-05-04'
+      tarikhJangkaanBayaran: '2025-05-04',
+      // Maklumat Bantuan fields
+      aid: 'Bantuan Bencana',
+      aidProduct: 'Bantuan Banjir',
+      productPackage: 'Emergency Package',
+      productEntitlement: 'Full Entitlement',
+      modeOfPayment: 'Profile'
     },
     'BP-2025-01617': {
       kodBP: 'BP-2025-01617',
@@ -617,7 +883,13 @@ const getBantuanData = (id) => {
       produkBantuan: '(HQ) ELAUN KEHADIRAN KELAS AGAM ASAS (MUALLAF)',
       penyiasat: 'Muhammad Yazid Bin Abdullah',
       cawangan: 'Cawangan Ibu Pejabat LZS',
-      tarikhJangkaanBayaran: '2025-05-04'
+      tarikhJangkaanBayaran: '2025-05-04',
+      // Maklumat Bantuan fields
+      aid: '(HQ) ELAUN KEHADIRAN KELAS AGAMA ASAS (MUALLAF)',
+      aidProduct: '(HQ) ELAUN KEHADIRAN KELAS AGAMA ASAS (MUALLAF)',
+      productPackage: 'Standard Package',
+      productEntitlement: 'Full Entitlement',
+      modeOfPayment: 'Tunai'
     },
     'BP-2025-01589': {
       kodBP: 'BP-2025-01589',
@@ -636,7 +908,13 @@ const getBantuanData = (id) => {
       produkBantuan: '(HQ) ELAUN GURU PEMBIMBING ASNAF (MUALLAF)',
       penyiasat: 'Muhammad Yazid Bin Abdullah',
       cawangan: 'Cawangan Ibu Pejabat LZS',
-      tarikhJangkaanBayaran: '2025-05-04'
+      tarikhJangkaanBayaran: '2025-05-04',
+      // Maklumat Bantuan fields
+      aid: 'Sosial (Muallaf)',
+      aidProduct: 'Elaun Guru',
+      productPackage: 'Premium Package',
+      productEntitlement: 'Full Entitlement',
+      modeOfPayment: 'Profile'
     },
     'BP-2025-00007': {
       kodBP: 'BP-2025-00007',
@@ -655,7 +933,13 @@ const getBantuanData = (id) => {
       produkBantuan: '(HQ) BANTUAN RUMAH',
       penyiasat: 'Ahmad bin Hassan',
       cawangan: 'Cawangan Ibu Pejabat LZS',
-      tarikhJangkaanBayaran: '2025-05-04'
+      tarikhJangkaanBayaran: '2025-05-04',
+      // Maklumat Bantuan fields
+      aid: 'Bantuan Rumah',
+      aidProduct: 'Bantuan Rumah',
+      productPackage: 'Standard Package',
+      productEntitlement: 'Full Entitlement',
+      modeOfPayment: 'Tunai'
     },
     'BP-2025-00008': {
       kodBP: 'BP-2025-00008',
@@ -674,7 +958,13 @@ const getBantuanData = (id) => {
       produkBantuan: '(HQ) BANTUAN MAKANAN',
       penyiasat: 'Ahmad bin Hassan',
       cawangan: 'Cawangan Ibu Pejabat LZS',
-      tarikhJangkaanBayaran: '2025-05-04'
+      tarikhJangkaanBayaran: '2025-05-04',
+      // Maklumat Bantuan fields
+      aid: 'Bantuan Makanan',
+      aidProduct: 'Bantuan Makanan',
+      productPackage: 'Standard Package',
+      productEntitlement: 'Full Entitlement',
+      modeOfPayment: 'Profile'
     }
   };
   
@@ -683,6 +973,71 @@ const getBantuanData = (id) => {
 
 // Form data state (populated with data based on ID)
 const bantuanDetail = ref(getBantuanData(route.params.id));
+
+// Edit mode state
+const isEditing = ref(false);
+const originalData = ref({});
+
+// Save/Update functionality
+const handleSave = () => {
+  try {
+    // Validate required fields
+    if (!bantuanDetail.value.aid) {
+      alert("error", "Sila pilih aid");
+      return;
+    }
+    if (!bantuanDetail.value.aidProduct) {
+      alert("error", "Sila pilih aid product");
+      return;
+    }
+    if (!bantuanDetail.value.productPackage) {
+      alert("error", "Sila pilih product package");
+      return;
+    }
+    if (!bantuanDetail.value.productEntitlement) {
+      alert("error", "Sila pilih product entitlement");
+      return;
+    }
+    if (!bantuanDetail.value.tarikhJangkaanBayaran) {
+      alert("error", "Sila pilih tarikh jangkaan bayaran");
+      return;
+    }
+    if (!bantuanDetail.value.modeOfPayment) {
+      alert("error", "Sila pilih mode of payment");
+      return;
+    }
+    if (!bantuanDetail.value.cawangan) {
+      alert("error", "Sila pilih cawangan");
+      return;
+    }
+
+    // Save the changes (in a real app, this would be an API call)
+    console.log("Saving bantuan detail:", bantuanDetail.value);
+    
+    // Update the original data
+    originalData.value = { ...bantuanDetail.value };
+    
+    // Exit edit mode
+    isEditing.value = false;
+    
+    alert("success", "Maklumat bantuan berjaya dikemaskini");
+  } catch (error) {
+    console.error("Error saving bantuan detail:", error);
+    alert("error", "Gagal menyimpan maklumat bantuan");
+  }
+};
+
+const handleEdit = () => {
+  // Store original data for potential cancel
+  originalData.value = { ...bantuanDetail.value };
+  isEditing.value = true;
+};
+
+const handleCancel = () => {
+  // Restore original data
+  bantuanDetail.value = { ...originalData.value };
+  isEditing.value = false;
+};
 
 // Removed bayaran columns as we're using card layout now
 
@@ -952,13 +1307,6 @@ const sokonganForm = ref({
   tarikh: "14/07/2025",
 });
 
-// Status semakan options
-const statusSemakanOptions = [
-  { label: "Pilih Status", value: "" },
-  { label: "Disokong", value: "Disokong" },
-  { label: "Tidak Disokong", value: "Tidak Disokong" },
-  { label: "Tidak Lengkap", value: "Tidak Lengkap" },
-];
 
 // Modal states
 const showPaymentModal = ref(false);
@@ -968,7 +1316,7 @@ const selectedRecipient = ref(null);
 
 // Methods
 const handleKembali = () => {
-  navigateTo("/BF-BTN/bantuan-bulk/senarai-bantuan-bulk-sokongan");
+  navigateTo("/BF-BTN/bantuan-bulk/senarai-bulk-processing-semakan");
 };
 
 const handleSimpan = async () => {
@@ -1001,7 +1349,7 @@ const handleHantar = async () => {
     alert("Sokongan berjaya dihantar!");
 
     // Navigate back to listing
-    await navigateTo("/BF-BTN/bantuan-bulk/senarai-bantuan-bulk-sokongan");
+    await navigateTo("/BF-BTN/bantuan-bulk/senarai-bulk-processing-semakan");
   } catch (error) {
     console.error("Error submitting sokongan:", error);
     alert("Ralat semasa menghantar sokongan. Sila cuba lagi.");
