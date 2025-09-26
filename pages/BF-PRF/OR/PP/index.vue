@@ -8,15 +8,15 @@
           <div>
             <h2 class="text-xl font-semibold">Senarai Organisasi</h2>
           </div>
-          <!-- Role Switcher (FormKit Select to match BF-PA standard) -->
+          <!-- Simulasi Peranan -->
           <div class="flex items-center gap-2">
             <FormKit
               type="select"
               name="role"
-              label="Peranan"
-              :options="roles"
+              label="Simulasi Peranan"
+              :options="rolesOptions"
               v-model="currentUserRole"
-              @input="setRole($event)"
+              :classes="{ outer: 'mb-0', wrapper: 'w-56' }"
             />
           </div>
         </div>
@@ -574,7 +574,10 @@ const deleteConfirmation = ref({
 });
 
 // Role switcher
-const roles = ['Eksekutif', 'Ketua Jabatan'];
+const rolesOptions = [
+  { label: 'Eksekutif', value: 'Eksekutif' },
+  { label: 'Ketua Jabatan', value: 'Ketua Jabatan' },
+];
 const selectedRole = ref('Eksekutif');
 // User role simulation - for demo purposes
 const currentUserRole = ref('Eksekutif'); // Eksekutif, Ketua Jabatan, Pengguna Luar
@@ -584,6 +587,15 @@ const setRole = (role) => {
   currentUserRole.value = role;
   tableKey.value++;
 };
+
+watch(
+  () => currentUserRole.value,
+  (val) => {
+    if (val !== selectedRole.value) {
+      setRole(val);
+    }
+  }
+);
 
 // Role-based tindakan visibility
 const showEditAction = (status) => {
