@@ -10,6 +10,7 @@ definePageMeta({
 
 const formData = ref({
   fullName: "",
+  idType: "",
   idNumber: "",
   phoneNumber: "",
   password: "",
@@ -19,6 +20,25 @@ const formData = ref({
   subscribeNewsletter: false,
   agreeTerms: false,
 });
+
+const idTypeOptions = [
+  { label: "Nombor Mykad", value: "mykad" },
+  { label: "Passport", value: "passport" },
+  { label: "No Pendaftaran", value: "pendaftaran" },
+];
+
+const getIdPlaceholder = () => {
+  switch (formData.value.idType) {
+    case "mykad":
+      return "Contoh: 901231025678";
+    case "passport":
+      return "Contoh: A12345678";
+    case "pendaftaran":
+      return "Contoh: REG123456";
+    default:
+      return "Pilih jenis ID terlebih dahulu";
+  }
+};
 
 const register = () => {
   // Simulate registration without API call
@@ -67,40 +87,52 @@ const handleRecaptcha = (response) => {
             </template>
           </FormKit>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-4">
-            <FormKit
-              type="text"
-              name="idNumber"
-              placeholder="Nombor Mykad / Nombor Pasport"
-              validation="required"
-              :validation-messages="{
-                required: 'Nombor Mykad / Nombor Pasport wajib diisi',
-              }"
-            >
-              <template #prefixIcon>
+          <div class="relative">
+            <div class="flex border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
+              <div class="flex items-center px-3 bg-gray-50 border-r border-gray-300">
                 <Icon
                   name="ph:identification-card-fill"
-                  class="!w-5 !h-5 ml-3 text-gray-500"
-                ></Icon>
-              </template>
-            </FormKit>
-            <FormKit
-              type="tel"
-              name="phoneNumber"
-              placeholder="Nombor Telefon"
-              validation="required"
-              :validation-messages="{
-                required: 'Nombor Telefon wajib diisi',
-              }"
-            >
-              <template #prefixIcon>
-                <Icon
-                  name="ph:device-mobile-camera-fill"
-                  class="!w-5 !h-5 ml-3 text-gray-500"
-                ></Icon>
-              </template>
-            </FormKit>
+                  class="w-5 h-5 text-gray-500 mr-2"
+                />
+                <select
+                  v-model="formData.idType"
+                  class="bg-transparent border-none outline-none text-sm text-gray-700 min-w-[120px]"
+                  required
+                >
+                  <option value="" disabled>Pilih Jenis ID</option>
+                  <option v-for="option in idTypeOptions" :key="option.value" :value="option.value">
+                    {{ option.label }}
+                  </option>
+                </select>
+              </div>
+              <input
+                type="text"
+                v-model="formData.idNumber"
+                :placeholder="getIdPlaceholder()"
+                class="flex-1 px-3 py-3 border-none outline-none text-sm"
+                required
+              />
+            </div>
+            <div v-if="!formData.idType" class="text-red-500 text-xs mt-1">Jenis ID wajib dipilih</div>
+            <div v-if="formData.idType && !formData.idNumber" class="text-red-500 text-xs mt-1">Nombor ID wajib diisi</div>
           </div>
+
+          <FormKit
+            type="tel"
+            name="phoneNumber"
+            placeholder="Nombor Telefon"
+            validation="required"
+            :validation-messages="{
+              required: 'Nombor Telefon wajib diisi',
+            }"
+          >
+            <template #prefixIcon>
+              <Icon
+                name="ph:device-mobile-camera-fill"
+                class="!w-5 !h-5 ml-3 text-gray-500"
+              ></Icon>
+            </template>
+          </FormKit>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-4">
             <FormKit
