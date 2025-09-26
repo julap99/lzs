@@ -1,93 +1,132 @@
 <template>
   <div class="p-4">
-    <h2 class="text-lg font-semibold mb-3">Level Kelulusan</h2>
+    <div class="flex justify-between items-center mb-3">
+      <h1 class="text-2xl font-semibold flex items-center gap-2">
+        <Icon name="ic:outline-info" />
+        Level Kelulusan
+      </h1>
+
+      <!-- BUTANG KEMBALI (baru) -->
+<rs-button btnType="button" variant="secondary" @click="goBack">Kembali</rs-button> 
+    </div>
+
 
     <RsCard class="p-4">
       <form @submit.prevent="onSubmit" class="space-y-4">
-        <!-- 5-column grid: 180 | auto | 16 | 180 | auto -->
+        <!-- Top: basic fields in 5-col grid -->
         <div class="form-grid gap-x-4 gap-y-3">
-          <!-- Row: Table Name (L) | ID Row Table (R) -->
           <label class="lbl">Table Name :</label>
-          <input v-model.trim="form.tableName" type="text" class="inpt" required />
+          <input v-model.trim="form.tableName" type="text"  class="col-span-1 w-full border border-slate-300 rounded px-3 py-2 bg-white" required />
           <div></div>
           <label class="lbl">ID Row Table :</label>
           <input v-model.number="form.idRowTable" type="number" min="1" class="inpt inpt-sm" required />
 
-          <!-- Row: Level Type (R side only) -->
-          <div></div><div></div><div></div>
+          <div></div>
+          <div></div>
+          <div></div>
           <label class="lbl">Level Type :</label>
           <label class="inline-flex items-center gap-2">
             <input type="checkbox" v-model="levelTypeChecked" />
             <span>row</span>
           </label>
+        </div>
 
-          <!-- Row: Level (label left; fields col 2-3; buttons col 4-5) -->
-          <label class="lbl self-start">Level :</label>
-          <div class="col-span-2 space-y-2">
-            <div v-for="(lv, i) in form.levels" :key="'lv-'+i" class="flex gap-2">
-              <input v-model.trim="lv.Flow"  placeholder="Flow"  class="inpt w-20"  required />
-              <input v-model.trim="lv.Tahap" placeholder="Tahap" class="inpt w-20"  required />
-              <input v-model.trim="lv.Value" placeholder="Value" class="inpt w-20" required />
+        <!-- ROW A: Level (left) | Status + Status Data (right) -->
+        <div class="pair-row">
+          <!-- Left: LEVEL -->
+          <div class="pair-col">
+            <div class="flex items-center justify-between mb-2">
+              <label class="font-medium">Level :</label>
+              <rs-button type="button" variant="success" size="sm" @click="addLevel">+ Tambah Baris</rs-button>
+            </div>
+
+            <div class="space-y-2">
+              <div v-for="(row, i) in form.levelRows" :key="'lv-' + i" class="flex items-center gap-2">
+                <input v-model.trim="form.levelRows[i]" placeholder='cth: {"Flow":"1","Tahap":"1","Value":"Semak"}'
+                   class="col-span-1 w-full border border-slate-300 rounded px-3 py-2 bg-white" required />
+                <rs-button type="button" variant="danger" size="sm" class="shrink-0" @click="removeLevelAt(i)"
+                  :disabled="form.levelRows.length <= 1">Buang</rs-button>
+              </div>
             </div>
           </div>
-          <div class="col-span-2 flex gap-3">
-            <rs-button type="button" variant="primary" @click="addLevel">Tambah +</rs-button>
-            <rs-button type="button" variant="secondary" @click="removeLevel" :disabled="form.levels.length<=1">Buang -</rs-button>
-          </div>
 
-          <!-- Row: Indicator -->
-          <label class="lbl self-start">Indicator :</label>
-          <div class="col-span-2 space-y-2">
-            <div v-for="(ind, i) in form.indicators" :key="'ind-'+i" class="flex gap-2">
-              <input v-model.trim="ind.Flow"  placeholder="Flow"  class="inpt w-20" required />
-              <input v-model.trim="ind.Tahap" placeholder="Tahap" class="inpt w-20" required />
-              <input v-model.trim="ind.Level" placeholder="Level" class="inpt w-20" required />
+          <!-- Right: STATUS + STATUS DATA -->
+          <div class="pair-col">
+            <div class="font-medium mb-2">Status</div>
+            <div class="flex items-center gap-8 mb-3">
+              <label class="inline-flex items-center gap-2">
+                <input type="checkbox" v-model="form.isActive" />
+                <span>Aktif</span>
+              </label>
+              <label class="inline-flex items-center gap-2">
+                <input type="checkbox" :checked="!form.isActive" @change="form.isActive = false" />
+                <span>Tidak Aktif</span>
+              </label>
+            </div>
+
+            <div class="font-medium mb-1">Status Data :</div>
+            <div class="flex items-center gap-6">
+              <label class="inline-flex items-center gap-2">
+                <input type="radio" value="Draf" v-model="form.statusData" required />
+                <span>Draf</span>
+              </label>
+              <label class="inline-flex items-center gap-2">
+                <input type="radio" value="Lulus" v-model="form.statusData" />
+                <span>Lulus</span>
+              </label>
+              <label class="inline-flex items-center gap-2">
+                <input type="radio" value="Tolak" v-model="form.statusData" />
+                <span>Tolak</span>
+              </label>
             </div>
           </div>
-          <div class="col-span-2 flex gap-3">
-            <rs-button type="button" variant="primary" @click="addIndicator">Tambah +</rs-button>
-            <rs-button type="button" variant="secondary" @click="removeIndicator" :disabled="form.indicators.length<=1">Buang -</rs-button>
+        </div>
+
+        <!-- ROW B: Indicator (left) | Tarikh + PIC (right) -->
+        <div class="pair-row">
+          <!-- Left: INDICATOR -->
+          <div class="pair-col">
+            <div class="flex items-center justify-between mb-2">
+              <label class="font-medium">Indicator :</label>
+              <rs-button type="button" variant="success" size="sm" @click="addIndicator">+ Tambah Baris</rs-button>
+            </div>
+
+            <div class="space-y-2">
+              <div v-for="(row, i) in form.indicatorRows" :key="'ind-' + i" class="flex items-center gap-2">
+                <input  class="col-span-1 w-full border border-slate-300 rounded px-3 py-2 bg-white" v-model.trim="form.indicatorRows[i]"
+                  placeholder='cth: {"Flow":"1","Tahap":"1","UserGroup":"Pegawai Penyemak LZS"}'
+                  required />
+                <rs-button type="button" variant="danger" size="sm" class="shrink-0" @click="removeIndicatorAt(i)"
+                  :disabled="form.indicatorRows.length <= 1">Buang</rs-button>
+              </div>
+            </div>
           </div>
 
-          <!-- Row: PIC (L) | Status (R) -->
-          <label class="lbl">PIC :</label>
-          <input v-model.trim="form.pic" type="text" class="inpt" required />
-          <div></div>
-          <label class="lbl">Status :</label>
-          <div class="flex items-center gap-8">
-            <label class="inline-flex items-center gap-2">
-              <input type="checkbox" v-model="form.isActive" />
-              <span>Aktif</span>
-            </label>
-            <label class="inline-flex items-center gap-2">
-              <input type="checkbox" :checked="!form.isActive" @change="form.isActive=false" />
-              <span>Tidak Aktif</span>
-            </label>
-          </div>
+          <!-- Right: TARIKH (shrunk) + PIC UNDER IT -->
+          <div class="pair-col">
+            <div class="font-medium mb-2">Tarikh</div>
 
-          <!-- Row: Status Data (L) | Tarikh Mula (R) -->
-          <label class="lbl">Status Data :</label>
-          <div class="flex items-center gap-6">
-            <label class="inline-flex items-center gap-2"><input type="radio" value="Draf"  v-model="form.statusData" required /><span>Draf</span></label>
-            <label class="inline-flex items-center gap-2"><input type="radio" value="Lulus" v-model="form.statusData" /><span>Lulus</span></label>
-            <label class="inline-flex items-center gap-2"><input type="radio" value="Tolak" v-model="form.statusData" /><span>Tolak</span></label>
-          </div>
-          <div></div>
-          <label class="lbl">Tarikh Mula :</label>
-          <input v-model="form.tarikhMula" type="date" class="inpt w-56" required />
+            <div class="mb-3">
+              <label class="block text-sm mb-1">Tarikh Mula :</label>
+              <input v-model="form.tarikhMula" type="date"  class="col-span-1 w-full border border-slate-300 rounded px-3 py-2 bg-white" required />
+            </div>
 
-          <!-- Row: Tarikh Tamat (R only) -->
-          <div></div><div></div><div></div>
-          <label class="lbl">Tarikh Tamat :</label>
-          <input v-model="form.tarikhTamat" type="date" class="inpt w-56" />
+            <div class="mb-4">
+              <label class="block text-sm mb-1">Tarikh Tamat :</label>
+              <input v-model="form.tarikhTamat" type="date"  class="col-span-1 w-full border border-slate-300 rounded px-3 py-2 bg-white" />
+            </div>
+
+            <div>
+              <label class="block text-sm mb-1">PIC :</label>
+              <input v-model.trim="form.pic" type="text"  class="col-span-1 w-full border border-slate-300 rounded px-3 py-2 bg-white" required />
+            </div>
+          </div>
         </div>
 
         <!-- Footer -->
         <div class="flex justify-between pt-4">
-        <rs-button btnType="button" variant="secondary" @click="goBack">Kembali</rs-button>
-        <rs-button btnType="submit" variant="primary" @click="onSubmit">Tambah</rs-button>
+          <rs-button btnType="submit" variant="primary">Tambah</rs-button>
         </div>
-
       </form>
     </RsCard>
   </div>
@@ -100,22 +139,12 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const form = ref({
-  idLevelKelulusan: 1,
+  idLevelKelulusan: "",
   tableName: 'rekod_asnaf',
   idRowTable: 1,
   levelType: 'row',
-  levels: [
-    { Flow: '1', Tahap: '1', Value: 'Semak' },
-    { Flow: '1', Tahap: '2', Value: 'Siasat' },
-    { Flow: '1', Tahap: '3', Value: 'Sokong' },
-    { Flow: '1', Tahap: '4', Value: 'Lulus' },
-  ],
-  indicators: [
-    { Flow: '1', Tahap: '1', Level: 'Semak' },
-    { Flow: '1', Tahap: '2', Level: 'Siasat' },
-    { Flow: '1', Tahap: '3', Level: 'Sokong' },
-    { Flow: '1', Tahap: '4', Level: 'Lulus' },
-  ],
+  levelRows: [''],
+  indicatorRows: [''],
   pic: '',
   isActive: true,
   statusData: 'Draf',
@@ -126,78 +155,91 @@ const form = ref({
 const levelTypeChecked = ref(true)
 watch(levelTypeChecked, v => { form.value.levelType = v ? 'row' : '' })
 
-function addLevel(){ form.value.levels.push({ Flow:'', Tahap:'', Value:'' }) }
-function removeLevel(){ if(form.value.levels.length>1) form.value.levels.pop() }
-function addIndicator(){ form.value.indicators.push({ Flow:'', Tahap:'', Level:'' }) }
-function removeIndicator(){ if(form.value.indicators.length>1) form.value.indicators.pop() }
+function addLevel() { form.value.levelRows.push('') }
+function removeLevelAt(i) { if (form.value.levelRows.length > 1) form.value.levelRows.splice(i, 1) }
+function addIndicator() { form.value.indicatorRows.push('') }
+function removeIndicatorAt(i) { if (form.value.indicatorRows.length > 1) form.value.indicatorRows.splice(i, 1) }
 
-function goBack(){ router.back() }
+function goBack() { router.back() }
 
-/** Helpers to read/write localStorage list */
+/** Storage helpers */
 const STORAGE_KEY = 'levelKelulusanList'
-function readList(){
-  try{
+function readList() {
+  try {
     const raw = localStorage.getItem(STORAGE_KEY)
     const arr = raw ? JSON.parse(raw) : []
     return Array.isArray(arr) ? arr : []
-  }catch{ return [] }
+  } catch { return [] }
 }
-function writeList(arr){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr))
-}
-function genId(){
-  // keep existing id if unique; otherwise generate one
-  return Date.now().toString(36) + Math.random().toString(36).slice(2,8)
-}
+function writeList(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)) }
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8) }
+function parseRows(rows) { return rows.map(r => { try { return JSON.parse(r) } catch { return r } }) }
 
-function onSubmit(){
+function onSubmit() {
   const payload = {
     idLevelKelulusan: form.value.idLevelKelulusan || genId(),
     tableName: form.value.tableName,
     idRowTable: Number(form.value.idRowTable),
     levelType: form.value.levelType,
-    level: form.value.levels.map(x => ({ Flow:x.Flow, Tahap:x.Tahap, Value:x.Value })),
-    indicator: form.value.indicators.map(x => ({ Flow:x.Flow, Tahap:x.Tahap, Level:x.Level })),
+    level: parseRows(form.value.levelRows),
+    indicator: parseRows(form.value.indicatorRows),
     pic: form.value.pic,
     status: form.value.isActive ? 'Aktif' : 'Tidak Aktif',
     statusData: form.value.statusData,
-    tarikhMula: form.value.tarikhMula || new Date().toISOString().slice(0,10),
+    tarikhMula: form.value.tarikhMula || new Date().toISOString().slice(0, 10),
     tarikhTamat: form.value.tarikhTamat || null,
   }
 
-  // persist to localStorage (create or update by idLevelKelulusan)
   const list = readList()
-  const idx = list.findIndex(x => String(x.idLevelKelulusan) === String(payload.idLevelKelulusan))
-  if (idx >= 0) list[idx] = payload
-  else list.push(payload)
+
+  const idx = list.findIndex(x => String(x.idLevelKelulusan) === String(form.value.idLevelKelulusan))
+  if (idx >= 0) {
+    // EDIT mode (idLevelKelulusan sedia ada)
+    list[idx] = payload
+  } else {
+    // CREATE mode (idLevelKelulusan kosong → telah dijana dengan genId())
+    list.push(payload)
+  }
+
   writeList(list)
-
-  // clear draft (optional)
   sessionStorage.removeItem('lvlKelulusanDraft')
-
-  // go to listing
   router.push({ path: '/BF-PRF/KF/LK/01_01' })
 }
 </script>
 
 <style scoped>
-/* 5 columns: 180px | 1fr | 16px | 180px | 1fr */
+/* Base 5-col grid for simple label/field rows */
 .form-grid {
   display: grid;
-  grid-template-columns: 180px minmax(0,1fr) 16px 180px minmax(0,1fr);
+  grid-template-columns: 180px minmax(0, 1fr) 16px 180px minmax(0, 1fr);
 }
-.lbl {
-  grid-column: span 1;
-  display: flex;
-  align-items: center;
+
+
+
+.inpt-sm {
+  width: 140px;
 }
-.inpt {
-  grid-column: span 1;
+
+/* Two-column pair rows (left + right) with a bigger gap */
+.pair-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 56px;
+  /* ⬅️ bigger space between columns */
+  row-gap: 24px;
+  align-items: start;
+}
+
+/* small padding so content doesn't feel cramped near the gap */
+.pair-col {
   width: 100%;
-  border: 1px solid #d1d5db;
-  border-radius: 0.25rem;
-  padding: 0.5rem 0.75rem;
-  box-sizing: border-box;
+  padding-right: 4px;
 }
-.inpt-sm { width: 140px; }
+
+/* Shrink date fields (and PIC in that column) to a consistent width */
+.date-inpt {
+  width: 14rem;
+}
+
+/* ~224px */
 </style>
