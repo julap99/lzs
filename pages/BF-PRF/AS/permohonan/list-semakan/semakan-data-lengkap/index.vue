@@ -517,8 +517,8 @@
             </rs-button>
             <div class="flex-1"></div>
             <rs-button type="button" variant="danger" @click="tidakLengkap">Tidak Lengkap</rs-button>
-            <rs-button type="button" variant="primary" @click="kiraHadKifayah">
-              Kira Had Kifayah
+            <rs-button type="button" variant="primary" @click="kiraHadKifayah" class="ml-3">
+              Lengkap
             </rs-button>
           </div>
         </div>
