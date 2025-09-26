@@ -39,8 +39,7 @@
               name="kodProses"
               label="Kod Proses"
               placeholder="cth: KP001"
-              validation="required|matches:/^[A-Za-z0-9_-]+$/"
-              :validation-messages="{ matches: 'Hanya huruf/nombor/penghubung/garis bawah dibenarkan.' }"
+              validation="required"
             />
 
             <!-- 3.6.4 ID Menu -->
@@ -103,14 +102,23 @@
             />
           </div>
 
-          <div class="flex justify-between items-center pt-4">
+          <div class="flex items-center pt-4">
+            
             <rs-button btnType="button" variant="secondary" @click="onCancel">
               <Icon name="mdi:arrow-left" class="mr-1" /> Kembali
             </rs-button>
-            <rs-button btnType="submit" variant="primary">
-              <Icon name="mdi:content-save" class="mr-1" /> Kemaskini
-            </rs-button>
+
+            
+            <div class="ml-auto flex gap-2">
+              <rs-button btnType="submit" variant="primary">
+                <Icon name="mdi:content-save" class="mr-1" /> Simpan
+              </rs-button>
+              <rs-button btnType="submit" variant="primary">
+                <Icon name="mdi:content-save" class="mr-1" /> Kemaskini
+              </rs-button>
+            </div>
           </div>
+
         </FormKit>
       </template>
     </rs-card>
