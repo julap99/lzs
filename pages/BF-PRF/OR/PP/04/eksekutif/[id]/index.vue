@@ -204,7 +204,11 @@ const applicationData = ref({
   bankAccountNumber: '',
   penamaBank: '',
   paymentMethod: '',
-  documents: [],
+  documents: [
+    { name: 'Sijil Pendaftaran SSM / ROS', filename: 'ssm_ros.pdf', size: '2.1 MB' },
+    { name: 'Bukti Pemilikan Akaun Bank', filename: 'bank_proof.pdf', size: '0.9 MB' },
+    { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan.pdf', size: '1.2 MB' },
+  ],
 })
 
 const dataset = {}

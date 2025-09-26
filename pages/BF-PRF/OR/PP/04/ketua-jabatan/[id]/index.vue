@@ -103,7 +103,15 @@ const breadcrumb = ref([
 
 const approvalData = ref({ status: '', justification: '' })
 
-const applicationData = ref({ refNumber: '', status: 'Dalam Semakan Pelulus' })
+const applicationData = ref({
+  refNumber: '',
+  status: 'Dalam Semakan Pelulus',
+  documents: [
+    { name: 'Sijil Pendaftaran SSM / ROS', filename: 'ssm_ros.pdf', size: '2.1 MB' },
+    { name: 'Bukti Pemilikan Akaun Bank', filename: 'bank_proof.pdf', size: '0.9 MB' },
+    { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan.pdf', size: '1.2 MB' },
+  ],
+})
 
 const getStatusBadgeVariant = () => {
   switch (applicationData.value.status) {
