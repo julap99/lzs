@@ -213,6 +213,63 @@ const applicationData = ref({
 
 const dataset = {}
 
+// Local mock dataset keyed by reference ID to populate read-only fields
+// This UI mockup has no backend; we hydrate using this structure for demo purposes
+const mockData = {
+  'ORG-202507-0001': {
+    applicationDate: '12-09-2025',
+    status: 'Menunggu Pengesahan',
+    organizationType: 'masjid',
+    organizationName: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
+    registrationNumber: 'PPM-2021-001',
+    email: 'info@masjidnegeriselangor.my',
+    addressLine1: 'No. 1, Jalan Masjid',
+    addressLine2: 'Seksyen 14',
+    addressLine3: '',
+    city: 'Shah Alam',
+    postcode: '40000',
+    state: 'Selangor',
+    contactPerson: 'Ustaz Ahmad bin Hassan',
+    contactPhone: '03-55123456',
+    contactEmail: 'ahmad.hassan@masjid-selangor.gov.my',
+    bankName: 'Bank Islam',
+    bankAccountNumber: '1234567890123456',
+    penamaBank: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
+    paymentMethod: 'EFT',
+    documents: [
+      { name: 'Sijil Pendaftaran SSM / ROS', filename: 'ssm_ros.pdf', size: '2.1 MB' },
+      { name: 'Bukti Pemilikan Akaun Bank', filename: 'bank_proof.pdf', size: '0.9 MB' },
+      { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan.pdf', size: '1.2 MB' },
+    ],
+  },
+  'ORG-202506-0002': {
+    applicationDate: '05-09-2025',
+    status: 'Menunggu Pengesahan',
+    organizationType: 'masjid',
+    organizationName: 'Masjid Al-Hidayah - Cawangan',
+    registrationNumber: 'PPM-2021-002',
+    email: 'info@alhidayah.my',
+    addressLine1: 'Jalan 2/1',
+    addressLine2: 'Taman Maju Jaya',
+    addressLine3: '',
+    city: 'Petaling Jaya',
+    postcode: '46000',
+    state: 'Selangor',
+    contactPerson: 'Encik Faizal',
+    contactPhone: '03-77112233',
+    contactEmail: 'faizal@alhidayah.my',
+    bankName: 'Maybank',
+    bankAccountNumber: '987654321000',
+    penamaBank: 'Masjid Al-Hidayah - Cawangan',
+    paymentMethod: 'EFT',
+    documents: [
+      { name: 'Sijil Pendaftaran SSM / ROS', filename: 'ssm_ros.pdf', size: '2.0 MB' },
+      { name: 'Bukti Pemilikan Akaun Bank', filename: 'bank_proof.pdf', size: '0.8 MB' },
+      { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan.pdf', size: '1.1 MB' },
+    ],
+  },
+}
+
 const getStatusBadgeVariant = () => {
   switch (applicationData.value.status) {
     case 'Disahkan':
@@ -261,6 +318,10 @@ const handleView = (doc) => toast.success(`Melihat dokumen ${doc.name}`)
 onMounted(() => {
   const id = route.params.id
   applicationData.value.refNumber = id
+  if (mockData[id]) {
+    // Hydrate fields from mock dataset for a realistic read-only view
+    applicationData.value = { ...applicationData.value, ...mockData[id], refNumber: id }
+  }
 })
 </script>
 
