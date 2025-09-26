@@ -1039,6 +1039,7 @@ const applications = ref([
 ]);
 
 // Mock data for Siasatan tab - would be replaced with API call
+console.log("Loading Siasatan data with Faridah entry");
 const siasatanData = ref([
   {
     pemohon: "Mohd Rosli bin Saad (800101-01-1234)",
@@ -1079,7 +1080,20 @@ const siasatanData = ref([
     noRujukan: "NAS-2025-0004",
     tindakan: "bantuan/siasatan/siasatan-eoad-2/NAS-2025-0004",
   },
+  {
+    pemohon: "Faridah binti Rahman (881015-12-7890)",
+    kariah: "Masjid At-Taqwa",
+    daerah: "Kuala Selangor",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    jenistugasan: "Bantuan",
+    noRujukan: "NAS-2025-0005",
+    tindakan: "bantuan/siasatan/siasatan-eoad-2/NAS-2025-0005",
+  },
 ]);
+
+console.log("Total Siasatan entries:", siasatanData.value.length);
+console.log("Siasatan entries:", siasatanData.value.map(item => item.pemohon));
 
 // Mock data for Permohonan sub-tab (own dataset, same format as Siasatan)
 const permohonanData = ref([
@@ -1619,7 +1633,7 @@ const onChangeSimulasiPeranan = () => {
   if (selectedRole.value === "Penyemak") {
     permohonanTable.value = true;
     semakanTable.value = true;
-    siasatanTable.value = false;
+    siasatanTable.value = true;
     sokonganTable.value = false;
     reworkTable.value = false;
     kelulusanTable.value = false;

@@ -2666,6 +2666,30 @@
       gambarLokasi: null,
     },
     
+    "NAS-2025-0005": {
+      // Personal Information
+      noBantuan: "NAS-2025-0005",
+      nama: "Faridah binti Rahman",
+      alamat: "Jalan Seri Melati, Kampung Baru, 45800 Kuala Selangor",
+      kariah: "Masjid At-Taqwa",
+      daerah: "Kuala Selangor",
+      jenisPengenalan: "MyKad",
+      noPengenalan: "881015127890",
+      noTelefon: "0198765431",
+      email: "faridah.rahman@gmail.com",
+      statusKeluarga: "Miskin",
+      statusIndividu: "Miskin",
+      statusMultidimensi: "Asnaf Produktif",
+      status: "Dalam Siasatan",
+  
+      // Investigation fields
+      keputusanSiasatan: "",
+      tarikhLawatan: "",
+      masaLawatan: "",
+      catatanPenilaianAwal: "Permohonan baru untuk siasatan lapangan. Pemohon memerlukan bantuan untuk keperluan asas keluarga.",
+      gambarLokasi: null,
+    },
+    
   };
   
   // Mock investigation data
@@ -2785,6 +2809,30 @@
         //   sla: "2 hari lagi",
         //   actions: "/",
         // }
+      ]
+    },
+    "NAS-2025-0005": {
+      jenisPekerjaan: "Tidak Bekerja (Janda)",
+      statusKediaman: "Rumah Sewa",
+      jumlahBayaranRumah: "RM600",
+      bilTanggungan: "2 Orang (Anak)",
+      statusTanggungan: "Masih Bersekolah",
+      keadaanSiasatan: "",
+      tarikhLawatan: "",
+      masaLawatan: "",
+      StatusPengesahanLawatan: "belum_sah",
+      catatanPenilaianAwal: "Permohonan bantuan untuk pembinaan/baik pulih institusi agama. Pemohon memerlukan bantuan untuk masjid tempatan yang memerlukan penyelenggaraan.",
+      gambarLokasi: [],
+      catatanLawatanETD: "",
+      statusLawatan: "",
+      assistanceApplications: [
+        {
+          id: "B400",
+          jenisBantuan: "B400 - BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA",
+          status: "Perlu Diproses",
+          sla: "7 hari lagi",
+          actions: "/",
+        }
       ]
     }
   };
@@ -3188,6 +3236,17 @@
       justifikasiSyor: "Bantuan Asasi untuk Fakir",
       terimaCadangan: false,
     },
+    {
+      aid: "[B400] BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA",
+      aidProduct: "BANTUAN SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA",
+      productPackage: "SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA, SUMBANGAN BINA/BAIKPULIH SEKOLAH AGAMA, SUMBANGAN BINA/BAIKPULIH SURAU SEKOLAH",
+      entitlementProduct: "(DIRECT) SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA, (GL) SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA",
+      kadarDicadangkan: "5000.00",
+      skorAI: 88,
+      tarikhSyor: "2025-09-26",
+      justifikasiSyor: "Bantuan untuk pembinaan dan baik pulih institusi agama",
+      terimaCadangan: false,
+    },
   ]);
   
   // Move selected Syor items to Bantuan Baru and remove from Syor
@@ -3231,6 +3290,13 @@
       aidProduct: "BANTUAN PENDIDIKAN (FAKIR)",
       productPackage: "(EFT) YURAN PENDIDIKAN (FAKIR)",
       entitlementProduct: "(EFT) YURAN PENDIDIKAN TINGGI (FAKIR)",
+      terimaCadangan: false,
+    },
+    {
+      aid: "[B400] BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA",
+      aidProduct: "BANTUAN SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA",
+      productPackage: "SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA, SUMBANGAN BINA/BAIKPULIH SEKOLAH AGAMA, SUMBANGAN BINA/BAIKPULIH SURAU SEKOLAH",
+      entitlementProduct: "(DIRECT) SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA, (GL) SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA",
       terimaCadangan: false,
     },
     // {
@@ -3799,16 +3865,16 @@
       dokumen_pemilikan: [createMockupFile("dokumen_rumah.pdf")],
       pengesahan_pendapatan: [createMockupFile("slip_gaji.pdf")],
       
-      // Personal details
-      tempat_lahir: "Kuala Lumpur",
-      jantina: "Lelaki",
+      // Personal details - specific for each person
+      tempat_lahir: record.noBantuan === "NAS-2025-0005" ? "Kuala Selangor" : "Kuala Lumpur",
+      jantina: record.noBantuan === "NAS-2025-0005" ? "Perempuan" : "Lelaki",
       agama: "Islam",
       bangsa: "Melayu",
       no_telefon_bimbit: record.noTelefon || "0123456789",
       emel: record.email || "pemohon@gmail.com",
       
-      // Marital status
-      status_perkahwinan: "Berkahwin",
+      // Marital status - specific for each person
+      status_perkahwinan: record.noBantuan === "NAS-2025-0005" ? "Janda" : "Berkahwin",
       status_poligami: "tidak",
       bilangan_isteri: 0,
       isteri_list: [],
@@ -3820,37 +3886,42 @@
       lain_pendidikan_tertinggi: "",
       lain_tahap_pendidikan: "",
       
-      // Health
-      tahap_kesihatan: "Sihat",
+      // Health - specific for each person
+      tahap_kesihatan: record.noBantuan === "NAS-2025-0005" ? "Sihat" : "Sihat",
+      keadaan_kesihatan_sakit: record.noBantuan === "NAS-2025-0005" ? "" : "",
       
-      // Skills - checkboxes
-      kemahiran: ["Memasak", "Mengemas", "Mengajar"],
-      lain_lain_kemahiran: "",
+      // Skills - specific for each person
+      kemahiran: record.noBantuan === "NAS-2025-0005" ? ["Memasak", "Mengemas", "Menjahit"] : ["Memasak", "Mengemas", "Mengajar"],
+      lain_lain_kemahiran: record.noBantuan === "NAS-2025-0005" ? "Kerja sambilan menjahit baju" : "",
       
-      // Address
+      // Address - specific for each person
       alamat_rumah: record.alamat || "Jalan Rajawali, Kampung Bukit Kuching, 45800 Jeram",
       daerah_rumah: record.daerah || "Kuala Selangor",
-      poskod_rumah: "45800",
-      bandar_rumah: "Jeram",
+      poskod_rumah: record.noBantuan === "NAS-2025-0005" ? "45800" : "45800",
+      bandar_rumah: record.noBantuan === "NAS-2025-0005" ? "Kuala Selangor" : "Jeram",
       negeri_rumah: "Selangor",
       
-      // Family living
+      // Family living - specific for each person
       tinggal_bersama_keluarga: "Y",
       asrama_rumah_sewa: "",
       nama_baitul: "",
       
-      // Employment
-      status_pekerjaan: "bekerja",
-      jenis_pekerjaan: "Pekerja Swasta",
-      nama_majikan: "Syarikat ABC Sdn Bhd",
-      alamat_tempat_kerja: "Jalan Industri, Taman Perindustrian, 45600 Selangor",
+      // Family details - specific for Faridah
+      jumlah_tanggungan: record.noBantuan === "NAS-2025-0005" ? 2 : 3,
+      anak_bersekolah: record.noBantuan === "NAS-2025-0005" ? 2 : 2,
       
-      // Income and expenses - realistic values
-      gaji_elaun_pendapatan: 1500,
-      pendapatan_isteri_suami_ibubapa_penjaga: 800,
+      // Employment - specific for each person
+      status_pekerjaan: record.noBantuan === "NAS-2025-0005" ? "tidak_bekerja" : "bekerja",
+      jenis_pekerjaan: record.noBantuan === "NAS-2025-0005" ? "Tidak Bekerja" : "Pekerja Swasta",
+      nama_majikan: record.noBantuan === "NAS-2025-0005" ? "" : "Syarikat ABC Sdn Bhd",
+      alamat_tempat_kerja: record.noBantuan === "NAS-2025-0005" ? "" : "Jalan Industri, Taman Perindustrian, 45600 Selangor",
+      
+      // Income and expenses - specific for each person
+      gaji_elaun_pendapatan: record.noBantuan === "NAS-2025-0005" ? 0 : 1500,
+      pendapatan_isteri_suami_ibubapa_penjaga: record.noBantuan === "NAS-2025-0005" ? 400 : 800,
       pencen_perkeso: 0,
-      sumbangan_anak_anak: 200,
-      bantuan_jkm: 300,
+      sumbangan_anak_anak: record.noBantuan === "NAS-2025-0005" ? 300 : 200,
+      bantuan_jkm: record.noBantuan === "NAS-2025-0005" ? 500 : 300,
       takaful: 0,
       sewa_rumah_tanah_kedai: 500,
       bil_utiliti: 200,
@@ -3873,6 +3944,19 @@
       jumlah_pinjaman: 5000,
       baki_pinjaman: 3000,
       bayaran_bulanan: 200,
+      
+      // Bank accounts - specific for each person
+      bank_accounts: [
+        {
+          nama_bank: record.noBantuan === "NAS-2025-0005" ? "BIMB" : "MAYBANK",
+          no_akaun_bank: record.noBantuan === "NAS-2025-0005" ? "1400567890123456" : "1234567890123456",
+          nama_pemegang_akaun: record.nama || "Mohd Rosli bin Saad",
+          jenis_akaun: "individu",
+          id_pengenalan: "",
+          nama_bersama: "",
+          hubungan: "",
+        }
+      ],
       
       // Additional fields for blank form fields
       alamat1: "Jalan Rajawali, Kampung Bukit Kuching, 45800 Jeram, Selangor",
@@ -3929,6 +4013,8 @@
     if (record) {
       // Generate mockup data for blank fields
       const completeRecord = generateMockupData(record);
+      console.log("Loading record for:", noBantuan);
+      console.log("Applicant data:", { nama: record.nama, kariah: record.kariah, noPengenalan: record.noPengenalan });
       Object.assign(formData.value, completeRecord);
       
       // Also populate formDataPRF for the form fields
@@ -4022,6 +4108,7 @@
       // Load assistance applications for this ID
       if (investigationRecord.assistanceApplications) {
         assistanceApplications.value = investigationRecord.assistanceApplications;
+        console.log("Loaded assistance applications:", assistanceApplications.value);
       }
     }
   });
