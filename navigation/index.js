@@ -1244,6 +1244,11 @@ export default [
             child: [],
             meta: {},
           },
+          {
+            title: "Pelaporan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/pelaporan",
+          },
 
           {
             title: "Senarai Pre-Review",
@@ -1274,13 +1279,6 @@ export default [
             meta: {},
           },
         ],
-        meta: {},
-      },
-      {
-        title: "Pelaporan",
-        icon: "iconamoon:component-fill",
-        path: "/BF-PRF/AS/pelaporan",
-        child: [],
         meta: {},
       },
       {

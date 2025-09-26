@@ -131,6 +131,13 @@
                   اَلسَلامُ عَلَيْكُم وَرَحْمَةُ اَللهِ وَبَرَكاتُهُ‎
                 </p>
               </div>
+
+              <div class="mt-6 text-left space-y-1">
+                <div class="font-bold text-base">{{ orgHeader.name }}</div>
+                <div v-for="(ln, i) in orgHeader.address" :key="i" class="text-sm">{{ ln }}</div>
+                <div class="text-sm mt-2">Tel: {{ orgHeader.tel }}</div>
+                <div class="text-sm">Faks: {{ orgHeader.fax }}</div>
+              </div>
             </template>
           </rs-card>
 
@@ -245,6 +252,16 @@ const showSurat = ref(false)
 // Function for generating surat
 const onJanaSurat = () => {
   showSurat.value = true
+}
+
+const orgHeader = {
+  name: "Sekolah Menengah Kebangsaan Seksyen 18",
+  address: [
+    "Jalan Kelapa Bali 18/43, Seksyen 18",
+    "40200 Shah Alam, Selangor",
+  ],
+  tel: "+603-5542 1403",
+  fax: "+603-5542 2233/2244"
 }
 
 const suratView = computed(() => ({
