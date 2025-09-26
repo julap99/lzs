@@ -2,7 +2,18 @@
   <div>
     <layouts-breadcrumb :items="breadcrumb" />
 
-    <h1 class="text-xl font-bold mt-4">Butiran Permohonan Akses Peranan</h1>
+        <div class="flex justify-between items-center mb-3">
+      <h1 class="text-2xl font-semibold flex items-center gap-2">
+        <Icon name="ic:outline-info" />
+        Butiran Permohonan Akses Peranan
+      </h1>
+
+      <!-- BUTANG KEMBALI (baru) -->
+      <rs-button variant="secondary" @click="goBack" class="whitespace-nowrap">
+        <Icon name="ic:round-arrow-back" class="mr-1" />
+        Kembali
+      </rs-button>
+    </div>
 
     <!-- LAYOUT: 2 kolum -->
     <div class="grid gap-6 md:grid-cols-2 mt-4">
@@ -193,6 +204,11 @@ function getStatusPermohonanVariant (t) {
   if (t === 'Menunggu Kelulusan') return 'warning'
   return 'secondary'
 }
+
+function goBack() {
+  navigateTo('/BF-ADN/KF/senarai-permohonan-kelulusan-akses-peranan')
+}
+
 </script>
 
 <style scoped>

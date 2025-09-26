@@ -1,8 +1,17 @@
 <template>
   <div>
-    <h1 class="text-2xl font-bold text-left mb-6">
-      Butiran Permohonan Kategori Masalah
-    </h1>
+    <layouts-breadcrumb :items="breadcrumb" />
+
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold">
+        Butiran Permohonan Kategori Masalah
+      </h1>
+
+      <rs-button variant="secondary" @click="goBack" class="whitespace-nowrap">
+        <Icon name="ic:round-arrow-back" class="mr-1" />
+        Kembali
+      </rs-button>
+    </div>
 
     <!-- Kad 1: Butiran Permohonan -->
     <rs-card class="mb-6">
@@ -111,13 +120,22 @@
 </template>
 
 <script setup>
+import { useRouter } from '#imports'
+
 definePageMeta({ title: 'Butiran Permohonan Kategori Masalah' })
 
+/* Breadcrumb */
+const breadcrumb = [
+  { name: 'Mengurus Konfigurasi', type: 'link', path: '/BF-ADN/KF' },
+  { name: 'Senarai Semakan Kelulusan', type: 'link', path: '/BF-ADN/KF/semakan-kelulusan-kategori-masalah' },
+  { name: 'Butiran Permohonan Kategori Masalah', type: 'text', path: '/BF-ADN/KF/semakan-kelulusan-kategori-masalah/ADN-PK-KT-02-3' },
+]
+
 /* ==== Mock data (read-only) — sama seperti screenshot ==== */
-const idPermohonan   = 'KM-PR-0013'
-const kategoriMasalah = 'Kekurangan Sumber Pendapatan'
-const tahapAduan     = '	Kelas 2 (Kuning)'
-const penerangan     = 'Pemohon Kekurangan Sumber Pendapatan.'
+const idPermohonan     = 'KM-PR-0013'
+const kategoriMasalah  = 'Kekurangan Sumber Pendapatan'
+const tahapAduan       = 'Kelas 2 (Kuning)'
+const penerangan       = 'Pemohon Kekurangan Sumber Pendapatan.'
 const tarikhPermohonan = '2025-09-14'
 const dikemukakanOleh  = 'Eksekutif_A'
 
@@ -127,6 +145,10 @@ const ditolakOleh      = 'KetuaJabatan_1'
 const tarikhPenolakan  = '2025-09-15'
 const ulasanPenolakan  = 'Penerangan tidak lengkap, sila semak dan hantar semula.'
 const notaSemakan      = 'Permohonan ini sedang dalam semakan Ketua Jabatan.'
+
+/* Router + Back button */
+const router = useRouter()
+const goBack = () => router.push('/BF-ADN/KF/semakan-kelulusan-kategori-masalah')
 </script>
 
 <style scoped>
