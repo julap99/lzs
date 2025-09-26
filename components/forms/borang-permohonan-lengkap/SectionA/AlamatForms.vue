@@ -12,28 +12,31 @@
       <h4 class="text-md font-medium mb-3">Alamat</h4>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="md:col-span-2">
-          <FormKit
-            type="textarea"
-            name="alamat1"
-            label="Alamat 1"
-            validation="required"
-            placeholder="Sila masukkan alamat 1"
-            v-model="formData.addressInfo.alamat1"
-            :disabled="readOnly"
-            :validation-messages="{
-              required: 'Alamat 1 adalah wajib',
-            }"
-          />
+          <div :class="getFieldClasses('addressInfo.alamat1')" class="p-2 rounded">
+            <FormKit
+              type="textarea"
+              name="alamat1"
+              label="Alamat 1"
+              validation="required"
+              placeholder="Sila masukkan alamat 1"
+              v-model="formData.addressInfo.alamat1"
+              :disabled="readOnly"
+              :validation-messages="{
+                required: 'Alamat 1 adalah wajib',
+              }"
+            />
+          </div>
 
-          <FormKit
-            type="textarea"
-            name="alamat2"
-            label="Alamat 2"
-            placeholder="Sila masukkan alamat 2 (tidak wajib)"
-            v-model="formData.addressInfo.alamat2"
-            v-if="formData.addressInfo.alamat1"
-            :disabled="readOnly"
-          />
+          <div :class="getFieldClasses('addressInfo.alamat2')" class="p-2 rounded" v-if="formData.addressInfo.alamat1">
+            <FormKit
+              type="textarea"
+              name="alamat2"
+              label="Alamat 2"
+              placeholder="Sila masukkan alamat 2 (tidak wajib)"
+              v-model="formData.addressInfo.alamat2"
+              :disabled="readOnly"
+            />
+          </div>
 
           <FormKit
             type="textarea"
@@ -56,33 +59,37 @@
           :disabled="readOnly"
         />
 
-        <FormKit
-          type="select"
-          name="daerah"
-          label="Daerah"
-          placeholder="Pilih daerah"
-          :options="daerahOptions"
-          validation="required"
-          v-model="formData.addressInfo.daerah"
-          :disabled="readOnly"
-          :validation-messages="{
-            required: 'Daerah adalah wajib',
-          }"
-        />
+        <div :class="getFieldClasses('addressInfo.daerah')" class="p-2 rounded">
+          <FormKit
+            type="select"
+            name="daerah"
+            label="Daerah"
+            placeholder="Pilih daerah"
+            :options="daerahOptions"
+            validation="required"
+            v-model="formData.addressInfo.daerah"
+            :disabled="readOnly"
+            :validation-messages="{
+              required: 'Daerah adalah wajib',
+            }"
+          />
+        </div>
 
-        <FormKit
-          type="select"
-          name="bandar"
-          label="Bandar"
-          placeholder="Pilih bandar"
-          :options="bandarOptions"
-          validation="required"
-          v-model="formData.addressInfo.bandar"
-          :disabled="readOnly"
-          :validation-messages="{
-            required: 'Bandar adalah wajib',
-          }"
-        />
+        <div :class="getFieldClasses('addressInfo.bandar')" class="p-2 rounded">
+          <FormKit
+            type="select"
+            name="bandar"
+            label="Bandar"
+            placeholder="Pilih bandar"
+            :options="bandarOptions"
+            validation="required"
+            v-model="formData.addressInfo.bandar"
+            :disabled="readOnly"
+            :validation-messages="{
+              required: 'Bandar adalah wajib',
+            }"
+          />
+        </div>
 
         <FormKit
           type="select"
@@ -196,27 +203,29 @@
       <h4 class="text-md font-medium mb-3">Maklumat Tempat Tinggal</h4>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormKit
-          type="select"
-          name="status_kediaman"
-          label="Status Kediaman Tempat Tinggal"
-          :options="[
-            'Milik Sendiri Tidak Berbayar',
-            'Milik Sendiri Berbayar',
-            'Sewa',
-            'Kuarters Majikan',
-            'Tumpang Rumah Ibu/Bapa/Mertua',
-            'Pusaka',
-            'Sumbangan LZS / PPRT / RISDA',
-            'Lain-lain',
-          ]"
-          validation="required"
-          v-model="formData.addressInfo.status_kediaman"
-          :disabled="readOnly"
-          :validation-messages="{
-            required: 'Status kediaman adalah wajib',
-          }"
-        />
+        <div :class="getFieldClasses('addressInfo.status_kediaman')" class="p-2 rounded">
+          <FormKit
+            type="select"
+            name="status_kediaman"
+            label="Status Kediaman Tempat Tinggal"
+            :options="[
+              'Milik Sendiri Tidak Berbayar',
+              'Milik Sendiri Berbayar',
+              'Sewa',
+              'Kuarters Majikan',
+              'Tumpang Rumah Ibu/Bapa/Mertua',
+              'Pusaka',
+              'Sumbangan LZS / PPRT / RISDA',
+              'Lain-lain',
+            ]"
+            validation="required"
+            v-model="formData.addressInfo.status_kediaman"
+            :disabled="readOnly"
+            :validation-messages="{
+              required: 'Status kediaman adalah wajib',
+            }"
+          />
+        </div>
 
         <FormKit
           type="text"
@@ -232,18 +241,20 @@
           }"
         />
 
-        <FormKit
-          type="select"
-          name="keadaan_kediaman"
-          label="Keadaan Kediaman"
-          :options="['Baik', 'Sempurna', 'Uzur', 'Separa Uzur']"
-          validation="required"
-          v-model="formData.addressInfo.keadaan_kediaman"
-          :disabled="readOnly"
-          :validation-messages="{
-            required: 'Keadaan kediaman adalah wajib',
-          }"
-        />
+        <div :class="getFieldClasses('addressInfo.keadaan_kediaman')" class="p-2 rounded">
+          <FormKit
+            type="select"
+            name="keadaan_kediaman"
+            label="Keadaan Kediaman"
+            :options="['Baik', 'Sempurna', 'Uzur', 'Separa Uzur']"
+            validation="required"
+            v-model="formData.addressInfo.keadaan_kediaman"
+            :disabled="readOnly"
+            :validation-messages="{
+              required: 'Keadaan kediaman adalah wajib',
+            }"
+          />
+        </div>
       </div>
 
       <!-- Kos Tempat Tinggal Section -->
@@ -352,6 +363,18 @@ const props = defineProps({
   readOnly: {
     type: Boolean,
     default: false
+  },
+  comparisonData: {
+    type: Object,
+    default: null
+  },
+  isComparison: {
+    type: Boolean,
+    default: false
+  },
+  isBefore: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -382,6 +405,33 @@ const kariahOptions = ["Seksyen 7", "Seksyen 13", "Bukit Jelutong"];
 const getLocation = () => {
   props.formData.addressInfo.geolokasi = "Lokasi semasa";
   toast.success("Lokasi berjaya diperoleh!");
+};
+
+// Comparison logic
+const isFieldDifferent = (fieldPath) => {
+  if (!props.isComparison || !props.comparisonData) return false;
+  
+  const currentValue = getNestedValue(props.formData, fieldPath);
+  const comparisonValue = getNestedValue(props.comparisonData, fieldPath);
+  
+  return currentValue !== comparisonValue;
+};
+
+const getNestedValue = (obj, path) => {
+  return path.split('.').reduce((current, key) => current?.[key], obj);
+};
+
+const getFieldClasses = (fieldPath) => {
+  if (!props.isComparison) return '';
+  
+  const isDifferent = isFieldDifferent(fieldPath);
+  if (!isDifferent) return '';
+  
+  if (props.isBefore) {
+    return 'border-l-4 border-red-500 bg-red-50';
+  } else {
+    return 'border-l-4 border-green-500 bg-green-50';
+  }
 };
 
 // Emits

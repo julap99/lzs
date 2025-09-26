@@ -13,31 +13,35 @@
       <!-- Perbelanjaan Column -->
       <div>
         <h5 class="text-md font-medium mb-2">Perbelanjaan</h5>
-          <FormKit
-            type="number"
-            name="perbelanjaan_makanan_minuman"
-            label="Perbelanjaan Makanan dan Minuman (RM)"
-            step="0.01"
-            min="0"
-            validation="required"
-            :validation-messages="{
-              required: 'Perbelanjaan Makanan dan Minuman adalah wajib',
-            }"
-            v-model="formData.perbelanjaan_makanan_minuman"
-            :disabled="readOnly" />
+          <div :class="getFieldClasses('perbelanjaan_makanan_minuman')" class="p-2 rounded">
+            <FormKit
+              type="number"
+              name="perbelanjaan_makanan_minuman"
+              label="Perbelanjaan Makanan dan Minuman (RM)"
+              step="0.01"
+              min="0"
+              validation="required"
+              :validation-messages="{
+                required: 'Perbelanjaan Makanan dan Minuman adalah wajib',
+              }"
+              v-model="formData.perbelanjaan_makanan_minuman"
+              :disabled="readOnly" />
+          </div>
 
-          <FormKit
-            type="number"
-            name="sewa_bayaran_pinjaman_perumahan"
-            label="Sewa / Bayaran Pinjaman Perumahan (RM)"
-            step="0.01"
-            min="0"
-            validation="required"
-            :validation-messages="{
-              required: 'Sewa / Bayaran Pinjaman Perumahan adalah wajib',
-            }"
-            v-model="formData.sewa_bayaran_pinjaman_perumahan"
-            :disabled="readOnly" />
+          <div :class="getFieldClasses('sewa_bayaran_pinjaman_perumahan')" class="p-2 rounded">
+            <FormKit
+              type="number"
+              name="sewa_bayaran_pinjaman_perumahan"
+              label="Sewa / Bayaran Pinjaman Perumahan (RM)"
+              step="0.01"
+              min="0"
+              validation="required"
+              :validation-messages="{
+                required: 'Sewa / Bayaran Pinjaman Perumahan adalah wajib',
+              }"
+              v-model="formData.sewa_bayaran_pinjaman_perumahan"
+              :disabled="readOnly" />
+          </div>
 
           <FormKit
             type="number"
@@ -108,18 +112,20 @@
       <!-- Pendapatan Column -->
       <div>
         <h5 class="text-md font-medium mb-2">Pendapatan</h5>
-          <FormKit
-            type="number"
-            name="gaji_elaun_pendapatan"
-            label="Gaji / Elaun / Pendapatan Diperoleh (RM)"
-            step="0.01"
-            min="0"
-            validation="required"
-            :validation-messages="{
-              required: 'Gaji / Elaun / Pendapatan Diperoleh adalah wajib',
-            }"
-            v-model="formData.gaji_elaun_pendapatan"
-            :disabled="readOnly" />
+          <div :class="getFieldClasses('gaji_elaun_pendapatan')" class="p-2 rounded">
+            <FormKit
+              type="number"
+              name="gaji_elaun_pendapatan"
+              label="Gaji / Elaun / Pendapatan Diperoleh (RM)"
+              step="0.01"
+              min="0"
+              validation="required"
+              :validation-messages="{
+                required: 'Gaji / Elaun / Pendapatan Diperoleh adalah wajib',
+              }"
+              v-model="formData.gaji_elaun_pendapatan"
+              :disabled="readOnly" />
+          </div>
 
           <FormKit
             type="number"
@@ -186,18 +192,20 @@
             v-model="formData.pendapatan_tanggungan_serumah"
             :disabled="readOnly" />
 
-          <FormKit
-            type="number"
-            name="total_pendapatan"
-            label="Total Pendapatan (RM)"
-            step="0.01"
-            min="0"
-            validation="required"
-            :validation-messages="{
-              required: 'Total Pendapatan adalah wajib',
-            }"
-            v-model="formData.total_pendapatan"
-            :disabled="readOnly" />
+          <div :class="getFieldClasses('total_pendapatan')" class="p-2 rounded">
+            <FormKit
+              type="number"
+              name="total_pendapatan"
+              label="Total Pendapatan (RM)"
+              step="0.01"
+              min="0"
+              validation="required"
+              :validation-messages="{
+                required: 'Total Pendapatan adalah wajib',
+              }"
+              v-model="formData.total_pendapatan"
+              :disabled="readOnly" />
+          </div>
 
           <!-- Pendapatan Lain-lain Repeater -->
           <div class="space-y-3 md:col-span-2">
@@ -288,7 +296,46 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  comparisonData: {
+    type: Object,
+    default: null
+  },
+  isComparison: {
+    type: Boolean,
+    default: false
+  },
+  isBefore: {
+    type: Boolean,
+    default: false
+  }
 });
+
+// Comparison logic
+const isFieldDifferent = (fieldPath) => {
+  if (!props.isComparison || !props.comparisonData) return false;
+  
+  const currentValue = getNestedValue(props.formData, fieldPath);
+  const comparisonValue = getNestedValue(props.comparisonData, fieldPath);
+  
+  return currentValue !== comparisonValue;
+};
+
+const getNestedValue = (obj, path) => {
+  return path.split('.').reduce((current, key) => current?.[key], obj);
+};
+
+const getFieldClasses = (fieldPath) => {
+  if (!props.isComparison) return '';
+  
+  const isDifferent = isFieldDifferent(fieldPath);
+  if (!isDifferent) return '';
+  
+  if (props.isBefore) {
+    return 'border-l-4 border-red-500 bg-red-50';
+  } else {
+    return 'border-l-4 border-green-500 bg-green-50';
+  }
+};
 
 // Emits
 const emit = defineEmits([

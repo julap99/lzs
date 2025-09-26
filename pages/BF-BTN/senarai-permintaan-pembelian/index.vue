@@ -232,19 +232,19 @@
                       </th>
                       <th
                         scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-36"
                       >
                         Unit
                       </th>
                       <th
                         scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24"
                       >
                         Kuantiti
                       </th>
                       <th
                         scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28"
                       >
                         Amaun (RM)
                       </th>
@@ -349,48 +349,24 @@
                   Tambah Item
                 </rs-button>
               </div>
-            </template>
-          </rs-card>
-        </section>
 
-        <!-- Summary Section -->
-        <section aria-labelledby="summary-title">
-          <rs-card class="shadow-sm border-0 bg-white">
-            <template #header>
-              <div class="flex items-center space-x-3">
-                <div class="flex-shrink-0" aria-hidden="true">
-                  <div
-                    class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center"
-                  >
-                    <Icon name="ph:calculator" class="w-6 h-6 text-purple-600" />
-                  </div>
-                </div>
-                <div>
-                  <h2
-                    class="text-lg font-semibold text-gray-900"
-                    id="summary-title"
-                  >
-                    Ringkasan
-                  </h2>
-                  <p class="text-sm text-gray-500">
-                    Jumlah keseluruhan kos pembelian
-                  </p>
-                </div>
-              </div>
-            </template>
-
-            <template #body>
-              <div class="flex justify-start">
-                <div class="bg-blue-50 rounded-lg p-6 text-left min-w-[300px]">
-                  <div class="text-lg font-medium text-blue-600 mb-2">Jumlah Keseluruhan (RM)</div>
-                  <div class="text-4xl font-bold text-blue-900">
-                    {{ formatCurrency(totalKos) }}
+              <!-- Total Cost Summary -->
+              <div class="mt-6 border-t border-gray-200 pt-6">
+                <div class="flex justify-end">
+                  <div class="w-full max-w-md space-y-3 bg-gray-50 p-4 rounded-lg">
+                    <div class="flex justify-between items-center text-lg font-bold text-gray-900 border-t border-gray-300 pt-3">
+                      <span class="flex-shrink-0">Jumlah Keseluruhan:</span>
+                      <span class="font-mono text-blue-600 whitespace-nowrap ml-4">
+                        RM {{ totalKos.toLocaleString("ms-MY", { minimumFractionDigits: 2 }) }}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </template>
           </rs-card>
         </section>
+
 
         <!-- Action Buttons -->
         <div class="flex justify-end space-x-4">
@@ -423,19 +399,70 @@ const formData = ref({
   itemPembelian: [],
 });
 
-// Unit options based on Excel sheet
+// Unit options - Comprehensive measurement units with category headers
 const unitOptions = [
   { label: "-- Pilih Unit --", value: "", disabled: true },
-  { label: "Nos", value: "Nos" },
-  { label: "Kotak", value: "Kotak" },
-  { label: "Box", value: "Box" },
-  { label: "Bundle", value: "Bundle" },
-  { label: "Liter", value: "Liter" },
-  { label: "Kg", value: "Kg" },
-  { label: "Meter", value: "Meter" },
+  
+  // Unit Kuantiti Asas Header
+  { label: "Unit Kuantiti Asas", value: "", disabled: true, attrs: { style: "font-weight: bold; background-color: #f3f4f6;" } },
+  { label: "Unit (Unit/pcs)", value: "Unit" },
   { label: "Set", value: "Set" },
-  { label: "Unit", value: "Unit" },
-  { label: "Pasang", value: "Pasang" },
+  { label: "Paket/Pek", value: "Paket" },
+  { label: "Kotak (Box)", value: "Box" },
+  { label: "Dozen (Doz)", value: "Dozen" },
+  { label: "Karton (Carton)", value: "Karton" },
+  { label: "Roll/Gulung", value: "Roll" },
+  { label: "Bundle", value: "Bundle" },
+  
+  // Unit Berat Header
+  { label: "Unit Berat", value: "", disabled: true, attrs: { style: "font-weight: bold; background-color: #f3f4f6;" } },
+  { label: "Gram (g)", value: "g" },
+  { label: "Kilogram (kg)", value: "kg" },
+  { label: "Tonne/Metric Ton (t)", value: "t" },
+  
+  // Unit Panjang Header
+  { label: "Unit Panjang", value: "", disabled: true, attrs: { style: "font-weight: bold; background-color: #f3f4f6;" } },
+  { label: "Milimeter (mm)", value: "mm" },
+  { label: "Sentimeter (cm)", value: "cm" },
+  { label: "Meter (m)", value: "m" },
+  { label: "Kilometer (km)", value: "km" },
+  
+  // Unit Luas Header
+  { label: "Unit Luas", value: "", disabled: true, attrs: { style: "font-weight: bold; background-color: #f3f4f6;" } },
+  { label: "Sentimeter Persegi (cm²)", value: "cm²" },
+  { label: "Meter Persegi (m²)", value: "m²" },
+  { label: "Hektar (ha)", value: "ha" },
+  { label: "Kilometer Persegi (km²)", value: "km²" },
+  
+  // Unit Isipadu Header
+  { label: "Unit Isipadu", value: "", disabled: true, attrs: { style: "font-weight: bold; background-color: #f3f4f6;" } },
+  { label: "Mililiter (ml)", value: "ml" },
+  { label: "Liter (l)", value: "l" },
+  { label: "Meter Padu (m³)", value: "m³" },
+  
+  // Unit Masa / Kekerapan Header
+  { label: "Unit Masa / Kekerapan", value: "", disabled: true, attrs: { style: "font-weight: bold; background-color: #f3f4f6;" } },
+  { label: "Hari", value: "Hari" },
+  { label: "Minggu", value: "Minggu" },
+  { label: "Bulan", value: "Bulan" },
+  { label: "Tahun", value: "Tahun" },
+  
+  // Unit Tenaga / Elektrik Header
+  { label: "Unit Tenaga / Elektrik", value: "", disabled: true, attrs: { style: "font-weight: bold; background-color: #f3f4f6;" } },
+  { label: "Kilowatt (kW)", value: "kW" },
+  { label: "Kilowatt-hour (kWh)", value: "kWh" },
+  
+  // Unit Khas Header
+  { label: "Unit Khas", value: "", disabled: true, attrs: { style: "font-weight: bold; background-color: #f3f4f6;" } },
+  { label: "Pair (Pasang)", value: "Pasang" },
+  { label: "Lembar", value: "Lembar" },
+  { label: "Helai", value: "Helai" },
+  { label: "Batang", value: "Batang" },
+  { label: "Botol", value: "Botol" },
+  { label: "Tin", value: "Tin" },
+  { label: "Galon", value: "Galon" },
+  { label: "Drum", value: "Drum" },
+  { label: "Pack", value: "Pack" },
 ];
 
 // Generate reference number
@@ -554,32 +581,26 @@ const handleSave = () => {
   }
 };
 
-// Predefined items list based on Excel data
+// Predefined items list - School Uniform Items with appropriate units and prices
 const predefinedItems = [
-  { namaItem: "Cat Minyak Seamaster Venus (6406) (5L)", unit: "Nos", kuantiti: 1, harga: 72.00 },
-  { namaItem: "Cat Minyak Seamaster Black (5L)", unit: "Nos", kuantiti: 2, harga: 72.00 },
-  { namaItem: "Cat Minyak Seamaster Signal Red (6613) (5L)", unit: "Nos", kuantiti: 1, harga: 72.00 },
-  { namaItem: "Cat Minyak Seamaster Smoke Grey (BS-0-095) (5L)", unit: "Nos", kuantiti: 1, harga: 72.00 },
-  { namaItem: "Cat Minyak Green BS 6074", unit: "Nos", kuantiti: 1, harga: 72.00 },
-  { namaItem: "Cat Putih", unit: "Nos", kuantiti: 5, harga: 72.00 },
-  { namaItem: "Berus Cat", unit: "Nos", kuantiti: 5, harga: 5.50 },
-  { namaItem: "WD40", unit: "Nos", kuantiti: 5, harga: 10.00 },
-  { namaItem: "Roller Kecil", unit: "Nos", kuantiti: 40, harga: 1.00 },
-  { namaItem: "Handle Roller Kecil", unit: "Nos", kuantiti: 4, harga: 2.00 },
-  { namaItem: "Wood Filler 5kg", unit: "Nos", kuantiti: 2, harga: 39.00 },
-  { namaItem: "Masking Tape", unit: "Kotak", kuantiti: 1, harga: 53.00 },
-  { namaItem: "Kasut Bot Getah (High Cut)", unit: "Nos", kuantiti: 9, harga: 8.00 },
-  { namaItem: "Guni", unit: "Nos", kuantiti: 50, harga: 0.60 },
-  { namaItem: "Tali Mesin Rumput", unit: "Bundle", kuantiti: 2, harga: 70.00 },
-  { namaItem: "Hazard Tape", unit: "Nos", kuantiti: 10, harga: 3.50 },
-  { namaItem: "Safety Vest", unit: "Nos", kuantiti: 10, harga: 9.00 },
-  { namaItem: "Drywall Screw 2\"", unit: "Box", kuantiti: 1, harga: 11.00 },
-  { namaItem: "Drywall Screw 4\"", unit: "Box", kuantiti: 1, harga: 12.00 },
+  { namaItem: "Baju Sekolah Lelaki Putih Saiz M", unit: "Helai", kuantiti: 2, harga: 18.00 },
+  { namaItem: "Baju Sekolah Lelaki Putih Saiz L", unit: "Helai", kuantiti: 2, harga: 20.00 },
+  { namaItem: "Baju Sekolah Perempuan Putih Saiz M", unit: "Helai", kuantiti: 2, harga: 18.00 },
+  { namaItem: "Seluar Sekolah Lelaki Biru Gelap Saiz M", unit: "Helai", kuantiti: 2, harga: 22.00 },
+  { namaItem: "Kain Sekolah Perempuan Biru Gelap Saiz M", unit: "Helai", kuantiti: 2, harga: 25.00 },
+  { namaItem: "Tali Leher Sekolah", unit: "Helai", kuantiti: 3, harga: 5.00 },
+  { namaItem: "Tudung Putih (Saiz M)", unit: "Helai", kuantiti: 2, harga: 12.00 },
+  { namaItem: "Stoking Putih (Pasang)", unit: "Pasang", kuantiti: 5, harga: 2.50 },
 ];
 
 // Load saved data on mount
 onMounted(() => {
   try {
+    // Always load predefined school items
+    formData.value.itemPembelian = [...predefinedItems];
+    
+    // You can uncomment the code below if you want to restore localStorage functionality later
+    /*
     const savedData = localStorage.getItem('senaraiPermintaanPembelian');
     if (savedData) {
       const data = JSON.parse(savedData);
@@ -589,6 +610,7 @@ onMounted(() => {
       // Load predefined items if no saved data
       formData.value.itemPembelian = [...predefinedItems];
     }
+    */
   } catch (error) {
     console.error("Error loading saved data:", error);
     // Fallback to predefined items
@@ -598,5 +620,39 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-// Add any custom styles here
+// Fix dropdown direction to appear downward
+:deep(.formkit-wrapper) {
+  .formkit-input[data-type="select"] {
+    select {
+      // Ensure dropdown opens downward
+      position: relative;
+    }
+  }
+}
+
+// Force FormKit select options to appear below
+:deep(.formkit-options) {
+  position: absolute !important;
+  top: 100% !important;
+  bottom: auto !important;
+  z-index: 50 !important;
+  max-height: 200px !important;
+  overflow-y: auto !important;
+}
+
+// Alternative approach for native select elements
+:deep(select) {
+  // Force native select to open downward
+  transform: none !important;
+}
+
+// Ensure parent containers don't cause overflow issues
+.overflow-x-auto {
+  overflow: visible !important;
+}
+
+// Make sure table cells allow dropdown overflow
+td {
+  overflow: visible !important;
+}
 </style>

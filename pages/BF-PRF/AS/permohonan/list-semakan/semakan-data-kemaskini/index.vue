@@ -2,7 +2,7 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
+    <rs-card class="mt-4" v-if="currentSection === 'A'">
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Semakan Data (Kemaskini)</h2>
@@ -36,75 +36,55 @@
           </div>
         </div>
 
+        <!-- Color Legend -->
+        <!-- <div class="mb-6 p-4 bg-gray-50 rounded-lg border">
+          <h4 class="text-sm font-semibold mb-3 text-gray-700">Petunjuk Warna Perbandingan:</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div class="flex items-center gap-2">
+              <div class="w-4 h-4 border-l-4 border-red-500 bg-red-50 rounded"></div>
+              <span class="text-gray-600">Data Sebelum Kemaskini (Kad Merah)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="w-4 h-4 border-l-4 border-green-500 bg-green-50 rounded"></div>
+              <span class="text-gray-600">Data Selepas Kemaskini (Kad Hijau)</span>
+            </div>
+          </div>
+          <p class="text-xs text-gray-500 mt-2">
+            * Kad berwarna untuk membezakan data sebelum dan selepas kemaskini
+          </p>
+        </div> -->
+
         <!-- Step 1: Peribadi - Perbandingan Sebelum vs Selepas Kemaskini -->
         <div
           v-if="currentStepA === 1"
           class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <rs-card>
+          <rs-card class="border-red-500">
             <template #header>
-              <div class="text-lg font-semibold">Sebelum Kemaskini</div>
+              <div class="text-lg font-semibold text-red-800">Sebelum Kemaskini</div>
             </template>
             <template #body>
               <PeribadiForms
                 :formData="peribadi"
                 :readOnly="true"
-                :showFooterButtons="false" />
+                :showFooterButtons="false"
+                :comparisonData="peribadiSelepas"
+                :isComparison="true"
+                :isBefore="true" />
             </template>
           </rs-card>
 
-          <rs-card>
+          <rs-card class="border-green-500">
             <template #header>
-              <div class="text-lg font-semibold">Selepas Kemaskini</div>
+              <div class="text-lg font-semibold text-green-800">Selepas Kemaskini</div>
             </template>
             <template #body>
-              <FormKit type="form" :actions="false">
-                <!-- Emel -->
-                <FormKit
-                  v-if="peribadiSelepas.emel !== peribadi.emel"
-                  type="email"
-                  name="emel"
-                  label="Emel"
-                  validation="required|email"
-                  readonly
-                  v-model="peribadiSelepas.emel" />
-
-                <!-- No Telefon Bimbit -->
-                <FormKit
-                  v-if="
-                    peribadiSelepas.no_telefon_bimbit !==
-                    peribadi.no_telefon_bimbit
-                  "
-                  type="number"
-                  name="no_telefon_bimbit"
-                  label="No Telefon Bimbit"
-                  placeholder="Contoh: 0123456789"
-                  validation="required"
-                  readonly
-                  v-model="peribadiSelepas.no_telefon_bimbit" />
-
-                <!-- Status Perkahwinan -->
-                <FormKit
-                  v-if="
-                    peribadiSelepas.status_perkahwinan !==
-                    peribadi.status_perkahwinan
-                  "
-                  type="select"
-                  name="status_perkahwinan"
-                  label="Status Perkahwinan"
-                  :options="[
-                    'Berkahwin',
-                    'Bujang',
-                    'Janda',
-                    'Ibu Tinggal',
-                    'Bapa Tinggal',
-                    'Duda',
-                    'Balu',
-                  ]"
-                  validation="required"
-                  input-class="pointer-events-none"
-                  readonly
-                  v-model="peribadiSelepas.status_perkahwinan" />
-              </FormKit>
+              <PeribadiForms
+                :formData="peribadiSelepas"
+                :readOnly="true"
+                :showFooterButtons="false"
+                :comparisonData="peribadi"
+                :isComparison="true"
+                :isBefore="false" />
             </template>
           </rs-card>
         </div>
@@ -113,63 +93,68 @@
         <div
           v-if="currentStepA === 2"
           class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <rs-card>
+          <rs-card class="border-red-500">
             <template #header>
-              <div class="text-lg font-semibold">Sebelum Kemaskini</div>
+              <div class="text-lg font-semibold text-red-800">Sebelum Kemaskini</div>
             </template>
             <template #body>
               <AlamatForms
                 :formData="alamat"
                 :readOnly="true"
-                :showFooterButtons="false" />
+                :showFooterButtons="false"
+                :comparisonData="alamatSelepas"
+                :isComparison="true"
+                :isBefore="true" />
             </template>
           </rs-card>
 
-          <rs-card>
+          <rs-card class="border-green-500">
             <template #header>
-              <div class="text-lg font-semibold">Selepas Kemaskini</div>
+              <div class="text-lg font-semibold text-green-800">Selepas Kemaskini</div>
             </template>
             <template #body>
-              <FormKit type="form" :actions="false">
-                <!-- Alamat 1 -->
-                <FormKit
-                  v-if="
-                    alamatSelepas.addressInfo.alamat1 !==
-                    alamat.addressInfo.alamat1
-                  "
-                  type="textarea"
-                  name="alamat1"
-                  label="Alamat 1"
-                  placeholder="Sila masukkan alamat 1"
-                  readonly
-                  v-model="alamatSelepas.addressInfo.alamat1" />
+              <AlamatForms
+                :formData="alamatSelepas"
+                :readOnly="true"
+                :showFooterButtons="false"
+                :comparisonData="alamat"
+                :isComparison="true"
+                :isBefore="false" />
+            </template>
+          </rs-card>
+        </div>
 
-                <!-- Daerah -->
-                <FormKit
-                  v-if="
-                    alamatSelepas.addressInfo.daerah !==
-                    alamat.addressInfo.daerah
-                  "
-                  type="select"
-                  name="daerah"
-                  label="Daerah"
-                  :options="daerahOptions"
-                  input-class="pointer-events-none"
-                  v-model="alamatSelepas.addressInfo.daerah" />
+        <!-- Step 3: Pendapatan & Perbelanjaan - Perbandingan Sebelum vs Selepas Kemaskini -->
+        <div
+          v-if="currentStepA === 3"
+          class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <rs-card class="border-red-500">
+            <template #header>
+              <div class="text-lg font-semibold text-red-800">Sebelum Kemaskini</div>
+            </template>
+            <template #body>
+              <PendapatanPerbelanjaanForms
+                :formData="pendapatanPerbelanjaan"
+                :readOnly="true"
+                :showFooterButtons="false"
+                :comparisonData="pendapatanPerbelanjaanSelepas"
+                :isComparison="true"
+                :isBefore="true" />
+            </template>
+          </rs-card>
 
-                <!-- Status Kediaman Tempat Tinggal -->
-                <FormKit
-                  v-if="
-                    alamatSelepas.addressInfo.status_kediaman !==
-                    alamat.addressInfo.status_kediaman
-                  "
-                  type="select"
-                  name="status_kediaman"
-                  label="Status Kediaman Tempat Tinggal"
-                  :options="statusKediamanOptions"
-                  input-class="pointer-events-none"
-                  v-model="alamatSelepas.addressInfo.status_kediaman" />
-              </FormKit>
+          <rs-card class="border-green-500">
+            <template #header>
+              <div class="text-lg font-semibold text-green-800">Selepas Kemaskini</div>
+            </template>
+            <template #body>
+              <PendapatanPerbelanjaanForms
+                :formData="pendapatanPerbelanjaanSelepas"
+                :readOnly="true"
+                :showFooterButtons="false"
+                :comparisonData="pendapatanPerbelanjaan"
+                :isComparison="true"
+                :isBefore="false" />
             </template>
           </rs-card>
         </div>
@@ -186,7 +171,52 @@
           <rs-button type="button" variant="primary-outline" @click="prevStepA">
             Peribadi
           </rs-button>
-          <div class="flex-1"></div>
+          <rs-button type="button" variant="primary" @click="nextStepA">
+            Pendapatan & Perbelanjaan
+          </rs-button>
+        </div>
+        <div v-else-if="currentStepA === 3" class="flex justify-between gap-3">
+          <rs-button type="button" variant="primary-outline" @click="prevStepA">
+            Alamat
+          </rs-button>
+          <rs-button type="button" variant="primary" @click="goToSectionC">
+            Komen Penyemak
+          </rs-button>
+        </div>
+      </template>
+    </rs-card>
+
+    <!-- Section C: Komen Penyemak + Hantar -->
+    <rs-card class="mt-4" v-if="currentSection === 'C'">
+      <template #header>
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-semibold">Semakan & Hantar</h2>
+        </div>
+      </template>
+
+      <template #body>
+        <div class="flex flex-col gap-4">
+          <div>
+            <label class="font-bold block mb-2">Komen Penyemak</label>
+            <FormKit
+              type="textarea"
+              name="komen_penyemak_c"
+              v-model="komenPenyemakC"
+              :rows="5"
+              placeholder="Masukkan komen penyemak keseluruhan"
+            />
+          </div>
+
+          <div class="flex justify-between items-center border-t pt-4">
+            <rs-button type="button" variant="primary-outline" @click="kembaliKeSectionA">
+              Kembali ke Seksyen A
+            </rs-button>
+            <div class="flex-1"></div>
+            <rs-button type="button" variant="danger" @click="tidakLengkap">Tidak Lengkap</rs-button>
+            <rs-button type="button" variant="primary" @click="kiraHadKifayah" class="ml-3">
+              Lengkap
+            </rs-button>
+          </div>
         </div>
       </template>
     </rs-card>
@@ -195,8 +225,12 @@
 
 <script setup>
 import { ref } from "vue";
+import { useToast } from "vue-toastification";
 import PeribadiForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PeribadiForms.vue";
 import AlamatForms from "~/components/forms/borang-permohonan-lengkap/SectionA/AlamatForms.vue";
+import PendapatanPerbelanjaanForms from "~/components/forms/borang-permohonan-lengkap/SectionA/PendapatanPerbelanjaanForms.vue";
+
+const toast = useToast();
 
 definePageMeta({
   title: "Semakan Data (Kemaskini)",
@@ -210,11 +244,13 @@ const breadcrumb = ref([
   },
 ]);
 
+const currentSection = ref('A');
 const currentStepA = ref(1);
-const totalStepsA = 2;
+const totalStepsA = 3;
 const stepsA = [
   { id: 1, label: "Peribadi" },
   { id: 2, label: "Alamat" },
+  { id: 3, label: "Pendapatan & Perbelanjaan" },
 ];
 
 const goToStepA = (stepId) => {
@@ -260,10 +296,31 @@ const peribadi = ref({
 
 // After update (selepas) mock model for comparison
 const peribadiSelepas = ref({
-  ...peribadi.value,
-  emel: "ahmad.updated@example.com",
+  jenis_id: "mykad",
+  no_pengenalan: "900101015555",
+  dokumen_id: null,
+  nama: "AHMAD BIN ALI",
+  warganegara: "Malaysia",
+  lain_warganegara: null,
+  taraf_penduduk: null,
+  nopassportlama: "",
+  passportStartDate: null,
+  passportEndDate: null,
+  negara_lain: null,
+  tarikh_lahir: "1990-01-01",
+  umur: "35",
+  tempat_lahir: "Kuala Lumpur",
+  jantina: "Lelaki",
+  agama: "Islam",
+  agama_lain: "",
+  bangsa: "Melayu",
+  bangsa_lain: "",
   no_telefon_bimbit: "0112233445",
-  status_perkahwinan: "Bujang",
+  emel: "ahmad.updated@example.com",
+  status_perkahwinan: "Duda",
+  status_poligami: "tidak",
+  bilangan_isteri: 0,
+  isteri_list: [],
 });
 
 // Mock data for Alamat (before & after)
@@ -293,25 +350,101 @@ const alamat = ref({
 
 const alamatSelepas = ref({
   addressInfo: {
-    ...alamat.value.addressInfo,
     alamat1: "No 12, Jalan Mawar 3",
+    alamat2: "Taman Mawar Baru",
+    alamat3: "Blok A-2-5",
+    negeri: "Selangor",
     daerah: "Klang",
+    bandar: "Klang",
+    poskod: "41000",
+    kariah: "Klang Utara",
+    geolokasi: "",
+    tempoh_menetap_selangor_nilai: 3,
+    tempoh_menetap_selangor_unit: "tahun",
+    kategori_menetap: "mukim",
+    kelulusan_khas: "T",
     status_kediaman: "Milik Sendiri Berbayar",
+    lain_lain_status_kediaman: "",
+    keadaan_kediaman: "Sangat Baik",
+    kadar_bayaran_bulanan: 1200,
+    kadar_sewa_bulanan: null,
+    dokumen_perjanjian_sewa: null,
   },
 });
 
-// Options used in comparison selects
-const daerahOptions = ["Petaling", "Klang", "Gombak"];
-const statusKediamanOptions = [
-  "Milik Sendiri Tidak Berbayar",
-  "Milik Sendiri Berbayar",
-  "Sewa",
-  "Kuarters Majikan",
-  "Tumpang Rumah Ibu/Bapa/Mertua",
-  "Pusaka",
-  "Sumbangan LZS / PPRT / RISDA",
-  "Lain-lain",
-];
+// Mock data for Pendapatan & Perbelanjaan (before & after)
+const pendapatanPerbelanjaan = ref({
+  // Perbelanjaan
+  perbelanjaan_makanan_minuman: 800,
+  sewa_bayaran_pinjaman_perumahan: 1200,
+  perbelanjaan_persekolahan_anak: 300,
+  pengangkutan_tambang_bas_sekolah: 150,
+  bil_utiliti: 200,
+  takaful: 100,
+  sewa_rumah_tanah_kedai: 0,
+  
+  // Pendapatan
+  gaji_elaun_pendapatan: 2500,
+  pendapatan_isteri_suami_ibubapa_penjaga: 500,
+  pencen_perkeso: 300,
+  sumbangan_anak_anak: 200,
+  bantuan_jkm: 100,
+  pendapatan_tanggungan_serumah: 0,
+  total_pendapatan: 3600,
+  
+  // Pendapatan Lain-lain
+  pendapatan_lain_lain: []
+});
 
-// icon function removed as requested
+const pendapatanPerbelanjaanSelepas = ref({
+  // Perbelanjaan - Updated values
+  perbelanjaan_makanan_minuman: 900,
+  sewa_bayaran_pinjaman_perumahan: 1300,
+  perbelanjaan_persekolahan_anak: 400,
+  pengangkutan_tambang_bas_sekolah: 200,
+  bil_utiliti: 250,
+  takaful: 150,
+  sewa_rumah_tanah_kedai: 0,
+  
+  // Pendapatan - Updated values
+  gaji_elaun_pendapatan: 2800,
+  pendapatan_isteri_suami_ibubapa_penjaga: 600,
+  pencen_perkeso: 400,
+  sumbangan_anak_anak: 300,
+  bantuan_jkm: 150,
+  pendapatan_tanggungan_serumah: 0,
+  total_pendapatan: 4250,
+  
+  // Pendapatan Lain-lain
+  pendapatan_lain_lain: []
+});
+
+// Section C functionality
+const komenPenyemakC = ref("");
+
+const goToSectionC = () => {
+  currentSection.value = 'C';
+  if (typeof window !== 'undefined') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+};
+
+const kembaliKeSectionA = () => {
+  currentSection.value = 'A';
+  if (typeof window !== 'undefined') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+};
+
+const tidakLengkap = () => {
+  toast.success("Notifikasi sudah dihantar.");
+  navigateTo('/BF-PRF/AS/permohonan/list-semakan');
+};
+
+const kiraHadKifayah = () => {
+  toast.success("Notifikasi sudah dihantar ke pemohon.");
+  navigateTo("/BF-PRF/AS/FR/04");
+};
+
+// Mock data setup completed
 </script>

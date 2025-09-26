@@ -2,56 +2,167 @@
   <div class="container">
     <layouts-breadcrumb :items="breadcrumb" />
 
-    <rs-card class="mt-4">
-      <template #header>
-        <h1 class="text-xl font-bold">Semakan & Kelulusan Akses Peranan</h1>
-      </template>
+    <!-- Header + Button Kembali -->
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold">Semakan & Kelulusan Akses Peranan</h1>
 
-      <template #body>
-        <div class="grid grid-cols-2 gap-4">
-          <!-- Butiran Konfigurasi Semasa -->
-          <div class="p-4 border rounded-lg shadow-md">
-            <h2 class="text-lg font-semibold">Butiran Konfigurasi Semasa</h2>
-            <div><strong>Jenis Validasi:</strong> {{ validasiJenis }}</div>
-            <div><strong>Status Konfigurasi:</strong> {{ statusKonfigurasi }}</div>
-            <div><strong>Tarikh Mula Kuasa:</strong> {{ tarikhMulaKuasa }}</div>
-            <div><strong>Parameter Kawalan:</strong> {{ parameterKawalan }}</div>
-          </div>
+      <rs-button variant="secondary" @click="goBack" class="whitespace-nowrap">
+        <Icon name="ic:round-arrow-back" class="mr-1" />
+        Kembali
+      </rs-button>
+    </div>
 
-          <!-- Butiran Permohonan -->
-          <div class="p-4 border rounded-lg shadow-md">
-            <h2 class="text-lg font-semibold">Butiran Permohonan</h2>
-            <div><strong>Jenis Validasi:</strong> {{ validasiJenis }}</div>
-            <div><strong>Catatan Permohonan:</strong> {{ catatanPermohonan }}</div>
-            <div><strong>Tarikh Permohonan:</strong> {{ tarikhPermohonan }}</div>
-            <div><strong>Dimohon Oleh:</strong> {{ dimohonOleh }}</div>
-          </div>
-        </div>
+    <!-- Grid utama: Kiri (2 kad), Kanan (Ulasan & Tindakan) -->
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      <!-- Kiri: Konfigurasi Semasa + Permohonan Baharu -->
+      <div class="space-y-6">
+        <!-- Konfigurasi Semasa (READ TEXT ONLY) -->
+        <rs-card>
+          <template #header>
+            <div class="text-lg font-semibold">Konfigurasi Semasa</div>
+          </template>
+          <template #body>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <div class="text-sm text-gray-500">Jenis Validasi</div>
+                <div class="mt-1 px-3 py-2 rounded-md border bg-gray-50">
+                  {{ validasiJenis }}
+                </div>
+              </div>
 
-        <!-- Tindakan -->
-        <div class="mt-4 p-4 border rounded-lg shadow-md">
-          <h2 class="text-lg font-semibold">Tindakan</h2>
-          <textarea v-model="ulasanPelulus" placeholder="Masukkan catatan kelulusan..." required></textarea>
-          <div class="mt-3">
-            <rs-button @click="luluskan" variant="success" size="sm">Luluskan</rs-button>
-            <rs-button @click="tolak" variant="danger" size="sm" class="ml-3">Tolak Permohonan</rs-button>
-          </div>
-        </div>
-      </template>
-    </rs-card>
+              <div>
+                <div class="text-sm text-gray-500">Status Konfigurasi</div>
+                <div class="mt-1 px-3 py-2 rounded-md border bg-gray-50">
+                  {{ statusKonfigurasi }}
+                </div>
+              </div>
+
+              <div>
+                <div class="text-sm text-gray-500">Tarikh Mula Kuasa</div>
+                <div class="mt-1 px-3 py-2 rounded-md border bg-gray-50">
+                  {{ tarikhMulaKuasa }}
+                </div>
+              </div>
+
+              <div class="md:col-span-2">
+                <div class="text-sm text-gray-500">Parameter Kawalan</div>
+                <div class="mt-1 px-3 py-2 rounded-md border bg-gray-50">
+                  {{ parameterKawalan }}
+                </div>
+              </div>
+            </div>
+          </template>
+        </rs-card>
+
+        <!-- Permohonan Baharu (READ TEXT ONLY) -->
+        <rs-card>
+          <template #header>
+            <div class="text-lg font-semibold">Permohonan Baharu</div>
+          </template>
+          <template #body>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <div class="text-sm text-gray-500">Jenis Validasi</div>
+                <div class="mt-1 px-3 py-2 rounded-md border bg-gray-50">
+                  {{ validasiJenis }}
+                </div>
+              </div>
+
+              <div class="md:col-span-2">
+                <div class="text-sm text-gray-500">Catatan Permohonan</div>
+                <div class="mt-1 px-3 py-2 rounded-md border bg-gray-50 whitespace-pre-line">
+                  {{ catatanPermohonan }}
+                </div>
+              </div>
+
+              <div>
+                <div class="text-sm text-gray-500">Tarikh Permohonan</div>
+                <div class="mt-1 px-3 py-2 rounded-md border bg-gray-50">
+                  {{ tarikhPermohonan }}
+                </div>
+              </div>
+
+              <div>
+                <div class="text-sm text-gray-500">Dimohon Oleh</div>
+                <div class="mt-1 px-3 py-2 rounded-md border bg-gray-50">
+                  {{ dimohonOleh }}
+                </div>
+              </div>
+            </div>
+          </template>
+        </rs-card>
+      </div>
+
+      <!-- Kanan: Ulasan & Tindakan -->
+      <div>
+        <rs-card class="xl:sticky xl:top-4">
+          <template #header>
+            <div class="text-lg font-semibold">Ulasan & Tindakan</div>
+          </template>
+          <template #body>
+            <div class="space-y-4">
+              <!-- 1) Keputusan (FormKit Select) -->
+              <FormKit
+                type="select"
+                label="Status Permohonan"
+                placeholder="Pilih status..."
+                :options="[
+                  { label: 'Lulus', value: 'approve' },
+                  { label: 'Tidak Lulus', value: 'reject' }
+                ]"
+                v-model="keputusan"
+              />
+
+              <!-- 2) Ulasan -->
+              <div>
+                <label class="block font-medium mb-2">
+                  Ulasan
+                  <span v-if="keputusan === 'reject'" class="text-danger">*</span>
+                </label>
+                <textarea
+                  v-model="ulasanPelulus"
+                  class="w-full min-h-[140px] border rounded-md px-3 py-2 outline-none"
+                  :placeholder="keputusan === 'reject' ? 'Nyatakan sebab tidak lulus...' : 'Masukkan catatan kelulusan...'"
+                  :required="keputusan === 'reject'"
+                />
+              </div>
+
+              <!-- 3) Tarikh Semakan (kalender) -->
+              <FormKit
+                type="date"
+                label="Tarikh Semakan"
+                v-model="tarikhSemakan"
+                :max="today"
+              />
+
+              <!-- 4) Status Permohonan (kanan bawah) -->
+              <div class="pt-2 text-right">
+                <span class="mr-2 font-medium">Status Permohonan:</span>
+                <rs-badge variant="warning">Sedang Menunggu</rs-badge>
+              </div>
+            </div>
+          </template>
+        </rs-card>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useRouter } from '#imports'
 
 definePageMeta({ title: 'Semakan & Kelulusan Akses Peranan' })
+
+const router = useRouter()
+const goBack = () => router.push('/BF-ADN/KF/senarai-permohonan-kelulusan-kawalan-validasi')
 
 const breadcrumb = [
   { name: 'Mengurus Konfigurasi', type: 'link', path: '/BF-ADN/KF' },
   { name: 'Semakan & Kelulusan Akses Peranan', type: 'text', path: '/BF-ADN/KF/semakan-kelulusan-kawalan-validasi/ADN-PK-KK-02-2' },
 ]
 
+/* Data sedia ada */
 const validasiJenis = ref('Validasi IC - Semak Duplikasi')
 const statusKonfigurasi = ref('Aktif')
 const tarikhMulaKuasa = ref('01-08-2025')
@@ -61,57 +172,29 @@ const catatanPermohonan = ref('Ubah kepada 60 hari berdasarkan polisi baru.')
 const tarikhPermohonan = ref('15-09-2025')
 const dimohonOleh = ref('Siti Norlia')
 
+/* Ulasan & Tindakan */
 const ulasanPelulus = ref('')
 
-function luluskan() {
-  // Simulate approval action
-  alert("Permohonan telah diluluskan.")
-}
+/* Tambahan untuk select & tarikh */
+const keputusan = ref(null) // 'approve' | 'reject'
+const tarikhSemakan = ref(todayISO())
+const today = computed(() => todayISO())
 
-function tolak() {
-  // Simulate rejection action
-  alert("Permohonan telah ditolak.")
+/* Kekalkan fungsi asal (tidak digunakan oleh UI baharu, tetapi tidak diubah) */
+function luluskan() { alert("Permohonan telah diluluskan.") }
+function tolak() { alert("Permohonan telah ditolak.") }
+
+/* Util ringkas */
+function todayISO() {
+  const d = new Date()
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
 }
 </script>
 
 <style scoped>
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-textarea {
-  width: 100%;
-  height: 100px;
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-
-button {
-  margin-top: 10px;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.border {
-  border: 1px solid #ddd;
-}
-
-.rounded-lg {
-  border-radius: 8px;
-}
-
-.shadow-md {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.rs-button {
-  padding: 10px 20px;
-  font-size: 14px;
-}
+/* Kekalkan container; Tailwind uruskan yang lain */
+.container { max-width: 1200px; margin: 0 auto; }
 </style>
