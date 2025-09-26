@@ -2,11 +2,19 @@
   <div>
     <layouts-breadcrumb :items="breadcrumb" />
 
+<div class="flex items-center justify-between">
+  <h1 class="text-2xl font-extrabold">
+    Butiran Konfigurasi Kategori Masalah Semasa
+  </h1>
+
+  <rs-button variant="secondary" @click="goBack" class="whitespace-nowrap">
+    <Icon name="ic:round-arrow-back" class="mr-1" />
+    Kembali
+  </rs-button>
+</div>
+    
     <!-- BUTIRAN SEMASA -->
     <rs-card class="mt-4">
-      <template #header>
-        <h2 class="text-lg font-semibold">Butiran Konfigurasi Kategori Masalah Semasa</h2>
-      </template>
 
       <template #body>
         <div v-if="data" class="p-4 md:p-6 bg-white  rounded">
@@ -156,4 +164,7 @@ function getStatusVariant(s) {
   if (s === 'Tidak Aktif') return 'danger'
   return 'secondary'
 }
+
+const goBack = () => router.push('/BF-ADN/KF/kategori-masalah')
+
 </script>

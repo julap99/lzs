@@ -2,7 +2,17 @@
   <div>
     <layouts-breadcrumb :items="breadcrumb" />
 
-    <h2>Butiran Kawalan Validasi</h2>
+
+  <div class="flex items-center justify-between w-full">
+    <h1>
+      Butiran Kawalan Validasi
+    </h1>
+    <rs-button variant="secondary" @click="goKembali" class="whitespace-nowrap">
+      <Icon name="ic:round-arrow-back" class="mr-1" />
+      Kembali
+    </rs-button>
+  </div>
+
 
     <rs-card class="mt-4">
       <template #header>
@@ -11,9 +21,13 @@
             <Icon name="ic:outline-description" class="mr-2" />
             {{ headerTitle }}
           </div>
-          <rs-button variant="primary" @click="goKemaskini">
-            Kemaskini
-          </rs-button>
+
+          <!-- Actions kanan: Kembali + Kemaskini -->
+          <div class="flex items-center gap-2">
+            <rs-button variant="primary" @click="goKemaskini" class="whitespace-nowrap">
+              Kemaskini
+            </rs-button>
+          </div>
         </div>
       </template>
 
@@ -280,8 +294,11 @@ const historyColumns = computed(() => {
 
 const historyRows = computed(() => record.value?.history || [])
 
-/** Kemaskini -> guna navigateTo (Nuxt 3) */
+/** Navigasi */
 async function goKemaskini() {
   await navigateTo(`/BF-ADN/KF/validasi-input/ADN-PK-KK-01-3?id=${encodeURIComponent(activeId.value)}`)
+}
+async function goKembali() {
+  await navigateTo('/BF-ADN/KF/validasi-input')
 }
 </script>
