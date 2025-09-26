@@ -8,6 +8,17 @@
           <div>
             <h2 class="text-xl font-semibold">Senarai Organisasi</h2>
           </div>
+          <!-- Simulasi Peranan -->
+          <div class="flex items-center gap-2">
+            <FormKit
+              type="select"
+              name="role"
+              label="Simulasi Peranan"
+              :options="rolesOptions"
+              v-model="currentUserRole"
+              :classes="{ outer: 'mb-0', wrapper: 'w-56' }"
+            />
+          </div>
         </div>
       </template>
 
@@ -32,7 +43,9 @@
           
         </div>
 
-        <!-- Tabbed Table Section -->
+        <!-- Eksekutif Tabs -->
+        <!-- Ketua Jabatan Tabs -->
+        <!-- Tabbed Table Section (Shared tabs; tindakan differs by role) -->
         <rs-tab v-model="activeTab" class="mt-4">
           <rs-tab-item title="Menunggu Pengesahan">
             <div class="p-4">
@@ -64,32 +77,40 @@
 
                 <template v-slot:tindakan="{ text }">
                   <div class="flex space-x-3">
-                    <!-- View Button - Always available -->
+                    <!-- BA Requirement 15: Changed icon from mata to document -->
                     <button
                       @click="viewItem(text.id)"
                       title="Lihat"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                      <Icon name="mdi:file-document-outline" size="20" class="text-primary" />
                     </button>
-                    
-                    <!-- Edit Button - Available for all statuses -->
+                    <!-- Kemaskini -->
                     <button
+                      v-if="showEditAction(text.status)"
                       @click="editItem(text.id)"
                       title="Kemaskini"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
                       <Icon name="ic:outline-edit" size="20" class="text-warning" />
                     </button>
-                    
-                    <!-- Semak Button - Only for pending items -->
+                    <!-- Semak (Eksekutif) -->
                     <button
-                      v-if="canPerformAction(text.status)"
+                      v-if="showSemakAction(text.status)"
                       @click="handleSemakPengesahan(text.id)"
                       title="Semak"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
                       <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
+                    </button>
+                    <!-- Lulus (Ketua Jabatan) -->
+                    <button
+                      v-if="showLulusAction(text.status)"
+                      @click="handleKelulusan(text.id)"
+                      title="Lulus"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="material-symbols:check-circle-outline" size="20" class="text-success" />
                     </button>
                   </div>
                 </template>
@@ -135,9 +156,9 @@
                     >
                       <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
                     </button>
-                    
-                    <!-- Edit Button - User can update during correction -->
+                    <!-- Edit Button - per role rules -->
                     <button
+                      v-if="showEditAction(text.status)"
                       @click="editItem(text.id)"
                       title="Kemaskini"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
@@ -233,8 +254,9 @@
                       <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
                     </button>
                     
-                    <!-- Edit Button - Available for all statuses -->
+                    <!-- Edit Button per role rules -->
                     <button
+                      v-if="showEditAction(text.status)"
                       @click="editItem(text.id)"
                       title="Kemaskini"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
@@ -242,14 +264,24 @@
                       <Icon name="ic:outline-edit" size="20" class="text-warning" />
                     </button>
                     
-                    <!-- Semak Button - Only for pending items -->
+                    <!-- Semak (Eksekutif) -->
                     <button
-                      v-if="canPerformAction(text.status)"
+                      v-if="showSemakAction(text.status)"
                       @click="handleSemakPengesahan(text.id)"
                       title="Semak"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
                       <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
+                    </button>
+                    
+                    <!-- Lulus (Ketua Jabatan) -->
+                    <button
+                      v-if="showLulusAction(text.status)"
+                      @click="handleKelulusan(text.id)"
+                      title="Lulus"
+                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    >
+                      <Icon name="material-symbols:check-circle-outline" size="20" class="text-success" />
                     </button>
                     
                     <!-- Delete Button - Only for Eksekutif role -->
@@ -267,6 +299,8 @@
             </div>
           </rs-tab-item>
         </rs-tab>
+
+          
 
         <div class="flex items-center justify-between px-5 mt-4">
           <div class="flex items-center gap-2">
@@ -386,7 +420,7 @@ const columns = [
 const activeTab = ref(0);
 const tableKey = ref(0);
 
-// Mock data for Eksekutif role
+// Mock data for Eksekutif role with role information
 const organizationList = ref([
   {
     noRujukan: 'ORG-202507-0001',
@@ -395,7 +429,8 @@ const organizationList = ref([
     jenisOrganisasi: 'Masjid',
     jenisStruktur: 'HQ',
     status: 'Disahkan',
-    tindakan: { id: 'ORG-202507-0001', status: 'Disahkan' },
+    role: 'Pemohon', // BA Requirement 16: Role-based permissions
+    tindakan: { id: 'ORG-202507-0001', status: 'Disahkan', role: 'Pemohon' },
   },
   {
     noRujukan: 'ORG-202506-0002',
@@ -404,7 +439,8 @@ const organizationList = ref([
     jenisOrganisasi: 'Masjid',
     jenisStruktur: 'Cawangan',
     status: 'Disahkan',
-    tindakan: { id: 'ORG-202506-0002', status: 'Disahkan' },
+    role: 'Pemohon',
+    tindakan: { id: 'ORG-202506-0002', status: 'Disahkan', role: 'Pemohon' },
   },
   {
     noRujukan: 'ORG-202505-0003',
@@ -413,7 +449,8 @@ const organizationList = ref([
     jenisOrganisasi: 'Masjid',
     jenisStruktur: 'Cawangan',
     status: 'Menunggu Pengesahan',
-    tindakan: { id: 'ORG-202505-0003', status: 'Menunggu Pengesahan' },
+    role: 'Pemohon',
+    tindakan: { id: 'ORG-202505-0003', status: 'Menunggu Pengesahan', role: 'Pemohon' },
   },
   {
     noRujukan: 'ORG-202507-0004',
@@ -422,7 +459,8 @@ const organizationList = ref([
     jenisOrganisasi: 'Masjid',
     jenisStruktur: 'Cawangan',
     status: 'Disahkan',
-    tindakan: { id: 'ORG-202507-0004', status: 'Disahkan' },
+    role: 'Pemohon',
+    tindakan: { id: 'ORG-202507-0004', status: 'Disahkan', role: 'Pemohon' },
   },
   {
     noRujukan: 'ORG-202506-0005',
@@ -431,7 +469,8 @@ const organizationList = ref([
     jenisOrganisasi: 'NGO',
     jenisStruktur: 'HQ',
     status: 'Tidak Sah',
-    tindakan: { id: 'ORG-202506-0005', status: 'Tidak Sah' },
+    role: 'Pemohon',
+    tindakan: { id: 'ORG-202506-0005', status: 'Tidak Sah', role: 'Pemohon' },
   },
   {
     noRujukan: 'ORG-202505-0006',
@@ -440,7 +479,8 @@ const organizationList = ref([
     jenisOrganisasi: 'NGO',
     jenisStruktur: 'HQ',
     status: 'Menunggu Pengesahan',
-    tindakan: { id: 'ORG-202505-0006', status: 'Menunggu Pengesahan' },
+    role: 'Pemohon',
+    tindakan: { id: 'ORG-202505-0006', status: 'Menunggu Pengesahan', role: 'Pemohon' },
   },
   {
     noRujukan: 'ORG-202504-0007',
@@ -449,7 +489,8 @@ const organizationList = ref([
     jenisOrganisasi: 'IPT',
     jenisStruktur: 'HQ',
     status: 'Tidak Sah',
-    tindakan: { id: 'ORG-202504-0007', status: 'Tidak Sah' },
+    role: 'Pemohon',
+    tindakan: { id: 'ORG-202504-0007', status: 'Tidak Sah', role: 'Pemohon' },
   },
   {
     noRujukan: 'ORG-202508-0008',
@@ -458,7 +499,8 @@ const organizationList = ref([
     jenisOrganisasi: 'Kesihatan',
     jenisStruktur: 'Cawangan',
     status: 'Dalam Pembetulan',
-    tindakan: { id: 'ORG-202508-0008', status: 'Dalam Pembetulan' },
+    role: 'Pemohon',
+    tindakan: { id: 'ORG-202508-0008', status: 'Dalam Pembetulan', role: 'Pemohon' },
   },
 ]);
 
@@ -531,18 +573,48 @@ const deleteConfirmation = ref({
   text: ''
 });
 
+// Role switcher
+const rolesOptions = [
+  { label: 'Eksekutif', value: 'Eksekutif' },
+  { label: 'Ketua Jabatan', value: 'Ketua Jabatan' },
+];
+const selectedRole = ref('Eksekutif');
 // User role simulation - for demo purposes
-const currentUserRole = ref('Eksekutif'); // Eksekutif, Pengurus, etc.
+const currentUserRole = ref('Eksekutif'); // Eksekutif, Ketua Jabatan, Pengguna Luar
 
-// Action capabilities for Eksekutif role
-const canPerformAction = (status) => {
-  return ['Menunggu Pengesahan'].includes(status);
+const setRole = (role) => {
+  selectedRole.value = role;
+  currentUserRole.value = role;
+  tableKey.value++;
 };
 
-// Edit permissions - all statuses can be edited (will go back to approval)
-const canEdit = (status) => {
-  return true; // All items can be edited
+watch(
+  () => currentUserRole.value,
+  (val) => {
+    if (val !== selectedRole.value) {
+      setRole(val);
+    }
+  }
+);
+
+// Role-based tindakan visibility
+const showEditAction = (status) => {
+  if (currentUserRole.value === 'Eksekutif') return true;
+  if (currentUserRole.value === 'Ketua Jabatan') return true;
+  return false;
 };
+
+const showSemakAction = (status) => {
+  return currentUserRole.value === 'Eksekutif' && status === 'Menunggu Pengesahan';
+};
+
+const showLususStatuses = ['Menunggu Pengesahan', 'Dalam Semakan Pelulus'];
+const showLulusAction = (status) => {
+  return currentUserRole.value === 'Ketua Jabatan' && showLususStatuses.includes(status);
+};
+
+// Backward-compat leftover helpers (kept for reuse if referenced)
+const canEdit = (status) => showEditAction(status);
 
 // Delete permissions - only Eksekutif role can delete
 const canDelete = (status) => {
@@ -566,7 +638,8 @@ const performSearch = () => {
 // CRUD Operations
 const viewItem = (id) => navigateTo(`/BF-PRF/OR/PP/view/${id}`);
 const editItem = (id) => navigateTo(`/BF-PRF/OR/PP/kemaskini/${id}`);
-const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/OR/PP/04/${id}`);
+const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/OR/PP/04/eksekutif/${id}`);
+const handleKelulusan = (id) => navigateTo(`/BF-PRF/OR/PP/04/ketua-jabatan/${id}`);
 
 // Delete operations
 const confirmDelete = (id, item) => {
