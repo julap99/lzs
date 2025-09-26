@@ -1702,7 +1702,7 @@ export default [
           {
             title: "Senarai Bulk Processing",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-BTN/bantuan-bulk/senarai-bulk-processing-pending",
+            path: "/BF-BTN/bantuan-bulk/senarai-bulk-processing",
             child: [],
             meta: {},
           },

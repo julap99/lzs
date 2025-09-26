@@ -65,18 +65,6 @@
               disabled
             />
 
-            <!-- Catatan -->
-            <FormKit
-              type="textarea"
-              name="catatan"
-              label="Catatan"
-              v-model="bantuanDetail.catatan"
-              disabled
-              :classes="{
-                input: 'h-24',
-              }"
-            />
-
             <!-- Dicipta Oleh -->
             <FormKit
               type="text"
@@ -93,7 +81,17 @@
               label="Dicipta Pada"
               v-model="bantuanDetail.diciptaPada"
               disabled
+            />
+
+            <!-- Catatan -->
+            <FormKit
+              type="textarea"
+              name="catatan"
+              label="Catatan"
+              v-model="bantuanDetail.catatan"
+              disabled
               :classes="{
+                input: 'h-24',
                 outer: 'md:col-span-2',
               }"
             />

@@ -53,15 +53,16 @@
             </div>
 
             <!-- Jumlah Amaun -->
-            <FormKit
+            <!-- <FormKit
               type="text"
               name="jumlahAmaun"
               label="Jumlah Amaun (RM)"
               v-model="formData.jumlahAmaun"
               disabled
               help="Auto-calculate selepas import Data"
-            />
+            /> -->
 
+            
             <!-- Catatan -->
             <FormKit
               type="textarea"
@@ -72,27 +73,8 @@
               v-model="formData.catatan"
               :classes="{
                 input: 'h-24',
+                outer: 'md:col-span-2',
               }"
-            />
-
-            <!-- Nama Pegawai -->
-            <FormKit
-              type="text"
-              name="namaPegawai"
-              label="Nama Pegawai"
-              v-model="formData.namaPegawai"
-              disabled
-              help="Auto-fill selepas simpan"
-            />
-
-            <!-- Tarikh Mohon -->
-            <FormKit
-              type="text"
-              name="tarikhMohon"
-              label="Tarikh Mohon"
-              v-model="formData.tarikhMohon"
-              disabled
-              help="Auto-fill selepas simpan"
             />
           </div>
         </template>
@@ -504,6 +486,29 @@
               <Icon name="material-symbols:upload" class="mr-1" />
               {{ isLoading ? "Sedang Muat Naik..." : `Import ${selectedDocuments.length} Fail` }}
             </rs-button>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormKit
+                  type="text"
+                  name="namaPegawai"
+                  label="Nama Pegawai"
+                  v-model="formData.namaPegawai"
+                  disabled
+                  help="Auto-fill selepas simpan"
+                />
+
+                <!-- Tarikh Mohon -->
+                <FormKit
+                  type="text"
+                  name="tarikhMohon"
+                  label="Tarikh Mohon"
+                  v-model="formData.tarikhMohon"
+                  disabled
+                  help="Auto-fill selepas simpan"
+                />
+            </div>
+          
+            
           </div>
         </template>
       </rs-card>
@@ -1305,7 +1310,6 @@ const paymentForm = ref({
   organization: "",
   amaun: 0,
   modeOfPayment: "",
-  tarikhBayaran: new Date().toLocaleDateString("ms-MY"),
   bankName: "",
   bankAccount: "",
   status: "Dalam Proses",
@@ -1513,7 +1517,7 @@ const handleImport = async () => {
         recipient: "Nur safiyya Binti Rosly",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
-        tarikhBayaran: "Akaun",
+        modeOfPayment: "Akaun",
         bankName: "Maybank",
         bankAccount: "16A3-44-889901",            // ← WRONG (letter)
         checkbox: '',
@@ -1780,6 +1784,7 @@ const handleAddPayment = () => {
     modeOfPayment: "",
     bankName: "",
     bankAccount: "",
+    checkbox: "",
   };
 
   paymentModalMode.value = "add";
@@ -2024,6 +2029,7 @@ const handleSavePaymentModal = () => {
     modeOfPayment: "",
     bankName: "",
     bankAccount: "",
+    checkbox: "",
   };
 };
 
