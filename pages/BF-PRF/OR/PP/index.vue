@@ -8,20 +8,16 @@
           <div>
             <h2 class="text-xl font-semibold">Senarai Organisasi</h2>
           </div>
-          <!-- Role Switcher -->
+          <!-- Role Switcher (FormKit Select to match BF-PA standard) -->
           <div class="flex items-center gap-2">
-            <span class="text-sm text-gray-600">Peranan:</span>
-            <div class="flex rounded-lg overflow-hidden border">
-              <button
-                v-for="r in roles"
-                :key="r"
-                @click="setRole(r)"
-                class="px-3 py-1 text-sm transition-colors"
-                :class="selectedRole === r ? 'bg-primary text-white' : 'bg-white hover:bg-gray-50'"
-              >
-                {{ r }}
-              </button>
-            </div>
+            <FormKit
+              type="select"
+              name="role"
+              label="Peranan"
+              :options="roles"
+              v-model="currentUserRole"
+              @input="setRole($event)"
+            />
           </div>
         </div>
       </template>
