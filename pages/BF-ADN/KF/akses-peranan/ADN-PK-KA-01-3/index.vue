@@ -8,9 +8,10 @@
         Butiran Akses Peranan
       </h1>
 
-      <rs-button v-if="current" variant="secondary" @click="onClickKemaskini" class="whitespace-nowrap">
-        <Icon name="ic:outline-edit" class="mr-1" />
-        Kemaskini
+      <!-- BUTANG KEMBALI (baru) -->
+      <rs-button variant="secondary" @click="goBack" class="whitespace-nowrap">
+        <Icon name="ic:round-arrow-back" class="mr-1" />
+        Kembali
       </rs-button>
     </div>
 
@@ -23,7 +24,14 @@
       <!-- Konfigurasi Semasa -->
       <rs-card class="mb-6">
         <template #header>
-          <div class="font-semibold">Konfigurasi Semasa</div>
+          <div class="flex items-center justify-between">
+            <div class="font-semibold">Konfigurasi Semasa</div>
+            <!-- BUTANG KEMASKINI dipindah ke sini, fungsi KEKAL -->
+            <rs-button v-if="current" variant="secondary" @click="onClickKemaskini" class="whitespace-nowrap">
+              <Icon name="ic:outline-edit" class="mr-1" />
+              Kemaskini
+            </rs-button>
+          </div>
         </template>
         <template #body>
           <div class="grid sm:grid-cols-[200px_1fr] gap-y-3">
@@ -200,13 +208,18 @@ function fmtDate(d) {
   return `${dd}/${mm}/${yyyy}`
 }
 
-/** Kemaskini → ke skrin tambah/kemaskini (ADN-PK-KA-01-2) sambil bawa id */
+/** Kemaskini → ke skrin tambah/kemaskini (ADN-PK-KA-01-4) sambil bawa id (fungsi KEKAL) */
 async function onClickKemaskini() {
   if (!current.value) return
   await router.push({
     path: '/BF-ADN/KF/akses-peranan/ADN-PK-KA-01-4',
     query: { id: String(current.value.id), mode: 'edit' },
   })
+}
+
+/** Kembali → ke senarai akses peranan (BARU) */
+function goBack() {
+  router.push('/BF-ADN/KF/akses-peranan')
 }
 </script>
 

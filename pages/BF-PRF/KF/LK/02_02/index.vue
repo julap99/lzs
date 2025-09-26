@@ -154,7 +154,7 @@ function getStatusVariant (status) {
 }
 
 function goBack () {
-  navigateTo('/BF-PRF/KF/LK/01_01')
+  navigateTo('/BF-PRF/KF/LK/02_01')
 }
 
 onMounted(() => {

@@ -926,15 +926,8 @@ export default [
               {
                 title: "Admin",
                 icon: "iconamoon:arrow-right-2-duotone",
-                child: [
-                  {
-                    title: "Konfigurasi Level Kelulusan",
-                    icon: "iconamoon:arrow-right-2-duotone",
-                    path: "/BF-PRF/KF/LK/01_01",
-                    child: [],
-                    meta: {},
-                  },
-                ],
+                path: "/BF-PRF/KF/LK/01_01",
+                child: [],
                 meta: {},
               },
               {
@@ -1210,13 +1203,6 @@ export default [
             child: [],
             meta: {},
           },
-          {
-            title: "Pelaporan",
-            icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-PRF/AS/pelaporan",
-            child: [],
-            meta: {},
-          },
           // {
           //   title: "AS-QB",
           //   icon: "iconamoon:arrow-right-2-duotone",
@@ -1261,6 +1247,13 @@ export default [
             meta: {},
           },
         ],
+        meta: {},
+      },
+      {
+        title: "Pelaporan",
+        icon: "iconamoon:component-fill",
+        path: "/BF-PRF/AS/pelaporan",
+        child: [],
         meta: {},
       },
       {
@@ -1702,7 +1695,7 @@ export default [
           {
             title: "Senarai Bulk Processing",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-BTN/bantuan-bulk/senarai-bulk-processing-pending",
+            path: "/BF-BTN/bantuan-bulk/senarai-bulk-processing",
             child: [],
             meta: {},
           },

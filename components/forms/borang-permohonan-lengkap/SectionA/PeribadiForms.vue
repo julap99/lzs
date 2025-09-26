@@ -10,7 +10,7 @@
 
     <!-- Personal Information Section -->
     <div class="mb-6">
-      <h4 class="text-md font-medium mb-3">Maklumat Peribadi</h4>
+      <!-- <h4 class="text-md font-medium mb-3">Maklumat Peribadi</h4> -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormKit
           type="select"
@@ -177,14 +177,16 @@
           help="Auto dikira daripada Tarikh Lahir"
         />
 
-        <FormKit
-          type="text"
-          name="tempat_lahir"
-          label="Tempat Lahir"
-          :disabled="readOnly"
-          validation="required"
-          v-model="formData.tempat_lahir"
-        />
+        <div :class="getFieldClasses('tempat_lahir')" class="p-2 rounded">
+          <FormKit
+            type="text"
+            name="tempat_lahir"
+            label="Tempat Lahir"
+            :disabled="readOnly"
+            validation="required"
+            v-model="formData.tempat_lahir"
+          />
+        </div>
 
         <FormKit
           type="select"
@@ -242,29 +244,33 @@
           v-model="formData.bangsa_lain"
         />
 
-        <FormKit
-          type="number"
-          name="no_telefon_bimbit"
-          label="No Telefon Bimbit"
-          placeholder="Contoh: 0123456789"
-          validation="required"
-          :validation-messages="{
-            required: 'No Telefon Bimbit adalah wajib',
-            matches:
-              'Format nombor telefon tidak sah. Contoh: 0123456789',
-          }"
-          :disabled="readOnly"
-          v-model="formData.no_telefon_bimbit"
-        />
+        <div :class="getFieldClasses('no_telefon_bimbit')" class="p-2 rounded">
+          <FormKit
+            type="number"
+            name="no_telefon_bimbit"
+            label="No Telefon Bimbit"
+            placeholder="Contoh: 0123456789"
+            validation="required"
+            :validation-messages="{
+              required: 'No Telefon Bimbit adalah wajib',
+              matches:
+                'Format nombor telefon tidak sah. Contoh: 0123456789',
+            }"
+            :disabled="readOnly"
+            v-model="formData.no_telefon_bimbit"
+          />
+        </div>
 
-        <FormKit
-          type="email"
-          name="emel"
-          label="Emel"
-          validation="required|email"
-          :disabled="readOnly"
-          v-model="formData.emel"
-        />
+        <div :class="getFieldClasses('emel')" class="p-2 rounded">
+          <FormKit
+            type="email"
+            name="emel"
+            label="Emel"
+            validation="required|email"
+            :disabled="readOnly"
+            v-model="formData.emel"
+          />
+        </div>
       </div>
     </div>
 
@@ -272,24 +278,26 @@
     <div class="mb-6" v-if="formData.jantina === 'Lelaki'">
       <h4 class="text-md font-medium mb-3">Status Perkahwinan</h4>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormKit
-          type="select"
-          name="status_perkahwinan"
-          placeholder="Pilih Status Perkahwinan"
-          label="Status Perkahwinan"
-          :options="[
-            'Berkahwin',
-            'Bujang',
-            'Janda',
-            'Ibu Tinggal',
-            'Bapa Tinggal',
-            'Duda',
-            'Balu',
-          ]"
-          :disabled="readOnly"
-          validation="required"
-          v-model="formData.status_perkahwinan"
-        />
+        <div :class="getFieldClasses('status_perkahwinan')" class="p-2 rounded">
+          <FormKit
+            type="select"
+            name="status_perkahwinan"
+            placeholder="Pilih Status Perkahwinan"
+            label="Status Perkahwinan"
+            :options="[
+              'Berkahwin',
+              'Bujang',
+              'Janda',
+              'Ibu Tinggal',
+              'Bapa Tinggal',
+              'Duda',
+              'Balu',
+            ]"
+            :disabled="readOnly"
+            validation="required"
+            v-model="formData.status_perkahwinan"
+          />
+        </div>
 
         <FormKit
           type="select"
@@ -380,6 +388,18 @@ const props = defineProps({
   readOnly: {
     type: Boolean,
     default: false
+  },
+  comparisonData: {
+    type: Object,
+    default: null
+  },
+  isComparison: {
+    type: Boolean,
+    default: false
+  },
+  isBefore: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -404,6 +424,33 @@ watch(
     props.formData.isteri_list = Array(count).fill({ no_kp: "", nama: "" });
   }
 );
+
+// Comparison logic
+const isFieldDifferent = (fieldPath) => {
+  if (!props.isComparison || !props.comparisonData) return false;
+  
+  const currentValue = getNestedValue(props.formData, fieldPath);
+  const comparisonValue = getNestedValue(props.comparisonData, fieldPath);
+  
+  return currentValue !== comparisonValue;
+};
+
+const getNestedValue = (obj, path) => {
+  return path.split('.').reduce((current, key) => current?.[key], obj);
+};
+
+const getFieldClasses = (fieldPath) => {
+  if (!props.isComparison) return '';
+  
+  const isDifferent = isFieldDifferent(fieldPath);
+  if (!isDifferent) return '';
+  
+  if (props.isBefore) {
+    return 'border-l-4 border-red-500 bg-red-50';
+  } else {
+    return 'border-l-4 border-green-500 bg-green-50';
+  }
+};
 
 // Emits
 const emit = defineEmits(['next-step', 'save-step'])

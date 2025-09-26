@@ -398,10 +398,10 @@
                             <Icon name="ph:eye" class="w-4 h-4" />
                           </button>
                           <button 
-                            @click="downloadTemplate(doc)" 
+                            @click="doc.id === 'DOC5' ? editDocument(doc) : uploadDocument(doc)" 
                             class="w-8 h-8 rounded-full border-2 border-teal-500 text-teal-500 hover:bg-teal-50 flex items-center justify-center"
                           >
-                            <Icon name="ph:download" class="w-4 h-4" />
+                            <Icon :name="doc.id === 'DOC5' ? 'ph:pencil' : 'ph:upload'" class="w-4 h-4" />
                           </button>
                         </div>
                       </td>
@@ -1000,6 +1000,13 @@
       catatan: "", 
       files: [] 
     },
+    { 
+      id: "DOC5", 
+      nama: "Senarai Permintaan Pembelian", 
+      status: "", 
+      catatan: "", 
+      files: [] 
+    },
   ]);
   const statusDokumenOptions = [
     { label: "-- Pilih --", value: "", disabled: true },
@@ -1140,6 +1147,21 @@
     showSuccessModal.value = false;
     router.push("/BF-BTN/PB/senarai");
   };
+
+  // Document handlers
+  const editDocument = (doc) => {
+    // Navigate to Senarai Permintaan Pembelian page for DOC5
+    if (doc.id === 'DOC5') {
+      router.push('/BF-BTN/senarai-permintaan-pembelian');
+    }
+  };
+
+  const uploadDocument = (doc) => {
+    // Placeholder for upload functionality
+    console.log('Upload document:', doc);
+    alert(`Upload functionality for ${doc.nama}`);
+  };
+
 
   // Entitlement Product options (prototype: reuse product package options)
   const entitlementProductOptions = computed(() => productPackageOptions.value || []);

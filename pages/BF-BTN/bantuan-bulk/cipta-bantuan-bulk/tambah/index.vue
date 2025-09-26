@@ -53,15 +53,16 @@
             </div>
 
             <!-- Jumlah Amaun -->
-            <FormKit
+            <!-- <FormKit
               type="text"
               name="jumlahAmaun"
               label="Jumlah Amaun (RM)"
               v-model="formData.jumlahAmaun"
               disabled
               help="Auto-calculate selepas import Data"
-            />
+            /> -->
 
+            
             <!-- Catatan -->
             <FormKit
               type="textarea"
@@ -72,27 +73,8 @@
               v-model="formData.catatan"
               :classes="{
                 input: 'h-24',
+                outer: 'md:col-span-2',
               }"
-            />
-
-            <!-- Nama Pegawai -->
-            <FormKit
-              type="text"
-              name="namaPegawai"
-              label="Nama Pegawai"
-              v-model="formData.namaPegawai"
-              disabled
-              help="Auto-fill selepas simpan"
-            />
-
-            <!-- Tarikh Mohon -->
-            <FormKit
-              type="text"
-              name="tarikhMohon"
-              label="Tarikh Mohon"
-              v-model="formData.tarikhMohon"
-              disabled
-              help="Auto-fill selepas simpan"
             />
           </div>
         </template>
@@ -171,6 +153,18 @@
               v-model="formData.tarikhJangkaanBayaran"
             />
 
+            <FormKit
+              type="radio"
+              name="modeOfPayment"
+              label="Mode Of Payment"
+              v-model="formData.modeOfPayment"
+              :options="[
+                { label: 'Tunai', value: 'Tunai' },
+                { label: 'Profile', value: 'Profile' },
+              ]"
+              validation="required"
+            />
+
             <!-- Cawangan (CustomSelect) -->
             <CustomSelect
               v-model="formData.cawangan"
@@ -178,6 +172,9 @@
               label="Cawangan"
               search-placeholder="Cari cawangan..."
               :disabled="false"
+              classes="{
+                outer: 'md:col-span-2',
+              }"
             />
           </div>
         </template>
@@ -309,7 +306,7 @@
       </rs-card>
 
       <!-- Maklumat Data Rosak Section -->
-      <rs-card>
+      <rs-card v-if="showImportCards">
         <template #header>
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">Maklumat Data Rosak</h2>
@@ -386,7 +383,7 @@
       </rs-card>
 
       <!-- Maklumat Senarai Penerima Section -->
-      <rs-card>
+      <rs-card v-if="showImportCards">
         <template #header>
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">Maklumat Senarai Penerima (Beneficiary List)</h2>
@@ -440,7 +437,7 @@
       </rs-card>
 
       <!-- Maklumat Dokumen Sokongan Section -->
-      <rs-card>
+      <rs-card >
         <template #header>
           <h2 class="text-xl font-semibold">Maklumat Dokumen Sokongan</h2>
         </template>
@@ -489,6 +486,29 @@
               <Icon name="material-symbols:upload" class="mr-1" />
               {{ isLoading ? "Sedang Muat Naik..." : `Import ${selectedDocuments.length} Fail` }}
             </rs-button>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormKit
+                  type="text"
+                  name="namaPegawai"
+                  label="Nama Pegawai"
+                  v-model="formData.namaPegawai"
+                  disabled
+                  help="Auto-fill selepas simpan"
+                />
+
+                <!-- Tarikh Mohon -->
+                <FormKit
+                  type="text"
+                  name="tarikhMohon"
+                  label="Tarikh Mohon"
+                  v-model="formData.tarikhMohon"
+                  disabled
+                  help="Auto-fill selepas simpan"
+                />
+            </div>
+          
+            
           </div>
         </template>
       </rs-card>
@@ -601,12 +621,15 @@
           validation="required|min:0"
         />
 
-        <!-- Tarikh Bayaran -->
         <FormKit
-          type="date"
-          name="tarikhBayaran"
-          label="Tarikh Bayaran"
-          v-model="paymentForm.tarikhBayaran"
+          type="radio"
+          name="modeOfPayment"
+          label="Mode Of Payment"
+          v-model="paymentForm.modeOfPayment"
+          :options="[
+            { label: 'Tunai', value: 'Tunai' },
+            { label: 'Akaun', value: 'Akaun' },
+          ]"
           validation="required"
         />
 
@@ -638,21 +661,6 @@
           label="No. Akaun"
           v-model="paymentForm.bankAccount"
           placeholder="1234-56-789012"
-          validation="required"
-        />
-
-        <!-- Status -->
-        <FormKit
-          type="select"
-          name="status"
-          label="Status"
-          v-model="paymentForm.status"
-          :options="[
-            { label: 'Baru', value: 'Baru' },
-            { label: 'Dalam Proses', value: 'Dalam Proses' },
-            { label: 'Selesai', value: 'Selesai' },
-            { label: 'Batal', value: 'Batal' }
-          ]"
           validation="required"
         />
       </div>
@@ -1123,6 +1131,7 @@ const formData = ref({
   productEntitlement: "",
   jenisBantuan: "",
   tarikhJangkaanBayaran: "",
+  modeOfPayment: "",
 });
 
 // Tooltip state for action buttons
@@ -1279,7 +1288,7 @@ const selectedPayments = ref([]);
 const confirmedPayments = ref([]);
 const isLoading = ref(false);
 const isSubmitting = ref(false);
-
+const showImportCards = ref(false);
 // State for editing
 const editingPayment = ref(null);
 const editingRecipient = ref(null);
@@ -1300,7 +1309,7 @@ const paymentForm = ref({
   recipient: "",
   organization: "",
   amaun: 0,
-  tarikhBayaran: new Date().toLocaleDateString("ms-MY"),
+  modeOfPayment: "",
   bankName: "",
   bankAccount: "",
   status: "Dalam Proses",
@@ -1428,10 +1437,15 @@ const handleSahkanSelected = () => {
   } catch (e) {}
   alert('success', `${confirmedPayments.value.length} bayaran telah disahkan untuk tindakan seterusnya.`);
 };
+// Function to hide import cards
+const hideImportCards = () => {
+  showImportCards.value = false;
+};
 
 const handleImport = async () => {
   try {
     isLoading.value = true;
+    showImportCards.value = false; // Reset cards visibility before import
 
     // Dummy data import (simulasi data dari Excel)
     recipientList.value = [
@@ -1482,7 +1496,7 @@ const handleImport = async () => {
     ];
 
     paymentList.value = [
-    {
+      {
         kod: "PT-2025-30371",
         idPermohonan: "PRM-2025-00001",
         bayaranKepada: "recipient",
@@ -1503,7 +1517,7 @@ const handleImport = async () => {
         recipient: "Nur safiyya Binti Rosly",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
-        tarikhBayaran: "Akaun",
+        modeOfPayment: "Akaun",
         bankName: "Maybank",
         bankAccount: "16A3-44-889901",            // ← WRONG (letter)
         checkbox: '',
@@ -1557,6 +1571,7 @@ const handleImport = async () => {
     formData.value.jumlahAmaun = formatNumber(jumlah);
 
     alert("success", "Fail berjaya diimport dan data dimasukkan.");
+    showImportCards.value = true;
   } catch (error) {
     console.error("Error importing file:", error);
     alert("error", "Gagal mengimport fail");
@@ -1766,14 +1781,15 @@ const handleAddPayment = () => {
     recipient: "",
     organization: "",
     amaun: 0,
-    modeOfPayment: "Tunai" || "Akaun",
+    modeOfPayment: "",
     bankName: "",
     bankAccount: "",
-    status: "Dalam Proses",
+    checkbox: "",
   };
 
   paymentModalMode.value = "add";
   showPaymentModal.value = true;
+  console.log("Payment form initialized:", paymentForm.value);
 };
 
 const handleAddRecipient = () => {
@@ -1947,9 +1963,44 @@ const handleSave = async () => {
 
 // Modal functions
 const handleSavePaymentModal = () => {
+  console.log("handleSavePaymentModal called");
+  console.log("paymentForm.value:", paymentForm.value);
+  console.log("paymentModalMode.value:", paymentModalMode.value);
+  
+  // Validate required fields
+  if (!paymentForm.value.bayaranKepada) {
+    alert("error", "Sila isi bayaran kepada");
+    return;
+  }
+  if (!paymentForm.value.asnaf) {
+    alert("error", "Sila pilih asnaf");
+    return;
+  }
+  if (!paymentForm.value.amaun || paymentForm.value.amaun <= 0) {
+    alert("error", "Sila isi amaun yang sah");
+    return;
+  }
+  if (!paymentForm.value.modeOfPayment) {
+    alert("error", "Sila pilih mode of payment");
+    return;
+  }
+  if (!paymentForm.value.idPermohonan) {
+    alert("error", "Sila isi ID permohonan");
+    return;
+  }
+  if (!paymentForm.value.bankName) {
+    alert("error", "Sila pilih bank");
+    return;
+  }
+  if (!paymentForm.value.bankAccount) {
+    alert("error", "Sila isi no. akaun");
+    return;
+  }
+
   if (paymentModalMode.value === "add") {
     // Add new payment
     paymentList.value.push({ ...paymentForm.value });
+    console.log("Payment added to list:", paymentList.value);
     alert("success", "Maklumat bayaran baru ditambah");
   } else {
     // Update existing payment
@@ -1962,7 +2013,24 @@ const handleSavePaymentModal = () => {
     }
   }
 
+  // Close modal
   showPaymentModal.value = false;
+  
+  // Reset form for next use
+  paymentForm.value = {
+    kod: "",
+    idPermohonan: "",
+    bayaranKepada: "",
+    asnaf: "",
+    contributor: "",
+    recipient: "",
+    organization: "",
+    amaun: 0,
+    modeOfPayment: "",
+    bankName: "",
+    bankAccount: "",
+    checkbox: "",
+  };
 };
 
 const handleSaveRecipientModal = () => {
@@ -2118,7 +2186,7 @@ const damagedDataList = computed(() => {
     out.push({
       no: defectCounter++,
       id: `DEF-${String(defectCounter - 1).padStart(3, "0")}`, // Hidden but needed for logic
-      namaPenerima: p.bayaranKepada,
+      namaPenerima: p.recipient,
       catatan: parts.join(" · "),
       jenisMasalah: reasons.join(", "), // Hidden but needed for logic
       idPermohonan: p.idPermohonan, // Hidden but needed for logic
