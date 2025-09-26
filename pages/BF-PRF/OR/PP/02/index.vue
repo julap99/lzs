@@ -37,25 +37,8 @@
           @submit="nextStep"
           #default="{ value }"
         >
-          <FormKit
-            type="text"
-            name="organizationName"
-            label="Nama Organisasi"
-            validation="required"
-            placeholder="Masukkan nama organisasi"
-            v-model="formData.organizationName"
-          />
-
-          <FormKit
-            type="text"
-            name="registrationNumber"
-            label="Nombor Pendaftaran Organisasi (SSM/ROS)"
-            validation="required|matches:/^(\d{12}|PPM-\d{3}-\d{2}-\d{8})$/"
-            placeholder="Contoh: 201901000005 (SSM) atau PPM-001-10-14032020 (ROS)"
-            help="SSM: 12 digit angka | ROS: PPM-###-##-DDMMYYYY"
-            v-model="formData.registrationNumber"
-          />
-
+          <!-- BA Requirement 3: New field order -->
+          <!-- a) Jenis organisasi -->
           <FormKit
             type="select"
             name="organizationType"
@@ -74,20 +57,52 @@
             v-model="formData.organizationType"
           />
 
+          <!-- b) Nama organisasi -->
           <FormKit
-            v-if="!['masjid','surau'].includes(formData.organizationType)"
-            type="select"
-            name="registrationStatus"
-            label="Status Pendaftaran"
+            type="text"
+            name="organizationName"
+            label="Nama Organisasi"
             validation="required"
-            placeholder="Pilih status pendaftaran"
-            :options="[
-              { label: 'Berdaftar', value: 'berdaftar' },
-              { label: 'Tidak berdaftar', value: 'tidak_berdaftar' },
-            ]"
-            v-model="formData.registrationStatus"
+            placeholder="Masukkan nama organisasi"
+            v-model="formData.organizationName"
           />
 
+          <!-- c) No pendaftaran organisasi -->
+          <FormKit
+            type="text"
+            name="registrationNumber"
+            label="Nombor Pendaftaran Organisasi (SSM/ROS)"
+            validation="required|matches:/^(\d{12}|PPM-\d{3}-\d{2}-\d{8})$/"
+            placeholder="Contoh: 201901000005 (SSM) atau PPM-001-10-14032020 (ROS)"
+            help="SSM: 12 digit angka | ROS: PPM-###-##-DDMMYYYY"
+            v-model="formData.registrationNumber"
+          />
+
+          <!-- e) Kariah - dropdown (conditional) -->
+          <FormKit
+            v-if="showKariahField"
+            type="select"
+            name="kariah"
+            label="Kariah"
+            validation="required"
+            placeholder="Pilih kariah"
+            :options="kariahOptions"
+            v-model="formData.kariah"
+          />
+
+          <!-- f) Jenis masjid - dropdown (conditional for masjid type) -->
+          <FormKit
+            v-if="formData.organizationType === 'masjid'"
+            type="select"
+            name="jenisMasjid"
+            label="Jenis Masjid"
+            validation="required"
+            placeholder="Pilih jenis masjid"
+            :options="jenisMasjidOptions"
+            v-model="formData.jenisMasjid"
+          />
+
+          <!-- Structure field (conditional) -->
           <FormKit
             v-if="!['masjid','surau'].includes(formData.organizationType)"
             type="select"
@@ -169,6 +184,17 @@
         >
           <!-- Address Layout: Grid 2 columns as per BA requirements -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Negara (Country) -->
+            <FormKit
+              type="select"
+              name="country"
+              label="Negara"
+              validation="required"
+              placeholder="Pilih negara"
+              :options="countryOptions"
+              v-model="formData.country"
+            />
+
             <FormKit
               type="text"
               name="addressLine1"
@@ -178,15 +204,24 @@
               v-model="formData.addressLine1"
             />
 
+            <!-- Negeri (Malaysia only) or State/Province (others) -->
             <FormKit
+              v-if="isMalaysia"
               type="select"
               name="state"
               label="Negeri"
               validation="required"
               placeholder="Pilih negeri"
-              :options="[
-                'Selangor',
-              ]"
+              :options="malaysiaStates"
+              v-model="formData.state"
+            />
+            <FormKit
+              v-else
+              type="text"
+              name="state"
+              label="State / Province"
+              validation="required"
+              placeholder="Masukkan negeri / wilayah"
               v-model="formData.state"
             />
 
@@ -198,23 +233,24 @@
               v-model="formData.addressLine2"
             />
 
+            <!-- Daerah (Malaysia/Selangor only) else free-text -->
             <FormKit
+              v-if="isMalaysia && formData.state === 'Selangor'"
               type="select"
               name="district"
               label="Daerah"
               validation="required"
               placeholder="Pilih daerah"
-              :options="[
-                'Petaling',
-                'Klang',
-                'Hulu Langat',
-                'Sepang',
-                'Hulu Selangor',
-                'Kuala Selangor',
-                'Sabak Bernam',
-                'Gombak',
-                'Kuala Langat',
-              ]"
+              :options="selangorDistricts"
+              v-model="formData.district"
+            />
+            <FormKit
+              v-else
+              type="text"
+              name="district"
+              label="Daerah / Region"
+              validation="required"
+              placeholder="Masukkan daerah / region"
               v-model="formData.district"
             />
 
@@ -226,55 +262,44 @@
               v-model="formData.addressLine3"
             />
 
+            <!-- Bandar (Malaysia/Selangor only) else free-text -->
             <FormKit
+              v-if="isMalaysia && formData.state === 'Selangor'"
               type="select"
               name="city"
               label="Pilih Bandar"
               validation="required"
               placeholder="Pilih bandar"
-              :options="[
-                'Shah Alam',
-                'Petaling Jaya',
-                'Subang Jaya',
-                'Klang',
-                'Ampang',
-                'Cheras',
-                'Kajang',
-                'Bangi',
-                'Puchong',
-                'Selayang',
-                'Gombak',
-                'Rawang',
-                'Sungai Buloh',
-                'Batu Caves',
-                'Kuala Selangor',
-                'Bestari Jaya',
-                'Ijok',
-                'Tanjong Karang',
-                'Sabak Bernam',
-                'Sungai Besar',
-                'Kuala Kubu Bharu',
-                'Batang Kali',
-                'Serendah',
-                'Hulu Bernam',
-                'Semenyih',
-                'Beranang',
-                'Sepang',
-                'Cyberjaya',
-                'Dengkil',
-                'Banting',
-                'Teluk Panglima Garang',
-                'Port Klang'
-              ]"
+              :options="selangorCities"
+              v-model="formData.city"
+            />
+            <FormKit
+              v-else
+              type="text"
+              name="city"
+              label="Bandar / City"
+              validation="required"
+              placeholder="Masukkan bandar / city"
               v-model="formData.city"
             />
 
+            <!-- Poskod (Malaysia) or Postal Code (others) -->
             <FormKit
+              v-if="isMalaysia"
               type="text"
               name="postcode"
               label="Poskod"
               validation="required|number|length:5"
               placeholder="Contoh: 43650"
+              v-model="formData.postcode"
+            />
+            <FormKit
+              v-else
+              type="text"
+              name="postcode"
+              label="Postal Code"
+              validation="required"
+              placeholder="Masukkan postal/zip code"
               v-model="formData.postcode"
             />
           </div>
@@ -335,6 +360,16 @@
               v-model="representative.ic"
             />
 
+            <!-- BA Requirement 7: Add jawatan field -->
+            <FormKit
+              type="text"
+              :name="`jawatan${index}`"
+              label="Jawatan"
+              validation="required"
+              placeholder="Masukkan jawatan"
+              v-model="representative.jawatan"
+            />
+
             <FormKit
               type="tel"
               :name="`phoneNumber${index}`"
@@ -351,6 +386,17 @@
               validation="email"
               placeholder="Contoh: nama@domain.com"
               v-model="representative.email"
+            />
+
+            <!-- Dokumen Sokongan untuk Setiap Wakil-->
+            <FormKit
+              type="file"
+              :name="`supportingLetter${index}`"
+              label="Surat Lantikan / Sokongan"
+              validation="required"
+              accept=".pdf,.jpg,.jpeg,.png"
+              help="Muat naik surat lantikan/sokongan bagi wakil ini"
+              v-model="representative.supportingLetter"
             />
 
             <div class="flex justify-end">
@@ -485,14 +531,18 @@
           @submit="submitForm"
           #default="{ value }"
         >
-          <div class="bg-yellow-50 text-yellow-800 p-4 rounded-md mb-4">
-            <p class="font-medium">Sila muat naik dokumen berikut:</p>
-            <ul class="list-disc ml-5 mt-2">
+          <!-- BA Requirement 1: Mandatory documents warning -->
+          <div class="bg-red-50 text-red-800 p-4 rounded-md mb-4 border border-red-200">
+            <div class="flex items-center mb-2">
+              <Icon name="mdi:alert-circle" class="text-red-600 mr-2" size="1.25rem" />
+              <p class="font-medium">Dokumen Sokongan Wajib</p>
+            </div>
+            <p class="text-sm mb-2">Sila muat naik dokumen berikut (semua adalah wajib):</p>
+            <ul class="list-disc ml-5 mt-2 text-sm">
               <li>Sijil Pendaftaran SSM / ROS</li>
-              <li>Surat Lantikan / Sokongan</li>
               <li>Bukti pemilikan akaun bank</li>
             </ul>
-            <p class="mt-2">Format yang dibenarkan: PDF / JPG / PNG</p>
+            <p class="mt-2 text-sm">Format yang dibenarkan: PDF / JPG / PNG</p>
           </div>
 
           <FormKit
@@ -503,16 +553,6 @@
             accept=".pdf,.jpg,.jpeg,.png"
             help="Muat naik sijil pendaftaran organisasi anda"
             v-model="formData.registrationCertificate"
-          />
-
-          <FormKit
-            type="file"
-            name="appointmentLetter"
-            label="Surat Lantikan / Sokongan"
-            validation="required"
-            accept=".pdf,.jpg,.jpeg,.png"
-            help="Muat naik surat lantikan rasmi"
-            v-model="formData.appointmentLetter"
           />
 
           <FormKit
@@ -733,10 +773,6 @@
                 <rs-badge :variant="hasRegistrationCert ? 'success' : 'danger'">{{ hasRegistrationCert ? 'Dilampirkan' : 'Tiada' }}</rs-badge>
               </div>
               <div>
-                <label class="block text-gray-600 font-medium">Surat Lantikan / Sokongan</label>
-                <rs-badge :variant="hasAppointmentLetter ? 'success' : 'danger'">{{ hasAppointmentLetter ? 'Dilampirkan' : 'Tiada' }}</rs-badge>
-              </div>
-              <div>
                 <label class="block text-gray-600 font-medium">Bukti Pemilikan Akaun Bank</label>
                 <rs-badge :variant="hasBankProof ? 'success' : 'danger'">{{ hasBankProof ? 'Dilampirkan' : 'Tiada' }}</rs-badge>
               </div>
@@ -763,6 +799,33 @@ import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
+// Country options (common + Malaysia default)
+const countryOptions = [
+  'Malaysia', 'Singapore', 'Indonesia', 'Thailand', 'Brunei', 'Philippines',
+  'Vietnam', 'Cambodia', 'Laos', 'Myanmar', 'India', 'China', 'Japan', 'South Korea',
+  'Australia', 'New Zealand', 'United States', 'United Kingdom', 'Canada', 'Germany',
+  'France', 'Netherlands', 'Saudi Arabia', 'United Arab Emirates', 'Qatar'
+];
+
+// Malaysia states
+const malaysiaStates = [
+  'Selangor', 'Johor', 'Kedah', 'Kelantan', 'Melaka', 'Negeri Sembilan', 'Pahang',
+  'Perak', 'Perlis', 'Pulau Pinang', 'Sabah', 'Sarawak', 'Terengganu', 'Kuala Lumpur',
+  'Labuan', 'Putrajaya'
+];
+
+// Selangor districts
+const selangorDistricts = [
+  'Petaling', 'Klang', 'Hulu Langat', 'Sepang', 'Hulu Selangor', 'Kuala Selangor',
+  'Sabak Bernam', 'Gombak', 'Kuala Langat'
+];
+
+// Selangor cities
+const selangorCities = [
+  'Shah Alam','Petaling Jaya','Subang Jaya','Klang','Ampang','Cheras','Kajang','Bangi','Puchong','Selayang','Gombak','Rawang','Sungai Buloh','Batu Caves','Kuala Selangor','Bestari Jaya','Ijok','Tanjong Karang','Sabak Bernam','Sungai Besar','Kuala Kubu Bharu','Batang Kali','Serendah','Hulu Bernam','Semenyih','Beranang','Sepang','Cyberjaya','Dengkil','Banting','Teluk Panglima Garang','Port Klang'
+];
+
+const isMalaysia = computed(() => formData.value.country === 'Malaysia');
 
 const breadcrumb = ref([
   {
@@ -789,24 +852,81 @@ const referenceNumber = ref(
 // Modal state
 const showDraftModal = ref(false);
 
-// Mock HQ data for realistic dropdown options
-const hqOptions = [
-  { label: 'UITM Jengka', value: 'uitm_jengka' },
-  { label: 'UITM Shah Alam', value: 'uitm_shah_alam' },
-  { label: 'UITM Kuala Lumpur', value: 'uitm_kuala_lumpur' },
-  { label: 'Universiti Malaya', value: 'universiti_malaya' },
-  { label: 'Universiti Putra Malaysia', value: 'universiti_putra_malaysia' },
-  { label: 'Universiti Teknologi Malaysia', value: 'universiti_teknologi_malaysia' },
-  { label: 'Yayasan Insan Malaysia', value: 'yayasan_insan_malaysia' },
-  { label: 'Pertubuhan Amal Jariah', value: 'pertubuhan_amal_jariah' },
-  { label: 'Yayasan Pendidikan Islami Malaysia', value: 'yayasan_pendidikan_islami_malaysia' },
-  { label: 'Institut Dakwah Malaysia', value: 'institut_dakwah_malaysia' },
-  { label: 'Pertubuhan Kebajikan Islam', value: 'pertubuhan_kebajikan_islam' },
-  { label: 'Yayasan Tahfiz Al-Quran', value: 'yayasan_tahfiz_al_quran' },
+// HQ options vary by organization type to reflect realistic parents used elsewhere
+const hqOptions = computed(() => {
+  const type = formData.value.organizationType;
+  if (type === 'masjid') {
+    return [
+      { label: 'Masjid Sultan Salahuddin Abdul Aziz Shah', value: 'masjid_sultan_salahuddin_hq' },
+      { label: 'Masjid Negeri', value: 'masjid_negeri_hq' },
+    ];
+  }
+  if (type === 'surau') {
+    return [
+      { label: 'Surau Induk Daerah', value: 'surau_induk_daerah' },
+    ];
+  }
+  if (type === 'kesihatan') {
+    return [
+      { label: 'Pusat Dialisis As-Salam HQ', value: 'pusat_dialisis_as_salam_hq' },
+    ];
+  }
+  if (type === 'ngo') {
+    return [
+      { label: 'Pertubuhan Kebajikan Islam HQ', value: 'pki_hq' },
+      { label: 'Rumah Anak Yatim Darul Ehsan HQ', value: 'rayde_hq' },
+    ];
+  }
+  if (type === 'institusi') {
+    return [
+      { label: 'Maahad Tahfiz Selangor (Sekolah Utama)', value: 'maahad_tahfiz_selangor_hq' },
+    ];
+  }
+  if (type === 'agensi' || type === 'badan_berkanun' || type === 'dalaman_lzs_baitul') {
+    return [
+      { label: 'Ibu Pejabat', value: 'ibu_pejabat' },
+    ];
+  }
+  return [
+    { label: 'Ibu Pejabat', value: 'ibu_pejabat' },
+  ];
+});
+
+// BA Requirement 3: Kariah options (aligned with LZS needs)
+const kariahOptions = [
+  { label: "Kariah Masjid Al-Hidayah", value: "Kariah Masjid Al-Hidayah" },
+  { label: "Kariah Masjid Al-Ikhlas", value: "Kariah Masjid Al-Ikhlas" },
+  { label: "Kariah Masjid Al-Muttaqin", value: "Kariah Masjid Al-Muttaqin" },
+  { label: "Kariah Masjid Al-Rahman", value: "Kariah Masjid Al-Rahman" },
+  { label: "Kariah Masjid Al-Salam", value: "Kariah Masjid Al-Salam" },
+  { label: "Kariah Masjid Al-Taqwa", value: "Kariah Masjid Al-Taqwa" },
+  { label: "Kariah Masjid An-Nur", value: "Kariah Masjid An-Nur" },
+  { label: "Kariah Masjid Ar-Rahman", value: "Kariah Masjid Ar-Rahman" },
+  { label: "Kariah Masjid As-Salam", value: "Kariah Masjid As-Salam" },
+  { label: "Kariah Masjid At-Taqwa", value: "Kariah Masjid At-Taqwa" },
+  { label: "Masjid Negeri", value: "Masjid Negeri" },
+  { label: "Masjid Sultan Salahuddin Abdul Aziz Shah", value: "Masjid Sultan Salahuddin Abdul Aziz Shah" },
+  { label: "Masjid Al-Azim Pandan Indah", value: "Masjid Al-Azim Pandan Indah" },
+  { label: "Masjid Al-Amin Bangi", value: "Masjid Al-Amin Bangi" },
+  { label: "Masjid Wilayah Persekutuan", value: "Masjid Wilayah Persekutuan" },
+  { label: "Masjid Al-Khairiyah", value: "Masjid Al-Khairiyah" },
+  { label: "Taman Seri Gombak", value: "Taman Seri Gombak" },
+  { label: "Masjid Damansara Perdana", value: "Masjid Damansara Perdana" },
+  { label: "Masjid Bandar Utama", value: "Masjid Bandar Utama" },
+  { label: "Batang Kali", value: "Batang Kali" }
 ];
 
-// Computed properties for conditional field visibility
-const showKariah = computed(() => {
+// BA Requirement 3: Jenis Masjid options (confirmed)
+const jenisMasjidOptions = [
+  { label: 'Masjid Negeri', value: 'masjid_negeri' },
+  { label: 'Masjid Diraja', value: 'masjid_diraja' },
+  { label: 'Masjid Jamek', value: 'masjid_jamek' },
+  { label: 'Masjid Kariah', value: 'masjid_kariah' },
+];
+
+// BA Requirement 3: Updated computed properties for conditional field visibility
+const showKariahField = computed(() => {
+  // Show kariah field for all organization types except masjid (masjid has jenis masjid instead)
   return formData.value.organizationType && formData.value.organizationType !== 'masjid';
 });
 
@@ -830,20 +950,20 @@ const showHQDropdown = computed(() => {
 });
 
 const formData = ref({
-  // Step 1: Maklumat Pendaftaran Organisasi
-  organizationName: "",
-  registrationNumber: "",
-  organizationType: "",
-  registrationStatus: "",
-  structure: "",
+  // Step 1: Maklumat Pendaftaran Organisasi (BA Requirement 3: New field order)
+  organizationType: "", // a) Jenis organisasi
+  organizationName: "", // b) Nama organisasi
+  registrationNumber: "", // c) No pendaftaran organisasi
+  kariah: "", // e) Kariah - dropdown
+  jenisMasjid: "", // f) Jenis masjid - dropdown (conditional for masjid)
+  structure: "", // Structure field (conditional)
   
-  // Conditional fields moved from Step 3 to Step 1
-  kariah: "",
-  branch: "",
+  // Conditional fields
   zone: "",
   hq: "", // New field for HQ selection when structure is Cawangan
 
   // Step 2: Maklumat Alamat
+  country: 'Malaysia',
   addressLine1: "",
   addressLine2: "",
   addressLine3: "",
@@ -852,19 +972,19 @@ const formData = ref({
   district: "",
   state: "",
 
-  // Step 3: Maklumat Perhubungan (renumbered from Step 4)
+  // Step 3: Maklumat Perhubungan (BA Requirement 7: Add jawatan field)
   representatives: [
-    { name: "", ic: "", phoneNumber: "", email: "" },
+    { name: "", ic: "", phoneNumber: "", email: "", jawatan: "" },
   ],
 
-  // Step 4: Maklumat Bank (renumbered from Step 5)
+  // Step 4: Maklumat Bank (BA Requirement 8: Maklumat Bank Induk)
   bankName: "",
   bankAccountNumber: "",
   penamaBank: "",
   paymentMethod: "",
   bankSameAsHQ: "", // New field for bank HQ logic
 
-  // Step 5: Muat Naik Dokumen Sokongan (renumbered from Step 6)
+  // Step 5: Muat Naik Dokumen Sokongan (BA Requirement 1: Mandatory documents)
   registrationCertificate: null,
   appointmentLetter: null,
   bankProof: null,
@@ -890,7 +1010,7 @@ const goToStep = (stepId) => {
 };
 
 const tambahMaklumatWakil = () => {
-  formData.value.representatives.push({ name: "", ic: "", phoneNumber: "", email: "" });
+  formData.value.representatives.push({ name: "", ic: "", phoneNumber: "", email: "", jawatan: "" });
 };
 
 const removeRepresentative = (index) => {
@@ -928,7 +1048,29 @@ const confirmSaveDraft = () => {
   showDraftModal.value = false;
 };
 
-const submitForm = () => {
+// BA Requirement 4: Duplicate checking function
+const checkDuplicateRegistration = async (registrationNumber) => {
+  // Simulate API call to check for duplicates
+  const mockExistingRegistrations = [
+    '201901000005',
+    'PPM-001-10-14032020',
+    'PPM-2021-001',
+    'PPM-2021-002'
+  ];
+  
+  return mockExistingRegistrations.includes(registrationNumber);
+};
+
+const submitForm = async () => {
+  // BA Requirement 4: Check for duplicate registration number
+  const isDuplicate = await checkDuplicateRegistration(formData.value.registrationNumber);
+  
+  if (isDuplicate) {
+    // Show error message for duplicate registration
+    alert('Nombor pendaftaran organisasi telah wujud dalam sistem. Sila gunakan nombor pendaftaran yang berbeza.');
+    return;
+  }
+
   // Here you would normally handle the API submission
   console.log("Form data to be submitted:", formData.value);
 
