@@ -27,8 +27,8 @@
                 <label class="block text-sm font-medium text-gray-700 mb-3">Keputusan <span class="text-red-500">*</span></label>
                 <div class="space-y-2">
                   <label class="flex items-center">
-                    <input v-model="approvalData.status" type="radio" value="Diluluskan" class="mr-2 text-green-600 focus:ring-green-500" />
-                    <span class="text-sm font-medium text-gray-900">Diluluskan</span>
+                    <input v-model="approvalData.status" type="radio" value="Lulus" class="mr-2 text-green-600 focus:ring-green-500" />
+                    <span class="text-sm font-medium text-gray-900">Lulus</span>
                   </label>
                   <label class="flex items-center">
                     <input v-model="approvalData.status" type="radio" value="Tidak Lulus" class="mr-2 text-red-600 focus:ring-red-500" />
@@ -115,7 +115,7 @@ const applicationData = ref({
 
 const getStatusBadgeVariant = () => {
   switch (applicationData.value.status) {
-    case 'Diluluskan':
+    case 'Lulus':
       return 'success'
     case 'Tidak Lulus':
       return 'danger'
@@ -142,7 +142,7 @@ const handleApprovalSubmit = async () => {
   }
   processing.value = true
   await new Promise(r => setTimeout(r, 800))
-  applicationData.value.status = approvalData.value.status === 'Diluluskan' ? 'Diluluskan' : 'Tidak Lulus'
+  applicationData.value.status = approvalData.value.status === 'Lulus' ? 'Lulus' : 'Tidak Lulus'
   toast.success('Keputusan kelulusan telah direkodkan')
   processing.value = false
   goBack()

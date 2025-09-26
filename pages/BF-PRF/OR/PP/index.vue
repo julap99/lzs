@@ -429,8 +429,7 @@ const organizationList = ref([
     jenisOrganisasi: 'Masjid',
     jenisStruktur: 'HQ',
     status: 'Disahkan',
-    role: 'Pemohon', // BA Requirement 16: Role-based permissions
-    tindakan: { id: 'ORG-202507-0001', status: 'Disahkan', role: 'Pemohon' },
+    tindakan: { id: 'ORG-202507-0001', status: 'Disahkan' },
   },
   {
     noRujukan: 'ORG-202506-0002',
@@ -439,8 +438,7 @@ const organizationList = ref([
     jenisOrganisasi: 'Masjid',
     jenisStruktur: 'Cawangan',
     status: 'Disahkan',
-    role: 'Pemohon',
-    tindakan: { id: 'ORG-202506-0002', status: 'Disahkan', role: 'Pemohon' },
+    tindakan: { id: 'ORG-202506-0002', status: 'Disahkan' },
   },
   {
     noRujukan: 'ORG-202505-0003',
@@ -449,8 +447,7 @@ const organizationList = ref([
     jenisOrganisasi: 'Masjid',
     jenisStruktur: 'Cawangan',
     status: 'Menunggu Pengesahan',
-    role: 'Pemohon',
-    tindakan: { id: 'ORG-202505-0003', status: 'Menunggu Pengesahan', role: 'Pemohon' },
+    tindakan: { id: 'ORG-202505-0003', status: 'Menunggu Pengesahan' },
   },
   {
     noRujukan: 'ORG-202507-0004',
@@ -459,8 +456,7 @@ const organizationList = ref([
     jenisOrganisasi: 'Masjid',
     jenisStruktur: 'Cawangan',
     status: 'Disahkan',
-    role: 'Pemohon',
-    tindakan: { id: 'ORG-202507-0004', status: 'Disahkan', role: 'Pemohon' },
+    tindakan: { id: 'ORG-202507-0004', status: 'Disahkan' },
   },
   {
     noRujukan: 'ORG-202506-0005',
@@ -469,8 +465,7 @@ const organizationList = ref([
     jenisOrganisasi: 'NGO',
     jenisStruktur: 'HQ',
     status: 'Tidak Sah',
-    role: 'Pemohon',
-    tindakan: { id: 'ORG-202506-0005', status: 'Tidak Sah', role: 'Pemohon' },
+    tindakan: { id: 'ORG-202506-0005', status: 'Tidak Sah' },
   },
   {
     noRujukan: 'ORG-202505-0006',
@@ -479,8 +474,7 @@ const organizationList = ref([
     jenisOrganisasi: 'NGO',
     jenisStruktur: 'HQ',
     status: 'Menunggu Pengesahan',
-    role: 'Pemohon',
-    tindakan: { id: 'ORG-202505-0006', status: 'Menunggu Pengesahan', role: 'Pemohon' },
+    tindakan: { id: 'ORG-202505-0006', status: 'Menunggu Pengesahan' },
   },
   {
     noRujukan: 'ORG-202504-0007',
@@ -489,8 +483,7 @@ const organizationList = ref([
     jenisOrganisasi: 'IPT',
     jenisStruktur: 'HQ',
     status: 'Tidak Sah',
-    role: 'Pemohon',
-    tindakan: { id: 'ORG-202504-0007', status: 'Tidak Sah', role: 'Pemohon' },
+    tindakan: { id: 'ORG-202504-0007', status: 'Tidak Sah' },
   },
   {
     noRujukan: 'ORG-202508-0008',
@@ -499,8 +492,7 @@ const organizationList = ref([
     jenisOrganisasi: 'Kesihatan',
     jenisStruktur: 'Cawangan',
     status: 'Dalam Pembetulan',
-    role: 'Pemohon',
-    tindakan: { id: 'ORG-202508-0008', status: 'Dalam Pembetulan', role: 'Pemohon' },
+    tindakan: { id: 'ORG-202508-0008', status: 'Dalam Pembetulan' },
   },
 ]);
 
