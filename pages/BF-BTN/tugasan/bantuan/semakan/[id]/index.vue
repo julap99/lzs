@@ -536,6 +536,26 @@ const mockByNoRujukan = {
     statusPermohonanBaru: '',
     catatanUmumPegawai: 'Pemohon baru memeluk Islam 6 bulan yang lalu. Memerlukan bantuan sara hidup dan pendidikan agama.',
   },
+  'NAS-2025-0006': {
+    noRujukan: 'NAS-2025-0006',
+    nama: 'Mohd Kamal bin Mohd Luffy',
+    alamat: '60, Jalan Perdana 2/2, Seksyen 1, 40000 Shah Alam, Selangor',
+    kariah: 'Masjid Al-Ikhlas',
+    daerah: 'Kuala Selangor',
+    jenisPengenalan: 'MyKad',
+    noPengenalan: '990504082567',
+    noTelefon: '0156122314',
+    email: 'kamal@email.com',
+    statusKeluarga: 'Mualaf',
+    statusIndividu: 'Mualaf',
+    statusMultidimensi: 'Asnaf Mualaf',
+    status: 'Dalam Semakan',
+          senaraiBantuan: [
+            { id: 'B110', jenisBantuan: 'B110 - (HQ) BANTUAN HUTANG PERUBATAN (JPSK)', status: 'Dalam Semakan', sla: '3h', tindakan: '' },
+          ],
+    statusPermohonanBaru: '',
+    catatanUmumPegawai: 'Pemohon perlukan bantuan untuk membayar hutang perubatan.',
+  },
 };
 
 // Flat reactive form state to be populated from mock
