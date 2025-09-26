@@ -6,20 +6,6 @@
       <template #header>
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Senarai Maklumat Level Kelulusan</h2>
-          <div class="flex items-center gap-2">
-            <!-- 2.1 Tambah -> EX-PRF-KF-LK-01_02 -->
-            <rs-button variant="primary" @click="goTambah">
-              Tambah
-            </rs-button>
-
-            <!-- 2.2 Kemaskini -> EX-PRF-KF-LK-01_03 -->
-            <rs-button
-              variant="secondary"
-              @click="goKemaskini"
-            >
-              Kemaskini
-            </rs-button>
-          </div>
         </div>
       </template>
 
@@ -35,38 +21,38 @@
           :showSearch="true"
           :options="{ variant: 'default', hover: true, borded: true, striped: true }"
           advanced
-           @row-click="onRowClick"
+          @row-click="onRowClick"
         >
-          <!-- 3.1.2 Table Name (Query only) -->
+          <!-- Table Name -->
           <template #tableName="{ value }">
             <span>{{ value.tableName }}</span>
           </template>
 
-          <!-- 3.1.3 ID Row Table (Query only) -->
+          <!-- ID Row Table -->
           <template #idRowTable="{ value }">
             <span class="tabular-nums">{{ value.idRowTable }}</span>
           </template>
 
-          <!-- 3.1.4 Level Type (Query only) -->
+          <!-- Level Type -->
           <template #levelType="{ value }">
             <span class="uppercase">{{ value.levelType }}</span>
           </template>
 
-          <!-- 3.1.5 Tarikh Mula (Date, Query only) -->
+          <!-- Tarikh Mula -->
           <template #tarikhMula="{ value }">
             <span>{{ formatDate(value.tarikhMula) }}</span>
           </template>
 
-          <!-- 3.1.6 Status data (Text, Query only) -->
+          <!-- Status Data -->
           <template #statusData="{ value }">
             <rs-badge :variant="getStatusVariant(value.statusData)">
               {{ value.statusData }}
             </rs-badge>
           </template>
 
-          <!-- Actions: 2.3 Lihat -> EX-PRF-KF-LK-01_04 -->
+          <!-- Tindakan -->
           <template #tindakan="{ value }">
-            <div class="flex items-center justify-center">
+            <div class="flex items-center justify-center gap-2">
               <rs-button
                 size="sm"
                 variant="primary"
@@ -75,7 +61,14 @@
               >
                 Lihat
               </rs-button>
-              
+              <rs-button
+                size="sm"
+                variant="secondary"
+                class="h-8 px-3 text-white"
+                @click.stop="goKelulusan(value.idLevelKelulusan)"
+              >
+                Kelulusan
+              </rs-button>
             </div>
           </template>
         </rs-table>
@@ -85,19 +78,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, onActivated, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 
 definePageMeta({
-  title: 'EX-PRF-KF-LK-01_01 | Senarai Maklumat Level Kelulusan',
+  title: 'EX-PRF-KF-LK-02_01 | Senarai Maklumat Level Kelulusan (Hantar)',
 })
 
 const router = useRouter()
 
-/** Breadcrumb to LK module */
+/** Breadcrumb */
 const breadcrumb = ref([
-  { name: 'Profiling', type: 'link', path: '/BF-PRF/KF/LK/01_01' },
-  { name: 'Senarai Maklumat Level Kelulusan', type: 'current', path: '/BF-PRF/KF/LK/01_01' },
+  { name: 'Profiling', type: 'link', path: '/BF-PRF/KF/LK/02_01' },
+  { name: 'Senarai Maklumat Level Kelulusan (Hantar)', type: 'current', path: '/BF-PRF/KF/LK/02_01' },
 ])
 
 /** Table state */
@@ -105,24 +98,54 @@ const tableKey = ref(0)
 const rows = ref([])
 const selectedId = ref(null)
 
-/** Load rows from storage (or example seed) */
+/** STORAGE KEYS */
+const HANTAR_KEY = 'levelKelulusanHantarList'
+const MASTER_KEY = 'levelKelulusanList'
+
+/** Storage helpers */
+function readList (key) {
+  try {
+    const raw = localStorage.getItem(key)
+    const arr = raw ? JSON.parse(raw) : []
+    return Array.isArray(arr) ? arr : []
+  } catch { return [] }
+}
+function writeList (key, arr) {
+  localStorage.setItem(key, JSON.stringify(arr ?? []))
+}
+
+/** Load + SYNC with master:
+ *  - If an item was approved/rejected in 02_03 (statusData = Lulus/Tolak), remove it from Hantar.
+ *  - Keep only Menunggu Kelulusan in 02_01.
+ */
 function loadRows () {
   try {
-    const raw = localStorage.getItem('levelKelulusanList')
-    if (raw) {
-      const parsed = JSON.parse(raw)
-      rows.value = parsed.map(normalizeItem)
-    } else {
-      // Example fallback so the page isn't empty
-      rows.value = [normalizeItem({
-        idLevelKelulusan: 1,           // 3.1.1 Hidden
-        tableName: 'rekod_asnaf',      // 3.1.2
-        idRowTable: 1,                 // 3.1.3
-        levelType: 'row',              // 3.1.4
-        tarikhMula: '2026-01-01',      // 3.1.5
-        statusData: 'Draf',            // 3.1.6
-      })]
+    const hantar = readList(HANTAR_KEY)
+    const master = readList(MASTER_KEY)
+
+    let changed = false
+    const keep = []
+
+    for (const item of hantar) {
+      const id = String(item.idLevelKelulusan ?? item.id)
+      const current = master.find(x => String(x.idLevelKelulusan ?? x.id) === id)
+
+      const statusNow = current?.statusData ?? item.statusData ?? 'Menunggu Kelulusan'
+
+      // if already approved/rejected in 02_03, drop from Hantar
+      if (statusNow === 'Lulus' || statusNow === 'Tolak') {
+        changed = true
+        continue
+      }
+
+      // keep & sync latest status (usually Menunggu Kelulusan)
+      if (statusNow !== item.statusData) changed = true
+      keep.push({ ...item, statusData: statusNow })
     }
+
+    if (changed) writeList(HANTAR_KEY, keep)
+
+    rows.value = keep.map(normalizeItem)
   } catch (e) {
     console.error('Load error:', e)
     rows.value = []
@@ -131,55 +154,35 @@ function loadRows () {
   }
 }
 
-/** Normalize shape for table consumption */
+/** Normalize for table */
 function normalizeItem (it = {}) {
   return {
-    // Hidden key per FR 3.1.1
-    idLevelKelulusan: it.idLevelKelulusan ?? it.id ?? cryptoRandomId(),
-    // Visible columns
+    idLevelKelulusan: it.idLevelKelulusan ?? it.id ?? Math.random().toString(36).slice(2),
     tableName: it.tableName ?? '-',
     idRowTable: Number(it.idRowTable ?? 0),
     levelType: it.levelType ?? '-',
     tarikhMula: it.tarikhMula ?? null,
-    statusData: it.statusData ?? 'Draf',
-    // For action slot
+    statusData: it.statusData ?? 'Menunggu Kelulusan',
     tindakan: '',
   }
 }
 
-function cryptoRandomId () {
-  try {
-    return (crypto?.randomUUID && crypto.randomUUID()) || Math.random().toString(36).slice(2)
-  } catch {
-    return Math.random().toString(36).slice(2)
-  }
-}
-
-/** Row click -> select for Kemaskini */
-function onRowClick(row) {
-  // cuba beberapa bentuk payload biasa
+/** Row click -> select id */
+function onRowClick (row) {
   selectedId.value =
     row?.idLevelKelulusan ??
     row?.value?.idLevelKelulusan ??
-    row?.original?.idLevelKelulusan ??
-    null
+    row?.original?.idLevelKelulusan ?? null
 }
 
-/** Button: 2.1 Tambah -> EX-PRF-KF-LK-01_02 */
-function goTambah () {
-  router.push('/BF-PRF/KF/LK/01_02')
-}
-
-/** Button: 2.2 Kemaskini -> EX-PRF-KF-LK-01_03?id=… */
-function goKemaskini (id) {
-const targetId = id ?? selectedId.value
-if (!targetId) return
-router.push('/BF-PRF/KF/LK/01_03')
-}
-
-/** Button: 2.3 Lihat -> EX-PRF-KF-LK-01_04?id=… */
 function goLihat (id) {
-  router.push({ path: '/BF-PRF/KF/LK/01_04', query: { id } })
+  router.push({ path: '/BF-PRF/KF/LK/02_02', query: { id } })
+}
+
+function goKelulusan (id) {
+  const targetId = id ?? selectedId.value
+  if (!targetId) return
+  router.push({ path: '/BF-PRF/KF/LK/02_03', query: { id: String(targetId) } })
 }
 
 /** Helpers */
@@ -189,7 +192,6 @@ function formatDate (d) {
   if (isNaN(dt)) return 'Tarikh Tidak Sah'
   return dt.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short', year: 'numeric' })
 }
-
 function getStatusVariant (s) {
   switch (s) {
     case 'Aktif': return 'success'
@@ -197,12 +199,21 @@ function getStatusVariant (s) {
     case 'Menunggu Kelulusan': return 'warning'
     case 'Draf': return 'warning'
     case 'Lulus': return 'success'
-    case 'Tolak': return 'danger' 
+    case 'Tolak': return 'danger'
     default: return 'default'
   }
 }
 
+/** Refresh behaviours */
 onMounted(loadRows)
+onActivated(loadRows)
+
+// refresh when tab comes back to foreground
+if (process.client) {
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) loadRows()
+  })
+}
 </script>
 
 <style scoped>
