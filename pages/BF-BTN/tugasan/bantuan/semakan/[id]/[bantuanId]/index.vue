@@ -779,6 +779,74 @@
               </div>
             </template>
           </rs-card>
+          <rs-card class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div
+                    class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
+                  >
+                    <Icon name="ph:chat" class="w-6 h-6 text-green-600" />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Pengesahan Dokumen
+                  </h2>
+                  <p class="text-sm text-gray-500">
+                    Sila sahkan dokumen sokongan yang telah dimuat naik
+                  </p>
+                </div>
+              </div>
+            </template>
+            <rs-table :columns="columns" class="min-w-full border border-gray-400 text-sm">
+              <template #body>
+                <tr v-for="(row, i) in dokumenSokonganRows" :key="row.id">
+                  <!-- No Column -->
+                  <rs-table-cell class="border border-gray-400 px-2 py-1 text-center">
+                    {{ i + 1 }}
+                  </rs-table-cell>
+
+                  <!-- Jenis Dokumen Column (Text Field) -->
+                  <rs-table-cell class="border border-gray-400 px-2 py-1">
+                    <input
+                      v-model="row.jenis"
+                      type="text"
+                      class="w-full border-gray-300 rounded px-2 py-1"
+                      placeholder="Masukkan Dokumen"
+                    />
+                  </rs-table-cell>
+
+                  <!-- Keterangan Column -->
+                  <rs-table-cell class="border border-gray-400 px-2 py-1">
+                    <input
+                      v-model="row.catatan"
+                      type="text"
+                      class="w-full border-gray-300 rounded px-2 py-1"
+                      placeholder=""
+                    />
+                  </rs-table-cell>
+                </tr>
+              </template>
+            </rs-table>
+
+            <!-- Add and Remove Buttons -->
+            <div class="flex gap-3 mt-3 justify-end">
+              <rs-button type="button" variant="primary" @click="addDokumenRow">Tambah</rs-button>
+              <rs-button
+                type="button"
+                variant="danger"
+                @click="removeDokumenRow"
+                :disabled="dokumenSokonganRows.length <= 1"
+              >
+                Buang
+              </rs-button>
+            </div>
+          </rs-card>
+
+
+          
+          
 
           <!-- Section 3: Hasil Siasatan -->
           <!-- <rs-card 
@@ -1269,6 +1337,17 @@
                     </rs-badge>
                   </div>
                 </div>
+                <div class="space-y-1">
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Proses</label>
+                      <FormKit
+                        type="select"
+                        v-model="selectedProses"
+                        :options="prosesOptions"
+                        placeholder="Pilih Proses"
+                        class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900"
+                      />
+                </div>
+                
 
                 <!-- Catatan Pegawai -->
                 <div class="space-y-1">
@@ -1466,6 +1545,12 @@ const statusLawatanOptions = ref([
   { label: "Tidak Sokong", value: "tidak_sokong" },
 ]);
 
+const selectedProses = ref('');
+const prosesOptions = [
+  { label: 'Proses di NAS', value: 'nas' },
+  { label: 'Hantar ke Al-Amal', value: 'alAmal' }
+];
+
 // Dropdown options
 const statusprosesOptions = ref([
   { label: "--Sila Pilih--", value: "belum_selesai" },
@@ -1588,6 +1673,40 @@ const mockByBantuanId = {
       { id: "salinan-akaun-bank", nama: "Salinan akaun bank pelajar yang mengandungi: Nama bank, Nama dan no akaun bank", status: "", url: "/path/to/doc2.pdf" },
       { id: "kad-pengenalan-ketua-keluarga", nama: "Salinan kad pengenalan ketua keluarga/ penjaga", status: "", url: "/path/to/doc3.pdf" },
       { id: "kad-pengenalan-pelajar", nama: "Salinan kad pengenalan/surat beranak pelajar", status: "", url: "/path/to/doc4.pdf" },
+    ],
+    statusSokongan: "",
+    catatanPengesyoran: "",
+    kadarBantuan: null,
+    tempohBantuan: "",
+    jumlahKeseluruhan: 0,
+    tarikhMula: "",
+    tarikhTamat: "",
+    penerima: "",
+    namaPenerima: "",
+    kaedahPembayaran: "",
+    namaBank: "",
+    noAkaunBank: "",
+    statusPermohonan: "Dalam Semakan",
+    statusPermohonanBaru: "",
+    catatanPegawai: "",
+    tarikhSemak: new Date(),
+  },
+  B110: {
+    jenisBantuan: "B110 - (HQ) BANTUAN HUTANG PERUBATAN (JPSK)",
+    aid: "B110 - (HQ) BANTUAN HUTANG PERUBATAN (JPSK)",
+    aidProduct: "BANTUAN PERUBATAN KLINIKAL",
+    productPackage: "BANTUAN PERUBATAN KLINIKAL",
+    entitlementProduct: "BANTUAN PERUBATAN KLINIKAL",
+    segera: false,
+    kelulusanKhas: false,
+    tarikhPermohonan: new Date().toISOString(),
+    sla: "3h",
+    dokumenSokongan: [
+      { id: "pengesahan", nama: "Surat/Memo/Borang Pengesahan Kesihatan pemohon daripada pihak hospital atau institusi perubatan yang diiktiraf Kementerian Kesihatan Malaysia (KKM). Tempoh sah laku pengesahan tersebut adalah enam (6) bulan sahaja", status: "", url: "/path/to/doc1.pdf" },
+      { id: "surat-rehab", nama: "Surat/pengesahan daripada Pegawai Rehabilitasi bagi permohonan bantuan peralatan perubatan/ Peralatan pemulihan/khidmat pemulihan rehabilitasi. Tempoh sah laku pengesahan tersebut adalah enam (6) bulan sahaja", status: "", url: "/path/to/doc2.pdf" },
+      { id: "kos-rawatan", nama: "Sebut harga kos rawatan/ keperluan perubatan/ pembedahan/ peralatan. Tempoh sah laku sebut harga tersebut adalah tiga (3) bulan. (Diuruskan oleh TPA)", status: "", url: "/path/to/doc3.pdf" },
+      { id: "salinan-dokumen", nama: "Salinan dokumen kemasukan yang sah (bukan warganegara sahaja)", status: "", url: "/path/to/doc4.pdf" },
+      { id: "kedutaan", nama: "Pengesahan daripada kedutaan/Atasan (Jika berkenaan)", status: "", url: "/path/to/doc5.pdf" },
     ],
     statusSokongan: "",
     catatanPengesyoran: "",
@@ -1890,6 +2009,8 @@ onMounted(() => {
   }
 });
 
+
+
 // Configuration data
 const statusDokumenOptions = [
   { label: "-- Pilih Status --", value: "", disabled: true },
@@ -2109,6 +2230,18 @@ const getStatusClass = (status) => {
   };
   return classes[status] || "bg-gray-100 text-gray-800";
 };
+// Function to add a new row to dokumenSokonganRows
+function addDokumenRow() {
+  const newRow = { id: dokumenSokonganRows.length + 1, jenis: '', catatan: '' };
+  dokumenSokonganRows.push(newRow);
+}
+
+// Function to remove the last row from dokumenSokonganRows
+function removeDokumenRow() {
+  if (dokumenSokonganRows.length > 1) {
+    dokumenSokonganRows.pop();
+  }
+}
 
 const getProductStatusVariant = (status) => {
   const variants = {
@@ -2304,6 +2437,15 @@ const loadPenerimaData = () => {
     editData.noAkaunBank = '';
   }
 };
+const columns = [
+  { label: 'No', field: 'no' },
+  { label: 'Dokumen', field: 'jenis' },
+  { label: 'Catatan', field: 'catatan' },
+];
+
+const dokumenSokonganRows = [
+  { id: 1, jenis: '', catatan: '' }, // Initial row
+];
 
 </script>
 
