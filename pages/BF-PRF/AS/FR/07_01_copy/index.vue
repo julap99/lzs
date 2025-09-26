@@ -1,61 +1,26 @@
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
+    <!-- Maklumat Pemohon - Iframe Component -->
     <rs-card class="mt-4">
-      <template #header>
-        <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Maklumat Pemohon</h2>
-          <rs-badge
-            v-if="formData.status"
-            :variant="getStatusVariant(formData.status)">
-            {{ formData.status }}
-          </rs-badge>
-        </div>
-      </template>
-
-      <template #body>
-        <rs-fieldset class="mb-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >Nama</label
-              >
-              <p class="text-gray-900">{{ formData.nama }}</p>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >Alamat</label
-              >
-              <p class="text-gray-900">{{ formData.alamat }}</p>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >Jenis Pengenalan</label
-              >
-              <p class="text-gray-900">{{ formData.jenisPengenalan }}</p>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >No Pengenalan</label
-              >
-              <p class="text-gray-900">{{ formData.noPengenalan }}</p>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >No Telefon</label
-              >
-              <p class="text-gray-900">{{ formData.noTelefon }}</p>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >E-mel</label
-              >
-              <p class="text-gray-900">{{ formData.email }}</p>
-            </div>
+        <template #header>
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold">Maklumat Pemohon</h2>
+            <!-- <rs-badge variant="warning">
+              Menunggu Siasatan
+            </rs-badge> -->
           </div>
-        </rs-fieldset>
-      </template>
-    </rs-card>
+        </template>
+        <template #body>
+          <div class="w-full">
+            <iframe
+              src="https://lzs-nine.vercel.app/BF-PRF/AS/FR/02_readonly?iframe=true"
+              class="w-full h-96 border-0 rounded-lg"
+              title="Maklumat Pemohon"
+            ></iframe>
+          </div>
+        </template>
+      </rs-card>
 
     <!-- ===== Pengesahan Status ===== -->
     <rs-card class="mt-4">
@@ -213,6 +178,7 @@
         </div>
       </template>
     </rs-card>
+
     <rs-card class="mt-4">
       <template #header>
         <h2 class="text-xl font-semibold">Pengesahan Status</h2>
@@ -220,7 +186,7 @@
 
       <template #body>
         <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
-          <!-- S2: MAKLUMAT SYOR -->
+          <!-- S2: MAKLUMAT SYOR (Editable Table) -->
           <section class="p-6">
             <h4
               class="text-md font-semibold text-gray-900 mb-4 flex items-center">
@@ -230,245 +196,69 @@
               Maklumat Syor
             </h4>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div>
+            <rs-table
+              :columns="tableHeaders"
+              :data="editableRows"
+              :advanced="false"
+              :showSearch="false"
+              :showFilter="false"
+              :options="{ variant: 'default', striped: false, hover: false }"
+            >
+              <template #pengenalanId="{ text }">
+                {{ text }}
+              </template>
+              <template #nama="{ value }">
                 <FormKit
                   type="text"
-                  name="peratusanPerbezaan"
-                  label="Peratusan Perbezaan"
-                  :classes="{
-                    label:
-                      'text-xs uppercase tracking-wide font-bold text-gray-700',
-                    input: '!py-2.5 !text-gray-900 !font-medium',
-                  }"
-                  v-model="profilingData.peratusanPerbezaan" />
-
+                  :model-value="getRowField(value, 'nama')"
+                  @input="val => updateNama(value, String(val))"
+                  outer-class="mb-0"
+                  :classes="{ input: '!py-1.5 !text-sm !border-gray-300' }"
+                />
+              </template>
+              <template #kategori="{ value }">
                 <FormKit
                   type="select"
-                  name="kategoriKeluargaAsnaf"
-                  label="Kategori Keluarga Asnaf"
-                  :options="kategoriKeluargaOptions"
-                  :classes="{
-                    label:
-                      'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
-                    input: '!py-2.5 !text-gray-900 !font-medium',
-                  }"
-                  v-model="profilingData.kategoriKeluargaAsnaf" />
-
-                <FormKit
-                  type="select"
-                  name="kategoriAsnaf"
-                  label="Kategori Asnaf"
+                  :model-value="getRowField(value, 'kategori')"
                   :options="kategoriAsnafOptions"
-                  :classes="{
-                    label:
-                      'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
-                    input: '!py-2.5 !text-gray-900 !font-medium',
-                  }"
-                  v-model="profilingData.kategoriAsnaf" />
-              </div>
-
-              <div class="hidden lg:block"></div>
-              <div class="hidden lg:block"></div>
-
-              <div>
+                  @input="val => updateKategori(String(val))"
+                  outer-class="mb-0"
+                  :classes="{ input: '!py-1.5 !text-sm !border-gray-300' }"
+                />
+              </template>
+              <template #meritIndividu="{ value }">
                 <FormKit
                   type="text"
-                  name="pengenalanIdTanggungan1"
-                  label="Pengenalan Id Tanggungan 1"
-                  :classes="{
-                    label:
-                      'text-xs uppercase tracking-wide font-bold text-gray-700',
-                    input: '!py-2.5 !text-gray-900 !font-medium',
-                  }"
-                  v-model="profilingData.pengenalanIdTanggungan1" />
-
-                <FormKit
-                  type="text"
-                  name="pengenalanIdTanggungan2"
-                  label="Pengenalan Id Tanggungan 2"
-                  :classes="{
-                    label:
-                      'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
-                    input: '!py-2.5 !text-gray-900 !font-medium',
-                  }"
-                  v-model="profilingData.pengenalanIdTanggungan2" />
-
-                <FormKit
-                  type="text"
-                  name="pengenalanIdTanggungan3"
-                  label="Pengenalan Id Tanggungan 3"
-                  :classes="{
-                    label:
-                      'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
-                    input: '!py-2.5 !text-gray-900 !font-medium',
-                  }"
-                  v-model="profilingData.pengenalanIdTanggungan3" />
-              </div>
-
-              <div>
-                <div
-                  class="grid gap-4 grid-cols-[1fr_160px] md:grid-cols-[1fr_200px]">
-                  <!-- Left column: all selects stacked -->
-                  <div>
-                    <FormKit
-                      type="select"
-                      name="kategoriTanggunganSyor1"
-                      label="Kategori Tanggungan (Syor) 1"
-                      :options="kategoriTanggunganOptions"
-                      :classes="{
-                        label:
-                          'text-xs uppercase tracking-wide font-bold text-gray-700',
-                        input: '!py-2.5 !text-gray-900 !font-medium',
-                      }"
-                      v-model="profilingData.kategoriTanggunganSyor1" />
-                    <FormKit
-                      type="select"
-                      name="kategoriTanggunganSyor2"
-                      label="Kategori Tanggungan (Syor) 2"
-                      :options="kategoriTanggunganOptions"
-                      :classes="{
-                        label:
-                          'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
-                        input: '!py-2.5 !text-gray-900 !font-medium',
-                      }"
-                      v-model="profilingData.kategoriTanggunganSyor2" />
-                    <FormKit
-                      type="select"
-                      name="kategoriTanggunganSyor3"
-                      label="Kategori Tanggungan (Syor) 3"
-                      :options="kategoriTanggunganOptions"
-                      :classes="{
-                        label:
-                          'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
-                        input: '!py-2.5 !text-gray-900 !font-medium',
-                      }"
-                      v-model="profilingData.kategoriTanggunganSyor3" />
-                  </div>
-
-                  <!-- Right column: header + checkboxes stacked -->
-                  <div class="pt-1 w-[160px] md:w-[200px]">
-                    <div
-                      class="text-xs uppercase tracking-wide font-bold text-gray-700 mb-2 text-center">
-                      Pelarasan
-                    </div>
-                    <div class="flex flex-col items-center gap-4">
-                      <FormKit
-                        type="checkbox"
-                        name="tanggunganCheckbox1"
-                        :classes="{
-                          wrapper: 'flex items-center justify-center',
-                          input:
-                            'w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2',
-                          label: 'sr-only',
-                        }"
-                        v-model="profilingData.tanggunganCheckbox1" />
-                      <FormKit
-                        type="checkbox"
-                        name="tanggunganCheckbox2"
-                        :classes="{
-                          wrapper: 'flex items-center justify-center',
-                          input:
-                            'w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2',
-                          label: 'sr-only',
-                        }"
-                        v-model="profilingData.tanggunganCheckbox2" />
-                      <FormKit
-                        type="checkbox"
-                        name="tanggunganCheckbox3"
-                        :classes="{
-                          wrapper: 'flex items-center justify-center',
-                          input:
-                            'w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2',
-                          label: 'sr-only',
-                        }"
-                        v-model="profilingData.tanggunganCheckbox3" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- spacer to align like screenshot: leave empty third column on first row -->
-              <div class="hidden lg:block"></div>
-
-              <div>
-                <FormKit
-                  type="text"
-                  name="pengenalanId"
-                  label="Pengenalan Id Asnaf/Tanggungan"
-                  :classes="{
-                    label:
-                      'text-xs uppercase tracking-wide font-bold text-gray-700',
-                    input: '!py-2.5 !text-gray-900 !font-medium',
-                  }"
-                  v-model="profilingData.pengenalanId" />
-              </div>
-
-              <div>
-                <FormKit
-                  type="text"
-                  name="merit"
-                  label="Merit Individu(Syor)"
-                  :classes="{
-                    label:
-                      'text-xs uppercase tracking-wide font-bold text-gray-700',
-                    input: '!py-2.5 !text-gray-900 !font-medium',
-                  }"
-                  v-model="profilingData.merit" />
-              </div>
-
-              <div>
+                  :model-value="getRowField(value, 'meritIndividu')"
+                  @input="val => updateMerit(value, String(val))"
+                  outer-class="mb-0"
+                  :classes="{ input: '!py-1.5 !text-sm !border-gray-300' }"
+                />
+              </template>
+              <template #statusMultidimensi="{ value }">
                 <FormKit
                   type="select"
-                  name="multidimensi"
-                  label="Status Multidimensi(Syor)"
+                  :model-value="getRowField(value, 'statusMultidimensi')"
                   :options="statusMultidimensiOptions"
-                  :classes="{
-                    label:
-                      'text-xs uppercase tracking-wide font-bold text-gray-700',
-                    input: '!py-2.5 !text-gray-900 !font-medium',
-                  }"
-                  v-model="profilingData.multidimensi" />
-              </div>
-
-              <!-- Row 3 in one column -->
-              <div>
+                  @input="val => updateStatusMultidimensi(value, String(val))"
+                  outer-class="mb-0"
+                  :classes="{ input: '!py-1.5 !text-sm !border-gray-300' }"
+                />
+              </template>
+              <template #pelarasan="{ value }">
                 <FormKit
-                  type="text"
-                  name="meritKeluargaSyor"
-                  label="Merit Keluarga(Syor)"
+                  type="checkbox"
+                  :model-value="Boolean((value as any).pelarasan)"
+                  @input="val => updatePelarasan(value, Boolean(val))"
+                  outer-class="mb-0 flex justify-center"
                   :classes="{
-                    label:
-                      'text-xs uppercase tracking-wide font-bold text-gray-700',
-                    input: '!py-2.5 !text-gray-900 !font-medium',
+                    wrapper: 'flex items-center justify-center',
+                    input: 'w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2',
+                    label: 'sr-only'
                   }"
-                  v-model="profilingData.meritKeluargaSyor" />
-
-                <FormKit
-                  type="select"
-                  name="statusMultidimensiKeluargaSyor"
-                  label="Status Multidimensi Keluarga(Syor)"
-                  :options="statusMultidimensiOptions"
-                  :classes="{
-                    label:
-                      'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
-                    input: '!py-2.5 !text-gray-900 !font-medium',
-                  }"
-                  v-model="profilingData.statusMultidimensiKeluargaSyor" />
-
-                <FormKit
-                  type="select"
-                  name="quadrantMultidimensiKeluargaSyor"
-                  label="Quadrant Multidimensi Keluarga(Syor)"
-                  :options="quadrantMultidimensiOptions"
-                  :classes="{
-                    label:
-                      'text-xs uppercase tracking-wide font-bold text-gray-700 mt-4',
-                    input: '!py-2.5 !text-gray-900 !font-medium',
-                  }"
-                  v-model="profilingData.quadrantMultidimensiKeluargaSyor" />
-              </div>
-            </div>
+                />
+              </template>
+            </rs-table>
           </section>
 
           <!-- Pengesahan Fields -->
@@ -538,6 +328,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import type { ComputedRef } from "vue";
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
@@ -613,6 +404,7 @@ const profilingData = ref({
   komenPengesahan: "",
   namaPengesah: "admin",
   tarikhPengesahan: new Date().toISOString().split("T")[0], // Default to today's date
+  pemohonCheckbox: false,
   dependents: [
     {
       pengenalanId: "801004035672",
@@ -660,7 +452,96 @@ const tableHeaders = ref([
   { key: "kategori", label: "Kategori" },
   { key: "meritIndividu", label: "Merit Individu" },
   { key: "statusMultidimensi", label: "Status Multidimensi" },
+  { key: "pelarasan", label: "Pelarasan" },
 ]);
+
+type EditableRow = {
+  pengenalanId: string;
+  nama: string;
+  kategori: string;
+  meritIndividu: string;
+  statusMultidimensi: string;
+  pelarasan?: boolean;
+};
+
+// Editable rows for third card table
+const editableRows: ComputedRef<EditableRow[]> = computed(() => {
+  const main = {
+    pengenalanId: profilingData.value.pengenalanId,
+    nama: profilingData.value.nama,
+    kategori: profilingData.value.kategoriAsnafSyor ?? profilingData.value.kategoriAsnaf,
+    meritIndividu: profilingData.value.merit,
+    statusMultidimensi: profilingData.value.multidimensi,
+    pelarasan: Boolean(profilingData.value.pemohonCheckbox),
+  };
+  const dependents: EditableRow[] = (profilingData.value.dependents || []).map((d: any, idx: number) => ({
+    pengenalanId: d.pengenalanId,
+    nama: d.nama,
+    kategori: profilingData.value.kategoriAsnafSyor ?? profilingData.value.kategoriAsnaf,
+    meritIndividu: d.merit,
+    statusMultidimensi: d.multidimensi,
+    pelarasan:
+      idx === 0
+        ? Boolean(profilingData.value.tanggunganCheckbox1)
+        : idx === 1
+        ? Boolean(profilingData.value.tanggunganCheckbox2)
+        : idx === 2
+        ? Boolean(profilingData.value.tanggunganCheckbox3)
+        : false,
+  }));
+  return [main, ...dependents];
+});
+
+function updateNama(row: EditableRow, newValue: string) {
+  const id = row.pengenalanId;
+  if (id === profilingData.value.pengenalanId) {
+    profilingData.value.nama = newValue;
+    return;
+  }
+  const target = profilingData.value.dependents.find((d: any) => d.pengenalanId === id);
+  if (target) target.nama = newValue;
+}
+
+function updateKategori(newValue: string) {
+  // Apply category to whole household, matching second table behavior
+  profilingData.value.kategoriAsnafSyor = newValue;
+}
+
+function updateMerit(row: EditableRow, newValue: string) {
+  const id = row.pengenalanId;
+  if (id === profilingData.value.pengenalanId) {
+    profilingData.value.merit = newValue;
+    return;
+  }
+  const target = profilingData.value.dependents.find((d: any) => d.pengenalanId === id);
+  if (target) target.merit = newValue;
+}
+
+function updateStatusMultidimensi(row: EditableRow, newValue: string) {
+  const id = row.pengenalanId;
+  if (id === profilingData.value.pengenalanId) {
+    profilingData.value.multidimensi = newValue;
+    return;
+  }
+  const target = profilingData.value.dependents.find((d: any) => d.pengenalanId === id);
+  if (target) target.multidimensi = newValue;
+}
+
+function getRowField(row: EditableRow, key: keyof EditableRow): string {
+  return String(row[key] ?? "");
+}
+
+function updatePelarasan(row: EditableRow, checked: boolean) {
+  const id = row.pengenalanId;
+  if (id === profilingData.value.pengenalanId) {
+    profilingData.value.pemohonCheckbox = checked;
+    return;
+  }
+  const idx = profilingData.value.dependents.findIndex((d: any) => d.pengenalanId === id);
+  if (idx === 0) profilingData.value.tanggunganCheckbox1 = checked;
+  if (idx === 1) profilingData.value.tanggunganCheckbox2 = checked;
+  if (idx === 2) profilingData.value.tanggunganCheckbox3 = checked;
+}
 
 /* OPTIONS */
 const assignSiasatanOptions = ref([
@@ -765,6 +646,7 @@ const handleFormReset = () => {
     komenPengesahan: "",
     namaPengesah: "admin",
     tarikhPengesahan: new Date().toISOString().split("T")[0], // Default to today's date
+    pemohonCheckbox: false,
     dependents: [
       {
         pengenalanId: "801004035672",
