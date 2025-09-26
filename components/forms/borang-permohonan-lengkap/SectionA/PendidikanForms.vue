@@ -274,6 +274,7 @@
                 label="Alamat 1"
                 validation="required"
                 :disabled="readOnly"
+                readonly
                 v-model="edu.alamat_sekolah_1"
               />
 
@@ -282,6 +283,7 @@
                 :name="`edu${index}Alamat2`"
                 label="Alamat 2"
                 :disabled="readOnly"
+                readonly
                 v-model="edu.alamat_sekolah_2"
                 v-if="edu.alamat_sekolah_1"
               />
@@ -292,6 +294,7 @@
                   :name="`edu${index}Alamat3`"
                   label="Alamat 3"
                   :disabled="readOnly"
+                  readonly
                   v-model="edu.alamat_sekolah_3"
                   v-if="edu.alamat_sekolah_1"
                 />
@@ -304,6 +307,7 @@
                   label="Daerah"
                   validation="required"
                   :disabled="readOnly"
+                  readonly
                   v-model="edu.daerah_sekolah"
                 />
 
@@ -313,6 +317,7 @@
                   label="Bandar"
                   validation="required"
                   :disabled="readOnly"
+                  readonly
                   v-model="edu.bandar_sekolah"
                 />
 
@@ -322,6 +327,7 @@
                   label="Poskod"
                   validation="required"
                   :disabled="readOnly"
+                  readonly
                   v-model="edu.poskod_sekolah"
                 />
               </div>
@@ -492,6 +498,7 @@
 </template>
 
 <script setup>
+import { watch } from 'vue'
 // Props
 const props = defineProps({
   formData: {
@@ -731,6 +738,18 @@ const onSelectSchool = (index, selectedValue) => {
   entry.bandar_sekolah = selected.bandar || "";
   entry.poskod_sekolah = selected.poskod || "";
 };
+
+// Auto-create first education entry when user selects "Ya" for Masih Belajar
+watch(
+  () => props.formData.masih_bersekolah,
+  (val) => {
+    if (val === 'Y') {
+      if (!props.formData.education_entries || props.formData.education_entries.length === 0) {
+        addEducationEntry();
+      }
+    }
+  }
+)
 
 // Emits
 const emit = defineEmits([

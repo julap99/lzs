@@ -64,7 +64,7 @@
 
       <!-- Document Information (Readonly) -->
       <div class="mb-6">
-        <h4 class="font-medium mb-3">Dokumen yang Dimuat Naik</h4>
+        <!-- <h4 class="font-medium mb-3">Dokumen yang Dimuat Naik</h4> -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div
             v-for="(doc, index) in uploadedDocuments"

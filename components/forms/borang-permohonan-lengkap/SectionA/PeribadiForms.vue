@@ -83,6 +83,21 @@
           v-model="formData.lain_warganegara"
         />
 
+        <FormKit
+          v-if="
+            formData.warganegara === 'Lain-lain' &&
+            formData.jenis_id === 'foreign_id'
+          "
+          type="select"
+          name="negara_lain"
+          label="Negara Lain"
+          :options="getCountries"
+          placeholder="Pilih Negara Lain"
+          :disabled="readOnly"
+          validation="required"
+          v-model="formData.negara_lain"
+        />
+
         <div
           class="grid grid-cols-1 md:grid-cols-2 gap-4"
           v-if="formData.warganegara === 'Lain-lain'"
@@ -134,21 +149,6 @@
           label="Tarikh tamat passport"
           :disabled="readOnly"
           v-model="formData.passportEndDate"
-        />
-
-        <FormKit
-          v-if="
-            formData.warganegara === 'Lain-lain' &&
-            formData.jenis_id === 'foreign_id'
-          "
-          type="select"
-          name="negara_lain"
-          label="Negara Lain"
-          :options="getCountries"
-          placeholder="Pilih Negara Lain"
-          :disabled="readOnly"
-          validation="required"
-          v-model="formData.negara_lain"
         />
       </div>
     </div>
@@ -355,6 +355,50 @@
             />
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Marital Status Section (Perempuan) -->
+    <div class="mb-6" v-if="formData.jantina === 'Perempuan'">
+      <h4 class="text-md font-medium mb-3">Status Perkahwinan</h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div :class="getFieldClasses('status_perkahwinan')" class="p-2 rounded">
+          <FormKit
+            type="select"
+            name="status_perkahwinan"
+            placeholder="Pilih Status Perkahwinan"
+            label="Status Perkahwinan"
+            :options="[
+              'Berkahwin',
+              'Bujang',
+              'Janda',
+              'Ibu Tinggal',
+              'Balu',
+            ]"
+            :disabled="readOnly"
+            validation="required"
+            v-model="formData.status_perkahwinan"
+          />
+        </div>
+
+        <template v-if="formData.status_perkahwinan === 'Berkahwin'">
+          <FormKit
+            type="text"
+            name="pasangan_nama"
+            label="Nama Pasangan"
+            validation="required"
+            :disabled="readOnly"
+            v-model="formData.pasangan_nama"
+          />
+          <FormKit
+            type="text"
+            name="pasangan_no_kp"
+            label="No. Pengenalan Pasangan"
+            validation="required"
+            :disabled="readOnly"
+            v-model="formData.pasangan_no_kp"
+          />
+        </template>
       </div>
     </div>
 
