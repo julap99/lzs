@@ -46,9 +46,9 @@
             <div class="formkit-field">
               <label class="formkit-label">Status</label>
               <div class="mt-1">
-              <rs-badge :variant="getStatusVariant(formData.status)">
-                {{ formData.status }}
-              </rs-badge>
+                <rs-badge :variant="getStatusVariant(formData.status)">
+                  {{ formData.status }}
+                </rs-badge>
               </div>
             </div>
 
@@ -62,6 +62,7 @@
               help="Auto-calculate selepas import Data"
             /> -->
 
+            
             <!-- Catatan -->
             <FormKit
               type="textarea"
@@ -93,7 +94,7 @@
                 search-placeholder="Cari aid..."
                 :disabled="false"
               />
-            <FormKit
+              <FormKit
                 type="select"
                 name="aidProduct"
                 label="Aid Product"
@@ -108,7 +109,7 @@
                 }"
                 :disabled="!formData.aid"
               />
-            <FormKit
+              <FormKit
                 type="select"
                 name="productPackage"
                 label="Product Package"
@@ -123,7 +124,7 @@
                 }"
                 :disabled="!formData.aidProduct"
               />
-            <FormKit
+              <FormKit
                 type="select"
                 name="productEntitlement"
                 label="Product Entitlement"
@@ -137,8 +138,9 @@
                   required: 'Sila pilih product Entitlement',
                 }"
                 :disabled="!formData.productPackage"
-            />
+              />
 
+            <!-- Tarikh Jangkaan Bayaran -->
             <FormKit
               type="date"
               name="tarikhJangkaanBayaran"
@@ -170,7 +172,7 @@
               label="Cawangan"
               search-placeholder="Cari cawangan..."
               :disabled="false"
-              :classes="{
+              classes="{
                 outer: 'md:col-span-2',
               }"
             />
@@ -196,6 +198,7 @@
               @change="handleFileUpload"
             />
 
+            <!-- Import Button -->
             <div class="flex items-center gap-2">
               <!-- Import Button -->
             <rs-button
@@ -217,7 +220,6 @@
               Template Format Excel
             </rs-button>
             </div>
-            
           </div>
         </template>
       </rs-card>
@@ -230,27 +232,32 @@
 
             <div class="flex items-center gap-2">
 
-              <rs-button
-                
-                variant="primary"
-                @click="handleAddPayment"
-              >
-                <Icon name="material-symbols:add" class="w-4 h-4 mr-1" />
-                Tambah
-              </rs-button>
+                <rs-button
+                  
+                  variant="primary"
+                  @click="handleAddPayment"
+                >
+                  <Icon name="material-symbols:add" class="w-4 h-4 mr-1" />
+                  Tambah
+                </rs-button>
 
-              <rs-button
-                variant="primary"
-                :disabled="selectedPayments.length === 0"
-                @click="handleSahkanSelected"
-              >
-                <Icon name="material-symbols:check-circle" class="w-4 h-4 mr-1" />
-                Sahkan ({{ selectedPayments.length }})
-              </rs-button>
+                <rs-button
+                  variant="primary"
+                  :disabled="selectedPayments.length === 0"
+                  @click="handleSahkanSelected"
+                >
+                  <Icon name="material-symbols:check-circle" class="w-4 h-4 mr-1" />
+                  Sahkan ({{ selectedPayments.length }})
+                </rs-button>
               </div>
           </div>
         </template>
         <template #body>
+          <!-- Debug info -->
+          <!-- <div class="mb-4 p-2 bg-gray-100 text-sm">
+            Debug: Payment list length: {{ paymentList.length }}
+          </div> -->
+
           <!-- Payment List -->
           <div
             v-if="paymentList.length === 0"
@@ -260,7 +267,7 @@
             bayaran.
           </div>
 
-          <div v-else class="space-y-3">
+          <div v-else class="space-y-3">    
             <rs-table
               :data="cleanPaymentList"
               :columns="paymentColumns"
@@ -273,6 +280,16 @@
               <template v-slot:amaun="{ text }">
                 {{ formatCurrency(text) }}
               </template>
+              <!-- <template v-slot:status="{ text }">
+                 
+                <div class="formkit-field">
+                  <div class="mt-1">
+                    <rs-badge :variant="getStatusVariant(text)">
+                      {{ text }}
+                    </rs-badge>
+                  </div>
+                </div>
+              </template> -->
               <template v-slot:checkbox="{ value }">
                 <div class="flex justify-center">
                   <input
@@ -288,19 +305,21 @@
         </template>
       </rs-card>
 
-      
       <!-- Maklumat Data Rosak Section -->
       <rs-card v-if="showImportCards">
         <template #header>
           <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Maklumat Data Rosak</h2>
+            <h2 class="text-xl font-semibold">Maklumat Data Rosak</h2>
+            <!-- <rs-button variant="primary" @click="handleAddDamagedData">
+              <Icon name="material-symbols:add" class="mr-1" /> Kemaskini
+            </rs-button> -->
           </div>
         </template>
         <template #body>
-              <div v-if="damagedDataList.length === 0" class="text-center py-8 text-gray-500">
+          <div v-if="damagedDataList.length === 0" class="text-center py-8 text-gray-500">
             <div v-if="paymentList.length === 0">
               Tiada maklumat data rosak. Sila import data terlebih dahulu untuk melihat data rosak.
-              </div>
+            </div>
             <div v-else>
               Tiada maklumat data rosak. Semua data dalam keadaan baik.
             </div>
@@ -326,7 +345,7 @@
                         @click="openDuplicateModalFor(row)"
                         class="text-blue-600 hover:text-blue-800 underline font-medium transition-colors duration-200 cursor-pointer"
                       >
-                  {{ row.namaPenerima }}
+                        {{ row.namaPenerima }}
                       </button>
                       <span
                         v-else
@@ -347,7 +366,7 @@
                           @click="handleKemaskiniDamagedData(row)"
                         >
                           <Icon name="ic:outline-edit" size="18" />
-                </rs-button>
+                        </rs-button>
                         <transition name="tooltip">
                           <span v-if="tooltips['edit'+index]" class="absolute bottom-full mb-2 right-0 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10">
                             Edit
@@ -359,20 +378,26 @@
                 </tbody>
               </table>
             </div>
-              </div>
+          </div>
         </template>
       </rs-card>
-      
 
-      
       <!-- Maklumat Senarai Penerima Section -->
       <rs-card v-if="showImportCards">
         <template #header>
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">Maklumat Senarai Penerima (Beneficiary List)</h2>
+            <!-- <rs-button variant="primary" @click="handleAddRecipient">
+              <Icon name="material-symbols:add" class="mr-1" /> Tambah
+            </rs-button> -->
           </div>
         </template>
         <template #body>
+          <!-- Debug info -->
+          <!-- <div class="mb-4 p-2 bg-gray-100 text-sm">
+            Debug: Recipient list length: {{ recipientList.length }}
+          </div> -->
+
           <!-- Recipient List -->
           <div
             v-if="recipientList.length === 0"
@@ -412,7 +437,7 @@
       </rs-card>
 
       <!-- Maklumat Dokumen Sokongan Section -->
-      <rs-card>
+      <rs-card >
         <template #header>
           <h2 class="text-xl font-semibold">Maklumat Dokumen Sokongan</h2>
         </template>
@@ -462,28 +487,6 @@
               {{ isLoading ? "Sedang Muat Naik..." : `Import ${selectedDocuments.length} Fail` }}
             </rs-button>
 
-            <!-- Existing uploaded documents -->
-            <div v-if="documentList.length > 0" class="mt-6 space-y-3">
-              <h4 class="text-sm font-medium text-gray-700">Dokumen sedia ada:</h4>
-            <div
-              v-for="(document, index) in documentList"
-                :key="document.id || index"
-              class="flex items-center justify-between p-3 border rounded-lg bg-gray-50"
-            >
-              <div class="flex items-center space-x-3">
-                <Icon name="material-symbols:description" class="w-8 h-8 text-blue-500" />
-                <div>
-                  <p class="font-medium text-gray-900">{{ document.name }}</p>
-                  <p class="text-sm text-gray-500">{{ document.size }} • {{ document.uploadDate }}</p>
-                </div>
-              </div>
-                <div class="flex items-center space-x-2">
-                  <rs-button variant="info-text" size="sm" :title="'Muat turun'" aria-label="Muat turun">
-                    <Icon name="material-symbols:download" class="w-4 h-4" />
-              </rs-button>
-                </div>
-              </div>
-            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <FormKit
                   type="text"
@@ -504,6 +507,8 @@
                   help="Auto-fill selepas simpan"
                 />
             </div>
+          
+            
           </div>
         </template>
       </rs-card>
@@ -516,15 +521,15 @@
             Kembali
           </rs-button>
           <div class="flex space-x-2">
-            <rs-button
+          <rs-button
             variant="primary"
             @click="handleSave"
             :disabled="isSubmitting"
-            >
-              <Icon name="ph:floppy-disk" class="w-4 h-4 mr-1" />
+          >
+             <Icon name="ph:floppy-disk" class="w-4 h-4 mr-1" />
             {{ isSubmitting ? "Sedang Simpan..." : "Simpan" }}
-            </rs-button>
-            <rs-button
+          </rs-button>
+          <rs-button
               variant="primary"
               @click="handleHantar"
               :disabled="isSubmitting"
@@ -532,13 +537,13 @@
               <Icon name="ph:paper-plane-tilt" class="w-4 h-4 mr-1" />
               Hantar
             </rs-button>
-          </div>
+            </div>
         </div>
       </div>
     </div>
 
     <!-- Payment Modal -->
-    <rs-modal
+<rs-modal
       v-model="showPaymentModal"
       :title="
         paymentModalMode === 'add'
@@ -616,7 +621,6 @@
           validation="required|min:0"
         />
 
-        <!-- Tarikh Bayaran -->
         <FormKit
           type="radio"
           name="modeOfPayment"
@@ -779,7 +783,7 @@
       <template #footer>
         <div class="flex justify-end space-x-3">
           <rs-button variant="secondary" @click="handleCloseRecipientModal">
-            Batal
+            Kembali
           </rs-button>
           <rs-button variant="primary" @click="handleSaveRecipientModal">
             {{ recipientModalMode === "add" ? "Tambah" : "Kemaskini" }}
@@ -788,302 +792,302 @@
       </template>
     </rs-modal>
 
-    <!-- View Details Modal for Damaged Data -->
+         <!-- View Details Modal for Damaged Data -->
+     <rs-modal 
+       v-model="showViewDetailsModal" 
+       title="Butiran Data Rosak"
+       size="lg"
+     >
+       <template #body>
+         <div v-if="selectedDamagedData" class="space-y-4">
+           <!-- Recipient Details -->
+           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+             <FormKit
+               type="text"
+               name="namaPenerima"
+               label="Nama Penerima"
+               :value="selectedDamagedData.namaPenerima"
+               disabled
+             />
+             <FormKit
+               type="text"
+               name="idPermohonan"
+               label="ID Permohonan"
+               :value="selectedDamagedData.idPermohonan || 'Tiada maklumat'"
+               disabled
+             />
+           </div>
+           
+           <!-- Notes Section -->
+           <FormKit
+             type="textarea"
+             name="catatan"
+             label="Catatan"
+             :value="selectedDamagedData.catatan"
+             disabled
+             :classes="{
+               input: 'min-h-[60px]',
+             }"
+           />
+           
+           <!-- Issue Details -->
+           <FormKit
+             type="text"
+             name="jenisMasalah"
+             label="Jenis Masalah"
+             :value="selectedDamagedData.jenisMasalah || 'Tiada maklumat'"
+             disabled
+           />
+           
+         </div>
+       </template>
+      
+      <template #footer>
+        <div class="flex justify-end space-x-2">
+          <rs-button variant="secondary" @click="showViewDetailsModal = false">
+            Tutup
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+        <!-- Kemaskini Modal for Damaged Data -->
     <rs-modal 
-      v-model="showViewDetailsModal" 
-      title="Butiran Data Rosak"
+      v-model="showKemaskiniModal" 
+      title="Kemaskini Data Rosak"
       size="lg"
     >
       <template #body>
-        <div v-if="selectedDamagedData" class="space-y-4">
-          <!-- Recipient Details -->
+        <div v-if="editingPaymentForDefect" class="space-y-4">
+          <!-- Form for editing damaged data - showing all payment fields -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormKit
               type="text"
-              name="namaPenerima"
-              label="Nama Penerima"
-              :value="selectedDamagedData.namaPenerima"
+              name="kod"
+              label="Kod"
+              :value="editingPaymentForDefect.kod"
               disabled
+              :classes="{
+                input: '!py-2',
+              }"
             />
+            
             <FormKit
               type="text"
               name="idPermohonan"
               label="ID Permohonan"
-              :value="selectedDamagedData.idPermohonan || 'Tiada maklumat'"
+              :value="editingPaymentForDefect.idPermohonan"
               disabled
+              :classes="{
+                input: '!py-2',
+              }"
             />
           </div>
           
-          <!-- Notes Section -->
-          <FormKit
-            type="textarea"
-            name="catatan"
-            label="Catatan"
-            :value="selectedDamagedData.catatan"
-            disabled
-            :classes="{
-              input: 'min-h-[60px]',
-            }"
-          />
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit
+              type="text"
+              name="bayaranKepada"
+              label="Bayaran Kepada"
+              :value="editingPaymentForDefect.bayaranKepada"
+              disabled
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+            
+            <FormKit
+              type="text"
+              name="asnaf"
+              label="Asnaf"
+              :value="editingPaymentForDefect.asnaf"
+              disabled
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+          </div>
           
-          <!-- Issue Details -->
-          <FormKit
-            type="text"
-            name="jenisMasalah"
-            label="Jenis Masalah"
-            :value="selectedDamagedData.jenisMasalah || 'Tiada maklumat'"
-            disabled
-          />
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit
+              type="text"
+              name="contributor"
+              label="Contributor"
+              :value="editingPaymentForDefect.contributor"
+              disabled
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+            
+            <FormKit
+              type="text"
+              name="recipient"
+              label="Recipient"
+              :value="editingPaymentForDefect.recipient"
+              disabled
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+          </div>
           
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit
+              type="text"
+              name="organization"
+              label="Organization"
+              :value="editingPaymentForDefect.organization"
+              disabled
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+            
+            <FormKit
+              type="text"
+              name="tarikhBayaran"
+              label="Tarikh Bayaran"
+              :value="editingPaymentForDefect.tarikhBayaran"
+              disabled
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit
+              type="select"
+              name="bankName"
+              label="Bank"
+              :options="allowedBanks.map(bank => ({ label: bank, value: bank }))"
+              v-model="editingPaymentForDefect.bankName"
+              validation="required"
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+            
+            <FormKit
+              type="text"
+              name="bankAccount"
+              label="No. Akaun"
+              v-model="editingPaymentForDefect.bankAccount"
+              validation="required"
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormKit
+              type="text"
+              name="amaun"
+              label="Amaun"
+              v-model="editingPaymentForDefect.amaun"
+              validation="required"
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+          </div>
         </div>
       </template>
-     
-     <template #footer>
-       <div class="flex justify-end space-x-2">
-         <rs-button variant="secondary" @click="showViewDetailsModal = false">
-           Tutup
-         </rs-button>
-       </div>
-     </template>
-   </rs-modal>
+      
+      <template #footer>
+        <div class="flex justify-end space-x-2">
+          <rs-button variant="secondary" @click="() => { showKemaskiniModal = false; editingPaymentForDefect = null; }">
+            Batal
+          </rs-button>
+          <rs-button variant="primary" @click="handleSaveDamagedDataChanges">
+            Simpan
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+    
+    <!-- Duplicate List Modal (Inlined) -->
+    <rs-modal
+      v-model="showDuplicateModal"
+      size="lg"
+      :closeable="true"
+      role="dialog"
+    >
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold">Senarai Data Duplicate</h3>
+        </div>
+      </template>
 
-   <!-- Kemaskini Modal for Damaged Data -->
-   <rs-modal 
-     v-model="showKemaskiniModal" 
-     title="Kemaskini Data Rosak"
-     size="lg"
-   >
-     <template #body>
-       <div v-if="editingPaymentForDefect" class="space-y-4">
-         <!-- Form for editing damaged data - showing all payment fields -->
-         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-           <FormKit
-             type="text"
-             name="kod"
-             label="Kod"
-             :value="editingPaymentForDefect.kod"
-             disabled
-             :classes="{
-               input: '!py-2',
-             }"
-           />
-           
-           <FormKit
-             type="text"
-             name="idPermohonan"
-             label="ID Permohonan"
-             :value="editingPaymentForDefect.idPermohonan"
-             disabled
-             :classes="{
-               input: '!py-2',
-             }"
-           />
-         </div>
-         
-         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-           <FormKit
-             type="text"
-             name="bayaranKepada"
-             label="Bayaran Kepada"
-             :value="editingPaymentForDefect.bayaranKepada"
-             disabled
-             :classes="{
-               input: '!py-2',
-             }"
-           />
-           
-           <FormKit
-             type="text"
-             name="asnaf"
-             label="Asnaf"
-             :value="editingPaymentForDefect.asnaf"
-             disabled
-             :classes="{
-               input: '!py-2',
-             }"
-           />
-         </div>
-         
-         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-           <FormKit
-             type="text"
-             name="contributor"
-             label="Contributor"
-             :value="editingPaymentForDefect.contributor"
-             disabled
-             :classes="{
-               input: '!py-2',
-             }"
-           />
-           
-           <FormKit
-             type="text"
-             name="recipient"
-             label="Recipient"
-             :value="editingPaymentForDefect.recipient"
-             disabled
-             :classes="{
-               input: '!py-2',
-             }"
-           />
-         </div>
-         
-         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-           <FormKit
-             type="text"
-             name="organization"
-             label="Organization"
-             :value="editingPaymentForDefect.organization"
-             disabled
-             :classes="{
-               input: '!py-2',
-             }"
-           />
-           
-           <FormKit
-             type="text"
-             name="tarikhBayaran"
-             label="Tarikh Bayaran"
-             :value="editingPaymentForDefect.tarikhBayaran"
-             disabled
-             :classes="{
-               input: '!py-2',
-             }"
-           />
-         </div>
-         
-         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-           <FormKit
-             type="select"
-             name="bankName"
-             label="Bank"
-             :options="allowedBanks.map(bank => ({ label: bank, value: bank }))"
-             v-model="editingPaymentForDefect.bankName"
-             validation="required"
-             :classes="{
-               input: '!py-2',
-             }"
-           />
-           
-           <FormKit
-             type="text"
-             name="bankAccount"
-             label="No. Akaun"
-             v-model="editingPaymentForDefect.bankAccount"
-             validation="required"
-             :classes="{
-               input: '!py-2',
-             }"
-           />
-         </div>
-         
-         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-           <FormKit
-             type="text"
-             name="amaun"
-             label="Amaun"
-             v-model="editingPaymentForDefect.amaun"
-             validation="required"
-             :classes="{
-               input: '!py-2',
-             }"
-           />
-         </div>
-       </div>
-     </template>
-     
-     <template #footer>
-       <div class="flex justify-end space-x-2">
-         <rs-button variant="secondary" @click="() => { showKemaskiniModal = false; editingPaymentForDefect = null; }">
-           Batal
-         </rs-button>
-         <rs-button variant="primary" @click="handleSaveDamagedDataChanges">
-           Simpan
-         </rs-button>
-       </div>
-     </template>
-   </rs-modal>
-   
-   <!-- Duplicate List Modal (Inlined) -->
-   <rs-modal
-     v-model="showDuplicateModal"
-     size="lg"
-     :closeable="true"
-     role="dialog"
-   >
-     <template #header>
-       <div class="flex items-center justify-between">
-         <h3 class="text-lg font-semibold">Senarai Data Duplicate</h3>
-       </div>
-     </template>
+      <template #body>
+        <div class="space-y-3">
+          <div class="max-w-xs">
+            <FormKit
+              ref="duplicateSearchRef"
+              type="text"
+              v-model="duplicateSearch"
+              placeholder="Search"
+              :classes="{ outer: 'mb-0' }"
+              :suffix-icon="'mdi:magnify'"
+            />
+          </div>
 
-     <template #body>
-       <div class="space-y-3">
-         <div class="max-w-xs">
-           <FormKit
-             ref="duplicateSearchRef"
-             type="text"
-             v-model="duplicateSearch"
-             placeholder="Search"
-             :classes="{ outer: 'mb-0' }"
-             :suffix-icon="'mdi:magnify'"
-           />
-         </div>
+          <div class="w-full overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+            <table class="min-w-full bg-white">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-4 py-2 text-center text-xs font-semibold text-gray-600">No</th>
+                  <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600">Id Permohonan</th>
+                  <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600">Aid</th>
+                  <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600">Aid Product</th>
+                  <th class="px-4 py-2 text-right text-xs font-semibold text-gray-600">Jumlah Amaun</th>
+                  <th class="px-4 py-2 text-center text-xs font-semibold text-gray-600">Tarikh Mohon</th>
+                  <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600">Status Permohonan</th>
+                  <th class="px-4 py-2 text-center text-xs font-semibold text-gray-600">Tindakan</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(r, i) in filteredDuplicateRows" :key="r.id" class="border-t">
+                  <td class="px-4 py-2 text-sm">{{ i + 1 }}</td>
+                  <td class="px-4 py-2 text-sm">
+                    <button
+                      class="text-primary hover:underline"
+                      @click="onOpenApplication(r.idPermohonan)"
+                    >
+                      {{ r.idPermohonan }}
+                    </button>
+                  </td>
+                  <td class="px-4 py-2 text-sm">{{ r.aid }}</td>
+                  <td class="px-4 py-2 text-sm">{{ r.aidProduct }}</td>
+                  <td class="px-4 py-2 text-sm text-right">{{ fmt(r.jumlahAmaun) }}</td>
+                  <td class="px-4 py-2 text-sm text-center">{{ formatMsDate(r.tarikhMohon) }}</td>
+                  <td class="px-4 py-2 text-sm">{{ r.status }}</td>
+                  <td class="px-4 py-2 text-sm">
+                    <div class="flex justify-center">
+                      <FormKit
+                        type="checkbox"
+                        :value="r.idPermohonan"
+                        v-model="duplicateSelectedIds"
+                      />
+                    </div>
+                  </td>
+                </tr>
+                <tr v-if="filteredDuplicateRows.length === 0">
+                  <td class="px-4 py-6 text-center text-sm text-gray-500" colspan="8">Tiada data</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </template>
 
-         <div class="w-full overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
-           <table class="min-w-full bg-white">
-             <thead class="bg-gray-50">
-               <tr>
-                 <th class="px-4 py-2 text-center text-xs font-semibold text-gray-600">No</th>
-                 <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600">Id Permohonan</th>
-                 <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600">Aid</th>
-                 <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600">Aid Product</th>
-                 <th class="px-4 py-2 text-right text-xs font-semibold text-gray-600">Jumlah Amaun</th>
-                 <th class="px-4 py-2 text-center text-xs font-semibold text-gray-600">Tarikh Mohon</th>
-                 <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600">Status Permohonan</th>
-                 <th class="px-4 py-2 text-center text-xs font-semibold text-gray-600">Tindakan</th>
-               </tr>
-             </thead>
-             <tbody>
-               <tr v-for="(r, i) in filteredDuplicateRows" :key="r.id" class="border-t">
-                 <td class="px-4 py-2 text-sm">{{ i + 1 }}</td>
-                 <td class="px-4 py-2 text-sm">
-                   <button
-                     class="text-primary hover:underline"
-                     @click="onOpenApplication(r.idPermohonan)"
-                   >
-                     {{ r.idPermohonan }}
-                   </button>
-                 </td>
-                 <td class="px-4 py-2 text-sm">{{ r.aid }}</td>
-                 <td class="px-4 py-2 text-sm">{{ r.aidProduct }}</td>
-                 <td class="px-4 py-2 text-sm text-right">{{ fmt(r.jumlahAmaun) }}</td>
-                 <td class="px-4 py-2 text-sm text-center">{{ formatMsDate(r.tarikhMohon) }}</td>
-                 <td class="px-4 py-2 text-sm">{{ r.status }}</td>
-                 <td class="px-4 py-2 text-sm">
-                   <div class="flex justify-center">
-                     <FormKit
-                       type="checkbox"
-                       :value="r.idPermohonan"
-                       v-model="duplicateSelectedIds"
-                     />
-                   </div>
-                 </td>
-               </tr>
-               <tr v-if="filteredDuplicateRows.length === 0">
-                 <td class="px-4 py-6 text-center text-sm text-gray-500" colspan="8">Tiada data</td>
-               </tr>
-             </tbody>
-           </table>
-         </div>
-       </div>
-     </template>
-
-     <template #footer>
-       <div class="flex justify-end gap-2">
-         <rs-button variant="secondary" @click="onDuplicateClose">Tutup</rs-button>
-         <rs-button variant="primary" :disabled="duplicateSelectedIds.length === 0" @click="onDuplicateConfirm(duplicateSelectedIds)">
-           Kemaskini
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <rs-button variant="secondary" @click="onDuplicateClose">Tutup</rs-button>
+          <rs-button variant="primary" :disabled="duplicateSelectedIds.length === 0" @click="onDuplicateConfirm(duplicateSelectedIds)">
+            Kemaskini
           </rs-button>
         </div>
       </template>
@@ -1095,7 +1099,7 @@
 import { ref, computed, watch, onMounted } from "vue";
 
 definePageMeta({
-  title: "Edit Bantuan Bulk",
+  title: "Tambah Bulk Processing",
 });
 
 // Simple alert function to replace toast
@@ -1105,173 +1109,30 @@ const alert = (type, message) => {
   window.alert(message);
 };
 
-// Route parameter
-const route = useRoute();
-const id = route.params.id;
-
-const breadcrumb = ref([
-  {
-    name: "Bantuan",
-    type: "link",
-    path: "/BF-BTN/bantuan-bulk",
-  },
-  {
-    name: "Bulk Processing",
-    type: "link",
-    path: "/BF-BTN/bantuan-bulk/cipta-bantuan-bulk",
-  },
-  {
-    name: `Edit ${id}`,
-    type: "current",
-    path: `/BF-BTN/bantuan-bulk/cipta-bantuan-bulk/${id}/edit`,
-  },
-]);
-
-// Mock data based on bantuan ID
-const getBantuanData = (id) => {
-  const data = {
-    'BP-2025-00001': {
-      kodBP: 'BP-2025-00001',
-      tajuk: 'Wang Saku Fakir Mac 2025',
-      kategoriAsnaf: 'fakir',
-      status: 'Draf',
-      jumlahAmaun: 'RM20,000.00',
-      catatan: 'Tuntutan wang saku pelajar untuk bulan Mac 2025. Program ini bertujuan membantu pelajar fakir dalam memenuhi keperluan asas mereka.',
-      namaPegawai: 'Ahmad bin Ali',
-      tarikhMohon: '01/03/2025',
-      aid: 'B314',
-      aidProduct: 'Wang Saku',
-      productPackage: 'KPIPT (Fakir)',
-      productEntitlement: 'Bantuan Wang Saku',
-      penyiasat: 'ahmad_hassan',
-      cawangan: 'hq',
-      tarikhJangkaanBayaran: '2025-05-04'
-    },
-    'BP-2025-00002': {
-      kodBP: 'BP-2025-00002',
-      tajuk: 'Wang Saku Fakir Feb 2025',
-      kategoriAsnaf: 'fakir',
-      status: 'Draf',
-      jumlahAmaun: 'RM23,000.00',
-      catatan: 'Tuntutan wang saku pelajar untuk bulan Feb 2025. Program ini bertujuan membantu pelajar fakir dalam memenuhi keperluan asas mereka.',
-      namaPegawai: 'Ahmad bin Ali',
-      tarikhMohon: '01/02/2025',
-      aid: 'B314',
-      aidProduct: 'Wang Saku',
-      productPackage: 'KPIPT (Fakir)',
-      productEntitlement: 'Bantuan Wang Saku',
-      penyiasat: 'ahmad_hassan',
-      cawangan: 'hq',
-      tarikhJangkaanBayaran: '2025-05-04'
-    },
-    'BP-2025-00003': {
-      kodBP: 'BP-2025-00003',
-      tajuk: 'Wang Saku Miskin Feb 2025',
-      kategoriAsnaf: 'miskin',
-      status: 'Dalam Proses',
-      jumlahAmaun: 'RM28,000.00',
-      catatan: 'Tuntutan wang saku pelajar untuk bulan Feb 2025. Program ini bertujuan membantu pelajar miskin dalam memenuhi keperluan asas mereka.',
-      namaPegawai: 'Ahmad bin Ali',
-      tarikhMohon: '02/02/2025',
-      aid: 'B315',
-      aidProduct: 'Wang Saku',
-      productPackage: 'KPIPT (Miskin)',
-      productEntitlement: 'Bantuan Wang Saku',
-      penyiasat: 'ahmad_hassan',
-      cawangan: 'hq',
-      tarikhJangkaanBayaran: '2025-05-04'
-    },
-    'BP-2025-00004': {
-      kodBP: 'BP-2025-00004',
-      tajuk: 'Bantuan bencana Feb 2025',
-      kategoriAsnaf: 'fakir',
-      status: 'Dalam Proses',
-      jumlahAmaun: 'RM35,000.00',
-      catatan: 'Tuntutan bantuan bencana untuk bulan Feb 2025. Program ini bertujuan membantu mangsa bencana fakir dalam memenuhi keperluan asas mereka.',
-      namaPegawai: 'Ahmad bin Ali',
-      tarikhMohon: '25/02/2025',
-      aid: 'B146',
-      aidProduct: 'Bantuan Bencana',
-      productPackage: 'BANTUAN BANJIR (FAKIR)',
-      productEntitlement: 'Bantuan Banjir',
-      penyiasat: 'ahmad_hassan',
-      cawangan: 'hq',
-      tarikhJangkaanBayaran: '2025-05-04'
-    },
-    'BP-2025-00005': {
-      kodBP: 'BP-2025-00005',
-      tajuk: 'Bantuan Pendidikan Mac 2025',
-      kategoriAsnaf: 'miskin',
-      status: 'Lulus',
-      jumlahAmaun: 'RM45,000.00',
-      catatan: 'Tuntutan bantuan pendidikan untuk bulan Mac 2025. Program ini bertujuan membantu pelajar miskin dalam memenuhi keperluan asas mereka.',
-      namaPegawai: 'Ahmad bin Ali',
-      tarikhMohon: '15/03/2025',
-      aid: 'B315',
-      aidProduct: 'Wang Saku',
-      productPackage: 'KPIPT (Miskin)',
-      productEntitlement: 'Bantuan Wang Saku',
-      penyiasat: 'ahmad_hassan',
-      cawangan: 'hq',
-      tarikhJangkaanBayaran: '2025-05-04'
-    },
-    'BP-2025-00006': {
-      kodBP: 'BP-2025-00006',
-      tajuk: 'Bantuan Kesihatan Feb 2025',
-      kategoriAsnaf: 'fakir',
-      status: 'Lulus',
-      jumlahAmaun: 'RM30,000.00',
-      catatan: 'Tuntutan bantuan kesihatan untuk bulan Feb 2025. Program ini bertujuan membantu pesakit fakir dalam memenuhi keperluan asas mereka.',
-      namaPegawai: 'Ahmad bin Ali',
-      tarikhMohon: '10/02/2025',
-      aid: 'B200',
-      aidProduct: 'Bantuan Kesihatan',
-      productPackage: 'BANTUAN KESIHATAN',
-      productEntitlement: 'Bantuan Kesihatan',
-      penyiasat: 'ahmad_hassan',
-      cawangan: 'hq'
-    },
-    'BP-2025-00007': {
-      kodBP: 'BP-2025-00007',
-      tajuk: 'Bantuan Rumah Jan 2025',
-      kategoriAsnaf: 'fakir',
-      status: 'Ditolak',
-      jumlahAmaun: 'RM50,000.00',
-      catatan: 'Tuntutan bantuan rumah untuk bulan Jan 2025. Program ini bertujuan membantu keluarga fakir dalam memenuhi keperluan asas mereka.',
-      namaPegawai: 'Ahmad bin Ali',
-      tarikhMohon: '05/01/2025',
-      aid: 'B100',
-      aidProduct: 'Bantuan Rumah',
-      productPackage: 'BANTUAN RUMAH',
-      productEntitlement: 'Bantuan Rumah',
-      penyiasat: 'ahmad_hassan',
-      cawangan: 'hq',
-      tarikhJangkaanBayaran: '2025-05-04'
-    },
-    'BP-2025-00008': {
-      kodBP: 'BP-2025-00008',
-      tajuk: 'Bantuan Makanan Feb 2025',
-      kategoriAsnaf: 'fakir',
-      status: 'Ditolak',
-      jumlahAmaun: 'RM15,000.00',
-      catatan: 'Tuntutan bantuan makanan untuk bulan Feb 2025. Program ini bertujuan membantu keluarga fakir dalam memenuhi keperluan asas mereka.',
-      namaPegawai: 'Ahmad bin Ali',
-      tarikhMohon: '20/02/2025',
-      aid: 'B150',
-      aidProduct: 'Bantuan Makanan',
-      productPackage: 'BANTUAN MAKANAN',
-      productEntitlement: 'Bantuan Makanan',
-      penyiasat: 'ahmad_hassan',
-      cawangan: 'hq',
-      tarikhJangkaanBayaran: '2025-05-04'
-    }
-  };
-  
-  return data[id] || data['BP-2025-00001']; // Default to first record if ID not found
-};
-
-// Form data state (populated with data based on ID)
-const formData = ref(getBantuanData(id));
+// Form state
+const formData = ref({
+  kodBP: "",
+  tajuk: "",
+  kategoriAsnaf: "",
+  status: "Baru",
+  jumlahAmaun: "0.00",
+  catatan: "",
+  namaPegawai: "",
+  tarikhMohon: "",
+  kategoriBantuan: "",
+  subKategori: "",
+  bantuan: "",
+  kodBantuan: "",
+  produkBantuan: "",
+  penyiasat: "",
+  cawangan: "",
+  aidProduct: "",
+  productPackage: "",
+  productEntitlement: "",
+  jenisBantuan: "",
+  tarikhJangkaanBayaran: "",
+  modeOfPayment: "",
+});
 
 // Tooltip state for action buttons
 const tooltips = ref({});
@@ -1280,7 +1141,7 @@ const tooltips = ref({});
 const bantuanData = ref({});
 
 // Import the bantuan data directly
-import bantuanJson from "../tambah/Grouped by Aid Code - Normalized.json";
+import bantuanJson from "./Grouped by Aid Code - Normalized.json";
 
 // Set the bantuan data on component mount
 onMounted(() => {
@@ -1293,6 +1154,25 @@ onMounted(() => {
   }
 });
 
+
+const breadcrumb = ref([
+  {
+    name: "Bantuan",
+    type: "link",
+    path: "/BF-BTN/bantuan-bulk",
+  },
+  {
+    name: "Senarai Bulk Processing",
+    type: "link",
+    path: "/BF-BTN/bantuan-bulk/senarai-bulk-processing",
+  },
+  {
+    name: "Tambah Bulk Processing",
+    type: "current",
+    path: "/BF-BTN/bantuan-bulk/senarai-bulk-processing/tambah",
+  },
+]);
+
 // Form Options
 const kategoriAsnafOptions = [
   { label: "Fakir", value: "fakir" },
@@ -1302,6 +1182,20 @@ const kategoriAsnafOptions = [
   { label: "Gharimin", value: "gharimin" },
   { label: "Fisabilillah", value: "fisabilillah" },
   { label: "Ibnu Sabil", value: "ibnu_sabil" },
+];
+
+const bantuanOptions = [
+  { label: "Bantuan Pendidikan", value: "bantuan_pendidikan" },
+  { label: "Bantuan Perubatan", value: "bantuan_perubatan" },
+  { label: "Bantuan Sara Hidup", value: "bantuan_sara_hidup" },
+  { label: "Bantuan Kecemasan", value: "bantuan_kecemasan" },
+];
+
+const produkBantuanOptions = [
+  { label: "Wang Saku", value: "wang_saku" },
+  { label: "Yuran Pengajian", value: "yuran_pengajian" },
+  { label: "Bantuan Persekolahan", value: "bantuan_persekolahan" },
+  { label: "Bantuan Kos Sara Hidup", value: "bantuan_kos_sara_hidup" },
 ];
 
 const penyiasatOptions = [
@@ -1356,7 +1250,7 @@ const paymentColumns = [
   { key: "recipient", label: "Recipient" },
   { key: "organization", label: "Organization" },
   { key: "amaun", label: "Amaun" },
-  { key: "tarikhBayaran", label: "Tarikh Bayaran" },
+  { key: "modeOfPayment", label: "MOP" },
   { key: "bankName", label: "Bank" },
   { key: "bankAccount", label: "No. Akaun" },
   {
@@ -1388,10 +1282,6 @@ const recipientColumns = [
 // State Management
 const selectedFile = ref(null);
 const selectedDocuments = ref([]);
-const documentList = ref([
-  { id: 'DOC-001', name: 'Surat Akuan Pemohon.pdf', size: '245 KB', uploadDate: '01/09/2025' },
-  { id: 'DOC-002', name: 'Senarai Penerima (Lampiran A).docx', size: '1.2 MB', uploadDate: '01/09/2025' },
-]);
 const paymentList = ref([]);
 const recipientList = ref([]);
 const selectedPayments = ref([]);
@@ -1399,7 +1289,6 @@ const confirmedPayments = ref([]);
 const isLoading = ref(false);
 const isSubmitting = ref(false);
 const showImportCards = ref(false);
-
 // State for editing
 const editingPayment = ref(null);
 const editingRecipient = ref(null);
@@ -1423,6 +1312,7 @@ const paymentForm = ref({
   modeOfPayment: "",
   bankName: "",
   bankAccount: "",
+  status: "Dalam Proses",
 });
 
 const recipientForm = ref({
@@ -1449,110 +1339,18 @@ const totalAmount = computed(() => {
   );
 });
 
-// Compute jenis bantuan options from the JSON data
-const aid = computed(() => {
-  if (!bantuanData.value.bantuan) return [];
-  
-  const options = Object.entries(bantuanData.value.bantuan).map(([categoryName]) => ({
-    label: categoryName,
-    value: categoryName,
-  }));
-
-  return [
-    { label: "-- Pilih --", value: "", disabled: true },
-    ...options.sort((a, b) => a.label.localeCompare(b.label))
-  ];
-});
-
-// Reset dependent selections when parent changes
-watch(() => formData.value.aid, () => {
-  formData.value.aidProduct = "";
-  formData.value.productPackage = "";
-  formData.value.productEntitlement = "";
-});
-
-watch(() => formData.value.aidProduct, () => {
-  formData.value.productPackage = "";
-  formData.value.productEntitlement = "";
-});
-
-watch(() => formData.value.productPackage, () => {
-  formData.value.productEntitlement = "";
-});
-
-// Compute aid product options based on selected jenis bantuan
-const aidProductOptions = computed(() => {
-  if (!formData.value.aid || !bantuanData.value.bantuan) {
-    return [{ label: "-- Pilih --", value: "", disabled: true }];
+// Watch for changes in bantuan to update kodBantuan
+watch(
+  () => formData.value.bantuan,
+  (newValue) => {
+    if (newValue) {
+      // Generate a unique kod bantuan based on the selected bantuan
+      formData.value.kodBantuan = `BTN-${newValue.toUpperCase()}-${Date.now()
+        .toString()
+        .slice(-6)}`;
+    }
   }
-
-  const aidNode = bantuanData.value.bantuan[formData.value.aid];
-  if (!aidNode) return [{ label: "-- Pilih --", value: "", disabled: true }];
-
-  const options = Object.keys(aidNode).map((productName) => ({
-    label: productName,
-    value: productName,
-  }));
-
-  return [
-    { label: "-- Pilih --", value: "", disabled: true },
-    ...options.sort((a, b) => a.label.localeCompare(b.label))
-  ];
-});
-
-// Compute product package options based on selected aid product
-const productPackageOptions = computed(() => {
-  if (!formData.value.aid || !formData.value.aidProduct || !bantuanData.value.bantuan) {
-    return [{ label: "-- Pilih --", value: "", disabled: true }];
-  }
-  
-  const aidNode = bantuanData.value.bantuan[formData.value.aid];
-  if (!aidNode || !aidNode[formData.value.aidProduct]) {
-    return [{ label: "-- Pilih --", value: "", disabled: true }];
-  }
-  
-  const productNode = aidNode[formData.value.aidProduct];
-  const options = Object.keys(productNode).map((pkg) => ({ 
-    label: pkg, 
-    value: pkg 
-  }));
-  
-  return [
-    { label: "-- Pilih --", value: "", disabled: true },
-    ...options.sort((a, b) => a.label.localeCompare(b.label))
-  ];
-});
-
-const productEntitlementOptions = computed(() => {
-  if (!formData.value.aid || !formData.value.aidProduct || !formData.value.productPackage || !bantuanData.value.bantuan) {
-    return [{ label: "-- Pilih --", value: "", disabled: true }];
-  }
-  
-  const aidNode = bantuanData.value.bantuan[formData.value.aid];
-  if (!aidNode) {
-    return [{ label: "-- Pilih --", value: "", disabled: true }];
-  }
-  
-  const productNode = aidNode[formData.value.aidProduct];
-  if (!productNode) {
-    return [{ label: "-- Pilih --", value: "", disabled: true }];
-  }
-  
-  const entitlements = productNode[formData.value.productPackage] || [];
-  if (!Array.isArray(entitlements) || entitlements.length === 0) {
-    return [{ label: "Tiada entitlements", value: "", disabled: true }];
-  }
-  
-  const options = entitlements.map((e) => ({ 
-    label: e, 
-    value: e 
-  }));
-  
-  return [
-    { label: "-- Pilih --", value: "", disabled: true },
-    ...options.sort((a, b) => a.label.localeCompare(b.label))
-  ];
-});
+);
 
 // Watch for changes in payment and recipient lists for debugging
 watch(
@@ -1564,6 +1362,7 @@ watch(
 );
 
 watch(
+  paymentList,
   recipientList,
   (newValue) => {
     console.log("Recipient list changed:", newValue);
@@ -1577,20 +1376,6 @@ const formatNumber = (number) => {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(number);
-};
-
-const formatCurrency = (n) => {
-  // Convert to number and handle invalid values
-  const num = parseFloat(n);
-  if (isNaN(num) || num === null || num === undefined) {
-    return 'RM0.00';
-  }
-  
-  return new Intl.NumberFormat("ms-MY", { 
-    style: 'currency', 
-    currency: 'MYR',
-    minimumFractionDigits: 2 
-  }).format(num);
 };
 
 const handleFileUpload = (event) => {
@@ -1627,27 +1412,31 @@ const handleDocumentUpload = (event) => {
   }
 };
 
-// Helper function to format file size
-const formatFileSize = (bytes) => {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-};
+// Persist selected/confirmed payments between actions
+onMounted(() => {
+  try {
+    const cachedSelected = localStorage.getItem('lzs_selected_payments');
+    const cachedConfirmed = localStorage.getItem('lzs_confirmed_payments');
+    if (cachedSelected) selectedPayments.value = JSON.parse(cachedSelected);
+    if (cachedConfirmed) confirmedPayments.value = JSON.parse(cachedConfirmed);
+  } catch (e) {
+    // ignore parsing errors
+  }
+});
 
-// Function to remove a file from selected documents
-const removeFile = (index) => {
-  selectedDocuments.value.splice(index, 1);
-};
+watch(selectedPayments, (val) => {
+  try {
+    localStorage.setItem('lzs_selected_payments', JSON.stringify(val));
+  } catch (e) {}
+}, { deep: true });
 
-// Helper function to generate unique ID
-const generateUniqueId = (prefix) => {
-  return `${prefix}-${Date.now().toString().slice(-6)}-${Math.random()
-    .toString(36)
-    .slice(-4)}`;
+const handleSahkanSelected = () => {
+  confirmedPayments.value = [...selectedPayments.value];
+  try {
+    localStorage.setItem('lzs_confirmed_payments', JSON.stringify(confirmedPayments.value));
+  } catch (e) {}
+  alert('success', `${confirmedPayments.value.length} bayaran telah disahkan untuk tindakan seterusnya.`);
 };
-
 // Function to hide import cards
 const hideImportCards = () => {
   showImportCards.value = false;
@@ -1728,7 +1517,7 @@ const handleImport = async () => {
         recipient: "Nur safiyya Binti Rosly",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
-        tarikhBayaran: "Akaun",
+        modeOfPayment: "Akaun",
         bankName: "Maybank",
         bankAccount: "16A3-44-889901",            // ← WRONG (letter)
         checkbox: '',
@@ -1791,6 +1580,147 @@ const handleImport = async () => {
   }
 };
 
+// Compute jenis bantuan options from the JSON data
+const aid = computed(() => {
+  if (!bantuanData.value.bantuan) return [];
+  
+  const options = Object.entries(bantuanData.value.bantuan).map(([categoryName]) => ({
+    label: categoryName,
+    value: categoryName,
+  }));
+
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
+});
+
+// Reset dependent selections when parent changes
+watch(() => formData.value.aid, () => {
+  formData.value.aidProduct = "";
+  formData.value.productPackage = "";
+  formData.value.productEntitlement = "";
+});
+
+watch(() => formData.value.aidProduct, () => {
+  formData.value.productPackage = "";
+  formData.value.productEntitlement = "";
+});
+
+watch(() => formData.value.productPackage, () => {
+  formData.value.productEntitlement = "";
+});
+
+// Compute aid product options based on selected jenis bantuan
+const aidProductOptions = computed(() => {
+  if (!formData.value.aid || !bantuanData.value.bantuan) {
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+
+  const aidNode = bantuanData.value.bantuan[formData.value.aid];
+  if (!aidNode) return [{ label: "-- Pilih --", value: "", disabled: true }];
+
+  const options = Object.keys(aidNode).map((productName) => ({
+    label: productName,
+    value: productName,
+  }));
+
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
+});
+
+// Get selected payment objects
+const selectedPaymentObjects = paymentList.value.filter(p => 
+  selectedPayments.value.includes(p.kod)
+);
+
+// Process selected payments
+const handleProcessSelected = () => {
+  console.log('Selected payments:', selectedPayments.value);
+  // Your logic here
+};
+
+// Compute product package options based on selected aid product
+const productPackageOptions = computed(() => {
+  console.log('=== Product Package Debug ===');
+  console.log('formData.aid:', formData.value.aid);
+  console.log('formData.aidProduct:', formData.value.aidProduct);
+  console.log('bantuanData.bantuan:', bantuanData.value.bantuan);
+  
+  if (!formData.value.aid || !formData.value.aidProduct || !bantuanData.value.bantuan) {
+    console.log('Early return: missing required data');
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+  
+  const aidNode = bantuanData.value.bantuan[formData.value.aid];
+  console.log('aidNode:', aidNode);
+  if (!aidNode || !aidNode[formData.value.aidProduct]) {
+    console.log('No aidNode or product found');
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+  
+  const productNode = aidNode[formData.value.aidProduct];
+  console.log('productNode:', productNode);
+  const options = Object.keys(productNode).map((pkg) => ({ 
+    label: pkg, 
+    value: pkg 
+  }));
+  console.log('Final package options:', options);
+  
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
+});
+ 
+const productEntitlementOptions = computed(() => {
+  console.log('=== Product Entitlement Debug ===');
+  console.log('formData.aid:', formData.value.aid);
+  console.log('formData.aidProduct:', formData.value.aidProduct);
+  console.log('formData.productPackage:', formData.value.productPackage);
+  console.log('bantuanData.bantuan:', bantuanData.value.bantuan);
+  
+  if (!formData.value.aid || !formData.value.aidProduct || !formData.value.productPackage || !bantuanData.value.bantuan) {
+    console.log('Early return: missing required data');
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+  
+  const aidNode = bantuanData.value.bantuan[formData.value.aid];
+  console.log('aidNode:', aidNode);
+  if (!aidNode) {
+    console.log('No aidNode found');
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+  
+  const productNode = aidNode[formData.value.aidProduct];
+  console.log('productNode:', productNode);
+  if (!productNode) {
+    console.log('No productNode found');
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+  
+  const entitlements = productNode[formData.value.productPackage] || [];
+  console.log('entitlements:', entitlements);
+  if (!Array.isArray(entitlements) || entitlements.length === 0) {
+    console.log('No valid entitlements found');
+    return [{ label: "Tiada entitlements", value: "", disabled: true }];
+  }
+  
+  const options = entitlements.map((e) => ({ 
+    label: e, 
+    value: e 
+  }));
+  console.log('Final options:', options);
+  
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
+});
+
+
 const handleDocumentImport = async () => {
   try {
     isLoading.value = true;
@@ -1807,18 +1737,6 @@ const handleDocumentImport = async () => {
     //   body: formData
     // });
 
-    // 2. Mock: append uploaded files into existing documentList
-    const now = new Date();
-    const uploadDate = new Intl.DateTimeFormat('ms-MY', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(now);
-    selectedDocuments.value.forEach((file, i) => {
-      documentList.value.push({
-        id: `DOC-${Date.now()}-${i}`,
-        name: file.name,
-        size: formatFileSize(file.size),
-        uploadDate,
-      });
-    });
-
     alert("success", `${selectedDocuments.value.length} dokumen berjaya dimuat naik`);
     selectedDocuments.value = []; // Clear selected files after upload
   } catch (error) {
@@ -1829,7 +1747,27 @@ const handleDocumentImport = async () => {
   }
 };
 
-// Payment methods
+// Helper function to format file size
+const formatFileSize = (bytes) => {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
+
+// Function to remove a file from selected documents
+const removeFile = (index) => {
+  selectedDocuments.value.splice(index, 1);
+};
+
+// Helper function to generate unique ID
+const generateUniqueId = (prefix) => {
+  return `${prefix}-${Date.now().toString().slice(-6)}-${Math.random()
+    .toString(36)
+    .slice(-4)}`;
+};
+
 const handleAddPayment = () => {
   console.log("handleAddPayment called");
 
@@ -1851,14 +1789,179 @@ const handleAddPayment = () => {
 
   paymentModalMode.value = "add";
   showPaymentModal.value = true;
+  console.log("Payment form initialized:", paymentForm.value);
 };
 
-const handleEditPaymentModal = (payment) => {
-  paymentForm.value = { ...payment };
-  paymentModalMode.value = "edit";
-  showPaymentModal.value = true;
+const handleAddRecipient = () => {
+  console.log("handleAddRecipient called");
+
+  // Reset form and open modal
+  recipientForm.value = {
+    id: generateUniqueId("RCP"),
+    namaPenuh: "",
+    amaun: 0,
+    agihanSemula: "Tidak",
+    bulkProcessing: "Tidak",
+    kategoriAsnaf: formData.value.kategoriAsnaf || "",
+    bayaranKepada: "Individu",
+    negeri: "",
+    negara: "",
+  };
+
+  recipientModalMode.value = "add";
+  showRecipientModal.value = true;
 };
 
+const handleDeletePayment = async (payment) => {
+  try {
+    if (confirm("Adakah anda pasti untuk memadam maklumat bayaran ini?")) {
+      const index = paymentList.value.findIndex((p) => p.kod === payment.kod);
+      if (index !== -1) {
+        paymentList.value.splice(index, 1);
+        alert("success", "Maklumat bayaran berjaya dipadam");
+      }
+    }
+  } catch (error) {
+    console.error("Error deleting payment:", error);
+    alert("error", "Gagal memadam maklumat bayaran");
+  }
+};
+
+const handleDeleteRecipient = async (recipient) => {
+  try {
+    if (confirm("Adakah anda pasti untuk memadam maklumat penerima ini?")) {
+      const index = recipientList.value.findIndex(
+        (r) => r.id === recipient.id || r.namaPenuh === recipient.namaPenuh
+      );
+      if (index !== -1) {
+        recipientList.value.splice(index, 1);
+        // Update total amount
+        formData.value.jumlahAmaun = formatNumber(totalAmount.value);
+        alert("success", "Maklumat penerima berjaya dipadam");
+      }
+    }
+  } catch (error) {
+    console.error("Error deleting recipient:", error);
+    alert("error", "Gagal memadam maklumat penerima");
+  }
+};
+
+const handleEditPayment = (payment) => {
+  editingPayment.value = { ...payment };
+};
+
+const handleSavePayment = () => {
+  if (!editingPayment.value) return;
+
+  const index = paymentList.value.findIndex(
+    (p) => p.kod === editingPayment.value.kod
+  );
+
+  if (index !== -1) {
+    paymentList.value[index] = { ...editingPayment.value };
+    editingPayment.value = null;
+    alert("success", "Maklumat bayaran berjaya dikemaskini");
+  }
+};
+
+const handleCancelPaymentEdit = () => {
+  editingPayment.value = null;
+};
+
+const handleEditRecipient = (recipient) => {
+  editingRecipient.value = { ...recipient };
+};
+
+const handleSaveRecipient = () => {
+  if (!editingRecipient.value) return;
+
+  const index = recipientList.value.findIndex(
+    (r) =>
+      r.id === editingRecipient.value.id ||
+      r.namaPenuh === editingRecipient.value.namaPenuh
+  );
+
+  if (index !== -1) {
+    recipientList.value[index] = { ...editingRecipient.value };
+    // Update total amount
+    formData.value.jumlahAmaun = formatNumber(totalAmount.value);
+    editingRecipient.value = null;
+    alert("success", "Maklumat penerima berjaya dikemaskini");
+  }
+};
+
+const handleCancelRecipientEdit = () => {
+  editingRecipient.value = null;
+};
+
+const navigateBack = () => {
+  navigateTo("/BF-BTN/bantuan-bulk/cipta-bantuan-bulk");
+};
+
+const validateForm = () => {
+  // Add your validation logic here
+  if (!formData.value.tajuk) {
+    alert("error", "Sila isi tajuk bantuan");
+    return false;
+  }
+  if (!formData.value.kategoriAsnaf) {
+    alert("error", "Sila pilih kategori asnaf");
+    return false;
+  }
+  if (!formData.value.bantuan) {
+    alert("error", "Sila pilih bantuan");
+    return false;
+  }
+  if (!formData.value.produkBantuan) {
+    alert("error", "Sila pilih produk bantuan");
+    return false;
+  }
+  if (!formData.value.penyiasat) {
+    alert("error", "Sila pilih penyiasat");
+    return false;
+  }
+  if (!formData.value.cawangan) {
+    alert("error", "Sila pilih cawangan");
+    return false;
+  }
+  if (recipientList.value.length === 0) {
+    alert("error", "Sila tambah sekurang-kurangnya seorang penerima");
+    return false;
+  }
+  return true;
+};
+
+const handleSave = async () => {
+  try {
+    // if (!validateForm()) return;
+
+    isSubmitting.value = true;
+    // Here you would typically:
+    // 1. Prepare the data
+    const payload = {
+      ...formData.value,
+      recipients: recipientList.value,
+      payments: paymentList.value,
+    };
+
+    // 2. Make API call to backend
+    // const response = await $fetch('/api/bantuan-bulk', {
+    //   method: 'POST',
+    //   body: payload
+    // });
+
+    alert("success", "Bulk Processing berjaya disimpan");
+    // Navigate back after successful save
+    navigateBack();
+  } catch (error) {
+    console.error("Error saving bulk processing:", error);
+    alert("error", "Gagal menyimpan bulk processing");
+  } finally {
+    isSubmitting.value = false;
+  }
+};
+
+// Modal functions
 const handleSavePaymentModal = () => {
   console.log("handleSavePaymentModal called");
   console.log("paymentForm.value:", paymentForm.value);
@@ -1910,6 +2013,7 @@ const handleSavePaymentModal = () => {
     }
   }
 
+  // Close modal
   showPaymentModal.value = false;
   
   // Reset form for next use
@@ -1927,56 +2031,6 @@ const handleSavePaymentModal = () => {
     bankAccount: "",
     checkbox: "",
   };
-};
-
-const handleDeletePayment = async (payment) => {
-  try {
-    if (confirm("Adakah anda pasti untuk memadam maklumat bayaran ini?")) {
-      const index = paymentList.value.findIndex((p) => p.kod === payment.kod);
-      if (index !== -1) {
-        paymentList.value.splice(index, 1);
-        alert("success", "Maklumat bayaran berjaya dipadam");
-      }
-    }
-  } catch (error) {
-    console.error("Error deleting payment:", error);
-    alert("error", "Gagal memadam maklumat bayaran");
-  }
-};
-
-const handleClosePaymentModal = () => {
-  showPaymentModal.value = false;
-};
-
-// Recipient methods
-const handleAddRecipient = () => {
-  console.log("handleAddRecipient called");
-
-  // Reset form and open modal
-  recipientForm.value = {
-    id: generateUniqueId("RCP"),
-    namaPenuh: "",
-    amaun: 0,
-    agihanSemula: "Tidak",
-    bulkProcessing: "Tidak",
-    kategoriAsnaf: formData.value.kategoriAsnaf || "",
-    bayaranKepada: "Individu",
-    negeri: "",
-    negara: "",
-  };
-
-  recipientModalMode.value = "add";
-  showRecipientModal.value = true;
-};
-
-const handleEditRecipientModal = (recipient) => {
-  recipientForm.value = { 
-    ...recipient,
-    negeri: recipient.negeri || "",
-    negara: recipient.negara || "",
-  };
-  recipientModalMode.value = "edit";
-  showRecipientModal.value = true;
 };
 
 const handleSaveRecipientModal = () => {
@@ -2013,23 +2067,24 @@ const handleSaveRecipientModal = () => {
   };
 };
 
-const handleDeleteRecipient = async (recipient) => {
-  try {
-    if (confirm("Adakah anda pasti untuk memadam maklumat penerima ini?")) {
-      const index = recipientList.value.findIndex(
-        (r) => r.id === recipient.id || r.namaPenuh === recipient.namaPenuh
-      );
-      if (index !== -1) {
-        recipientList.value.splice(index, 1);
-        // Update total amount
-        formData.value.jumlahAmaun = formatNumber(totalAmount.value);
-        alert("success", "Maklumat penerima berjaya dipadam");
-      }
-    }
-  } catch (error) {
-    console.error("Error deleting recipient:", error);
-    alert("error", "Gagal memadam maklumat penerima");
-  }
+const handleEditPaymentModal = (payment) => {
+  paymentForm.value = { ...payment };
+  paymentModalMode.value = "edit";
+  showPaymentModal.value = true;
+};
+
+const handleEditRecipientModal = (recipient) => {
+  recipientForm.value = { 
+    ...recipient,
+    negeri: recipient.negeri || "",
+    negara: recipient.negara || "",
+  };
+  recipientModalMode.value = "edit";
+  showRecipientModal.value = true;
+};
+
+const handleClosePaymentModal = () => {
+  showPaymentModal.value = false;
 };
 
 const handleCloseRecipientModal = () => {
@@ -2065,11 +2120,39 @@ const isBadAcc = (acc) => {
 const fmt = (n) =>
   new Intl.NumberFormat("ms-MY", { minimumFractionDigits: 0 }).format(n);
 
+const formatCurrency = (n) => {
+  // Convert to number and handle invalid values
+  const num = parseFloat(n);
+  if (isNaN(num) || num === null || num === undefined) {
+    return 'RM0.00';
+  }
+  
+  return new Intl.NumberFormat("ms-MY", { 
+    style: 'currency', 
+    currency: 'MYR',
+    minimumFractionDigits: 2 
+  }).format(num);
+};
+
 // State Management for Damaged Data
 const showViewDetailsModal = ref(false);
 const showKemaskiniModal = ref(false);
 const selectedDamagedData = ref(null);
 const editingPaymentForDefect = ref(null);
+
+// Damaged Data Table Configuration
+const damagedDataColumns = [
+  { key: "no", label: "No.", width: "60px" },
+  { key: "namaPenerima", label: "Nama Penerima" },
+  { key: "catatan", label: "Catatan" },
+  {
+    key: "actions",
+    label: "Tindakan",
+    sortable: false,
+    align: "center",
+    width: "120px",
+  },
+];
 
 // Computed damaged data derived from paymentList
 const damagedDataList = computed(() => {
@@ -2103,7 +2186,7 @@ const damagedDataList = computed(() => {
     out.push({
       no: defectCounter++,
       id: `DEF-${String(defectCounter - 1).padStart(3, "0")}`, // Hidden but needed for logic
-      namaPenerima: p.bayaranKepada,
+      namaPenerima: p.recipient,
       catatan: parts.join(" · "),
       jenisMasalah: reasons.join(", "), // Hidden but needed for logic
       idPermohonan: p.idPermohonan, // Hidden but needed for logic
@@ -2134,6 +2217,7 @@ const cleanPaymentList = computed(() => {
   });
 });
 
+
 // Group duplicates by idPermohonan so only one representative row appears
 const damagedDataListGrouped = computed(() => {
   const list = damagedDataList.value;
@@ -2153,7 +2237,40 @@ const damagedDataListGrouped = computed(() => {
   return grouped;
 });
 
+
+
 // Methods for Damaged Data
+// const handleAddDamagedData = () => {
+//   // Logic to add new damaged data
+//   const newDamagedData = {
+//     id: "", // Generate unique ID
+//     namaPenerima: "Contoh Penerima",
+//     noKadPengenalan: "",
+//     noTelefon: "",
+//     alamat: "",
+//     catatan: "Contoh catatan untuk data rosak",
+//     jenisMasalah: "",
+//     actions: "" // Add empty actions property to ensure column renders
+//   };
+//   damagedDataList.value.push(newDamagedData);
+//   alert("success", "Maklumat data rosak berjaya ditambah");
+// };
+
+const handleViewDamagedDataDetails = (data) => {
+  // Find the corresponding payment in paymentList to get all the details
+  const payment = paymentList.value.find(p => p.kod === data.id);
+  if (!payment) return;
+  
+  selectedDamagedData.value = {
+    ...data,
+    idPermohonan: payment.idPermohonan,
+    bankName: payment.bankName,
+    bankAccount: payment.bankAccount,
+    status: payment.status
+  };
+  showViewDetailsModal.value = true;
+};
+
 const handleKemaskiniDamagedData = (defectRow) => {
   // Find the payment data by matching the pointer (kod)
   const payment = paymentList.value.find(p => p.kod === defectRow.pointer);
@@ -2197,6 +2314,10 @@ const handleSaveDamagedDataChanges = () => {
     alert("error", "Sila pilih nama bank yang sah");
     return;
   }
+  // if (!validAmounts.includes(Number(ed.amaun))) {
+  //   alert("error", "Amaun mesti 1200 atau 2400 untuk demo ini");
+  //   return;
+  // }
 
   // Find and update the payment row
   const idx = paymentList.value.findIndex(p => p.kod === ed.pointer);
@@ -2219,12 +2340,68 @@ const handleSaveDamagedDataChanges = () => {
   editingPaymentForDefect.value = null;
 };
 
+const handleDeleteDamagedData = (data) => {
+  // Since damagedDataList is computed from paymentList, we need to delete from paymentList
+  const index = paymentList.value.findIndex(p => p.kod === data.id);
+  if (index !== -1) {
+    paymentList.value.splice(index, 1);
+    alert("success", "Data rosak berjaya dipadam");
+  }
+};
+
+const handleEditDamagedData = (data) => {
+  // Logic to handle editing damaged data
+  alert("info", `Editing data for ${data.namaPenerima}`);
+};
+
+// Methods
+const getStatusVariant = (status) => {
+  switch (status) {
+    case 'Draf':
+      return 'disabled';
+    case 'Sedang Diproses':
+    case 'Dalam Proses':
+      return 'warning';
+    case 'Ditolak':
+      return 'danger';
+    case 'Baru':
+      return 'primary';
+    case 'Selesai':
+      return 'success';
+    default:
+      return 'secondary';
+  }
+};
+
+const handleKembali = () => {
+  navigateTo('/BF-BTN/bantuan-bulk/cipta-bantuan-bulk');
+};
+
+const handleHantar = async () => {
+  try {
+    isSubmitting.value = true;
+    // Here you would typically make an API call to submit the data
+    // const response = await $fetch('/api/bantuan-bulk/submit', {
+    //   method: 'POST',
+    //   body: formData.value
+    // });
+    
+    alert("success", "Bulk Processing berjaya dihantar");
+    // Navigate back after successful submission
+    navigateTo('/BF-BTN/bantuan-bulk/cipta-bantuan-bulk');
+  } catch (error) {
+    console.error("Error submitting bulk processing:", error);
+    alert("error", "Gagal menghantar bulk processing");
+  } finally {
+    isSubmitting.value = false;
+  }
+};
+
 // Duplicate Modal state and handlers
 const showDuplicateModal = ref(false);
 const duplicateRows = ref([]);
 const duplicateSearch = ref('');
 const duplicateSelectedIds = ref([]);
-
 const formatMsDate = (d) => {
   try {
     const date = d instanceof Date ? d : new Date(d);
@@ -2234,7 +2411,6 @@ const formatMsDate = (d) => {
     return '';
   }
 };
-
 const filteredDuplicateRows = computed(() => {
   const q = (duplicateSearch.value || '').toString().toLowerCase();
   if (!q) return duplicateRows.value;
@@ -2317,106 +2493,6 @@ const onOpenApplication = (idPermohonan) => {
   // navigateTo(`/permohonan/${idPermohonan}`)
 };
 
-// Methods
-const getStatusVariant = (status) => {
-  switch (status) {
-    case 'Draf':
-      return 'disabled';
-    case 'Sedang Diproses':
-    case 'Dalam Proses':
-      return 'warning';
-    case 'Ditolak':
-      return 'danger';
-    case 'Baru':
-      return 'primary';
-    case 'Selesai':
-      return 'success';
-    default:
-      return 'secondary';
-  }
-};
-
-const handleKembali = () => {
-  navigateTo('/BF-BTN/bantuan-bulk/cipta-bantuan-bulk');
-};
-
-// Download CSV template for Maklumat Bayaran Kepada (Payable To)
-const downloadPayableToTemplate = () => {
-  try {
-    // Use the same column labels as the Payable To table, excluding action columns
-    const headers = paymentColumns
-      .filter((c) => c.key !== 'checkbox')
-      .map((c) => c.label);
-
-    const csvContent = headers.join(',') + '\n';
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', 'format-maklumat-payable-to.csv');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  } catch (e) {
-    console.error('Gagal muat turun format CSV:', e);
-    alert('error', 'Gagal memuat turun format CSV');
-  }
-};
-
-const handleSave = async () => {
-  try {
-    isSubmitting.value = true;
-    // Here you would typically:
-    // 1. Prepare the data
-    const payload = {
-      ...formData.value,
-      recipients: recipientList.value,
-      payments: paymentList.value,
-    };
-
-    // 2. Make API call to backend
-    // const response = await $fetch('/api/bantuan-bulk', {
-    //   method: 'PUT',
-    //   body: payload
-    // });
-
-    alert("success", "Bulk Processing berjaya disimpan");
-    // Navigate back after successful save
-    handleKembali();
-  } catch (error) {
-    console.error("Error saving bulk processing:", error);
-    alert("error", "Gagal menyimpan bulk processing");
-  } finally {
-    isSubmitting.value = false;
-  }
-};
-
-const handleHantar = async () => {
-  try {
-    isSubmitting.value = true;
-    // Here you would typically make an API call to submit the data
-    // const response = await $fetch('/api/bantuan-bulk/submit', {
-    //   method: 'POST',
-    //   body: formData.value
-    // });
-    
-    alert("success", "Bulk Processing berjaya dihantar");
-    // Navigate back after successful submission
-    handleKembali();
-  } catch (error) {
-    console.error("Error submitting bulk processing:", error);
-    alert("error", "Gagal menghantar bulk processing");
-  } finally {
-    isSubmitting.value = false;
-  }
-};
-
-const handleSahkanSelected = () => {
-  confirmedPayments.value = [...selectedPayments.value];
-  alert('success', `${confirmedPayments.value.length} bayaran telah disahkan untuk tindakan seterusnya.`);
-};
-
 </script>
 
 <style lang="scss" scoped>
@@ -2433,7 +2509,7 @@ const handleSahkanSelected = () => {
   pointer-events: none;
 }
 
-  .form-actions {
+.form-actions {
   position: sticky;
   bottom: 0;
   background-color: white;

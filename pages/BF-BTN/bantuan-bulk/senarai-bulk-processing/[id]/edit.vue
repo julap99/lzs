@@ -1116,14 +1116,14 @@ const breadcrumb = ref([
     path: "/BF-BTN/bantuan-bulk",
   },
   {
-    name: "Bulk Processing",
+    name: "Senarai Bulk Processing",
     type: "link",
-    path: "/BF-BTN/bantuan-bulk/cipta-bantuan-bulk",
+    path: "/BF-BTN/bantuan-bulk/senarai-bulk-processing",
   },
   {
     name: `Edit ${id}`,
     type: "current",
-    path: `/BF-BTN/bantuan-bulk/cipta-bantuan-bulk/${id}/edit`,
+    path: `/BF-BTN/bantuan-bulk/senarai-bulk-processing/${id}/edit`,
   },
 ]);
 

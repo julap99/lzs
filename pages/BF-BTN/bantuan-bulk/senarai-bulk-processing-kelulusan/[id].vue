@@ -127,7 +127,7 @@
             <FormKit
               type="text"
               name="bantuan"
-              label="Bantuan *"
+              label="Bantuan "
               v-model="bantuanDetail.bantuan"
               disabled
             />
@@ -145,7 +145,7 @@
             <FormKit
               type="text"
               name="produkBantuan"
-              label="Produk Bantuan *"
+              label="Produk Bantuan"
               v-model="bantuanDetail.produkBantuan"
               disabled
             />
@@ -164,7 +164,7 @@
             <FormKit
               type="text"
               name="cawangan"
-              label="Cawangan *"
+              label="Cawangan"
               v-model="bantuanDetail.cawangan"
               disabled
               :classes="{
@@ -321,7 +321,7 @@
             <FormKit
               v-model="sokonganForm.statusSemakan"
               type="select"
-              label="Status Semakan *"
+              label="Status Semakan"
               :options="statusSemakanOptions"
               required
               :classes="{
@@ -375,7 +375,7 @@
             <FormKit
               v-model="pelulusForm.statusSemakan"
               type="select"
-              label="Status Semakan *"
+              label="Status Semakan "
               :options="statusSemakanOptions"
               required
               :classes="{
