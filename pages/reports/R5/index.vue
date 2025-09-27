@@ -115,10 +115,11 @@ const columns = [
 ]
 
 const rows = ref([
-  { no: 1, reportName: '' },
-  { no: 2, reportName: '' },
-  { no: 3, reportName: '' },
-  { no: 4, reportName: '' },
+  { no: 1, reportName: 'Laporan Penerima Bantuan Semasa' },
+  { no: 2, reportName: 'Laporan Aging Asnaf Review' },
+  { no: 3, reportName: 'Laporan Aging Bantuan' },
+  { no: 4, reportName: 'Laporan Asnaf Keciciran Bantuan Utama' },
+  { no: 5, reportName: 'Laporan Bantuan Sewa Rumah' },
 ])
 
 const tableData = computed(() =>
@@ -134,13 +135,15 @@ const selectedReport = ref(null)
 function handleSelect(no) {
   switch (no) {
     case 1:
-      return navigateTo('')
+      return navigateTo('R5/Laporan-DOAA/Laporan-Penerima-Bantuan-Semasa')
     case 2:
-      return navigateTo('') 
+      return navigateTo('R5/Laporan-DOAA/Laporan-Aging-Asnaf-Review') 
     case 3:
-      return navigateTo('')
+      return navigateTo('R5/Laporan-DOAA/Laporan-Aging-Bantuan')
     case 4:
-      return navigateTo('')
+      return navigateTo('R5/Laporan-DOAA/Laporan-Asnaf-Keciciran-Bantuan-Utama')
+    case 5:
+      return navigateTo('R5/Laporan-DOAA/Laporan-Bantuan-Sewa-Rumah')
     default:
       console.warn('Tiada tindakan ditetapkan untuk:', no)
   }
