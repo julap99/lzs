@@ -408,11 +408,33 @@
                     </rs-button>
                   </div>
 
-                  <div class="grid grid-cols-2 gap-3">
-                    <div class="space-y-1">
-                      <label class="text-xs font-medium text-gray-700"
-                        >Unit</label
-                      >
+                  <div class="space-y-3">
+                    <!-- REF Field -->
+                    <div>
+                      <label class="text-xs font-medium text-gray-700">Rujukan</label>
+                      <FormKit
+                        type="text"
+                        v-model="item.ref"
+                        :classes="{ input: 'text-sm !p-2' }"
+                        placeholder="REF"
+                      />
+                    </div>
+
+                    <!-- Jenis Kerja Field -->
+                    <div>
+                      <label class="text-xs font-medium text-gray-700">Jenis Kerja</label>
+                      <FormKit
+                        type="select"
+                        v-model="item.jenisKerja"
+                        :options="jenisKerjaOptions"
+                        :classes="{ input: 'text-sm !p-2' }"
+                        @input="handleJenisKerjaChange(item, index)"
+                      />
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                      <div>
+                        <label class="text-xs font-medium text-gray-700">Unit</label>
                       <FormKit
                         type="text"
                         v-model="item.unit"
@@ -420,10 +442,9 @@
                         placeholder="Unit"
                       />
                     </div>
-                    <div class="space-y-1">
-                      <label class="text-xs font-medium text-gray-700"
-                        >Qty</label
-                      >
+
+                      <div>
+                        <label class="text-xs font-medium text-gray-700">Kuantiti</label>
                       <FormKit
                         type="number"
                         v-model="item.kuantiti"
@@ -433,10 +454,11 @@
                         step="0.01"
                       />
                     </div>
-                    <div class="space-y-1">
-                      <label class="text-xs font-medium text-gray-700"
-                        >Kadar (RM)</label
-                      >
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                      <div>
+                        <label class="text-xs font-medium text-gray-700">Kadar (RM)</label>
                       <FormKit
                         type="number"
                         v-model="item.kadar"
@@ -446,28 +468,26 @@
                         step="0.01"
                       />
                     </div>
-                    <div class="space-y-1">
-                      <label class="text-xs font-medium text-gray-700"
-                        >Jumlah (RM)</label
-                      >
+
+                      <div>
+                        <label class="text-xs font-medium text-gray-700">Jumlah (RM)</label>
                       <div class="p-2 bg-gray-50 rounded-lg border border-gray-200">
                         <span class="text-sm font-medium text-gray-900">
                           {{ formatCurrency((Number(item.kuantiti) || 0) * (Number(item.kadar) || 0)) }}
                         </span>
+                        </div>
                       </div>
                     </div>
                   </div>
 
                   <div class="mt-3 space-y-2">
-                    <label class="text-xs font-medium text-gray-700"
-                      >Keterangan Kerja</label
-                    >
+                    <label class="text-xs font-medium text-gray-700">Keterangan Kerja</label>
                     <FormKit
                       type="textarea"
                       v-model="item.keteranganKerja"
                       rows="4"
                       :classes="{ input: 'text-sm !p-2' }"
-                      placeholder="Masukkan keterangan kerja..."
+                      placeholder="Keterangan kerja..."
                     />
                   </div>
                 </div>
@@ -498,6 +518,13 @@
                         Bil
                       </th>
                       <th
+                        class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20"
+                        scope="col"
+                        role="columnheader"
+                      >
+                        REF
+                      </th>
+                      <th
                         class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-0"
                         scope="col"
                         role="columnheader"
@@ -512,28 +539,28 @@
                         Unit
                       </th>
                       <th
-                        class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16"
+                        class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24"
                         scope="col"
                         role="columnheader"
                       >
-                        Qty
+                        Kuantiti
                       </th>
                       <th
-                        class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28"
+                        class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32"
                         scope="col"
                         role="columnheader"
                       >
                         Kadar (RM)
                       </th>
                       <th
-                        class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28"
+                        class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32"
                         scope="col"
                         role="columnheader"
                       >
                         Jumlah (RM)
                       </th>
                       <th
-                        class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16"
+                        class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20"
                         scope="col"
                         role="columnheader"
                       >
@@ -558,19 +585,43 @@
                         {{ index + 1 }}
                       </td>
                       <td class="px-3 py-4" role="gridcell">
+                        <FormKit
+                          type="text"
+                          v-model="item.ref"
+                          :classes="{
+                            input:
+                              'text-sm !p-2 !border-gray-300 focus:!border-blue-500 focus:!ring-blue-500',
+                          }"
+                          placeholder="REF"
+                          :aria-label="`Rujukan untuk item ${index + 1}`"
+                        />
+                      </td>
+                      <td class="px-3 py-4" role="gridcell">
+                        <div class="space-y-2">
                           <FormKit
-                            type="textarea"
-                            v-model="item.keteranganKerja"
-                            rows="4"
+                            type="select"
+                            v-model="item.jenisKerja"
+                            :options="jenisKerjaOptions"
                             :classes="{
                               input:
                                 'text-sm !p-2 !border-gray-300 focus:!border-blue-500 focus:!ring-blue-500',
                             }"
-                            placeholder="Masukkan keterangan kerja..."
+                            @input="handleJenisKerjaChange(item, index)"
+                            :aria-label="`Jenis kerja untuk item ${index + 1}`"
+                          />
+                          <FormKit
+                            type="textarea"
+                            v-model="item.keteranganKerja"
+                            :classes="{
+                              input:
+                                'text-sm !p-2 !border-gray-300 focus:!border-blue-500 focus:!ring-blue-500',
+                            }"
+                            placeholder="Keterangan kerja..."
                             :aria-label="`Keterangan kerja untuk item ${
                               index + 1
                             }`"
                           />
+                        </div>
                       </td>
                       <td class="px-3 py-4" role="gridcell">
                         <FormKit
@@ -641,7 +692,7 @@
                     </tr>
                     <tr v-if="formData.itemKerja.length === 0">
                       <td
-                        colspan="7"
+                        colspan="8"
                         class="px-3 py-8 text-center text-sm text-gray-500"
                       >
                         Tiada item kerja. Klik butang "Tambah Item" untuk
@@ -774,8 +825,8 @@
                     </div>
                   </div>
 
-                  <!-- PERINGATAN Section -->
-                  <div class="mb-4 p-4 bg-red-50 rounded border border-red-200">
+                  <!-- PERINGATAN Section (B400 only) -->
+                  <div v-if="isB400" class="mb-4 p-4 bg-red-50 rounded border border-red-200">
                     <div class="flex items-start space-x-2">
                       <Icon name="ph:warning" class="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" />
                       <div class="w-full">
@@ -1466,7 +1517,12 @@ const pegawaiOptions = ref([
 ]);
 
 const jenisKerjaOptions = ref([
-  // Options removed as requested
+  { label: "-- Sila Pilih --", value: "" },
+  { label: "Bina Semula Bangunan Bilik", value: "bina_semula_bangunan_bilik" },
+  { label: "Roboh Rumah Kayu", value: "roboh_rumah_kayu" },
+  { label: "Baik Pulih Struktur", value: "baik_pulih_struktur" },
+  { label: "Kerja Elektrik", value: "kerja_elektrik" },
+  { label: "Kerja Paip", value: "kerja_paip" },
 ]);
 
 // Predefined data for each jenis kerja
@@ -1632,6 +1688,7 @@ const handleJenisKerjaChange = (item, index) => {
 const addItem = () => {
   formData.value.itemKerja.push({
     ref: "CMP",
+    jenisKerja: "",
     keteranganKerja: "",
     unit: "",
     kuantiti: 1,
@@ -1780,6 +1837,7 @@ const initializeFormData = () => {
     baseData.itemKerja = [
       {
         ref: "CMP",
+        jenisKerja: "roboh_rumah_kayu",
         keteranganKerja: " Membuka,memecah dan membawa keluar keseluruhan struktur binaan rumah kayu,membuka dan memindahkan meter elektrik TNB,papan agihan termasuk semua pendawaian yang berkaitan, membawa bahan-bahan buangan pembinaan ke lokasi yang ditentukan sehingga sempurna mengikut arahan Pegawai Penguasa.",
         unit: "Pukal",
         kuantiti: 1,
@@ -1787,19 +1845,20 @@ const initializeFormData = () => {
       },
       {
         ref: "CMP",
+        jenisKerja: "bina_semula_bangunan_bilik",
         keteranganKerja: "Membina tambahan bilik berukuran 20' x 15' termasuk kerja-kerja asas cerucuk bakau atau raft foundation, penapak konkrit bertetulang (pad footing), rasuk tanah konkrit bertetulang, tiang konkrit bertetulang, dinding bata berlepa, rasuk bumbung konkrit bertetulang, lantai konkrit bertetulang, kemasan siling, kemasan cat luar & dalam serta kelengkapan berikut :",
         unit: "Pukal",
         kuantiti: 1,
         kadar: 40000,
       },
-             {
-         ref: "CMP",
-         keteranganKerja: "Bumbung metal deck termasuk struktur jenis sesikat",
-        //  jenisKerja: "bina_semula_bangunan_bilik",
-        //  unit: "Pukal",
-        //  kuantiti: 1,
-        //  kadar: 15000,
-       },
+      {
+        ref: "CMP",
+        jenisKerja: "baik_pulih_struktur",
+        keteranganKerja: "Bumbung metal deck termasuk struktur jenis sesikat",
+        unit: "Pukal",
+        kuantiti: 1,
+        kadar: 15000,
+      },
     ];
   }
 
