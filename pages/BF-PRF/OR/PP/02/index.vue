@@ -79,18 +79,13 @@
           />
 
           <!-- e) Kariah - dropdown (conditional) -->
-          <FormKit
+          <CustomSelect
             v-if="showKariahField"
-            type="select"
-            name="kariah"
-            label="Kariah"
-            validation="required"
-            placeholder="Pilih kariah"
-            :options="kariahOptions"
             v-model="formData.kariah"
-            :searchable="true"
-            :clearable="true"
-            :filterable="true"
+            :options="kariahOptions"
+            label="Kariah"
+            placeholder="Cari kariah..."
+            search-placeholder="Taip untuk mencari kariah..."
           />
 
           <!-- f) Jenis masjid - dropdown (conditional for masjid type) -->
@@ -1013,6 +1008,7 @@ const kariahOptions = computed(() => {
     value: kariah
   }));
 });
+
 
 // BA Requirement 3: Jenis Masjid options (updated per BA requirements)
 const jenisMasjidOptions = [
