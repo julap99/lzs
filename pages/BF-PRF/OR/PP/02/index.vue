@@ -134,16 +134,6 @@
             v-model="formData.hq"
           />
 
-          <!-- Kariah - Show when Organization Type is not 'Masjid' -->
-          <FormKit
-            v-if="showKariahField"
-            type="text"
-            name="kariah"
-            label="Kariah"
-            validation="required"
-            placeholder="Contoh: MASJID PEKAN BANGI"
-            v-model="formData.kariah"
-          />
 
           <!-- Zone - Show when Organization Type is Masjid -->
           <FormKit
