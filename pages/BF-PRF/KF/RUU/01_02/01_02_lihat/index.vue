@@ -176,48 +176,62 @@ const kategoriMapping = [
 
 // Function to get kategori description by kod
 const getKategoriByKod = (kod) => {
+  // First check hardcoded mapping
   const mapping = kategoriMapping.find(item => item.kod === kod);
-  return mapping ? mapping.kategori : "Peribadi"; // Default to Peribadi if not found
-};
-
-// Default data for different categories
-const getDefaultDataByKod = (kod) => {
-  // Only Peribadi has data currently
-  if (kod === "1" || kod === "Peribadi") {
-    return [
-      {
-        namaRuuField: "Identification Type",
-        namaNasField: "Jenis ID",
-        kaedahKemaskini: "Update asnaf with approval/verify",
-        status: "Aktif",
-        statusData: "Draf",
-        tarikhMula: "2026-01-01",
-        tarikhTamat: "",
-      },
-      {
-        namaRuuField: "Passport No",
-        namaNasField: "Pengenalan ID",
-        kaedahKemaskini: "Asnaf Review",
-        status: "Aktif",
-        statusData: "Draf",
-        tarikhMula: "2026-01-01",
-        tarikhTamat: "",
-      },
-      {
-        namaRuuField: "MyKad",
-        namaNasField: "Pengenalan ID",
-        kaedahKemaskini: "Asnaf Review",
-        status: "Aktif",
-        statusData: "Draf",
-        tarikhMula: "2026-01-01",
-        tarikhTamat: "",
-      },
-    ];
+  if (mapping) {
+    return mapping.kategori;
   }
   
-  // For all other categories, return empty array (no data available)
-  return [];
+  // If not found, check saved categories from localStorage
+  try {
+    const savedCategories = localStorage.getItem('kategoriMaklumat');
+    if (savedCategories) {
+      const parsedCategories = JSON.parse(savedCategories);
+      console.log('01_02_lihat - All saved categories:', parsedCategories);
+      const foundCategory = parsedCategories.find(cat => cat.kod === kod);
+      console.log('01_02_lihat - Found category for kod', kod, ':', foundCategory);
+      if (foundCategory) {
+        return foundCategory.namaKategori;
+      }
+    }
+  } catch (error) {
+    console.error('Error loading saved categories:', error);
+  }
+  
+  return `Kategori ${kod}`; // Fallback to show the kod if not found
 };
+
+// Load data from localStorage
+const loadDataFromLocalStorage = (kod) => {
+  try {
+    const savedData = localStorage.getItem('kelulusanDataRuu');
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      const kategoriName = getKategoriByKod(kod);
+      
+      // Filter data by kategori
+      console.log('01_02_lihat - All data from localStorage:', parsedData);
+      console.log('01_02_lihat - Looking for kategori:', kategoriName);
+      
+      const filteredData = parsedData.filter((item) => {
+        const itemKategori = item.kategori || item.namaNasField || "";
+        console.log('01_02_lihat - Item:', item.idRuu, 'kategori:', item.kategori, 'namaNasField:', item.namaNasField, 'resolved:', itemKategori, 'matches:', itemKategori === kategoriName);
+        return itemKategori === kategoriName;
+      });
+      
+      ruuData.value = filteredData;
+      console.log('01_02_lihat - Loaded data for kod:', kod, 'kategori:', kategoriName, 'items:', filteredData.length);
+      console.log('01_02_lihat - Filtered data:', filteredData);
+    } else {
+      // Fallback to default data if no saved data
+      ruuData.value = getDefaultDataByKod(kod);
+    }
+  } catch (error) {
+    console.error('Error loading data from localStorage:', error);
+    ruuData.value = getDefaultDataByKod(kod);
+  }
+};
+
 
 onMounted(() => {
   try {
@@ -227,8 +241,8 @@ onMounted(() => {
     // Get kategori description based on kod using mapping
     info.value.kategori = getKategoriByKod(kod);
     
-    // Load data based on kod parameter
-    ruuData.value = getDefaultDataByKod(kod);
+    // Load data from localStorage instead of default data
+    loadDataFromLocalStorage(kod);
     
   } catch (e) {
     error.value = "Ralat memuatkan maklumat.";

@@ -556,6 +556,27 @@ const mockByNoRujukan = {
     statusPermohonanBaru: '',
     catatanUmumPegawai: 'Pemohon perlukan bantuan untuk membayar hutang perubatan.',
   },
+  'NAS-2025-0007': {
+    noRujukan: 'NAS-2025-0007',
+    nama: 'Majlis Agama Islam Selangor (MAIS)',
+    alamat: 'Tingkat 9 & 10, Menara Utara Bangunan Sultan Idris Shah, 40000 Shah Alam, Selangor',
+    kariah: 'Masjid Bandar Utama',
+    daerah: 'Shah Alam',
+    jenisPengenalan: 'No. Pendaftaran',
+    noPengenalan: '254900406XLRQPZSC186',
+    noTelefon: '03-55123458',
+    email: 'haziq@mais.gov.my',
+    statusKeluarga: 'Organisasi',
+    statusIndividu: 'Organisasi',
+    statusMultidimensi: 'Disahkan',
+    statusorganisasi: 'Disahkan',
+    status: 'Dalam Semakan',
+          senaraiBantuan: [
+            { id: 'B134', jenisBantuan: 'B134 - BANTUAN PROGRAM PENERAPAN NILAI ISLAM', status: 'Dalam Semakan', sla: '3h', tindakan: '' },
+          ],
+    statusPermohonanBaru: '',
+    catatanUmumPegawai: 'Permohonan dari MAIS untuk program penerapan nilai Islam di sekolah-sekolah.',
+  },
 };
 
 // Flat reactive form state to be populated from mock

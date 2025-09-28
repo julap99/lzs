@@ -26,66 +26,114 @@
 
     <!-- Main Content -->
     <div v-else-if="selectedKategori" class="space-y-6">
-      <!-- Header Card -->
+      <!-- Main Card with Two Sections -->
       <rs-card>
-        <template #header>
-          <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Kategori</h2>
-            <rs-button variant="secondary" @click="goBack">
-              <Icon name="mdi:arrow-left" class="mr-1" /> Kembali
-            </rs-button>
-          </div>
-        </template>
-      </rs-card>
-
-      <!-- Main Information Card -->
-      <rs-card>
-        <template #header>
-          <h3 class="text-lg font-semibold">Kategori Maklumat</h3>
-        </template>
         <template #body>
-          <div class="space-y-4">
-            <div class="flex items-center py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Kod:</span>
-              <span class="text-sm text-gray-900">{{ selectedKategori.kod }}</span>
+          <!-- Section Title -->
+          <h3 class="text-lg font-semibold mb-4">Maklumat Kategori</h3>
+          <!-- Top Section: General Category Information -->
+          <div class="mb-8">
+            <div class="space-y-4">
+              <div class="flex items-center">
+                <span class="text-sm font-medium text-gray-600 w-40">Kod:</span>
+                <span class="text-sm text-gray-900">{{ selectedKategori.kod }}</span>
+              </div>
+              
+              <div class="flex items-center">
+                <span class="text-sm font-medium text-gray-600 w-40">Kategori Maklumat:</span>
+                <span class="text-sm text-gray-900">{{ selectedKategori.namaKategori }}</span>
+              </div>
+              
+              <div class="flex items-center">
+                <span class="text-sm font-medium text-gray-600 w-40">Status:</span>
+                <rs-badge :variant="getStatusVariant(selectedKategori.status)">
+                  {{ selectedKategori.status }}
+                </rs-badge>
+              </div>
+              
+              <div class="flex items-center">
+                <span class="text-sm font-medium text-gray-600 w-40">Status data:</span>
+                <span class="text-sm text-gray-900">{{ selectedKategori.statusData }}</span>
+              </div>
+              
+              <div class="flex items-center">
+                <span class="text-sm font-medium text-gray-600 w-40">Tarikh Mula:</span>
+                <span class="text-sm text-gray-900">{{ formatDate(selectedKategori.tarikhMula) }}</span>
+              </div>
+              
+              <div class="flex items-center">
+                <span class="text-sm font-medium text-gray-600 w-40">Tarikh Tamat:</span>
+                <span class="text-sm text-gray-900">{{ selectedKategori.tarikhTamat ? formatDate(selectedKategori.tarikhTamat) : '' }}</span>
+              </div>
+              <div class="flex justify-end pt-2">
+                <rs-button variant="primary" class="px-6 py-3" @click="openEditMaklumatAsas">
+                  <Icon name="mdi:pencil" class="mr-2" /> Kemaskini Kategori Maklumat
+                </rs-button>
+              </div>
             </div>
+          </div>
+
+          <!-- Bottom Section: RUU Table -->
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Maklumat Kelulusan Data (RUU)</h3>
             
-            <div class="flex items-center py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Kategori Maklumat:</span>
-              <span class="text-sm text-gray-900">{{ selectedKategori.namaKategori }}</span>
-            </div>
+            <!-- Show table if data exists -->
+            <rs-table
+              v-if="ruuFields.length > 0"
+              :data="ruuFields"
+              :field="[
+                'namaRuuField',
+                'namaNasField',
+                'kaedahKemaskini',
+                'status',
+                'statusData',
+                'tarikhMula',
+                'tarikhTamat',
+                'tindakan'
+              ]"
+              :columns="[
+                { key: 'namaRuuField', label: 'Nama RUU Field' },
+                { key: 'namaNasField', label: 'Nama NAS Field' },
+                { key: 'kaedahKemaskini', label: 'Kaedah Kemaskini' },
+                { key: 'status', label: 'Status' },
+                { key: 'statusData', label: 'Status data' },
+                { key: 'tarikhMula', label: 'Tarikh Mula' },
+                { key: 'tarikhTamat', label: 'Tarikh Tamat' },
+                { key: 'tindakan', label: 'Tindakan' }
+              ]"
+              :pageSize="10"
+              :showNoColumn="true"
+              :options="{ variant: 'default', hover: true }"
+            >
+              <template v-slot:namaRuuField="data">
+                <span class="font-medium">{{ data.value.namaRuuField }}</span>
+              </template>
+              <template v-slot:namaNasField="data">{{ data.value.namaNasField }}</template>
+              <template v-slot:kaedahKemaskini="data">{{ data.value.kaedahKemaskini }}</template>
+              <template v-slot:status="data">
+                <rs-badge :variant="getStatusVariant(data.value.status)">
+                  {{ data.value.status }}
+                </rs-badge>
+              </template>
+              <template v-slot:statusData="data">{{ data.value.statusData }}</template>
+              <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
+              <template v-slot:tarikhTamat="data">{{ data.value.tarikhTamat ? formatDate(data.value.tarikhTamat) : '' }}</template>
+              <template v-slot:tindakan="data">
+                <rs-button variant="primary" size="sm" class="!px-3 !py-1" @click="openEditRuufield(data.value)">
+                  Kemaskini
+                </rs-button>
+              </template>
+            </rs-table>
             
-            <div class="flex items-center py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Status:</span>
-              <rs-badge :variant="getStatusVariant(selectedKategori.status)">
-                {{ selectedKategori.status }}
-              </rs-badge>
-            </div>
-            
-            <div class="flex items-center py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Status Data:</span>
-              <span class="text-sm text-gray-900">{{ selectedKategori.statusData }}</span>
-            </div>
-            
-            <div class="flex items-center py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Tarikh Mula:</span>
-              <span class="text-sm text-gray-900">{{ formatDate(selectedKategori.tarikhMula) }}</span>
-            </div>
-            
-            <div v-if="selectedKategori.tarikhTamat" class="flex items-center py-2 border-b border-gray-100">
-              <span class="text-sm font-medium text-gray-600 w-40">Tarikh Tamat:</span>
-              <span class="text-sm text-gray-900">{{ formatDate(selectedKategori.tarikhTamat) }}</span>
+            <!-- Show message when no data available -->
+            <div v-else class="text-center py-8">
+              <Icon name="mdi:database-off" class="text-gray-400 mb-4" size="48px" />
+              <h4 class="text-lg font-medium text-gray-900 mb-2">Tiada Data Tersedia</h4>
+              <p class="text-gray-600">Tiada maklumat kelulusan data (RUU) untuk kategori <strong>{{ selectedKategori?.namaKategori }}</strong> pada masa ini.</p>
             </div>
           </div>
         </template>
       </rs-card>
-
-      <!-- Edit Maklumat Asas Button -->
-      <div class="flex justify-end">
-        <rs-button variant="primary" class="px-6 py-3" @click="openEditMaklumatAsas">
-          <Icon name="mdi:pencil" class="mr-2" /> Kemaskini Kategori Maklumat
-        </rs-button>
-      </div>
 
       <!-- Edit Maklumat Asas Modal -->
       <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center">
@@ -132,144 +180,69 @@
         </div>
       </div>
 
-      <!-- Categories Section -->
-      <rs-card v-if="relatedCategories.length > 0">
-        <template #header>
-          <h3 class="text-lg font-semibold">Kategori Berkaitan</h3>
-        </template>
-        <template #body>
-          <rs-table
-            class="mt-2"
-            :data="relatedCategories"
-            :field="[
-              'kategoriMaklumat',
-              'levelKategori',
-              'bil',
-              'indicator',
-              'statusAktif',
-              'statusData',
-              'tarikhMula',
-              'tindakan'
-            ]"
-            :columns="[
-              { key: 'kategoriMaklumat', label: 'Kategori Maklumat' },
-              { key: 'levelKategori', label: 'Level Kategori' },
-              { key: 'bil', label: 'Bil' },
-              { key: 'indicator', label: 'Indicator' },
-              { key: 'statusAktif', label: 'Status Aktif' },
-              { key: 'statusData', label: 'Status Data' },
-              { key: 'tarikhMula', label: 'Tarikh Mula' },
-              { key: 'tindakan', label: 'Tindakan' }
-            ]"
-            :pageSize="10"
-            :showNoColumn="true"
-            :options="{ variant: 'default', hover: true }"
-          >
-            <template v-slot:kategoriMaklumat="data">
-              <span class="font-medium">{{ data.value.kategoriMaklumat }}</span>
-            </template>
-            <template v-slot:levelKategori="data">{{ data.value.levelKategori }}</template>
-            <template v-slot:bil="data">{{ data.value.bil }}</template>
-            <template v-slot:indicator="data">{{ data.value.indicator }}</template>
-            <template v-slot:statusAktif="data">
-              <rs-badge :variant="data.value.statusAktif ? 'success' : 'danger'">
-                {{ data.value.statusAktif ? 'Aktif' : 'Tidak Aktif' }}
-              </rs-badge>
-            </template>
-            <template v-slot:statusData="data">{{ data.value.statusData }}</template>
-            <template v-slot:tarikhMula="data">{{ formatDate(data.value.tarikhMula) }}</template>
-            <template v-slot:tindakan="data">
-              <rs-button variant="primary" size="sm" class="!px-2 !py-1" @click="openEditCategory(data.value)">
-                Kemaskini
-                <Icon name="mdi:pencil" class="ml-1" size="1rem" />
-              </rs-button>
-            </template>
-          </rs-table>
-        </template>
-      </rs-card>
-
-      <!-- Edit Category Modal -->
-      <div v-if="showCategoryModal" class="fixed inset-0 z-50 flex items-center justify-center">
-        <div class="absolute inset-0 bg-black/40" @click="closeEditCategory"></div>
+      <!-- Edit RUU Field Modal -->
+      <div v-if="showRuufieldModal" class="fixed inset-0 z-50 flex items-center justify-center">
+        <div class="absolute inset-0 bg-black/40" @click="closeEditRuufield"></div>
         <div class="relative bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4">
           <div class="px-6 py-4 border-b">
-            <h3 class="text-lg font-semibold">Kemaskini Kategori</h3>
+            <h3 class="text-lg font-semibold">Kemaskini RUU Field</h3>
           </div>
           <div class="px-6 py-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="text-sm font-medium text-gray-700">Kategori Maklumat</label>
-              <input v-model="categoryForm.kategoriMaklumat" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <label class="text-sm font-medium text-gray-700">Nama RUU Field</label>
+              <input v-model="ruufieldForm.namaRuuField" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div>
-              <label class="text-sm font-medium text-gray-700">Level Kategori</label>
-              <input v-model="categoryForm.levelKategori" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div>
-              <label class="text-sm font-medium text-gray-700">Bil</label>
-              <input v-model.number="categoryForm.bil" type="number" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <label class="text-sm font-medium text-gray-700">Nama NAS Field</label>
+              <input v-model="ruufieldForm.namaNasField" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div class="md:col-span-2">
-              <div class="flex items-center justify-between">
-                <label class="text-sm font-medium text-gray-700">Indicator</label>
-                <rs-button size="sm" variant="secondary" class="!px-2 !py-1" @click="addIndicatorRow">
-                  <Icon name="mdi:plus" class="mr-1" /> Tambah Baris
-                </rs-button>
-              </div>
-              <div class="mt-2 space-y-2">
-                <div v-for="(ind, idx) in categoryIndicators" :key="idx" class="flex items-center gap-2">
-                  <input v-model="categoryIndicators[idx]" type="text" class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                  <rs-button size="sm" variant="danger" class="!px-2 !py-1" @click="removeIndicatorRow(idx)">
-                    <Icon name="mdi:delete" />
-                  </rs-button>
-                </div>
-              </div>
+              <label class="text-sm font-medium text-gray-700">Kaedah Kemaskini</label>
+              <input v-model="ruufieldForm.kaedahKemaskini" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div>
-              <label class="text-sm font-medium text-gray-700">Status Aktif</label>
-              <select v-model="categoryForm.statusAktif" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option :value="true">Aktif</option>
-                <option :value="false">Tidak Aktif</option>
+              <label class="text-sm font-medium text-gray-700">Status</label>
+              <select v-model="ruufieldForm.status" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="Aktif">Aktif</option>
+                <option value="Tidak Aktif">Tidak Aktif</option>
+                <option value="Menunggu Kelulusan">Menunggu Kelulusan</option>
               </select>
             </div>
             <div>
               <label class="text-sm font-medium text-gray-700">Status Data</label>
-              <input v-model="categoryForm.statusData" type="text" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <select v-model="ruufieldForm.statusData" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="Draf">Draf</option>
+                <option value="Menunggu Kelulusan">Menunggu Kelulusan</option>
+                <option value="Diluluskan">Diluluskan</option>
+              </select>
             </div>
             <div>
               <label class="text-sm font-medium text-gray-700">Tarikh Mula</label>
-              <input v-model="categoryForm.tarikhMula" type="date" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <input v-model="ruufieldForm.tarikhMula" type="date" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-700">Tarikh Tamat</label>
+              <input v-model="ruufieldForm.tarikhTamat" type="date" class="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
           </div>
           <div class="px-6 py-4 border-t flex justify-end gap-2">
-            <rs-button variant="secondary" @click="closeEditCategory">Batal</rs-button>
-            <rs-button variant="primary" @click="saveCategory">
+            <rs-button variant="secondary" @click="closeEditRuufield">Batal</rs-button>
+            <rs-button variant="primary" @click="saveRuufield">
               <Icon name="mdi:content-save" class="mr-2" /> Simpan
             </rs-button>
           </div>
         </div>
       </div>
 
-      <!-- Action Buttons Card -->
-      <rs-card>
-        <template #body>
-          <div class="flex justify-end gap-3">
-            <rs-button 
-              variant="primary" 
-              @click="navigateTo(`/BF-PRF/KF/RUU/01_01/tambah_kategori?id=${currentId}`)"
-              class="px-6 py-3"
-            >
-              <Icon name="mdi:folder-plus" class="mr-2" /> Tambah Kategori
-            </rs-button>
-            <rs-button 
-              variant="success" 
-              @click="handleHantar"
-              class="px-6 py-3"
-            >
-              <Icon name="mdi:send" class="mr-2" /> Hantar
-            </rs-button>
-          </div>
-        </template>
-      </rs-card>
+      <!-- Navigation Buttons -->
+      <div class="flex justify-between">
+        <rs-button variant="secondary" @click="goBack" class="px-6 py-3">
+          <Icon name="mdi:arrow-left" class="mr-2" /> Kembali
+        </rs-button>
+        <rs-button variant="primary" @click="handleHantar" class="px-6 py-3">
+          <Icon name="mdi:send" class="mr-2" /> Hantar
+        </rs-button>
+      </div>
     </div>
 
     <!-- Not Found State -->
@@ -279,7 +252,7 @@
           <div class="text-center py-8">
             <Icon name="mdi:file-search" class="text-gray-400 mb-4" size="48px" />
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Rekod Tidak Ditemui</h3>
-            <p class="text-gray-600">Maklumat Kategori dengan ID "{{ selectedId }}" tidak ditemui.</p>
+            <p class="text-gray-600">Maklumat Kategori dengan KOD "{{ selectedKod }}" tidak ditemui.</p>
             <rs-button variant="primary" @click="goBack" class="mt-4">
               <Icon name="mdi:arrow-left" class="mr-2" /> Kembali
             </rs-button>
@@ -299,8 +272,8 @@ definePageMeta({
 
 // Get query parameters
 const route = useRoute();
-const selectedId = route.query.id;
-const currentId = computed(() => route.query.id || (allKategoriData.value[0]?.id ?? null));
+let selectedKod = route.query.kod;
+const currentKod = computed(() => route.query.kod || (allKategoriData.value[0]?.kod ?? null));
 
 const breadcrumb = ref([
   {
@@ -325,19 +298,7 @@ const loading = ref(true);
 const error = ref(null);
 const selectedKategori = ref(null);
 const allKategoriData = ref([]);
-const relatedCategories = ref([]);
-const showCategoryModal = ref(false);
-const categoryForm = ref({
-  kategoriMaklumat: '',
-  levelKategori: '',
-  bil: 0,
-  indicator: '',
-  statusAktif: true,
-  statusData: '',
-  tarikhMula: '',
-});
-let editingCategoryIndex = -1;
-const categoryIndicators = ref([]); // array of indicator strings
+const ruuFields = ref([]);
 const showEditModal = ref(false);
 const editForm = ref({
   kod: '',
@@ -347,6 +308,46 @@ const editForm = ref({
   tarikhMula: '',
   tarikhTamat: ''
 });
+const showRuufieldModal = ref(false);
+const ruufieldForm = ref({
+  namaRuuField: '',
+  namaNasField: '',
+  kaedahKemaskini: '',
+  status: 'Aktif',
+  statusData: 'Draf',
+  tarikhMula: '',
+  tarikhTamat: ''
+});
+let editingRuufieldIndex = -1;
+
+// Kategori mapping data (based on BF-PRF/KF/RUU/01_01)
+const kategoriMapping = [
+  { kod: "1", kategori: "Peribadi" },
+  { kod: "2", kategori: "Alamat" },
+  { kod: "3", kategori: "Pendidikan" },
+  { kod: "4", kategori: "Pengislaman" },
+  { kod: "5", kategori: "Perbankan" },
+  { kod: "6", kategori: "Kesihatan" },
+  { kod: "7", kategori: "Kemahiran" },
+  { kod: "8", kategori: "Kediaman/Tempat Tinggal" },
+  { kod: "9", kategori: "Pinjaman Harta" },
+  { kod: "10", kategori: "Pemilikan Aset" },
+  { kod: "11", kategori: "Pekerjaan" },
+  { kod: "12", kategori: "Pendapatan dan Perbelanjaan Seisi Rumah" },
+  { kod: "13", kategori: "Peribadi Tanggungan" },
+  { kod: "14", kategori: "Pengislaman Tanggungan" },
+  { kod: "15", kategori: "Perbankan Tanggungan" },
+  { kod: "16", kategori: "Pendidikan Tanggungan" },
+  { kod: "17", kategori: "Kesihatan Tanggungan" },
+  { kod: "18", kategori: "Kemahiran Tanggungan" },
+  { kod: "19", kategori: "Pekerjaan Tanggungan" },
+];
+
+// Function to get kategori description by kod
+const getKategoriByKod = (kod) => {
+  const mapping = kategoriMapping.find(item => item.kod === kod);
+  return mapping ? mapping.kategori : "Peribadi"; // Default to Peribadi if not found
+};
 
 // Default data (fallback if no data in localStorage)
 const defaultData = [
@@ -361,6 +362,45 @@ const defaultData = [
   },
 ];
 
+// Default data for different categories (matching lihat page exactly)
+const getDefaultDataByKod = (kod) => {
+  // Only Peribadi has data currently
+  if (kod === "1" || kod === "Peribadi") {
+    return [
+      {
+        namaRuuField: "Identification Type",
+        namaNasField: "Jenis ID",
+        kaedahKemaskini: "Update asnaf with approval/verify",
+        status: "Aktif",
+        statusData: "Draf",
+        tarikhMula: "2026-01-01",
+        tarikhTamat: "",
+      },
+      {
+        namaRuuField: "Passport No",
+        namaNasField: "Pengenalan ID",
+        kaedahKemaskini: "Asnaf Review",
+        status: "Aktif",
+        statusData: "Draf",
+        tarikhMula: "2026-01-01",
+        tarikhTamat: "",
+      },
+      {
+        namaRuuField: "MyKad",
+        namaNasField: "Pengenalan ID",
+        kaedahKemaskini: "Asnaf Review",
+        status: "Aktif",
+        statusData: "Draf",
+        tarikhMula: "2026-01-01",
+        tarikhTamat: "",
+      },
+    ];
+  }
+  
+  // For all other categories, return empty array (no data available)
+  return [];
+};
+
 // Function to validate and sanitize data item
 const validateDataItem = (item) => {
   return {
@@ -372,22 +412,51 @@ const validateDataItem = (item) => {
   };
 };
 
-// Function to load related categories
-const loadRelatedCategories = () => {
+// Function to load RUU fields based on selected kategori kod
+const loadRuufields = () => {
   try {
-    const savedCategories = localStorage.getItem('kategoriMaklumatCategories');
-    if (savedCategories && currentId.value) {
-      const allCategories = JSON.parse(savedCategories);
-      // Filter categories that belong to the selected Kategori
-      relatedCategories.value = allCategories.filter(category => 
-        category.idKategori === currentId.value
-      );
+    console.log('Loading RUU fields for kod:', selectedKod);
+    const savedRuufields = localStorage.getItem('ruuFields');
+    if (savedRuufields) {
+      const parsedData = JSON.parse(savedRuufields);
+      // Filter RUU fields by selected kategori kod
+      const filteredData = parsedData.filter(field => field.kategoriKod === selectedKod);
+      console.log('Filtered saved RUU fields for kod', selectedKod, ':', filteredData);
+      
+      if (filteredData.length > 0) {
+        ruuFields.value = filteredData.map(validateDataItem);
+        console.log('Loaded saved RUU fields:', ruuFields.value);
+      } else {
+        // No saved data for this kod, use default data
+        console.log('No saved data for kod', selectedKod, ', using default data');
+        const defaultData = getDefaultDataByKod(selectedKod);
+        console.log('Using default data for kod:', selectedKod, defaultData);
+        ruuFields.value = defaultData.map((item, index) => ({
+          ...item,
+          id: `default_${index + 1}`,
+          kategoriKod: selectedKod
+        }));
+        console.log('Final RUU fields:', ruuFields.value);
+      }
     } else {
-      relatedCategories.value = [];
+      // Use default data for the selected kategori kod and add necessary fields for editing
+      const defaultData = getDefaultDataByKod(selectedKod);
+      console.log('Using default data for kod:', selectedKod, defaultData);
+      ruuFields.value = defaultData.map((item, index) => ({
+        ...item,
+        id: `default_${index + 1}`,
+        kategoriKod: selectedKod
+      }));
+      console.log('Final RUU fields:', ruuFields.value);
     }
   } catch (error) {
-    console.error('Error loading categories:', error);
-    relatedCategories.value = [];
+    console.error('Error loading RUU fields:', error);
+    const defaultData = getDefaultDataByKod(selectedKod);
+    ruuFields.value = defaultData.map((item, index) => ({
+      ...item,
+      id: `default_${index + 1}`,
+      kategoriKod: selectedKod
+    }));
   }
 };
 
@@ -421,27 +490,76 @@ const loadData = () => {
       allKategoriData.value = defaultData;
     }
     
-    // Determine ID to use (route id or fallback to first record)
-    const idToUse = route.query.id || (allKategoriData.value[0]?.id ?? null);
-    if (idToUse) {
-      selectedKategori.value = allKategoriData.value.find(item => item.id === idToUse) || null;
-      if (!selectedKategori.value) {
-        error.value = `Rekod dengan ID "${idToUse}" tidak ditemui.`;
-      } else {
-        // Load related categories
-        loadRelatedCategories();
-        // Seed edit form with current values
-        editForm.value = {
-          kod: selectedKategori.value.kod || '',
-          namaKategori: selectedKategori.value.namaKategori || '',
-          status: selectedKategori.value.status || 'Aktif',
-          statusData: selectedKategori.value.statusData || '',
-          tarikhMula: selectedKategori.value.tarikhMula || '',
-          tarikhTamat: selectedKategori.value.tarikhTamat || ''
-        };
-      }
+    // Determine KOD to use (route kod or fallback to first record)
+    const kodToUse = route.query.kod || "1";
+    console.log('Loading data for kod:', kodToUse);
+    console.log('Available kategori data:', allKategoriData.value);
+    
+    if (kodToUse) {
+      // Update selectedKod before loading RUU fields
+      selectedKod = kodToUse;
+      
+      // Create selectedKategori from mapping if not found in saved data
+      const foundKategori = allKategoriData.value.find(item => item.kod === kodToUse);
+      console.log('Found kategori:', foundKategori);
+      
+      selectedKategori.value = foundKategori || {
+        id: kodToUse,
+        kod: kodToUse,
+        namaKategori: getKategoriByKod(kodToUse),
+        status: "Tidak Aktif",
+        statusData: "Draf",
+        tarikhMula: "2026-01-01",
+        tarikhTamat: ""
+      };
+      
+      console.log('Selected kategori:', selectedKategori.value);
+      
+      // Load RUU fields for this specific kategori
+      loadRuufields();
+      // Seed edit form with current values
+      editForm.value = {
+        kod: selectedKategori.value.kod || '',
+        namaKategori: selectedKategori.value.namaKategori || '',
+        status: selectedKategori.value.status || 'Aktif',
+        statusData: selectedKategori.value.statusData || '',
+        tarikhMula: selectedKategori.value.tarikhMula || '',
+        tarikhTamat: selectedKategori.value.tarikhTamat || ''
+      };
     } else {
-      error.value = "Tiada data untuk dipaparkan.";
+      error.value = "Tiada KOD untuk dipaparkan.";
+    }
+    
+    // Ensure selectedKategori is always set for any valid kod
+    if (!selectedKategori.value && kodToUse) {
+      selectedKategori.value = {
+        id: kodToUse,
+        kod: kodToUse,
+        namaKategori: getKategoriByKod(kodToUse),
+        status: "Tidak Aktif",
+        statusData: "Draf",
+        tarikhMula: "2026-01-01",
+        tarikhTamat: ""
+      };
+      selectedKod = kodToUse;
+      loadRuufields();
+      console.log('Fallback selectedKategori set:', selectedKategori.value);
+    }
+    
+    // Final check to ensure selectedKategori is set
+    if (!selectedKategori.value && route.query.kod) {
+      console.log('Final fallback: Setting selectedKategori for kod:', route.query.kod);
+      selectedKategori.value = {
+        id: route.query.kod,
+        kod: route.query.kod,
+        namaKategori: getKategoriByKod(route.query.kod),
+        status: "Tidak Aktif",
+        statusData: "Draf",
+        tarikhMula: "2026-01-01",
+        tarikhTamat: ""
+      };
+      selectedKod = route.query.kod;
+      loadRuufields();
     }
     
   } catch (error) {
@@ -530,76 +648,48 @@ const handleHantar = () => {
   }
 };
 
-// Category edit handlers
-const openEditCategory = (row) => {
-  if (!relatedCategories.value) return;
-  editingCategoryIndex = relatedCategories.value.findIndex(
-    (c) => c.kategoriMaklumat === row.kategoriMaklumat && c.levelKategori === row.levelKategori && c.bil === row.bil
+// RUU field edit handlers
+const openEditRuufield = (row) => {
+  if (!ruuFields.value) return;
+  editingRuufieldIndex = ruuFields.value.findIndex(
+    (r) => r.id === row.id
   );
-  categoryForm.value = { ...row };
-  // Seed indicators array (split by comma if string)
-  if (Array.isArray(row.indicator)) {
-    categoryIndicators.value = [...row.indicator];
-  } else if (typeof row.indicator === 'string' && row.indicator.trim() !== '') {
-    // Split by semicolon or comma, support "ff1; ff2" or "ff1, ff2"
-    categoryIndicators.value = row.indicator
-      .split(/[;,]+/)
-      .map(s => s.trim())
-      .filter(Boolean);
-  } else {
-    categoryIndicators.value = [''];
-  }
-  showCategoryModal.value = true;
+  ruufieldForm.value = { ...row };
+  showRuufieldModal.value = true;
 };
 
-const closeEditCategory = () => {
-  showCategoryModal.value = false;
-  editingCategoryIndex = -1;
+const closeEditRuufield = () => {
+  showRuufieldModal.value = false;
+  editingRuufieldIndex = -1;
 };
 
-const saveCategory = () => {
-  if (editingCategoryIndex < 0) return;
-  // Update in-memory
-  const indicatorValue = categoryIndicators.value
-    .map(v => (v || '').toString().trim())
-    .filter(Boolean)
-    .join('; '); // persist using semicolon to match existing data format
-  relatedCategories.value[editingCategoryIndex] = { ...categoryForm.value, indicator: indicatorValue };
+const saveRuufield = () => {
+  if (editingRuufieldIndex < 0) return;
+  // Update in-memory with kategoriKod
+  ruuFields.value[editingRuufieldIndex] = { ...ruufieldForm.value, kategoriKod: selectedKod };
 
-  // Persist to localStorage (preserve other entries for other IDs if present)
+  // Persist to localStorage - merge with existing data
   try {
-    const savedCategoriesRaw = localStorage.getItem('kategoriMaklumatCategories');
-    let all = [];
-    if (savedCategoriesRaw) {
-      all = JSON.parse(savedCategoriesRaw);
-      // Remove entries for this selectedId
-      all = all.filter((c) => c.idKategori !== currentId.value);
+    const savedRuufields = localStorage.getItem('ruuFields');
+    let allRuufields = [];
+    if (savedRuufields) {
+      allRuufields = JSON.parse(savedRuufields);
+      // Remove existing entries for this kategoriKod
+      allRuufields = allRuufields.filter(field => field.kategoriKod !== selectedKod);
     }
-    // Append updated entries with the same idKategori
-    const updatedForId = relatedCategories.value.map((c) => ({ ...c, idKategori: currentId.value }));
-    const merged = [...all, ...updatedForId];
-    localStorage.setItem('kategoriMaklumatCategories', JSON.stringify(merged));
+    // Add updated entries for this kategoriKod
+    const updatedForKod = ruuFields.value.map(field => ({ ...field, kategoriKod: selectedKod }));
+    const merged = [...allRuufields, ...updatedForKod];
+    localStorage.setItem('ruuFields', JSON.stringify(merged));
 
     const { $toast } = useNuxtApp();
-    if ($toast) $toast.success('Kategori berjaya dikemaskini');
+    if ($toast) $toast.success('RUU field berjaya dikemaskini');
   } catch (e) {
-    console.error('Gagal menyimpan kategori:', e);
+    console.error('Gagal menyimpan RUU field:', e);
   }
 
-  showCategoryModal.value = false;
-  editingCategoryIndex = -1;
-};
-
-const addIndicatorRow = () => {
-  categoryIndicators.value.push('');
-};
-
-const removeIndicatorRow = (index) => {
-  if (categoryIndicators.value.length <= 1) {
-    categoryIndicators.value[0] = '';
-    return;
-  }
-  categoryIndicators.value.splice(index, 1);
+  showRuufieldModal.value = false;
+  editingRuufieldIndex = -1;
 };
 
 // Make sure the data loads when component mounts

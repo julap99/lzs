@@ -148,9 +148,12 @@
   </template>
   
   <script setup>
-  import { ref, nextTick, onMounted } from "vue";
+  import { ref, nextTick, onMounted, computed, watch } from "vue";
   
   definePageMeta({ title: "Konfigurasi Kelulusan Data (RUU)" });
+  
+  // Get route parameters
+  const route = useRoute();
   
   /* ---------- Breadcrumb ---------- */
   const breadcrumb = ref([
@@ -162,6 +165,54 @@
   const tableKey = ref(0);
   const ruuFields = ref([]);
   const selectedKategori = ref("");
+  const allData = ref([]);
+  
+  // Function to get kategori name by kod
+  const getKategoriByKod = (kod) => {
+    // First check hardcoded mapping
+    const mapping = {
+      "1": "Peribadi",
+      "2": "Alamat", 
+      "3": "Pendidikan",
+      "4": "Pengislaman",
+      "5": "Perbankan",
+      "6": "Kesihatan",
+      "7": "Kemahiran",
+      "8": "Kediaman/Tempat Tinggal",
+      "9": "Pinjaman Harta",
+      "10": "Pemilikan Aset",
+      "11": "Pekerjaan",
+      "12": "Pendapatan dan Perbelanjaan Seisi Rumah",
+      "13": "Peribadi Tanggungan",
+      "14": "Pengislaman Tanggungan",
+      "15": "Perbankan Tanggungan",
+      "16": "Pendidikan Tanggungan",
+      "17": "Kesihatan Tanggungan",
+      "18": "Kemahiran Tanggungan",
+      "19": "Pekerjaan Tanggungan"
+    };
+    
+    // If found in hardcoded mapping, return it
+    if (mapping[kod]) {
+      return mapping[kod];
+    }
+    
+    // If not found, check saved categories from localStorage
+    try {
+      const savedCategories = localStorage.getItem('kategoriMaklumat');
+      if (savedCategories) {
+        const parsedCategories = JSON.parse(savedCategories);
+        const foundCategory = parsedCategories.find(cat => cat.kod === kod);
+        if (foundCategory) {
+          return foundCategory.namaKategori;
+        }
+      }
+    } catch (error) {
+      console.error('Error loading saved categories:', error);
+    }
+    
+    return `Kategori ${kod}`; // Fallback to show the kod if not found
+  };
   
   /* ---------- Dropdown options ---------- */
   const kategoriOptions = ref([
@@ -603,9 +654,79 @@
     console.log('Data sent for EOAD review:', ruuFields.value);
   };
   
-  // Initialize with empty data
+  // Computed property to filter data by selected kategori
+  const filteredData = computed(() => {
+    if (!selectedKategori.value) return allData.value;
+    return allData.value.filter((item) => {
+      const kategori = item.kategori || item.namaNasField || "";
+      return kategori === selectedKategori.value;
+    });
+  });
+  
+  // Function to load data from localStorage
+  const loadData = () => {
+    try {
+      const savedData = localStorage.getItem('kelulusanDataRuu');
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        // Validate and sanitize parsed data
+        const validatedData = parsedData.map((item, idx) => ({
+          ...item,
+          orderIndex: typeof item.orderIndex === 'number' ? item.orderIndex : (idx + 1),
+        }));
+        
+        // Sort by order index and set data
+        allData.value = validatedData.sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0));
+        
+        // Update ruuFields with filtered data
+        console.log('01_02 Page - All data items:', allData.value);
+        console.log('01_02 Page - Selected kategori:', selectedKategori.value);
+        
+        ruuFields.value = allData.value.filter((item) => {
+          const kategori = item.kategori || item.namaNasField || "";
+          console.log('01_02 Page - Item kategori:', kategori, 'Matches:', kategori === selectedKategori.value);
+          return kategori === selectedKategori.value;
+        });
+        
+        console.log('01_02 Page - Filtered ruuFields:', ruuFields.value);
+      } else {
+        allData.value = [];
+        ruuFields.value = [];
+      }
+    } catch (error) {
+      console.error('Error loading data:', error);
+      allData.value = [];
+      ruuFields.value = [];
+    }
+  };
+  
+  // Watch for category selection changes and update table data
+  watch(selectedKategori, (newCategory) => {
+    // The filteredData computed property will handle the filtering
+    ruuFields.value = filteredData.value;
+  });
+  
+  // Initialize with data based on kod parameter
   onMounted(() => {
-    ruuFields.value = [];
+    const kod = route.query.kod;
+    console.log('01_02 Page - Kod from URL:', kod);
+    
+    if (kod) {
+      const kategoriName = getKategoriByKod(kod);
+      console.log('01_02 Page - Resolved kategori name:', kategoriName);
+      selectedKategori.value = kategoriName;
+      loadData();
+      
+      // Force update ruuFields after loading data
+      nextTick(() => {
+        console.log('01_02 Page - All data loaded:', allData.value.length);
+        console.log('01_02 Page - Filtered data:', filteredData.value.length);
+        ruuFields.value = filteredData.value;
+        console.log('01_02 Page - ruuFields updated:', ruuFields.value.length);
+      });
+    } else {
+      ruuFields.value = [];
+    }
   });
   </script>
   

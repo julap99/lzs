@@ -464,7 +464,7 @@
 
             <!-- Existing uploaded documents -->
             <div v-if="documentList.length > 0" class="mt-6 space-y-3">
-              <h4 class="text-sm font-medium text-gray-700">Dokumen sedia ada:</h4>
+              <h4 class="text-sm font-medium text-gray-700">Dokumen yang telah dimuat naik:</h4>
             <div
               v-for="(document, index) in documentList"
                 :key="document.id || index"

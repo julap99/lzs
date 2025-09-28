@@ -130,14 +130,14 @@
                     </rs-badge>
                   </template>
                   <template v-slot:tindakan="{ text }">
-                    <div class="flex space-x-2">
-                      <rs-button
-                        variant="primary"
-                        size="sm"
+                    <div class="flex space-x-3">
+                      <button
                         @click="navigateToUpdate(text.id)"
+                        title="Kemaskini"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
-                        Kemaskini Profil
-                      </rs-button>
+                        <Icon name="ic:outline-edit" size="20" class="text-warning" />
+                      </button>
                     </div>
                   </template>
                 </rs-table>

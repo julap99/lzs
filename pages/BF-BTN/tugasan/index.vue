@@ -1081,7 +1081,7 @@ const siasatanData = ref([
     tindakan: "bantuan/siasatan/siasatan-eoad-2/NAS-2025-0004",
   },
   {
-    pemohon: "Faridah binti Rahman (881015-12-7890)",
+    pemohon: "Masjid At-Taqwa",
     kariah: "Masjid At-Taqwa",
     daerah: "Kuala Selangor",
     bilanganBantuan: 1,
@@ -1163,6 +1163,15 @@ const semakanData = ref([
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     noRujukan: "NAS-2025-0006",
     tindakan: "bantuan/semakan/NAS-2025-0006",
+  },
+  {
+    pemohon: "Majlis Agama Islam Selangor (MAIS) (254900406XLRQPZSC186)",
+    kariah: "Masjid Bandar Utama",
+    daerah: "Shah Alam",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0007",
+    tindakan: "bantuan/semakan/NAS-2025-0007",
   },
 ]);
 
