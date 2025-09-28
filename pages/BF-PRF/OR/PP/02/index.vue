@@ -1023,9 +1023,9 @@ const jenisMasjidOptions = [
 
 // BA Requirement 3: Updated computed properties for conditional field visibility
 const showKariahField = computed(() => {
-  // Show kariah field only for Masjid and Surau organization types
+  // Show kariah field only for Surau organization type (exclude Masjid)
   return formData.value.organizationType && 
-         ['masjid', 'surau'].includes(formData.value.organizationType);
+         formData.value.organizationType === 'surau';
 });
 
 const showZone = computed(() => {
