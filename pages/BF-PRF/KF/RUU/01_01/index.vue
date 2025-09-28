@@ -7,7 +7,7 @@
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Senarai Maklumat Kelulusan Data (RUU)</h2>
           <div class="flex items-center gap-2">
-            <rs-button variant="primary" @click="navigateTo('/BF-PRF/KF/RUU/01_01/tambah_kategori')">
+            <rs-button variant="primary" @click="handleTambahKategori">
               <Icon name="material-symbols:add" class="mr-1" /> Tambah Kategori Maklumat
             </rs-button>
             <rs-button variant="secondary" @click="navigateTo(`/BF-PRF/KF/RUU/01_02/01_02_lihat?kod=${getKodForKategori(selectedKategori)}`)">
@@ -110,11 +110,13 @@ const kategoriOptions = ref([
 ]);
 
 const filteredData = computed(() => {
-  // Only show data for "Peribadi" category, empty for all other categories
-  if (selectedKategori.value === "Peribadi") {
-    return allData.value;
-  }
-  return []; // Empty array for all other categories
+  // Show data for the selected category
+  if (!selectedKategori.value) return allData.value;
+  return allData.value.filter((item) => {
+    // Prefer explicit kategori if present; fallback to legacy field
+    const kategori = item.kategori || item.namaNasField || "";
+    return kategori === selectedKategori.value;
+  });
 });
 
 // Helper function to get kod for a given kategori
@@ -205,9 +207,23 @@ const loadSavedCategories = () => {
 // Function to load data from localStorage
 const loadData = () => {
   try {
-    // Only load default Peribadi data - other categories will be empty
-    allData.value = defaultData;
-    kelulusanDataRuu.value = defaultData;
+    const savedData = localStorage.getItem('kelulusanDataRuu');
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      // Validate and sanitize parsed data
+      const validatedData = parsedData.map((item, idx) => ({
+        ...item,
+        orderIndex: typeof item.orderIndex === 'number' ? item.orderIndex : (idx + 1),
+      }));
+      
+      // Sort by order index and set data
+      allData.value = validatedData.sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0));
+      kelulusanDataRuu.value = allData.value;
+    } else {
+      // Fallback to default data if no saved data
+      allData.value = defaultData;
+      kelulusanDataRuu.value = defaultData;
+    }
   } catch (error) {
     console.error('Error loading data:', error);
     allData.value = defaultData;
@@ -224,11 +240,7 @@ const pendingApprovalCount = computed(() => {
 
 // Watch for category selection changes and update table data
 watch(selectedKategori, (newCategory) => {
-  if (newCategory === "Peribadi") {
-    kelulusanDataRuu.value = allData.value;
-  } else {
-    kelulusanDataRuu.value = []; // Empty for all other categories
-  }
+  // The filteredData computed property will handle the filtering
   refreshTable();
 });
 
@@ -243,8 +255,6 @@ onMounted(() => {
 onActivated(() => {
   loadSavedCategories();
   loadData();
-  // Reset to Peribadi category when returning to the page
-  selectedKategori.value = "Peribadi";
   refreshTable();
 });
 
@@ -303,10 +313,22 @@ const getStatusVariant = (status) => {
       return "danger";
     case "Menunggu Kelulusan":
       return "warning";
+    case "Menunggu Semakan":
+      return "warning";
     case "Draf":
       return "info";
     default:
       return "default";
   }
+};
+
+// Function to handle Tambah Kategori Maklumat button click
+const handleTambahKategori = () => {
+  // Clear any saved form data from localStorage
+  localStorage.removeItem('kategoriMaklumatForm');
+  console.log('Cleared saved form data from localStorage');
+  
+  // Navigate to the form page
+  navigateTo('/BF-PRF/KF/RUU/01_01/tambah_kategori');
 };
 </script>

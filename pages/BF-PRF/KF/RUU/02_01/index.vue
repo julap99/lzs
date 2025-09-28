@@ -7,10 +7,10 @@
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold">Senarai Maklumat Kelulusan Data (RUU)</h2>
             <div class="flex items-center gap-2">
-              <rs-button variant="secondary" @click="navigateTo(`/BF-PRF/KF/RUU/02_01/lihat?kod=${selectedKategori === 'Peribadi' ? 1 : encodeURIComponent(selectedKategori)}`)">
+              <rs-button variant="secondary" @click="navigateTo(`/BF-PRF/KF/RUU/02_01/lihat?kod=${getKodForKategori(selectedKategori)}`)">
                 <Icon name="mdi:eye" class="mr-1" /> Lihat
               </rs-button>
-              <rs-button variant="primary" @click="navigateTo(`/BF-PRF/KF/RUU/02_01/kelulusan?kod=${selectedKategori === 'Peribadi' ? 1 : encodeURIComponent(selectedKategori)}`)">
+              <rs-button variant="primary" @click="navigateTo(`/BF-PRF/KF/RUU/02_01/kelulusan?kod=${getKodForKategori(selectedKategori)}`)">
                 <Icon name="mdi:check-circle" class="mr-1" /> Kelulusan
               </rs-button>
             </div>
@@ -58,7 +58,8 @@
   
   <script setup>
   import { ref, computed, onMounted, onActivated, nextTick } from "vue";
-  
+  import { useRoute } from 'vue-router'
+
   definePageMeta({
     title: "Konfigurasi Kelulusan Data (RUU)",
   });
@@ -112,7 +113,7 @@
     });
   });
   
-  // Default data (fallback if no data in localStorage)
+  // Default data (fallback only for kod=1/Peribadi)
   const defaultData = [
     {
       namaRuuField: "Identification Type",
@@ -140,6 +141,35 @@
     },
   ];
   
+  // url params
+  const route = useRoute();
+
+  // Map kod -> kategori helper
+  const getKategoriFromKod = (kod) => {
+    const map = {
+      "1": "Peribadi",
+      "2": "Alamat",
+      "3": "Pendidikan",
+      "4": "Pengislaman",
+      "5": "Perbankan",
+      "6": "Kesihatan",
+      "7": "Kemahiran",
+      "8": "Kediaman/Tempat Tinggal",
+      "9": "Pinjaman Harta",
+      "10": "Pemilikan Aset",
+      "11": "Pekerjaan",
+      "12": "Pendapatan dan Perbelanjaan Seisi Rumah",
+      "13": "Peribadi Tanggungan",
+      "14": "Pengislaman Tanggungan",
+      "15": "Perbankan Tanggungan",
+      "16": "Pendidikan Tanggungan",
+      "17": "Kesihatan Tanggungan",
+      "18": "Kemahiran Tanggungan",
+      "19": "Pekerjaan Tanggungan",
+    };
+    return map[kod] || "Peribadi";
+  };
+  
   // Function to validate and sanitize data item
   const validateDataItem = (item) => {
     return {
@@ -154,35 +184,38 @@
     };
   };
   
-  // Function to load data from localStorage
+  // Function to load data from localStorage (default only for kod=1)
   const loadData = () => {
     try {
       const savedData = localStorage.getItem('kelulusanDataRuu');
+      const currentKod = route.query.kod ? String(route.query.kod) : '1';
+
       if (savedData) {
         const parsedData = JSON.parse(savedData);
         // Validate and sanitize parsed data
         const validatedData = parsedData.map(validateDataItem);
-        
-        // Merge with default data, giving priority to saved data
-        const mergedData = [...defaultData];
+
+        // Base array: include defaults only when kod === '1'
+        const mergedData = currentKod === '1' ? [...defaultData] : [];
+
         validatedData.forEach(savedItem => {
-          // Check if item already exists in default data
+          // Replace/append saved items
           const existingIndex = mergedData.findIndex(item => item.idRuu === savedItem.idRuu);
           if (existingIndex >= 0) {
-            // Replace existing item
             mergedData[existingIndex] = validateDataItem(savedItem);
           } else {
-            // Add new item
             mergedData.push(validateDataItem(savedItem));
           }
         });
+
         kelulusanDataRuu.value = mergedData;
       } else {
-        kelulusanDataRuu.value = defaultData;
+        // No saved data: show defaults only for kod === '1'
+        kelulusanDataRuu.value = ( (route.query.kod ? String(route.query.kod) : '1') === '1') ? defaultData : [];
       }
     } catch (error) {
       console.error('Error loading data:', error);
-      kelulusanDataRuu.value = defaultData;
+      kelulusanDataRuu.value = ( (route.query.kod ? String(route.query.kod) : '1') === '1') ? defaultData : [];
     }
   };
   
@@ -195,6 +228,10 @@
   
   // Make sure the table refreshes when component mounts
   onMounted(() => {
+    // Set selected kategori based on url kod (default Peribadi)
+    const currentKod = route.query.kod ? String(route.query.kod) : '1';
+    selectedKategori.value = getKategoriFromKod(currentKod);
+
     loadData();
     refreshTable();
   });
@@ -265,6 +302,32 @@
       default:
         return "default";
     }
+  };
+
+  // Helper function to get kod for a given kategori
+  const getKodForKategori = (kategori) => {
+    const kategoriMapping = {
+      "Peribadi": "1",
+      "Alamat": "2",
+      "Pendidikan": "3",
+      "Pengislaman": "4",
+      "Perbankan": "5",
+      "Kesihatan": "6",
+      "Kemahiran": "7",
+      "Kediaman/Tempat Tinggal": "8",
+      "Pinjaman Harta": "9",
+      "Pemilikan Aset": "10",
+      "Pekerjaan": "11",
+      "Pendapatan dan Perbelanjaan Seisi Rumah": "12",
+      "Peribadi Tanggungan": "13",
+      "Pengislaman Tanggungan": "14",
+      "Perbankan Tanggungan": "15",
+      "Pendidikan Tanggungan": "16",
+      "Kesihatan Tanggungan": "17",
+      "Kemahiran Tanggungan": "18",
+      "Pekerjaan Tanggungan": "19"
+    };
+    return kategoriMapping[kategori] || "1"; // Default to "1" if not found
   };
   </script>
   

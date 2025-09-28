@@ -25,42 +25,44 @@
 
               <!-- Step 1: Maklumat Peribadi -->
               <FormKit v-if="currentStepA === 1" type="form" :actions="false" @submit="nextStepA">
-                <h3 class="text-lg font-semibold mb-4">A. Maklumat Peribadi Asnaf</h3>
-                <h3 class="text-lg font-semibold mb-4">Maklumat Peribadi</h3>
+                <rs-collapse ref="peribadiCollapse" class="mb-4">
+                  <rs-collapse-item :open="isPeribadiAsnafOpen" type="card" title="A. Maklumat Peribadi Asnaf">
+                    <div>
+                      <h3 class="text-lg font-semibold mb-4">Maklumat Peribadi</h3>
 
-                <FormKit type="text" name="kategori_asnaf" label="Kategori Asnaf" value="Miskin" readonly="true" />
+                      <FormKit type="text" name="kategori_asnaf" label="Kategori Asnaf" value="Miskin" readonly="true" />
 
-                <div class="mb-6">
-                  <h4 class="text-md font-medium mb-3">Maklumat Peribadi</h4>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormKit readonly="true" type="select" name="jenis_id" label="Jenis ID" :options="[
-                      { label: 'MyKad', value: 'mykad' },
-                      { label: 'Foreign ID', value: 'foreign_id' },
-                    ]" v-model="formDataPRF.jenis_id" />
+                      <div class="mb-6">
+                        <h4 class="text-md font-medium mb-3">Maklumat Peribadi</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormKit readonly="true" type="select" name="jenis_id" label="Jenis ID" :options="[
+                            { label: 'MyKad', value: 'mykad' },
+                            { label: 'Foreign ID', value: 'foreign_id' },
+                          ]" v-model="formDataPRF.jenis_id" />
 
-                    <FormKit readonly="true" type="text" name="id_pengenalan" label="ID Pengenalan" v-model="formDataPRF.no_pengenalan" />
+                          <FormKit readonly="true" type="text" name="id_pengenalan" label="ID Pengenalan" v-model="formDataPRF.no_pengenalan" />
 
-                    <FormKit v-if="formDataPRF.jenis_id" readonly="true" type="file" name="dokumen_id" :label="`Upload ${formDataPRF.jenis_id}`" accept=".pdf,.jpg,.jpeg,.png" v-model="formDataPRF.dokumen_id" />
+                          <FormKit v-if="formDataPRF.jenis_id" readonly="true" type="file" name="dokumen_id" :label="`Upload ${formDataPRF.jenis_id}`" accept=".pdf,.jpg,.jpeg,.png" v-model="formDataPRF.dokumen_id" />
 
-                    <FormKit type="text" name="nama" label="Nama" v-model="formDataPRF.nama" />
+                          <FormKit type="text" name="nama" label="Nama" v-model="formDataPRF.nama" />
 
-                    <FormKit type="select" name="warganegara" label="Warganegara" :options="['Malaysia', 'Lain-lain']" v-model="formDataPRF.warganegara" />
+                          <FormKit type="select" name="warganegara" label="Warganegara" :options="['Malaysia', 'Lain-lain']" v-model="formDataPRF.warganegara" />
 
-                    <FormKit v-if="formDataPRF.warganegara === 'Lain-lain'" type="file" name="lain_warganegara" label="Lain-lain Warganegara" accept=".pdf,.jpg,.jpeg,.png" v-model="formDataPRF.lain_warganegara" />
+                          <FormKit v-if="formDataPRF.warganegara === 'Lain-lain'" type="file" name="lain_warganegara" label="Lain-lain Warganegara" accept=".pdf,.jpg,.jpeg,.png" v-model="formDataPRF.lain_warganegara" />
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" v-if="formDataPRF.warganegara === 'Lain-lain'">
-                      <div class="space-y-2">
-                        <label class="block text-sm font-medium text-black-700">Taraf Penduduk Tetap</label>
-                        <FormKit type="radio" name="taraf_penduduk" :options="[{ label: 'Ya', value: 'Y' }, { label: 'Tidak', value: 'N' }]" v-model="formDataPRF.taraf_penduduk" />
-                  </div>
-                </div>
+                          <div class="grid grid-cols-1 md:grid-cols-2 gap-4" v-if="formDataPRF.warganegara === 'Lain-lain'">
+                            <div class="space-y-2">
+                              <label class="block text-sm font-medium text-black-700">Taraf Penduduk Tetap</label>
+                              <FormKit type="radio" name="taraf_penduduk" :options="[{ label: 'Ya', value: 'Y' }, { label: 'Tidak', value: 'N' }]" v-model="formDataPRF.taraf_penduduk" />
+                            </div>
+                          </div>
 
-                    <FormKit v-if="formDataPRF.warganegara === 'Lain-lain'" type="text" name="nopassportlama" label="No Passport Lama" v-model="formDataPRF.nopassportlama" />
+                          <FormKit v-if="formDataPRF.warganegara === 'Lain-lain'" type="text" name="nopassportlama" label="No Passport Lama" v-model="formDataPRF.nopassportlama" />
 
-                    <FormKit v-if="formDataPRF.warganegara === 'Lain-lain' && formDataPRF.jenis_id === 'foreign_id'" type="date" name="passportStartDate" label="Tarikh mula passport" v-model="formDataPRF.passportStartDate" />
-                    <FormKit v-if="formDataPRF.warganegara === 'Lain-lain' && formDataPRF.jenis_id === 'foreign_id'" type="date" name="passportEndDate" label="Tarikh tamat passport" v-model="formDataPRF.passportEndDate" />
-                </div>
-              </div>
+                          <FormKit v-if="formDataPRF.warganegara === 'Lain-lain' && formDataPRF.jenis_id === 'foreign_id'" type="date" name="passportStartDate" label="Tarikh mula passport" v-model="formDataPRF.passportStartDate" />
+                          <FormKit v-if="formDataPRF.warganegara === 'Lain-lain' && formDataPRF.jenis_id === 'foreign_id'" type="date" name="passportEndDate" label="Tarikh tamat passport" v-model="formDataPRF.passportEndDate" />
+                        </div>
+                      </div>
 
                 <div class="mb-6">
                   <h4 class="text-md font-medium mb-3">Butiran Peribadi</h4>
@@ -93,13 +95,363 @@
                   </div>
                 </div>
 
-                
+              
+                    </div>
+                  </rs-collapse-item>
+                </rs-collapse>
               </FormKit>
 
               <rs-collapse class="mt-6">
 
+              
+
+              
+
+              <!-- Maklumat Peribadi Tanggungan (moved) -->
+              <rs-collapse-item v-if="false" type="card" title="Maklumat Peribadi Tanggungan">
+                <div class="p-4 space-y-6">
+                  <div v-if="tanggunganList.length === 0" class="text-sm text-gray-600">Tiada tanggungan direkodkan.</div>
+                  <div v-else>
+                    <div v-for="(tg, idx) in tanggunganList" :key="`tg-personal-${idx}`" class="mb-8 p-4 border rounded-lg bg-white">
+                      <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-semibold text-gray-900">Tanggungan {{ idx + 1 }}</h4>
+                        <rs-badge variant="secondary">{{ tg.hubungan_pemohon || '-' }}</rs-badge>
+                      </div>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormKit readonly="true" type="select" :name="`tg${idx}Hubungan`" label="Hubungan dengan Pemohon/Asnaf" :options="['Pasangan Pemohon','Isteri Kedua','Isteri Ketiga','Isteri Keempat','Ipar','Abang','Bapa','Ibu','Kakak','Adik','Anak','Cucu','Bapa Mertua','Ibu Mertua','Lain-lain']" v-model="tg.hubungan_pemohon" />
+                        <FormKit v-if="tg.hubungan_pemohon === 'Lain-lain'" readonly="true" type="text" :name="`tg${idx}LainHubungan`" label="Lain-lain Hubungan" v-model="tg.lain_lain_hubungan" />
+                        <FormKit readonly="true" type="text" :name="`tg${idx}Nama`" label="Nama Mengikut Dokumen Pengenalan" v-model="tg.nama_tanggungan" />
+                        <FormKit readonly="true" type="select" :name="`tg${idx}JenisPengenalan`" label="Jenis Pengenalan" :options="[{ label: 'MyKad', value: 'MyKad' }, { label: 'ForeignId', value: 'ForeignId' }]" v-model="tg.jenis_pengenalan_tanggungan" />
+                        <FormKit readonly="true" type="text" :name="`tg${idx}IdTanggungan`" label="Pengenalan ID Tanggungan" v-model="tg.pengenalan_id_tanggungan" />
+                        <FormKit readonly="true" type="file" :name="`tg${idx}DokumenId`" label="Upload Dokumen Nombor ID" accept=".pdf,.jpg,.jpeg,.png" v-model="tg.dokumen_nombor_id" />
+                        <FormKit readonly="true" type="select" :name="`tg${idx}Warganegara`" label="Warganegara" :options="[{ label: 'Malaysia', value: 'Malaysia' }, { label: 'Lain-lain', value: 'Lain-lain' }]" v-model="tg.warganegara_tanggungan" />
+                        <FormKit readonly="true" type="date" :name="`tg${idx}TarikhLahir`" label="Tarikh Lahir (DD/MM/YYYY)" v-model="tg.tarikh_lahir_tanggungan" />
+                        <FormKit readonly="true" type="select" :name="`tg${idx}Jantina`" label="Jantina" :options="[{ label: 'Lelaki', value: 'Lelaki' }, { label: 'Perempuan', value: 'Perempuan' }]" v-model="tg.jantina_tanggungan" />
+                        <FormKit readonly="true" type="text" :name="`tg${idx}Umur`" label="Umur" v-model="tg.umur_tanggungan" />
+                        <FormKit readonly="true" type="text" :name="`tg${idx}TempatLahir`" label="Tempat Lahir" v-model="tg.tempat_lahir_tanggungan" />
+                        <FormKit readonly="true" type="select" :name="`tg${idx}StatusPerkahwinan`" label="Status Perkahwinan" :options="[{ label: 'Bujang', value: 'Bujang' }, { label: 'Berkahwin', value: 'Berkahwin' }, { label: 'Lain-lain', value: 'Lain-lain' }]" v-model="tg.status_perkahwinan_tanggungan" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </rs-collapse-item>
+
+              <!-- Maklumat Perbankan Tanggungan -->
+              <rs-collapse-item v-if="false" type="card" title="Maklumat Perbankan Tanggungan">
+                <div class="p-4 space-y-6">
+                  <div v-if="tanggunganList.length === 0" class="text-sm text-gray-600">Tiada tanggungan direkodkan.</div>
+                  <div v-else>
+                    <div v-for="(tg, idx) in tanggunganList" :key="`bank-${idx}`" class="mb-8 p-4 border rounded-lg bg-white">
+                      <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-semibold text-gray-900">Tanggungan {{ idx + 1 }}</h4>
+                        <rs-badge variant="secondary">{{ tg.nama_tanggungan || '-' }}</rs-badge>
+                      </div>
+
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormKit
+                          readonly="true"
+                          type="radio"
+                          :name="`tg${idx}AdaAkaun`"
+                          label="Adakah tanggungan mempunyai akaun bank?"
+                          :options="paymentMethodOptionsMain"
+                          v-model="tg.kaedah_pembayaran_tanggungan"
+                        />
+                        <FormKit
+                          readonly="true"
+                          type="radio"
+                          :name="`tg${idx}Muflis`"
+                          label="Adakah tanggungan muflis/disenarai hitam oleh bank?"
+                          :options="[{ label: 'Ya', value: 'Y' }, { label: 'Tidak', value: 'T' }]"
+                          v-model="tg.muflis_disenarai_hitam"
+                        />
+                        </div>
+
+                      <div v-if="tg.kaedah_pembayaran_tanggungan === 'ya' && tg.bank_accounts && tg.bank_accounts.length" class="mt-4">
+                        <h5 class="font-medium mb-2">Akaun Bank</h5>
+                        <div v-for="(acc, aidx) in tg.bank_accounts" :key="aidx" class="mb-3 p-3 rounded border">
+                          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <FormKit
+                              readonly="true"
+                              type="select"
+                              :name="`tg${idx}BankNama${aidx}`"
+                              label="Nama Bank"
+                              :options="bankOptions"
+                              v-model="acc.nama_bank"
+                            />
+                            <FormKit
+                              v-if="acc.nama_bank"
+                              readonly="true"
+                              type="text"
+                              :name="`tg${idx}BankSwift${aidx}`"
+                              label="Swift Code"
+                              :value="getSwiftCodeForBank(acc.nama_bank)"
+                            />
+                            <FormKit
+                              readonly="true"
+                              type="text"
+                              :name="`tg${idx}BankNo${aidx}`"
+                              label="No. Akaun Bank"
+                              v-model="acc.no_akaun_bank"
+                            />
+                            <FormKit
+                              readonly="true"
+                              type="text"
+                              :name="`tg${idx}BankPemegang${aidx}`"
+                              label="Nama Pemegang Akaun"
+                              v-model="acc.nama_pemegang_akaun"
+                            />
+                            <FormKit
+                              readonly="true"
+                              type="select"
+                              :name="`tg${idx}BankJenis${aidx}`"
+                              label="Jenis Akaun"
+                              :options="[{ label: 'Individu', value: 'individu' }, { label: 'Bersama', value: 'bersama' }]"
+                              v-model="acc.jenis_akaun"
+                            />
+                            <div v-if="acc.jenis_akaun === 'bersama'" class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+                              <FormKit readonly="true" type="text" :name="`tg${idx}BankIdPengenalan${aidx}`" label="Pengenalan Id" v-model="acc.id_pengenalan" />
+                              <FormKit readonly="true" type="text" :name="`tg${idx}BankNamaBersama${aidx}`" label="Nama" v-model="acc.nama_bersama" />
+                              <FormKit readonly="true" type="text" :name="`tg${idx}BankHubungan${aidx}`" label="Hubungan" v-model="acc.hubungan" />
+                            </div>
+                          </div>
+                        </div>
+                        </div>
+
+                      <div v-if="tg.kaedah_pembayaran_tanggungan === 'tidak'" class="mt-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormKit
+                            readonly="true"
+                            type="select"
+                            :name="`tg${idx}SebabTiadaAkaun`"
+                            label="Sebab Tiada Akaun Bank"
+                            :options="noPaymentReasonOptions"
+                            v-model="tg.sebab_tiada_akaun_tanggungan"
+                          />
+                          <FormKit
+                            v-if="tg.sebab_tiada_akaun_tanggungan === 'Lain-lain'"
+                            readonly="true"
+                            type="text"
+                            :name="`tg${idx}SebabTiadaAkaunLain`"
+                            label="Lain-lain Sebab Tiada Akaun"
+                            v-model="tg.lain_lain_sebab_tiada_akaun_tanggungan"
+                          />
+                        </div>
+                        </div>
+                        </div>
+                  </div>
+                </div>
+              </rs-collapse-item>
+
+              <!-- Maklumat Pendidikan Tanggungan -->
+              <rs-collapse-item v-if="false" type="card" title="Maklumat Pendidikan Tanggungan">
+                <div class="p-4 space-y-6">
+                  <div v-if="tanggunganList.length === 0" class="text-sm text-gray-600">Tiada tanggungan direkodkan.</div>
+                  <div v-else>
+                    <div v-for="(tg, idx) in tanggunganList" :key="`edu-${idx}`" class="mb-8 p-4 border rounded-lg bg-white">
+                      <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-semibold text-gray-900">Tanggungan {{ idx + 1 }}</h4>
+                        <rs-badge variant="secondary">{{ tg.nama_tanggungan || '-' }}</rs-badge>
+                        </div>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormKit readonly="true" type="radio" :name="`tg${idx}MasihBersekolah`" label="Masih Bersekolah" :options="[{ label: 'Ya', value: 'Y' }, { label: 'Tidak', value: 'T' }]" v-model="tg.masih_bersekolah" />
+                        <FormKit readonly="true" type="select" :name="`tg${idx}PendidikanTertinggi`" label="Pendidikan Tertinggi" :options="['Peringkat Rendah','SRP/PMR','SPM','Sijil','Diploma','STPM','Ijazah','Lain-lain']" v-model="tg.pendidikan_tertinggi_tanggungan" />
+                        <FormKit v-if="tg.pendidikan_tertinggi_tanggungan === 'Lain-lain'" readonly="true" type="text" :name="`tg${idx}PendidikanTertinggiLain`" label="Lain-lain Pendidikan Tertinggi" v-model="tg.lain_pendidikan_tertinggi_tanggungan" />
+
+                        <FormKit readonly="true" type="checkbox" :name="`tg${idx}TahapPendidikan`" label="Tahap Pendidikan yang Dicapai" :options="['Peringkat Rendah','SRP/PMR','SPM','Sijil','Diploma','STPM','Ijazah','Lain-lain']" v-model="tg.tahap_pendidikan_dicapai" />
+                        <FormKit v-if="tg.tahap_pendidikan_dicapai && tg.tahap_pendidikan_dicapai.includes('Lain-lain')" readonly="true" type="text" :name="`tg${idx}TahapPendidikanLain`" label="Lain-lain Tahap Pendidikan yang Dicapai" v-model="tg.lain_tahap_pendidikan_dicapai" />
+
+                        <FormKit readonly="true" type="file" :name="`tg${idx}SijilPendidikan`" label="Upload Sijil Pendidikan yang Diperolehi" multiple="true" accept=".pdf,.jpg,.jpeg,.png" v-model="tg.sijil_pendidikan_tanggungan" />
+                        </div>
+
+                      <div v-if="tg.masih_bersekolah === 'Y'" class="mt-6">
+                        <h5 class="font-medium mb-3">Maklumat Sekolah / Institusi</h5>
+                        <div v-if="tg.education_entries && tg.education_entries.length > 0">
+                          <div v-for="(edu, eidx) in tg.education_entries" :key="eidx" class="mb-6 p-4 border rounded-lg">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <FormKit readonly="true" type="select" :name="`tg${idx}Edu${eidx}JenisSekolah`" label="Jenis Sekolah / Institusi" :options="[{ label: 'Peringkat Rendah', value: 'rendah' },{ label: 'Peringkat Tinggi', value: 'tinggi' }]" v-model="edu.jenis_sekolah" />
+                              <FormKit readonly="true" type="select" :name="`tg${idx}Edu${eidx}KategoriSekolah`" label="Kategori Sekolah / Institusi" :options="['SEK.MEN','SRK','IPT','SRA','KAFA']" v-model="edu.kategori_sekolah" />
+                              <FormKit v-if="edu.kategori_sekolah === 'IPT'" readonly="true" type="date" :name="`tg${idx}Edu${eidx}TarikhMula`" label="Tarikh Mula Pengajian" v-model="edu.tarikh_mula_pengajian" />
+                              <FormKit v-if="edu.kategori_sekolah === 'IPT'" readonly="true" type="date" :name="`tg${idx}Edu${eidx}TarikhTamat`" label="Tarikh Tamat Pengajian" v-model="edu.tarikh_tamat_pengajian" />
+                              <FormKit readonly="true" type="text" :name="`tg${idx}Edu${eidx}TahunBersekolah`" label="Tahun Bersekolah (YYYY)" v-model="edu.tahun_bersekolah" />
+                              <FormKit readonly="true" type="text" :name="`tg${idx}Edu${eidx}Tingkatan`" label="Tahun / Tingkatan / Tahun Pengajian / Semester" v-model="edu.tahun_tingkatan" />
+                              <FormKit readonly="true" type="select" :name="`tg${idx}Edu${eidx}NamaSekolah`" label="Nama Sekolah / Institusi" :options="getFilteredSchoolOptions(edu.kategori_sekolah)" v-model="edu.nama_sekolah" />
+                              <FormKit v-if="edu.kategori_sekolah === 'SRA' || edu.kategori_sekolah === 'SRK'" readonly="true" type="checkbox" :name="`tg${idx}Edu${eidx}KategoriRendah`" label="Kategori Sekolah Rendah" :options="[{ label: 'Sekolah Agama', value: 'agama' },{ label: 'Sekolah Kebangsaan', value: 'kebangsaan' }]" v-model="edu.sekolah_rendah_kategori" />
+                              <FormKit readonly="true" type="text" :name="`tg${idx}Edu${eidx}Alamat1`" label="Alamat 1" v-model="edu.alamat_sekolah_1" />
+                              <FormKit v-if="edu.alamat_sekolah_1" readonly="true" type="text" :name="`tg${idx}Edu${eidx}Alamat2`" label="Alamat 2" v-model="edu.alamat_sekolah_2" />
+                              <FormKit v-if="edu.alamat_sekolah_1" readonly="true" type="text" :name="`tg${idx}Edu${eidx}Alamat3`" label="Alamat 3" v-model="edu.alamat_sekolah_3" />
+                              <FormKit readonly="true" type="text" :name="`tg${idx}Edu${eidx}Daerah`" label="Daerah" v-model="edu.daerah_sekolah" />
+                              <FormKit readonly="true" type="text" :name="`tg${idx}Edu${eidx}Bandar`" label="Bandar" v-model="edu.bandar_sekolah" />
+                              <FormKit readonly="true" type="text" :name="`tg${idx}Edu${eidx}Poskod`" label="Poskod" v-model="edu.poskod_sekolah" />
+                              <FormKit readonly="true" type="select" :name="`tg${idx}Edu${eidx}Bidang`" label="Bidang / Kursus Pengajian" :options="['Sijil','SKM','Diploma','Ijazah Sarjana Muda']" v-model="edu.bidang_kursus" />
+                              <FormKit v-if="edu.bidang_kursus" readonly="true" type="text" :name="`tg${idx}Edu${eidx}Jurusan`" label="Jurusan / Bidang" v-model="edu.jurusan_bidang" />
+                              <FormKit readonly="true" type="checkbox" :name="`tg${idx}Edu${eidx}Pembiayaan`" label="Pembiayaan Pengajian" :options="['JPA','PTPTN','LZS','Tiada','Lain-lain']" v-model="edu.pembiayaan_pengajian" />
+                              <FormKit v-if="edu.pembiayaan_pengajian && edu.pembiayaan_pengajian.includes('Lain-lain')" readonly="true" type="text" :name="`tg${idx}Edu${eidx}LainPembiayaan`" label="Lain-lain Pembiayaan Pengajian" v-model="edu.lain_pembiayaan" />
+                              <FormKit readonly="true" type="textarea" :name="`tg${idx}Edu${eidx}Catatan`" label="Catatan" rows="3" v-model="edu.catatan" />
+                        </div>
+                        </div>
+                        </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </rs-collapse-item>
+
+              <!-- Maklumat Kesihatan Tanggungan -->
+              <rs-collapse-item v-if="false" type="card" title="Maklumat Kesihatan Tanggungan">
+                <div class="p-4 space-y-6">
+                  <div v-if="tanggunganList.length === 0" class="text-sm text-gray-600">Tiada tanggungan direkodkan.</div>
+                  <div v-else>
+                    <div v-for="(tg, idx) in tanggunganList" :key="`health-${idx}`" class="mb-8 p-4 border rounded-lg bg-white">
+                      <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-semibold text-gray-900">Tanggungan {{ idx + 1 }}</h4>
+                        <rs-badge variant="secondary">{{ tg.nama_tanggungan || '-' }}</rs-badge>
+                        </div>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormKit readonly="true" type="select" :name="`tg${idx}TahapKesihatan`" label="Tahap Kesihatan" :options="['Sihat','Sakit Kronik','OKU','Uzur']" v-model="tg.tahap_kesihatan_tanggungan" />
+
+                        <template v-if="tg.tahap_kesihatan_tanggungan === 'Sakit Kronik'">
+                          <FormKit readonly="true" type="select" :name="`tg${idx}KeadaanSakit`" label="Keadaan Kesihatan" :options="['Terlantar','Tidak Terlantar']" v-model="tg.keadaan_kesihatan_sakit_tanggungan" />
+                          <FormKit readonly="true" type="select" :name="`tg${idx}KosPenjagaanSakit`" label="Kos Penjagaan" :options="['Berbayar','Tidak Berbayar']" v-model="tg.kos_penjagaan_sakit_tanggungan" />
+                          <FormKit readonly="true" type="text" :name="`tg${idx}PerbelanjaanSakit`" label="Jumlah Perbelanjaan Bulanan (RM)" v-model="tg.perbelanjaan_bulanan_sakit_tanggungan" />
+                        </template>
+
+                        <template v-if="tg.tahap_kesihatan_tanggungan === 'OKU'">
+                          <FormKit readonly="true" type="select" :name="`tg${idx}KesempurnaanFizikal`" label="Kesempurnaan Fizikal" :options="['Sempurna','Cacat Mental','Cacat Fizikal']" v-model="tg.kesempurnaan_fizikal_tanggungan" />
+                          <FormKit readonly="true" type="select" :name="`tg${idx}SebabKecacatan`" label="Sebab Kecacatan (Jika Cacat)" :options="['Sejak Lahir','Musibah']" v-model="tg.sebab_kecacatan_tanggungan" />
+                          <FormKit readonly="true" type="select" :name="`tg${idx}TahapKecacatan`" label="Tahap Kecacatan" :options="['Terlantar','Tidak Terlantar']" v-model="tg.tahap_kecacatan_tanggungan" />
+                          <FormKit readonly="true" type="text" :name="`tg${idx}PerbelanjaanOKU`" label="Jumlah Perbelanjaan Bulanan (RM)" v-model="tg.perbelanjaan_bulanan_oku_tanggungan" />
+                        </template>
+
+                        <template v-if="tg.tahap_kesihatan_tanggungan === 'Uzur'">
+                          <FormKit readonly="true" type="select" :name="`tg${idx}KeadaanUzur`" label="Keadaan Kesihatan" :options="['Terlantar','Tidak Terlantar']" v-model="tg.keadaan_kesihatan_uzur_tanggungan" />
+                          <FormKit readonly="true" type="select" :name="`tg${idx}KosPenjagaanUzur`" label="Kos Penjagaan" :options="['Berbayar','Tidak Berbayar']" v-model="tg.kos_penjagaan_uzur_tanggungan" />
+                          <FormKit readonly="true" type="text" :name="`tg${idx}PerbelanjaanUzur`" label="Jumlah Perbelanjaan Bulanan (RM)" v-model="tg.perbelanjaan_bulanan_uzur_tanggungan" />
+                        </template>
+                        </div>
+                        </div>
+                        </div>
+                        </div>
+              </rs-collapse-item>
+
+              <!-- Kemahiran Tanggungan -->
+              <rs-collapse-item v-if="false" type="card" title="Kemahiran Tanggungan">
+                <div class="p-4 space-y-6">
+                  <div v-if="tanggunganList.length === 0" class="text-sm text-gray-600">Tiada tanggungan direkodkan.</div>
+                  <div v-else>
+                    <div v-for="(tg, idx) in tanggunganList" :key="`skill-${idx}`" class="mb-8 p-4 border rounded-lg bg-white">
+                      <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-semibold text-gray-900">Tanggungan {{ idx + 1 }}</h4>
+                        <rs-badge variant="secondary">{{ tg.nama_tanggungan || '-' }}</rs-badge>
+                        </div>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormKit readonly="true" type="checkbox" :name="`tg${idx}Kemahiran`" label="Kemahiran" :options="['Nelayan','Penternakan','Pertanian','Menjahit','Kraftangan','Memasak','Mengasuh','Perkhidmatan','Pertukangan','Perniagaan','Lain-lain']" v-model="tg.kemahiran_tanggungan" />
+                        <FormKit v-if="tg.kemahiran_tanggungan && Array.isArray(tg.kemahiran_tanggungan) && tg.kemahiran_tanggungan.includes('Lain-lain')" readonly="true" type="text" :name="`tg${idx}KemahiranLain`" label="Lain-lain Kemahiran" v-model="tg.lain_lain_kemahiran_tanggungan" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </rs-collapse-item>
+
+              <!-- Maklumat Pekerjaan Tanggungan -->
+              <rs-collapse-item v-if="false" type="card" title="Maklumat Pekerjaan Tanggungan">
+                <div class="p-4 space-y-6">
+                  <div v-if="tanggunganList.length === 0" class="text-sm text-gray-600">Tiada tanggungan direkodkan.</div>
+                  <div v-else>
+                    <div v-for="(tg, idx) in tanggunganList" :key="`work-${idx}`" class="mb-8 p-4 border rounded-lg bg-white">
+                      <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-semibold text-gray-900">Tanggungan {{ idx + 1 }}</h4>
+                        <rs-badge variant="secondary">{{ tg.nama_tanggungan || '-' }}</rs-badge>
+                      </div>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormKit readonly="true" type="select" :name="`tg${idx}StatusPekerjaan`" label="Status Pekerjaan" :options="['Bekerja','Tidak Bekerja','Pelajar','Pesara']" v-model="tg.status_pekerjaan_tanggungan" />
+                        <FormKit readonly="true" type="text" :name="`tg${idx}Pekerjaan`" label="Pekerjaan" v-model="tg.pekerjaan_tanggungan" />
+                        <FormKit readonly="true" type="text" :name="`tg${idx}Majikan`" label="Majikan" v-model="tg.nama_majikan_tanggungan" />
+                        <FormKit readonly="true" type="text" :name="`tg${idx}Pendapatan`" label="Pendapatan Bulanan (RM)" v-model="tg.pendapatan_bulanan_tanggungan" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </rs-collapse-item>
+
+              <!-- Pengesahan Tanggungan -->
+              <rs-collapse-item v-if="false" type="card" title="Pengesahan Tanggungan">
+                <div class="p-4 space-y-6">
+                  <div v-if="tanggunganList.length === 0" class="text-sm text-gray-600">Tiada tanggungan direkodkan.</div>
+                  <div v-else>
+                    <div v-for="(tg, idx) in tanggunganList" :key="`verify-${idx}`" class="mb-8 p-4 border rounded-lg bg-white">
+                      <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-semibold text-gray-900">Tanggungan {{ idx + 1 }}</h4>
+                        <rs-badge variant="secondary">{{ tg.nama_tanggungan || '-' }}</rs-badge>
+                      </div>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormKit readonly="true" type="text" :name="`tg${idx}NamaPengesah`" label="Nama Pengesah" v-model="tg.nama_pengesah_tanggungan" />
+                        <FormKit readonly="true" type="text" :name="`tg${idx}JawatanPengesah`" label="Jawatan Pengesah" v-model="tg.jawatan_pengesah_tanggungan" />
+                        <FormKit readonly="true" type="text" :name="`tg${idx}TelefonPengesah`" label="No. Telefon Pengesah" v-model="tg.no_telefon_pengesah_tanggungan" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </rs-collapse-item>
+
+              <!-- Pengesahan Pendapatan Tanggungan -->
+              <rs-collapse-item v-if="false" type="card" title="Pengesahan Pendapatan Tanggungan">
+                <div class="p-4 space-y-6">
+                  <div v-if="tanggunganList.length === 0" class="text-sm text-gray-600">Tiada tanggungan direkodkan.</div>
+                  <div v-else>
+                    <div v-for="(tg, idx) in tanggunganList" :key="`income-${idx}`" class="mb-8 p-4 border rounded-lg bg-white">
+                      <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-semibold text-gray-900">Tanggungan {{ idx + 1 }}</h4>
+                        <rs-badge variant="secondary">{{ tg.nama_tanggungan || '-' }}</rs-badge>
+                      </div>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormKit readonly="true" type="text" :name="`tg${idx}SumberPengesahanPendapatan`" label="Sumber Pengesahan Pendapatan" v-model="tg.sumber_pengesahan_pendapatan" />
+                        <FormKit readonly="true" type="text" :name="`tg${idx}CatatanPengesahanPendapatan`" label="Catatan Pengesahan" v-model="tg.catatan_pengesahan_pendapatan" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </rs-collapse-item>
+
+              <!-- Pengesahan Bermastautin Tanggungan -->
+              <rs-collapse-item v-if="false" type="card" title="Pengesahan Bermastautin Tanggungan">
+                <div class="p-4 space-y-6">
+                  <div v-if="tanggunganList.length === 0" class="text-sm text-gray-600">Tiada tanggungan direkodkan.</div>
+                  <div v-else>
+                    <div v-for="(tg, idx) in tanggunganList" :key="`reside-${idx}`" class="mb-8 p-4 border rounded-lg bg-white">
+                      <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-semibold text-gray-900">Tanggungan {{ idx + 1 }}</h4>
+                        <rs-badge variant="secondary">{{ tg.nama_tanggungan || '-' }}</rs-badge>
+                      </div>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormKit readonly="true" type="number" :name="`tg${idx}TempohMenetapNilai`" label="Tempoh Menetap di Selangor" v-model="tg.tempoh_menetap_selangor_tanggungan_nilai" />
+                        <FormKit readonly="true" type="select" :name="`tg${idx}TempohMenetapUnit`" label="Unit Tempoh" :options="[{ label: 'Hari', value: 'hari' },{ label: 'Bulan', value: 'bulan' },{ label: 'Tahun', value: 'tahun' }]" v-model="tg.tempoh_menetap_selangor_tanggungan_unit" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </rs-collapse-item>
+
+              <!-- Pegawai Pendaftar Tanggungan -->
+              <rs-collapse-item v-if="false" type="card" title="Pegawai Pendaftar Tanggungan">
+                <div class="p-4 space-y-6">
+                  <div v-if="tanggunganList.length === 0" class="text-sm text-gray-600">Tiada tanggungan direkodkan.</div>
+                  <div v-else>
+                    <div v-for="(tg, idx) in tanggunganList" :key="`reg-${idx}`" class="mb-8 p-4 border rounded-lg bg-white">
+                      <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-semibold text-gray-900">Tanggungan {{ idx + 1 }}</h4>
+                        <rs-badge variant="secondary">{{ tg.nama_tanggungan || '-' }}</rs-badge>
+                      </div>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormKit readonly="true" type="text" :name="`tg${idx}NamaPegawaiPendaftar`" label="Nama Pegawai Pendaftar" v-model="tg.nama_pegawai_pendaftar" />
+                        <FormKit readonly="true" type="text" :name="`tg${idx}TelefonPegawaiPendaftar`" label="No. Telefon Pegawai" v-model="tg.no_telefon_pegawai_pendaftar" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </rs-collapse-item>
+
               <!-- Section A Form - Step 2: Maklumat Pendidikan -->
-              <rs-collapse-item type="card" title="Maklumat Pendidikan">
+              <rs-collapse-item :open="isPendidikanOpen" type="card" title="Maklumat Pendidikan">
                 <FormKit
                   type="form"
                   @submit="nextStepA"
@@ -232,7 +584,7 @@
               </rs-collapse-item>
 
               <!-- Section A Form - Step 3: Maklumat Islam -->
-              <rs-collapse-item type="card" title="Maklumat Pengislaman">
+              <rs-collapse-item :open="isPengislamanOpen" type="card" title="Maklumat Pengislaman">
                 <FormKit type="form" @submit="nextStepA" :actions="false" id="sectionA4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div class="space-y-2">
@@ -269,7 +621,7 @@
               </rs-collapse-item>
 
               <!-- Section A Form - Step 4: Maklumat Bank -->
-              <rs-collapse-item type="card" title="Maklumat Perbankan">
+              <rs-collapse-item :open="isPerbankanOpen" type="card" title="Maklumat Perbankan">
                 <FormKit type="form" @submit="nextStepA" :actions="false" id="sectionA5">
                 <div class="mb-6">
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -330,7 +682,7 @@
               </rs-collapse-item>
 
               <!-- Section A Form - Step 5: Maklumat Kesihatan -->
-              <rs-collapse-item type="card" title="Maklumat Kesihatan">
+              <rs-collapse-item :open="isKesihatanOpen" type="card" title="Maklumat Kesihatan">
                 <FormKit type="form" @submit="nextStepA" :actions="false" id="sectionA6">
                 <div class="mb-6">
                   <FormKit type="select" name="tahap_kesihatan" label="Tahap Kesihatan " :options="['Sihat','Sakit Kronik','OKU','Uzur']" v-model="formDataPRF.tahap_kesihatan" />
@@ -584,6 +936,110 @@
                 </FormKit>
               </rs-collapse-item>
 
+              <!-- Syor Status -->
+              <rs-collapse-item type="card" title="Syor Status">
+                <div class="p-4 space-y-6">
+                  <h4 class="text-md font-semibold text-gray-900 mb-2 flex items-center">
+                    <Icon name="ph:clipboard-text" class="w-5 h-5 mr-2 text-green-600" />
+                    Maklumat Syor
+                  </h4>
+                  <!-- Summary Information -->
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div>
+                      <label class="block text-xs uppercase tracking-wide font-bold">Peratusan Perbezaan</label>
+                      <p class="text-gray-900 font-medium">{{ profilingData.peratusanPerbezaan }}</p>
+                    </div>
+                    <div>
+                      <label class="block text-xs uppercase tracking-wide font-bold">Kategori Keluarga Asnaf</label>
+                      <p class="text-gray-900 font-medium">{{ profilingData.kategoriKeluargaAsnaf }}</p>
+                    </div>
+                    <div>
+                      <label class="block text-xs uppercase tracking-wide font-bold">Kategori Asnaf</label>
+                      <p class="text-gray-900 font-medium">{{ profilingData.kategoriAsnaf }}</p>
+                    </div>
+                  </div>
+
+                  <!-- Table for Individual Data -->
+                  <rs-table
+                    :headers="tableHeaders"
+                    :data="tableData"
+                    :classes="{
+                      table: 'min-w-full',
+                      thead: 'bg-gray-50',
+                      tbody: 'bg-white divide-y divide-gray-200',
+                      th: 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                      td: 'px-6 py-4 whitespace-nowrap text-sm text-gray-900',
+                    }"
+                  />
+
+                  <!-- Ringkasan Keluarga (Syor) -->
+                  <div class="mt-4">
+                    <label class="block text-xs uppercase tracking-wide font-bold">Merit Keluarga(Syor)</label>
+                    <p class="text-gray-900 font-medium">{{ profilingData.meritKeluargaSyor }}</p>
+
+                    <label class="block text-xs uppercase tracking-wide mt-4 font-bold">Status Multidimensi Keluarga(Syor)</label>
+                    <p class="text-gray-900 font-medium">{{ profilingData.statusMultidimensiKeluargaSyor }}</p>
+
+                    <label class="block text-xs uppercase tracking-wide mt-4 font-bold">Quadrant Multidimensi Keluarga(Syor)</label>
+                    <p class="text-gray-900 font-medium">{{ profilingData.quadrantMultidimensiKeluargaSyor }}</p>
+                  </div>
+                </div>
+              </rs-collapse-item>
+
+              <!-- Pengesahan Status (relocated to Maklumat Pemohon) -->
+              <rs-collapse-item type="card" title="Pengesahan Status">
+                <div class="p-4">
+                  <rs-table
+                    :data="pengesahanRows"
+                    :columns="pengesahanColumns"
+                    :showNoColumn="true"
+                    :options="{ variant: 'default', striped: false, hover: false }"
+                    :options-advanced="{ sortable: false, filterable: false }"
+                    advanced
+                  >
+                    <template v-slot:nama="{ value }">
+                      <FormKit type="text" v-model="value.nama" outer-class="mb-0" />
+                    </template>
+                    <template v-slot:kategori="{ value }">
+                      <FormKit type="select" :options="kategoriIndividuOptions" v-model="value.kategori" outer-class="mb-0" />
+                    </template>
+                    <template v-slot:meritIndividu="{ value }">
+                      <FormKit type="text" v-model="value.meritIndividu" outer-class="mb-0" />
+                    </template>
+                    <template v-slot:statusMultidimensi="{ value }">
+                      <FormKit type="select" :options="statusMultidimensiOptions" v-model="value.statusMultidimensi" outer-class="mb-0" />
+                    </template>
+                    <template v-slot:pelarasan="{ value }">
+                      <FormKit type="checkbox" v-model="value.pelarasan" outer-class="mb-0" />
+                    </template>
+                  </rs-table>
+                </div>
+              </rs-collapse-item>
+
+              <!-- Had Kifayah & Multidimensi (relocated to Maklumat Pemohon) -->
+              <rs-collapse-item type="card" title="Had Kifayah & Multidimensi">
+                <div class="p-4">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Had Kifayah Summary -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                      <h3 class="text-lg font-semibold mb-2">Had Kifayah</h3>
+                      <div class="mb-2">Baki Pendapatan: <span class="font-bold">RM-968</span></div>
+                      <div class="mb-2">Peratusan Perbezaan: <span class="font-bold">50.81%</span></div>
+                      <div class="mb-2">Kategori Keluarga Asnaf: <span class="font-bold">Miskin</span></div>
+                      <div class="mb-2">Kategori Asnaf: <span class="font-bold">Miskin</span></div>
+                      <div class="mb-2">Jumlah Had Kifayah: <span class="font-bold">RM1968.00</span></div>
+                    </div>
+                    <!-- Multidimensi Summary -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                      <h3 class="text-lg font-semibold mb-2">Multidimensi</h3>
+                      <div class="mb-2">Merit Keluarga: <span class="font-bold">0.55</span></div>
+                      <div class="mb-2">Status Multidimensi: <span class="font-bold">Produktif C</span></div>
+                      <div class="mb-2">Quadrant: <span class="font-bold">Asnaf Produktif Sementara</span></div>
+                    </div>
+                  </div>
+                </div>
+              </rs-collapse-item>
+
               </rs-collapse>
               <!-- END: Section A stepper -->
               </template>
@@ -644,7 +1100,7 @@
   
                   <!-- Bantuan daripada Agensi (moved under Maklumat Lawatan & Siasatan) -->
                   <div>
-                    <rs-collapse>
+                    <rs-collapse ref="bantuanCollapse">
                       <rs-collapse-item type="card" title="Bantuan daripada Agensi">
                         <div class="p-4">
                           <rs-table
@@ -712,6 +1168,111 @@
                           <div class="flex justify-end">
                             <rs-button variant="primary" @click="confirmRecommendedAid">Sahkan</rs-button>
                           </div>
+                        </div>
+                      </rs-collapse-item>
+
+                      <!-- Syor Status (moved) -->
+                      <rs-collapse-item v-if="false" type="card" title="Syor Status">
+                        <div class="p-4 space-y-6">
+                          <h4 class="text-md font-semibold text-gray-900 mb-2 flex items-center">
+                            <Icon name="ph:clipboard-text" class="w-5 h-5 mr-2 text-green-600" />
+                            Maklumat Syor
+                          </h4>
+                          <!-- Summary Information -->
+                          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div>
+                              <label class="block text-xs uppercase tracking-wide font-bold">Peratusan Perbezaan</label>
+                              <p class="text-gray-900 font-medium">{{ profilingData.peratusanPerbezaan }}</p>
+                            </div>
+                            <div>
+                              <label class="block text-xs uppercase tracking-wide font-bold">Kategori Keluarga Asnaf</label>
+                              <p class="text-gray-900 font-medium">{{ profilingData.kategoriKeluargaAsnaf }}</p>
+                            </div>
+                            <div>
+                              <label class="block text-xs uppercase tracking-wide font-bold">Kategori Asnaf</label>
+                              <p class="text-gray-900 font-medium">{{ profilingData.kategoriAsnaf }}</p>
+                            </div>
+                          </div>
+
+                          <!-- Table for Individual Data -->
+                          <rs-table
+                            :headers="tableHeaders"
+                            :data="tableData"
+                            :classes="{
+                              table: 'min-w-full',
+                              thead: 'bg-gray-50',
+                              tbody: 'bg-white divide-y divide-gray-200',
+                              th: 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                              td: 'px-6 py-4 whitespace-nowrap text-sm text-gray-900',
+                            }"
+                          />
+
+                          <!-- Ringkasan Keluarga (Syor) -->
+                          <div class="mt-4">
+                            <label class="block text-xs uppercase tracking-wide font-bold">Merit Keluarga(Syor)</label>
+                            <p class="text-gray-900 font-medium">{{ profilingData.meritKeluargaSyor }}</p>
+
+                            <label class="block text-xs uppercase tracking-wide mt-4 font-bold">Status Multidimensi Keluarga(Syor)</label>
+                            <p class="text-gray-900 font-medium">{{ profilingData.statusMultidimensiKeluargaSyor }}</p>
+
+                            <label class="block text-xs uppercase tracking-wide mt-4 font-bold">Quadrant Multidimensi Keluarga(Syor)</label>
+                            <p class="text-gray-900 font-medium">{{ profilingData.quadrantMultidimensiKeluargaSyor }}</p>
+                          </div>
+
+                          
+
+                          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            
+
+                            <div class="hidden lg:block"></div>
+                            <div class="hidden lg:block"></div>
+
+                            
+
+                            <div>
+                              <div class="grid gap-4 grid-cols-[1fr_160px] md:grid-cols-[1fr_200px]">
+                                
+                              </div>
+                            </div>
+
+                            
+
+                            
+
+                            
+
+                            
+                          </div>
+                        </div>
+                      </rs-collapse-item>
+
+                      <!-- Pengesahan Status (moved) -->
+                      <rs-collapse-item v-if="false" type="card" title="Pengesahan Status">
+                        <div class="p-4">
+                          <rs-table
+                            :data="pengesahanRows"
+                            :columns="pengesahanColumns"
+                            :showNoColumn="true"
+                            :options="{ variant: 'default', striped: false, hover: false }"
+                            :options-advanced="{ sortable: false, filterable: false }"
+                            advanced
+                          >
+                            <template v-slot:nama="{ value }">
+                              <FormKit type="text" v-model="value.nama" outer-class="mb-0" />
+                            </template>
+                            <template v-slot:kategori="{ value }">
+                              <FormKit type="select" :options="kategoriIndividuOptions" v-model="value.kategori" outer-class="mb-0" />
+                            </template>
+                            <template v-slot:meritIndividu="{ value }">
+                              <FormKit type="text" v-model="value.meritIndividu" outer-class="mb-0" />
+                            </template>
+                            <template v-slot:statusMultidimensi="{ value }">
+                              <FormKit type="select" :options="statusMultidimensiOptions" v-model="value.statusMultidimensi" outer-class="mb-0" />
+                            </template>
+                            <template v-slot:pelarasan="{ value }">
+                              <FormKit type="checkbox" v-model="value.pelarasan" outer-class="mb-0" />
+                            </template>
+                          </rs-table>
                         </div>
                       </rs-collapse-item>
 
@@ -786,29 +1347,8 @@
                         </div>
                       </rs-collapse-item>
 
-                      <!-- Bantuan Baru -->
-                      <rs-collapse-item type="card" title="Bantuan Baru">
-                        <div class="p-4">
-                          <rs-table
-                            :data="assistanceApplications"
-                            :columns="assistanceColumns"
-                            :showNoColumn="true"
-                            :options="{ variant: 'default', striped: true, hover: true }"
-                            :options-advanced="{ sortable: true, filterable: false }"
-                            advanced
-                          >
-                            <template v-slot:status="{ text }">
-                              <rs-badge :variant="getAssistanceStatusVariant(text)">{{ text }}</rs-badge>
-                            </template>
-                            <template v-slot:actions="{ value }">
-                              <rs-button variant="primary" @click="editAssistance(value)">Edit</rs-button>
-                            </template>
-                          </rs-table>
-                        </div>
-                      </rs-collapse-item>
-
-                      <!-- Had Kifayah & Multidimensi -->
-                      <rs-collapse-item type="card" title="Had Kifayah & Multidimensi">
+                      <!-- Had Kifayah & Multidimensi (moved) -->
+                      <rs-collapse-item v-if="false" type="card" title="Had Kifayah & Multidimensi">
                         <div class="p-4">
                           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Had Kifayah Summary -->
@@ -830,6 +1370,27 @@
                           </div>
                         </div>
                       </rs-collapse-item>
+
+                      <!-- Bantuan Baru -->
+                      <rs-collapse-item :open="isBantuanBaruOpen" type="card" title="Bantuan Baru">
+                        <div class="p-4">
+                          <rs-table
+                            :data="assistanceApplications"
+                            :columns="assistanceColumns"
+                            :showNoColumn="true"
+                            :options="{ variant: 'default', striped: true, hover: true }"
+                            :options-advanced="{ sortable: true, filterable: false }"
+                            advanced
+                          >
+                            <template v-slot:status="{ text }">
+                              <rs-badge :variant="getAssistanceStatusVariant(text)">{{ text }}</rs-badge>
+                            </template>
+                            <template v-slot:actions="{ value }">
+                              <rs-button variant="primary" @click="editAssistance(value)">Edit</rs-button>
+                            </template>
+                          </rs-table>
+                        </div>
+                      </rs-collapse-item>
   
                     </rs-collapse>
                   </div>
@@ -848,6 +1409,54 @@
                       }"
                     />
                 </div>
+
+                  <!-- Kategori -->
+                  <div>
+                    <FormKit
+                      type="select"
+                      name="kategori"
+                      label="Kategori"
+                      :options="kategoriOptions"
+                      placeholder="--Sila Pilih--"
+                      validation="required"
+                      :validation-messages="{
+                        required: 'Sila pilih kategori untuk meneruskan',
+                      }"
+                    />
+                  </div>
+
+                  <!-- Tingkah laku Asnaf -->
+                  <div>
+                    <FormKit
+                      type="select"
+                      name="tingkahLakuAsnaf"
+                      label="Tingkah laku Asnaf"
+                      :options="tingkahLakuAsnafOptions"
+                      placeholder="--Sila Pilih--"
+                      validation="required"
+                      :validation-messages="{
+                        required: 'Sila pilih tingkah laku asnaf untuk meneruskan',
+                      }"
+                      v-model="formData.tingkahLakuAsnaf"
+                    />
+
+                    <!-- Conditional textarea for "lain-lain" option -->
+                    <div
+                      v-if="formData.tingkahLakuAsnaf === 'lain-lain'"
+                      class="mt-3">
+                      <FormKit
+                        type="textarea"
+                        name="tingkahLakuAsnafLain"
+                        label="Sila nyatakan tingkah laku asnaf"
+                        placeholder="Sila nyatakan tingkah laku asnaf..."
+                        rows="3"
+                        validation="required"
+                        :validation-messages="{
+                          required: 'Sila nyatakan tingkah laku asnaf',
+                        }"
+                        v-model="formData.tingkahLakuAsnafLain" />
+                    </div>
+                  </div>
   
                   <div v-if="showLawatanFields" class="flex gap-4">
                     <!-- Tarikh Lawatan -->
@@ -1229,8 +1838,8 @@
                   <p class="text-sm text-gray-900 bg-white p-2 rounded border">
                     {{ formatFileSize(previewingImage.size) }}
                   </p>
-                </div>
-              </div>
+                    </div>
+                  </div>
   
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1"
@@ -1273,7 +1882,7 @@
           <div class="h-96 overflow-y-auto">
             <div class="form-readonly">
               <!-- Progress indicator -->
-              <div class="mb-6">
+                  <div class="mb-6">
                 <div class="flex justify-between mb-2">
                   <div
                     v-for="step in modalStepsA"
@@ -1294,8 +1903,8 @@
                         : (modalCurrentStepA / modalTotalStepsA) * 100
                     }%`"
                   ></div>
+                  </div>
                 </div>
-              </div>
   
               <!-- Tab Content -->
               <div class="min-h-64">
@@ -2263,12 +2872,138 @@
   </template>
   
   <script setup>
-  import { ref, computed, onMounted, watch } from "vue";
+  import { ref, computed, onMounted, watch, nextTick } from "vue";
   import { useRouter, useRoute } from "vue-router";
   
   // Section A (PRF) stepper state
   const currentStepA = ref(1);
   const totalStepsA = 11;
+  
+  // Accordion state management - only one can be open except Bantuan Baru and A. Maklumat Peribadi Asnaf
+  const isPeribadiAsnafOpen = ref(true); // Always open
+  const isPendidikanOpen = ref(false);
+  const isPengislamanOpen = ref(false);
+  const isPerbankanOpen = ref(false);
+  const isKesihatanOpen = ref(false);
+  const isKemahiranOpen = ref(false);
+  const isAlamatOpen = ref(false);
+  const isPinjamanHartaOpen = ref(false);
+  const isPemilikanOpen = ref(false);
+  const isPekerjaanOpen = ref(false);
+  const isPendapatanOpen = ref(false);
+  const isSyorStatusOpen = ref(false);
+  const isPengesahanStatusOpen = ref(false);
+  const isHadKifayahOpen = ref(false);
+  const isBantuanAgensiOpen = ref(false);
+  const isBantuanSediaAdaOpen = ref(false);
+  const isSyorOpen = ref(false);
+  const isPerubahanBantuanOpen = ref(false);
+  const isBantuanBaruOpen = ref(true); // Always open
+  
+  // Prevent infinite loops with a flag
+  let isUpdatingAccordions = false;
+
+  // Function to close all accordions except the specified one
+  const closeOtherAccordions = (exceptAccordion) => {
+    if (isUpdatingAccordions) return;
+    isUpdatingAccordions = true;
+
+    if (exceptAccordion !== 'pendidikan') isPendidikanOpen.value = false;
+    if (exceptAccordion !== 'pengislaman') isPengislamanOpen.value = false;
+    if (exceptAccordion !== 'perbankan') isPerbankanOpen.value = false;
+    if (exceptAccordion !== 'kesihatan') isKesihatanOpen.value = false;
+    if (exceptAccordion !== 'kemahiran') isKemahiranOpen.value = false;
+    if (exceptAccordion !== 'alamat') isAlamatOpen.value = false;
+    if (exceptAccordion !== 'pinjamanHarta') isPinjamanHartaOpen.value = false;
+    if (exceptAccordion !== 'pemilikan') isPemilikanOpen.value = false;
+    if (exceptAccordion !== 'pekerjaan') isPekerjaanOpen.value = false;
+    if (exceptAccordion !== 'pendapatan') isPendapatanOpen.value = false;
+    if (exceptAccordion !== 'syorStatus') isSyorStatusOpen.value = false;
+    if (exceptAccordion !== 'pengesahanStatus') isPengesahanStatusOpen.value = false;
+    if (exceptAccordion !== 'hadKifayah') isHadKifayahOpen.value = false;
+    if (exceptAccordion !== 'bantuanAgensi') isBantuanAgensiOpen.value = false;
+    if (exceptAccordion !== 'bantuanSediaAda') isBantuanSediaAdaOpen.value = false;
+    if (exceptAccordion !== 'syor') isSyorOpen.value = false;
+    if (exceptAccordion !== 'perubahanBantuan') isPerubahanBantuanOpen.value = false;
+
+    nextTick(() => {
+      isUpdatingAccordions = false;
+    });
+  };
+
+  // Watchers to handle accordion behavior - only one can be open except special ones
+  watch(isPendidikanOpen, (newVal) => {
+    if (newVal && !isUpdatingAccordions) {
+      closeOtherAccordions('pendidikan');
+    }
+  });
+
+  watch(isPengislamanOpen, (newVal) => {
+    if (newVal && !isUpdatingAccordions) {
+      closeOtherAccordions('pengislaman');
+    }
+  });
+
+  watch(isPerbankanOpen, (newVal) => {
+    if (newVal && !isUpdatingAccordions) {
+      closeOtherAccordions('perbankan');
+    }
+  });
+
+  watch(isKesihatanOpen, (newVal) => {
+    if (newVal && !isUpdatingAccordions) {
+      closeOtherAccordions('kesihatan');
+    }
+  });
+
+  // Watch for when currentStepA changes to 1 and force open accordion
+  watch(currentStepA, (newStep) => {
+    if (newStep === 1) {
+      nextTick(() => {
+        isPeribadiAsnafOpen.value = true;
+        setTimeout(() => {
+          openPeribadiAsnafAccordion();
+        }, 100);
+      });
+    }
+  });
+  
+  // Open "A. Maklumat Peribadi Asnaf" accordion by default
+  const peribadiCollapse = ref(null);
+  const openPeribadiAsnafAccordion = () => {
+    try {
+      // Try multiple approaches to find and open the accordion
+      const root = peribadiCollapse?.value?.$el || peribadiCollapse?.value || null;
+      if (!root) return;
+      
+      // Method 1: Look for rs-collapse-item structure
+      const collapseItems = root.querySelectorAll('[data-rs-collapse-item]');
+      if (collapseItems.length > 0) {
+        const firstItem = collapseItems[0];
+        const button = firstItem.querySelector('button, .rs-collapse-item-header, [role="button"]');
+        if (button && !firstItem.classList.contains('rs-collapse-item--open')) {
+          button.click();
+          return;
+        }
+      }
+      
+      // Method 2: Look for any clickable header elements
+      const headers = root.querySelectorAll('button, [role="button"], .collapse-header, .accordion-header');
+      if (headers.length > 0) {
+        const firstHeader = headers[0];
+        firstHeader.click();
+        return;
+      }
+      
+      // Method 3: Force open by setting the open state directly
+      isPeribadiAsnafOpen.value = true;
+      
+    } catch (e) {
+      console.log('Accordion opening error:', e);
+      // Fallback: just set the reactive property
+      isPeribadiAsnafOpen.value = true;
+    }
+  };
   const stepsA = [
     { id: 1, label: "Peribadi" },
     { id: 2, label: "Pendidikan" },
@@ -2543,6 +3278,89 @@
   const bandarOptions = ["Shah Alam", "Subang Jaya", "Rawang"].map((n) => ({ label: n, value: n }));
   const poskodOptions = ["40100", "40000", "47810"].map((n) => ({ label: n, value: n }));
   const kariahOptions = ["Masjid Al-Taqwa", "Masjid Negeri", "Masjid Al-Ikhlas"].map((n) => ({ label: n, value: n }));
+  const kategoriTanggunganOptions = [
+    { label: "Tanggungan Utama", value: "Tanggungan Utama" },
+    { label: "Tanggungan Sekunder", value: "Tanggungan Sekunder" },
+    { label: "Lain-lain", value: "Lain-lain" },
+  ];
+  const statusMultidimensiOptions = [
+    { label: "Tidak Produktif", value: "Tidak Produktif" },
+    { label: "Produktif C", value: "Produktif C" },
+    { label: "Produktif B", value: "Produktif B" },
+    { label: "Produktif A", value: "Produktif A" },
+  ];
+  const quadrantMultidimensiOptions = [
+    { label: "Asnaf Produktif Sementara", value: "Asnaf Produktif Sementara" },
+    { label: "Asnaf Produktif", value: "Asnaf Produktif" },
+    { label: "Bukan Asnaf", value: "Bukan Asnaf" },
+  ];
+  const kategoriKeluargaOptions = [
+    { label: "Fakir", value: "Fakir" },
+    { label: "Miskin", value: "Miskin" },
+    { label: "Mampu", value: "Mampu" },
+  ];
+  const kategoriAsnafOptions = [
+    { label: "Fakir", value: "Fakir" },
+    { label: "Miskin", value: "Miskin" },
+    { label: "Amil", value: "Amil" },
+  ];
+  const kategoriIndividuOptions = [
+    { label: "Miskin", value: "Miskin" },
+    { label: "Fakir", value: "Fakir" },
+  ];
+  const tableHeaders = [
+    { key: 'pengenalanId', label: 'Pengenalan Id' },
+    { key: 'nama', label: 'Nama' },
+    { key: 'kategori', label: 'Kategori Asnaf(Syor)' },
+    { key: 'meritIndividu', label: 'Merit Individu(Syor)' },
+    { key: 'statusMultidimensi', label: 'Status Multidimensi(Syor)' },
+  ];
+  const tableData = [
+    {
+      pengenalanId: '060802030272',
+      nama: 'NUR NAJWA BINTI ADNAN',
+      kategori: 'Miskin',
+      meritIndividu: '0.38',
+      statusMultidimensi: 'Tidak Produktif',
+    },
+    {
+      pengenalanId: '091108030442',
+      nama: 'NUR QISTINA BINTI ADNAN',
+      kategori: 'Miskin',
+      meritIndividu: '0.40',
+      statusMultidimensi: 'Tidak Produktif',
+    },
+    {
+      pengenalanId: '770319035991',
+      nama: 'Adnan bin Abu',
+      kategori: 'Miskin',
+      meritIndividu: '0.69',
+      statusMultidimensi: 'Produktif C',
+    },
+    {
+      pengenalanId: '801004035672',
+      nama: 'ROHANA BINTI AHMAD',
+      kategori: 'Miskin',
+      meritIndividu: '0.64',
+      statusMultidimensi: 'Produktif C',
+    },
+  ];
+
+  // Pengesahan Status table schema & data
+  const pengesahanColumns = [
+    { key: 'pengenalanId', label: 'Pengenalan ID' },
+    { key: 'nama', label: 'Nama' },
+    { key: 'kategori', label: 'Kategori' },
+    { key: 'meritIndividu', label: 'Merit Individu' },
+    { key: 'statusMultidimensi', label: 'Status Multidimensi' },
+    { key: 'pelarasan', label: 'Pelarasan' },
+  ];
+  const pengesahanRows = [
+    { pengenalanId: '060802030272', nama: 'NUR NAJWA BINTI ADNAN', kategori: 'Miskin', meritIndividu: '0.38', statusMultidimensi: 'Tidak Produktif', pelarasan: false },
+    { pengenalanId: '091108030442', nama: 'NUR QISTINA BINTI ADNAN', kategori: 'Miskin', meritIndividu: '0.40', statusMultidimensi: 'Tidak Produktif', pelarasan: false },
+    { pengenalanId: '770319035991', nama: 'Adnan bin Abu', kategori: 'Miskin', meritIndividu: '0.69', statusMultidimensi: 'Produktif C', pelarasan: false },
+    { pengenalanId: '801004035672', nama: 'ROHANA BINTI AHMAD', kategori: 'Miskin', meritIndividu: '0.64', statusMultidimensi: 'Produktif C', pelarasan: false },
+  ];
   const getLocation = () => {};
   
   const router = useRouter();
@@ -2860,6 +3678,9 @@
     masaLawatan: "",
     catatanPenilaianAwal: "",
     gambarLokasi: null,
+    kategori: "",
+    tingkahLakuAsnaf: "",
+    tingkahLakuAsnafLain: "",
   });
   
   // Investigation form data
@@ -2881,15 +3702,31 @@
   
   // Profiling form data
   const profilingData = ref({
-    pengenalanId: "",
-    nama: "",
+    pengenalanId: "060802030272",
+    namaPengesah: "",
+    nama: "NUR NAJWA BINTI ADNAN",
+    merit: "0.38",
+    multidimensi: "Tidak Produktif",
     hadKifayahSyor: "",
-    kategoriKeluargaAsnafSyor: "",
-    kategoriAsnafSyor: "",
+    peratusanPerbezaan: "50.81%",
+    kategoriKeluargaAsnafSyor: "Miskin",
+    kategoriAsnafSyor: "Miskin",
+    kategoriKeluargaAsnaf: "Miskin",
+    kategoriAsnaf: "Miskin",
     tarikhPengesyoran: "",
     pengenalanIdTanggungan1: "",
     pengenalanIdTanggungan2: "",
+    pengenalanIdTanggungan3: "",
     kategoriTanggunganSyor: "",
+    kategoriTanggunganSyor1: "Miskin",
+    kategoriTanggunganSyor2: "Miskin",
+    kategoriTanggunganSyor3: "Miskin",
+    tanggunganCheckbox1: false,
+    tanggunganCheckbox2: false,
+    tanggunganCheckbox3: false,
+    meritKeluargaSyor: "0.55",
+    statusMultidimensiKeluargaSyor: "Produktif C",
+    quadrantMultidimensiKeluargaSyor: "Asnaf Produktif Sementara",
     assignSiasatan: "",
     hadKifayahSah: "",
     kategoriKeluargaAsnafSah: "",
@@ -3009,6 +3846,18 @@
     { label: "Telefon", value: "telefon" },
     { label: "Lapangan", value: "lapangan" },
   ];
+
+  const kategoriOptions = [
+    { label: "Musafir", value: "musafir" },
+    { label: "Mukim", value: "mukim" },
+    { label: "Bemastautin", value: "bemastautin" },
+  ];
+
+  const tingkahLakuAsnafOptions = [
+    { label: "Beremosi", value: "beremosi" },
+    { label: "Baran", value: "baran" },
+    { label: "Lain-lain", value: "lain-lain" },
+  ];
   
   const statusSiasatanOptions = [
     { label: "Selesai Siasatan", value: "selesai" },
@@ -3100,6 +3949,49 @@
   
   // Mock data for tables
   const assistanceApplications = ref([]);
+
+  // Read-only data for Maklumat Peribadi Tanggungan (copied shape from FR/02_readonly)
+  const tanggunganList = ref([
+    {
+      hubungan_pemohon: "Anak",
+      nama_tanggungan: "NURIN SOFIA BINTI ADNAN",
+      jenis_pengenalan_tanggungan: "MyKid",
+      pengenalan_id_tanggungan: "110203140088",
+      warganegara_tanggungan: "Malaysia",
+      jantina_tanggungan: "Perempuan",
+      tarikh_lahir_tanggungan: "2011-02-03",
+      umur_tanggungan: "14",
+      status_perkahwinan_tanggungan: "Bujang",
+      status_pekerjaan_tanggungan: "Tidak Bekerja",
+      status_sekolah_tanggungan: "Masih Bersekolah",
+      // conditional extras
+      lain_lain_hubungan: "",
+      taraf_penduduk_tetap: "",
+      no_pasport_lama: "",
+      no_pasport: "",
+      tarikh_mula_pasport: "",
+      tarikh_tamat_pasport: "",
+    },
+    {
+      hubungan_pemohon: "Anak",
+      nama_tanggungan: "MUHAMMAD HAKIM BIN ADNAN",
+      jenis_pengenalan_tanggungan: "MyKid",
+      pengenalan_id_tanggungan: "150715060022",
+      warganegara_tanggungan: "Malaysia",
+      jantina_tanggungan: "Lelaki",
+      tarikh_lahir_tanggungan: "2015-07-15",
+      umur_tanggungan: "10",
+      status_perkahwinan_tanggungan: "Bujang",
+      status_pekerjaan_tanggungan: "Tidak Bekerja",
+      status_sekolah_tanggungan: "Masih Bersekolah",
+      lain_lain_hubungan: "",
+      taraf_penduduk_tetap: "",
+      no_pasport_lama: "",
+      no_pasport: "",
+      tarikh_mula_pasport: "",
+      tarikh_tamat_pasport: "",
+    },
+  ]);
   
   const existingAssistance = ref([
     {
@@ -3352,6 +4244,27 @@
       batalBantuan: false,
     },
   ]);
+
+  // Open "Bantuan Baru" accordion by default within its collapse group
+  const bantuanCollapse = ref(null);
+  const openBantuanBaruAccordion = () => {
+    try {
+      const root = bantuanCollapse?.value?.$el || bantuanCollapse?.value || null;
+      if (!root) return;
+      const groups = root.querySelectorAll('.accordion-group');
+      if (!groups || groups.length === 0) return;
+      // Target the last group since we reordered: Had Kifayah first, then Bantuan Baru
+      const bantuanBaruGroup = groups[groups.length - 1];
+      const header = bantuanBaruGroup.querySelector('.accordion-header');
+      if (!header) return;
+      // If not already open, simulate click to open using component's logic
+      if (!bantuanBaruGroup.classList.contains('accordion-group--open')) {
+        header.click();
+      }
+    } catch (e) {
+      // silently ignore in mock UI
+    }
+  };
   
   // Textarea model for pembatalan justification
   const justifikasiPembatalan = ref("");
@@ -4005,7 +4918,30 @@
   };
   
   // Load data based on route parameter
-  onMounted(() => {
+  onMounted(async () => {
+    // Force accordion to be open by default
+    await nextTick();
+    isPeribadiAsnafOpen.value = true;
+    
+    // Additional timeout to ensure accordion opens
+    setTimeout(() => {
+      isPeribadiAsnafOpen.value = true;
+    }, 100);
+    
+    // Ensure "A. Maklumat Peribadi Asnaf" accordion is open by default after DOM is rendered
+    nextTick(() => {
+      openPeribadiAsnafAccordion();
+    });
+    
+    // Additional attempts with different timings
+    setTimeout(() => {
+      openPeribadiAsnafAccordion();
+    }, 200);
+    
+    setTimeout(() => {
+      openPeribadiAsnafAccordion();
+    }, 500);
+    
     const noBantuan = route.params.id || "NAS-2025-0001"; // Default to first record
     const record = mockByNoBantuan[noBantuan];
     const investigationRecord = mockInvestigationData[noBantuan];
@@ -4111,6 +5047,11 @@
         console.log("Loaded assistance applications:", assistanceApplications.value);
       }
     }
+
+    // Ensure "Bantuan Baru" accordion is open by default after DOM is rendered
+    nextTick(() => {
+      openBantuanBaruAccordion();
+    });
   });
   </script>
   
