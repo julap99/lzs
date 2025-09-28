@@ -311,7 +311,7 @@ const performSearch = async () => {
         },
         {
           id: 'ORG-202506-0002',
-          namaOrganisasi: "Masjid Al-Hidayah - Cawangan",
+          namaOrganisasi: "Masjid Al-Amin",
           noPendaftaran: "PPM-2021-002",
           jenisOrganisasi: "Masjid",
           kariah: "Kariah Shah Alam",
