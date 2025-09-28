@@ -931,13 +931,15 @@ const isSubmitted = ref(true); // Whether the organization has been submitted
 // BA Requirement 14: Field locking logic
 const isFieldLocked = (fieldName) => {
   // Nama dan nombor pendaftaran tidak dibenarkan tukar jika telah hantar
+  // Lock for external users (PenggunaLuar), allow Staf Zakat (admin/developer) to edit
   if (['organizationName', 'registrationNumber'].includes(fieldName)) {
-    return isSubmitted.value && currentUserRole.value !== 'Staf Zakat';
+    return isSubmitted.value && currentUserRole.value === 'PenggunaLuar';
   }
   
   // Bank updates require manual approval (BA Requirement 11)
+  // Lock for external users, allow Staf Zakat to edit
   if (['bankName', 'bankAccountNumber', 'penamaBank'].includes(fieldName)) {
-    return organizationStatus.value === 'Disahkan' && currentUserRole.value !== 'Staf Zakat';
+    return organizationStatus.value === 'Disahkan' && currentUserRole.value === 'PenggunaLuar';
   }
   
   return false;
@@ -950,6 +952,7 @@ const canUpdateAddress = computed(() => {
 
 // BA Requirement 12: Contact changes require supporting letter
 const canUpdateContact = computed(() => {
+  // Allow Staf Zakat (admin/developer) to update, restrict external users
   return currentUserRole.value === 'Staf Zakat' || !isSubmitted.value;
 });
 
