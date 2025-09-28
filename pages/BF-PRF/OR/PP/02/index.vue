@@ -136,7 +136,7 @@
 
           <!-- Kariah - Show when Organization Type is not 'Masjid' -->
           <FormKit
-            v-if="showKariah"
+            v-if="showKariahField"
             type="text"
             name="kariah"
             label="Kariah"
@@ -675,7 +675,7 @@
               <label class="block text-gray-600 font-medium">HQ</label>
               <p class="text-gray-900">{{ (hqOptions.find(h=>h.value===formData.hq)?.label) || '-' }}</p>
             </div>
-            <div v-if="showKariah">
+            <div v-if="showKariahField">
               <label class="block text-gray-600 font-medium">Kariah</label>
               <p class="text-gray-900">{{ formData.kariah || '-' }}</p>
             </div>
