@@ -1177,23 +1177,82 @@ const lzsKariahData = {
   // contain extensive data but truncated for brevity. Full data would be included in production.
 };
 
-// Computed property for kariah options based on selected district
+// Smart Kariah filtering based on organization name
 const kariahOptions = computed(() => {
-  const selectedDistrict = formData.value.district;
+  const orgName = formData.value.organizationName?.toLowerCase() || '';
   
-  if (!selectedDistrict) {
+  // Show nothing until user starts typing (minimum 2 characters)
+  if (!orgName || orgName.length < 2) {
     return [];
   }
   
-  // Get kariah for selected district + AM (general)
-  const districtKariah = lzsKariahData[selectedDistrict] || [];
-  const generalKariah = lzsKariahData["AM"] || [];
+  // Get all kariah from all districts + AM
+  const allKariah = [
+    ...lzsKariahData.AM,
+    ...lzsKariahData.GOMBAK,
+    ...lzsKariahData.HULU_LANGAT
+    // Note: Other districts would be added here in production
+  ];
   
-  // Combine and remove duplicates
-  const allKariah = [...new Set([...districtKariah, ...generalKariah])];
+  // Remove duplicates
+  const uniqueKariah = [...new Set(allKariah)];
+  
+  // Smart filtering based on organization name
+  const filteredKariah = uniqueKariah.filter(kariah => {
+    const kariahLower = kariah.toLowerCase();
+    
+    // Exact match (highest priority)
+    if (kariahLower.includes(orgName)) {
+      return true;
+    }
+    
+    // Split organization name into words for better matching
+    const orgWords = orgName.split(/\s+/).filter(word => word.length > 1);
+    
+    // Check if any word from org name matches any part of kariah
+    const hasWordMatch = orgWords.some(word => 
+      kariahLower.includes(word) || 
+      word.includes(kariahLower.split(' ')[0]) ||
+      kariahLower.split(' ').some(kariahWord => 
+        kariahWord.includes(word) || word.includes(kariahWord)
+      )
+    );
+    
+    if (hasWordMatch) {
+      return true;
+    }
+    
+    // Special handling for common patterns
+    if (orgName.includes('lzs') && kariahLower.includes('lzs')) {
+      return true;
+    }
+    
+    if (orgName.includes('masjid') && kariahLower.includes('masjid')) {
+      return true;
+    }
+    
+    if (orgName.includes('jamek') && kariahLower.includes('jamek')) {
+      return true;
+    }
+    
+    return false;
+  });
+  
+  // Sort results: exact matches first, then partial matches
+  const sortedKariah = filteredKariah.sort((a, b) => {
+    const aLower = a.toLowerCase();
+    const bLower = b.toLowerCase();
+    
+    // Exact matches first
+    if (aLower.includes(orgName) && !bLower.includes(orgName)) return -1;
+    if (!aLower.includes(orgName) && bLower.includes(orgName)) return 1;
+    
+    // Then by length (shorter matches first)
+    return a.length - b.length;
+  });
   
   // Convert to FormKit options format
-  return allKariah.map(kariah => ({
+  return sortedKariah.map(kariah => ({
     label: kariah,
     value: kariah
   }));
@@ -1212,8 +1271,9 @@ const jenisMasjidOptions = [
 
 // BA Requirement 3: Updated computed properties for conditional field visibility
 const showKariahField = computed(() => {
-  // Show kariah field for all organization types except masjid (masjid has jenis masjid instead)
-  return formData.value.organizationType && formData.value.organizationType !== 'masjid';
+  // Show kariah field only for Masjid and Surau organization types
+  return formData.value.organizationType && 
+         ['masjid', 'surau'].includes(formData.value.organizationType);
 });
 
 const showZone = computed(() => {
@@ -1391,9 +1451,9 @@ const additionalDocsCount = computed(() => {
   return Array.isArray(f) ? f.length : (f ? 1 : 0);
 });
 
-// Watch for changes in district to clear kariah selection
+// Watch for changes in organization name to clear kariah selection
 watch(
-  () => formData.value.district,
+  () => formData.value.organizationName,
   () => {
     formData.value.kariah = "";
   }
