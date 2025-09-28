@@ -1155,6 +1155,24 @@ const semakanData = ref([
     noRujukan: "NAS-2025-0005",
     tindakan: "bantuan/semakan/NAS-2025-0005",
   },
+  {
+    pemohon: "Mohd Kamal bin Mohd Luffy (990504-08-2567)",
+    kariah: "Masjid Al-Ikhlas",
+    daerah: "Kuala Selangor",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0006",
+    tindakan: "bantuan/semakan/NAS-2025-0006",
+  },
+  {
+    pemohon: "Majlis Agama Islam Selangor (MAIS) (254900406XLRQPZSC186)",
+    kariah: "Masjid Bandar Utama",
+    daerah: "Shah Alam",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0007",
+    tindakan: "bantuan/semakan/NAS-2025-0007",
+  },
 ]);
 
 // Mock data for Sokongan sub-tab (own dataset, same format)
