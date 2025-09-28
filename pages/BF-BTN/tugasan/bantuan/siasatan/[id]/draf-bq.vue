@@ -111,7 +111,7 @@
 
                 <div class="space-y-2 lg:col-span-2">
                   <label class="block text-sm font-medium text-gray-700"
-                    >Alamat</label
+                    >Alamat Tapak</label
                   >
                   <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
                     <span
@@ -1127,7 +1127,7 @@
                 <span class="font-medium">No BR:</span> {{ formData.noBR }}
               </div>
               <div class="col-span-2">
-                <span class="font-medium">Alamat:</span> {{ formData.alamat }}
+                <span class="font-medium">Alamat Tapak:</span> {{ formData.alamat }}
               </div>
               <div>
                 <span class="font-medium">Tarikh Siasatan:</span> {{ new Date(formData.tarikhSiasatan).toLocaleDateString("ms-MY") }}
@@ -1527,7 +1527,31 @@ const jenisKerjaOptions = ref([
 
 // Predefined data for each jenis kerja
 const jenisKerjaData = {
-  // Data objects removed as requested
+  bina_semula_bangunan_bilik: {
+    keteranganKerja: "Membina tambahan bilik berukuran 20' x 15' termasuk kerja-kerja asas cerucuk bakau atau raft foundation, penapak konkrit bertetulang (pad footing), rasuk tanah konkrit bertetulang, tiang konkrit bertetulang, dinding bata berlepa, rasuk bumbung konkrit bertetulang, lantai konkrit bertetulang, kemasan siling, kemasan cat luar & dalam serta kelengkapan berikut :",
+    unit: "Pukal",
+    kadar: 40000,
+  },
+  roboh_rumah_kayu: {
+    keteranganKerja: "Membuka, memecah dan membawa keluar keseluruhan struktur binaan rumah kayu, membuka dan memindahkan meter elektrik TNB, papan agihan termasuk semua pendawaian yang berkaitan, membawa bahan-bahan buangan pembinaan ke lokasi yang ditentukan sehingga sempurna mengikut arahan Pegawai Penguasa.",
+    unit: "Pukal",
+    kadar: 3000,
+  },
+  baik_pulih_struktur: {
+    keteranganKerja: "Baik pulih struktur bangunan termasuk kerja-kerja pembaikan dinding retak, penggantian bumbung rosak, pembaikan lantai, cat dalam dan luar, serta kerja-kerja berkaitan untuk memulihkan keadaan bangunan kepada kondisi yang selamat dan sesuai untuk didiami.",
+    unit: "Pukal",
+    kadar: 15000,
+  },
+  kerja_elektrik: {
+    keteranganKerja: "Kerja-kerja elektrik termasuk pemasangan wayar baru, suis dan soket, papan agihan elektrik, lampu, kipas siling, dan semua kerja elektrik yang berkaitan mengikut spesifikasi Suruhanjaya Tenaga dan piawaian keselamatan yang ditetapkan.",
+    unit: "Pukal",
+    kadar: 5000,
+  },
+  kerja_paip: {
+    keteranganKerja: "Kerja-kerja paip dan plumbing termasuk pemasangan paip air bersih dan kotor, singki, mangkuk tandas, shower, dan semua kerja paip yang berkaitan mengikut spesifikasi dan piawaian yang ditetapkan oleh pihak berkuasa tempatan.",
+    unit: "Pukal",
+    kadar: 4000,
+  },
 };
 
 // Form data with better structure
@@ -1838,7 +1862,7 @@ const initializeFormData = () => {
       {
         ref: "CMP",
         jenisKerja: "roboh_rumah_kayu",
-        keteranganKerja: " Membuka,memecah dan membawa keluar keseluruhan struktur binaan rumah kayu,membuka dan memindahkan meter elektrik TNB,papan agihan termasuk semua pendawaian yang berkaitan, membawa bahan-bahan buangan pembinaan ke lokasi yang ditentukan sehingga sempurna mengikut arahan Pegawai Penguasa.",
+        keteranganKerja: "Membuka, memecah dan membawa keluar keseluruhan struktur binaan rumah kayu, membuka dan memindahkan meter elektrik TNB, papan agihan termasuk semua pendawaian yang berkaitan, membawa bahan-bahan buangan pembinaan ke lokasi yang ditentukan sehingga sempurna mengikut arahan Pegawai Penguasa.",
         unit: "Pukal",
         kuantiti: 1,
         kadar: 3000,
@@ -1854,7 +1878,7 @@ const initializeFormData = () => {
       {
         ref: "CMP",
         jenisKerja: "baik_pulih_struktur",
-        keteranganKerja: "Bumbung metal deck termasuk struktur jenis sesikat",
+        keteranganKerja: "Baik pulih struktur bangunan termasuk kerja-kerja pembaikan dinding retak, penggantian bumbung rosak, pembaikan lantai, cat dalam dan luar, serta kerja-kerja berkaitan untuk memulihkan keadaan bangunan kepada kondisi yang selamat dan sesuai untuk didiami.",
         unit: "Pukal",
         kuantiti: 1,
         kadar: 15000,
