@@ -226,7 +226,7 @@
       <rs-card>
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Bayaran Kepada (Payable To)</h2>
+            <h2 class="text-xl font-semibold">Bayaran Kepada (Payable To)</h2>
 
             <div class="flex items-center gap-2">
 
@@ -261,29 +261,79 @@
           </div>
 
           <div v-else class="space-y-3">
-            <rs-table
-              :data="cleanPaymentList"
-              :columns="paymentColumns"
-              :pageSize="5"
-              :showNoColumn="true"
-              :options="{ variant: 'default', hover: true, striped: true }"
-              :options-advanced="{ sortable: true, filterable: false }"
-              advanced
-            >
-              <template v-slot:amaun="{ text }">
-                {{ formatCurrency(text) }}
-              </template>
-              <template v-slot:checkbox="{ value }">
-                <div class="flex justify-center">
-                  <input
-                    type="checkbox"
-                    :value="value.kod"
-                    v-model="selectedPayments"
-                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                  />
-                </div>
-              </template>
-            </rs-table>
+            <!-- Custom Table -->
+            <div class="overflow-x-auto">
+              <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
+                <!-- Table Header -->
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No.</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kod</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bayaran Kepada</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori Asnaf</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contributor</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recipient</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Organization</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amaun</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mode Of Payment</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bank</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Akaun</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Tindakan
+                    </th>
+                  </tr>
+                </thead>
+                <!-- Table Body -->
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr v-for="(payment, index) in cleanPaymentList" :key="payment.kod" 
+                      class="hover:bg-gray-50 transition-colors duration-150">
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                      {{ index + 1 }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.kod }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.bayaranKepada }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.asnaf }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.contributor }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.recipient }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.organization }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                      {{ formatCurrency(payment.amaun) }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.modeOfPayment || '-' }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.bankName }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.accountNumber || '-' }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                      <div class="flex justify-center">
+                        <input
+                          type="checkbox"
+                          :value="payment.kod"
+                          v-model="selectedPayments"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </template>
       </rs-card>
@@ -293,7 +343,7 @@
       <rs-card v-if="showImportCards">
         <template #header>
           <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Maklumat Data Rosak</h2>
+          <h2 class="text-xl font-semibold">Data Rosak</h2>
           </div>
         </template>
         <template #body>
@@ -369,7 +419,7 @@
       <rs-card v-if="showImportCards">
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Senarai Penerima (Beneficiary List)</h2>
+            <h2 class="text-xl font-semibold">Senarai Penerima (Beneficiary List)</h2>
           </div>
         </template>
         <template #body>
@@ -414,7 +464,7 @@
       <!-- Maklumat Dokumen Sokongan Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Maklumat Dokumen Sokongan</h2>
+          <h2 class="text-xl font-semibold">Dokumen Sokongan</h2>
         </template>
         <template #body>
           <div class="space-y-4" :class="{ loading: isLoading }">
@@ -562,7 +612,7 @@
           type="text"
           name="bayaranKepada"
           label="Bayaran Kepada"
-          v-model="paymentForm.bayaranKepada"
+          v-model="paymentForm.recipient"
           placeholder="Masukkan bayaran kepada"
           validation="required"
         />
@@ -885,7 +935,7 @@
              type="text"
              name="bayaranKepada"
              label="Bayaran Kepada"
-             :value="editingPaymentForDefect.bayaranKepada"
+             :value="editingPaymentForDefect.recipient"
              disabled
              :classes="{
                input: '!py-2',
@@ -920,7 +970,7 @@
              type="text"
              name="recipient"
              label="Recipient"
-             :value="editingPaymentForDefect.recipient"
+             :value="editingPaymentForDefect.bayaranKepada"
              disabled
              :classes="{
                input: '!py-2',
@@ -2103,7 +2153,7 @@ const damagedDataList = computed(() => {
     out.push({
       no: defectCounter++,
       id: `DEF-${String(defectCounter - 1).padStart(3, "0")}`, // Hidden but needed for logic
-      namaPenerima: p.bayaranKepada,
+      namaPenerima: p.recipient,
       catatan: parts.join(" · "),
       jenisMasalah: reasons.join(", "), // Hidden but needed for logic
       idPermohonan: p.idPermohonan, // Hidden but needed for logic

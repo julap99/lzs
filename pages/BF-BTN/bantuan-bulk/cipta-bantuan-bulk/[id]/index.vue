@@ -168,7 +168,7 @@
       <rs-card>
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Bayaran Kepada</h2>
+            <h2 class="text-xl font-semibold">Bayaran Kepada</h2>
           </div>
         </template>
         <template #body>
@@ -219,7 +219,7 @@
       <rs-card>
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Senarai Penerima</h2>
+            <h2 class="text-xl font-semibold">Senarai Penerima (Beneficiary List)</h2>
           </div>
         </template>
         <template #body>

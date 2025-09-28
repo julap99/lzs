@@ -206,7 +206,7 @@
               <Icon name="material-symbols:upload" class="mr-1" />
               {{ isLoading ? "Sedang Import..." : "Import" }}
             </rs-button>
-            
+
             <!-- Download Payable To CSV Template -->
             <rs-button
               variant="secondary"
@@ -217,7 +217,7 @@
               Template Format Excel
             </rs-button>
             </div>
-            
+
           </div>
         </template>
       </rs-card>
@@ -226,12 +226,12 @@
       <rs-card>
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Bayaran Kepada (Payable To)</h2>
+            <h2 class="text-xl font-semibold">Bayaran Kepada (Payable To)</h2>
 
             <div class="flex items-center gap-2">
 
               <rs-button
-                
+
                 variant="primary"
                 @click="handleAddPayment"
               >
@@ -261,39 +261,89 @@
           </div>
 
           <div v-else class="space-y-3">
-            <rs-table
-              :data="cleanPaymentList"
-              :columns="paymentColumns"
-              :pageSize="5"
-              :showNoColumn="true"
-              :options="{ variant: 'default', hover: true, striped: true }"
-              :options-advanced="{ sortable: true, filterable: false }"
-              advanced
-            >
-              <template v-slot:amaun="{ text }">
-                {{ formatCurrency(text) }}
-              </template>
-              <template v-slot:checkbox="{ value }">
-                <div class="flex justify-center">
-                  <input
-                    type="checkbox"
-                    :value="value.kod"
-                    v-model="selectedPayments"
-                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                  />
-                </div>
-              </template>
-            </rs-table>
+            <!-- Custom Table -->
+            <div class="overflow-x-auto">
+              <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
+                <!-- Table Header -->
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No.</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kod</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bayaran Kepada</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori Asnaf</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contributor</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recipient</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Organization</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amaun</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mode Of Payment</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bank</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Akaun</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Tindakan
+                    </th>
+                  </tr>
+                </thead>
+                <!-- Table Body -->
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr v-for="(payment, index) in cleanPaymentList" :key="payment.kod" 
+                      class="hover:bg-gray-50 transition-colors duration-150">
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                      {{ index + 1 }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.kod }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.bayaranKepada }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.asnaf }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.contributor }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.recipient }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.organization }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                      {{ formatCurrency(payment.amaun) }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.modeOfPayment || '-' }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.bankName }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.accountNumber || '-' }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                      <div class="flex justify-center">
+                        <input
+                          type="checkbox"
+                          :value="payment.kod"
+                          v-model="selectedPayments"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </template>
       </rs-card>
 
-      
+
       <!-- Maklumat Data Rosak Section -->
       <rs-card v-if="showImportCards">
         <template #header>
           <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Maklumat Data Rosak</h2>
+          <h2 class="text-xl font-semibold">Data Rosak</h2>
           </div>
         </template>
         <template #body>
@@ -362,14 +412,14 @@
               </div>
         </template>
       </rs-card>
-      
 
-      
+
+
       <!-- Maklumat Senarai Penerima Section -->
       <rs-card v-if="showImportCards">
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Senarai Penerima (Beneficiary List)</h2>
+            <h2 class="text-xl font-semibold">Senarai Penerima (Beneficiary List)</h2>
           </div>
         </template>
         <template #body>
@@ -395,7 +445,7 @@
               <template v-slot:amaun="{ text }">
                 {{ formatCurrency(text) }}
               </template>
-            
+
               <template v-slot:actions="{ row }">
                 <div class="flex space-x-2 justify-center">
                   <rs-button variant="info" size="sm" @click="handleEditRecipientModal(row)">
@@ -427,7 +477,7 @@
               multiple
               @change="handleDocumentUpload"
             />
-            
+
             <!-- Display selected files -->
             <div v-if="selectedDocuments.length > 0" class="mt-4">
               <h4 class="text-sm font-medium text-gray-700 mb-2">Fail yang dipilih:</h4>
@@ -452,7 +502,7 @@
                 </div>
               </div>
             </div>
-            
+
             <rs-button
               variant="primary"
               :disabled="!selectedDocuments.length || isLoading"
@@ -464,6 +514,7 @@
 
             <!-- Existing uploaded documents -->
             <div v-if="documentList.length > 0" class="mt-6 space-y-3">
+              <h4 class="text-sm font-medium text-gray-700">Dokumen sedia ada:</h4>
               <h4 class="text-sm font-medium text-gray-700">Dokumen yang telah dimuat naik:</h4>
             <div
               v-for="(document, index) in documentList"
@@ -813,7 +864,7 @@
               disabled
             />
           </div>
-          
+
           <!-- Notes Section -->
           <FormKit
             type="textarea"
@@ -825,7 +876,7 @@
               input: 'min-h-[60px]',
             }"
           />
-          
+
           <!-- Issue Details -->
           <FormKit
             type="text"
@@ -834,10 +885,10 @@
             :value="selectedDamagedData.jenisMasalah || 'Tiada maklumat'"
             disabled
           />
-          
+
         </div>
       </template>
-     
+
      <template #footer>
        <div class="flex justify-end space-x-2">
          <rs-button variant="secondary" @click="showViewDetailsModal = false">
@@ -867,7 +918,7 @@
                input: '!py-2',
              }"
            />
-           
+
            <FormKit
              type="text"
              name="idPermohonan"
@@ -879,7 +930,7 @@
              }"
            />
          </div>
-         
+
          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
            <FormKit
              type="text"
@@ -891,7 +942,7 @@
                input: '!py-2',
              }"
            />
-           
+
            <FormKit
              type="text"
              name="asnaf"
@@ -903,7 +954,7 @@
              }"
            />
          </div>
-         
+
          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
            <FormKit
              type="text"
@@ -915,7 +966,7 @@
                input: '!py-2',
              }"
            />
-           
+
            <FormKit
              type="text"
              name="recipient"
@@ -927,7 +978,7 @@
              }"
            />
          </div>
-         
+
          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
            <FormKit
              type="text"
@@ -939,7 +990,7 @@
                input: '!py-2',
              }"
            />
-           
+
            <FormKit
              type="text"
              name="tarikhBayaran"
@@ -951,7 +1002,7 @@
              }"
            />
          </div>
-         
+
          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
            <FormKit
              type="select"
@@ -964,7 +1015,7 @@
                input: '!py-2',
              }"
            />
-           
+
            <FormKit
              type="text"
              name="bankAccount"
@@ -976,7 +1027,7 @@
              }"
            />
          </div>
-         
+
          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
            <FormKit
              type="text"
@@ -991,7 +1042,7 @@
          </div>
        </div>
      </template>
-     
+
      <template #footer>
        <div class="flex justify-end space-x-2">
          <rs-button variant="secondary" @click="() => { showKemaskiniModal = false; editingPaymentForDefect = null; }">
@@ -1003,7 +1054,7 @@
        </div>
      </template>
    </rs-modal>
-   
+
    <!-- Duplicate List Modal (Inlined) -->
    <rs-modal
      v-model="showDuplicateModal"
@@ -2103,7 +2154,7 @@ const damagedDataList = computed(() => {
     out.push({
       no: defectCounter++,
       id: `DEF-${String(defectCounter - 1).padStart(3, "0")}`, // Hidden but needed for logic
-      namaPenerima: p.bayaranKepada,
+      namaPenerima: p.recipient,
       catatan: parts.join(" · "),
       jenisMasalah: reasons.join(", "), // Hidden but needed for logic
       idPermohonan: p.idPermohonan, // Hidden but needed for logic
@@ -2165,7 +2216,7 @@ const handleKemaskiniDamagedData = (defectRow) => {
   // Populate the editingPaymentForDefect with payment data
   editingPaymentForDefect.value = {
     pointer: payment.kod,
-    bayaranKepada: payment.bayaranKepada,
+    bayaranKepada: payment.recipient,
     idPermohonan: payment.idPermohonan,
     bankAccount: payment.bankAccount,
     bankName: payment.bankName,
@@ -2433,7 +2484,7 @@ const handleSahkanSelected = () => {
   pointer-events: none;
 }
 
-  .form-actions {
+.form-actions {
   position: sticky;
   bottom: 0;
   background-color: white;
