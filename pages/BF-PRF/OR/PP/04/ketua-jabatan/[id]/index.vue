@@ -316,7 +316,7 @@ const mockData = {
     applicationDate: '05-09-2025',
     status: 'Dalam Semakan Pelulus',
     organizationType: 'Masjid',
-    organizationName: 'Masjid Al-Hidayah - Cawangan',
+    organizationName: 'Masjid Al-Hidayah',
     registrationNumber: 'PPM-2021-002',
     email: 'info@alhidayah.my',
     addressLine1: 'Jalan 2/1',
@@ -330,7 +330,7 @@ const mockData = {
     contactEmail: 'faizal@alhidayah.my',
     bankName: 'Maybank',
     bankAccountNumber: '987654321000',
-    penamaBank: 'Masjid Al-Hidayah - Cawangan',
+    penamaBank: 'Masjid Al-Hidayah',
     paymentMethod: 'EFT',
     documents: [
       { name: 'Sijil Pendaftaran SSM / ROS', filename: 'ssm_ros.pdf', size: '2.0 MB' },
