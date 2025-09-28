@@ -6,7 +6,17 @@
       <!-- Maklumat Umum Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Maklumat Umum</h2>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:info" class="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Maklumat Umum</h2>
+              <p class="text-sm text-gray-500">Maklumat asas bantuan</p>
+            </div>
+          </div>
         </template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -103,7 +113,17 @@
        <rs-card>
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Bantuan</h2>
+            <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:handshake" class="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Maklumat Bantuan</h2>
+              <p class="text-sm text-gray-500">Konfigurasi bantuan dan produk</p>
+            </div>
+          </div>
             <div class="flex gap-2">
               <rs-button
                 v-if="!isEditing"
@@ -234,7 +254,17 @@
       <!-- Maklumat Bayaran Kepada Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Bayaran Kepada (Payable To)</h2>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:payments" class="w-6 h-6 text-yellow-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Bayaran Kepada (Payable To)</h2>
+              <p class="text-sm text-gray-500">Daftar pembayaran dan maklumat penerima</p>
+            </div>
+          </div>
         </template>
         <template #body>
           <div
@@ -282,7 +312,17 @@
       <!-- Senarai Penerima Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Senarai Penerima (Beneficiary List)</h2>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:person" class="w-6 h-6 text-red-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Senarai Penerima (Beneficiary List)</h2>
+              <p class="text-sm text-gray-500">Senarai penerima bantuan dan maklumatnya</p>
+            </div>
+          </div>
         </template>
         <template #body>
           <div
@@ -330,7 +370,17 @@
       <!-- Dokumen Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Dokumen Sokongan</h2>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:description" class="w-6 h-6 text-purple-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Dokumen Sokongan</h2>
+              <p class="text-sm text-gray-500">Fail dan dokumen berkaitan</p>
+            </div>
+          </div>
         </template>
         <template #body>
           <div
@@ -369,7 +419,17 @@
       <!-- Maklumat Sokongan Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Maklumat Sokongan</h2>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:handshake" class="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Maklumat Sokongan</h2>
+              <p class="text-sm text-gray-500">Maklumat sokongan dan dokumen</p>
+            </div>
+          </div>
         </template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

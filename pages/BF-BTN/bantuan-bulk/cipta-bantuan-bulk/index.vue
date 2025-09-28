@@ -5,7 +5,17 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Senarai Bulk Processing</h2>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:list" class="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Senarai Bulk Processing</h2>
+              <p class="text-sm text-gray-500">Senarai bantuan bulk processing</p>
+            </div>
+          </div>
           <rs-button variant="primary" @click="navigateTo('cipta-bantuan-bulk/tambah')">
             <Icon name="material-symbols:add" class="mr-1" /> Tambah
           </rs-button>
@@ -52,39 +62,27 @@
                 </rs-badge>
               </template>
 
-              <template v-slot:actions="{ text, index }">
+              <template v-slot:actions="{ text}">
                 <div class="flex justify-center items-center gap-2">
                   <!-- Edit -->
-                  <div class="relative flex items-center justify-center" @mouseenter="tooltips['edit'+index] = true" @mouseleave="tooltips['edit'+index] = false">
-                    <rs-button 
-                      variant="info-text" 
-                      class="p-1 w-8 h-8"
-                      @click="editBantuan(text)"
-                    >
-                      <Icon name="ic:outline-edit" size="18" />
-                    </rs-button>
-                    <transition name="tooltip">
-                      <span v-if="tooltips['edit'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
-                        Edit
-                      </span>
-                    </transition>
-                  </div>
+                  <rs-button
+                    variant="primary"
+                    size="sm"
+                    @click="editBantuan(text)"
+                    title="Edit"
+                  >
+                    <Icon name="ic:outline-edit" class="w-4 h-4" />
+                  </rs-button>
 
                   <!-- Delete -->
-                  <div class="relative flex items-center justify-center" @mouseenter="tooltips['delete'+index] = true" @mouseleave="tooltips['delete'+index] = false">
-                    <rs-button 
-                      variant="danger-text" 
-                      class="p-1 w-8 h-8"
-                      @click="confirmDelete(text)"
-                    >
-                      <Icon name="ic:outline-delete" size="18" />
-                    </rs-button>
-                    <transition name="tooltip">
-                      <span v-if="tooltips['delete'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
-                        Hapus
-                      </span>
-                    </transition>
-                  </div>
+                  <rs-button
+                    variant="danger"
+                    size="sm"
+                    @click="confirmDelete(text)"
+                    title="Hapus"
+                  >
+                    <Icon name="ic:outline-delete" class="w-4 h-4" />
+                  </rs-button>
                 </div>
               </template>
             </rs-table>
