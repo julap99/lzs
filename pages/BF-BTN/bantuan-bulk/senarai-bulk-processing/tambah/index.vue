@@ -6,7 +6,17 @@
       <!-- Maklumat Umum Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Maklumat Umum</h2>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:info" class="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Maklumat Umum</h2>
+              <p class="text-sm text-gray-500">Maklumat asas bantuan</p>
+            </div>
+          </div>
         </template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -83,7 +93,17 @@
       <!-- Maklumat Bantuan Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Maklumat Bantuan</h2>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:handshake" class="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Maklumat Bantuan</h2>
+              <p class="text-sm text-gray-500">Konfigurasi bantuan dan produk</p>
+            </div>
+          </div>
         </template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -183,7 +203,17 @@
       <!-- Import Data Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Import Data</h2>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:upload" class="w-6 h-6 text-purple-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Import Data</h2>
+              <p class="text-sm text-gray-500">Muat naik data dari fail Excel</p>
+            </div>
+          </div>
         </template>
         <template #body>
           <div class="space-y-4" :class="{ loading: isLoading }">
@@ -228,7 +258,17 @@
       <rs-card>
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Bayaran Kepada (Payable To)</h2>
+            <div class="flex items-center space-x-3">
+              <div class="flex-shrink-0">
+                <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <Icon name="material-symbols:payments" class="w-6 h-6 text-orange-600" />
+                </div>
+              </div>
+              <div>
+                <h2 class="text-xl font-semibold text-gray-900">Bayaran Kepada (Payable To)</h2>
+                <p class="text-sm text-gray-500">Maklumat pembayaran dan penerima</p>
+              </div>
+            </div>
 
             <div class="flex items-center gap-2">
 
@@ -309,7 +349,17 @@
       <rs-card v-if="showImportCards">
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Data Rosak</h2>
+            <div class="flex items-center space-x-3">
+              <div class="flex-shrink-0">
+                <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                  <Icon name="material-symbols:error" class="w-6 h-6 text-red-600" />
+                </div>
+              </div>
+              <div>
+                <h2 class="text-xl font-semibold text-gray-900">Data Rosak</h2>
+                <p class="text-sm text-gray-500">Maklumat data rosak</p>
+              </div>
+            </div>
             <!-- <rs-button variant="primary" @click="handleAddDamagedData">
               <Icon name="material-symbols:add" class="mr-1" /> Kemaskini
             </rs-button> -->
@@ -386,7 +436,17 @@
       <rs-card v-if="showImportCards">
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Senarai Penerima (Beneficiary List)</h2>
+            <div class="flex items-center space-x-3">
+              <div class="flex-shrink-0">
+                <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                  <Icon name="material-symbols:person" class="w-6 h-6 text-red-600" />
+                </div>
+              </div>
+              <div>
+                <h2 class="text-xl font-semibold text-gray-900">Senarai Penerima (Beneficiary List)</h2>
+                <p class="text-sm text-gray-500">Senarai penerima bantuan dan maklumatnya</p>
+              </div>
+            </div>
             <!-- <rs-button variant="primary" @click="handleAddRecipient">
               <Icon name="material-symbols:add" class="mr-1" /> Tambah
             </rs-button> -->
@@ -439,7 +499,17 @@
       <!-- Maklumat Dokumen Sokongan Section -->
       <rs-card >
         <template #header>
-          <h2 class="text-xl font-semibold">Maklumat Dokumen Sokongan</h2>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:description" class="w-6 h-6 text-gray-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Dokumen Sokongan</h2>
+              <p class="text-sm text-gray-500">Fail dan dokumen berkaitan</p>
+            </div>
+          </div>
         </template>
         <template #body>
           <div class="space-y-4" :class="{ loading: isLoading }">

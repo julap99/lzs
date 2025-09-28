@@ -5,9 +5,17 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">
-            Senarai Bulk Processing
-          </h2>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:search" class="w-6 h-6 text-yellow-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Senarai Bulk Processing</h2>
+              <p class="text-sm text-gray-500">Semakan bantuan bulk processing</p>
+            </div>
+          </div>
         </div>
       </template>
 
@@ -68,21 +76,15 @@
             {{ formatCurrency(text) }}
           </template>
 
-          <template v-slot:tindakan="{ text, index}">
-            <div class="relative flex items-center justify-center" @mouseenter="tooltips['view'+index] = true" @mouseleave="tooltips['view'+index] = false">
-              <rs-button 
-                variant="info-text" 
-                class="p-1 w-8 h-8"
-                @click="handleProses(text)"
-              >
-                <Icon name="ic:outline-visibility" size="18" />
-              </rs-button>
-              <transition name="tooltip">
-                <span v-if="tooltips['view'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
-                  Lihat
-                </span>
-              </transition>
-            </div>
+          <template v-slot:tindakan="{ text}">
+            <rs-button
+              variant="info"
+              size="sm"
+              @click="handleProses(text)"
+              title="Lihat"
+            >
+              <Icon name="ic:outline-visibility" class="w-4 h-4" />
+            </rs-button>
           </template>
         </rs-table>
 
@@ -93,7 +95,7 @@
         </div>
 
         <!-- Pagination -->
-        <div class="flex items-center justify-between px-5 mt-4">
+        <!-- <div class="flex items-center justify-between px-5 mt-4">
           <div class="flex items-center gap-2">
             <span class="text-sm text-gray-700">Baris per halaman:</span>
             <FormKit
@@ -107,31 +109,7 @@
               }"
             />
           </div>
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-gray-700">
-              Menunjukkan {{ paginationStart }} hingga
-              {{ paginationEnd }} daripada {{ totalBantuanBulk }} entri
-            </span>
-            <div class="flex gap-1">
-              <rs-button
-                variant="primary-outline"
-                class="!p-1 !w-8 !h-8"
-                :disabled="currentPage === 1"
-                @click="currentPage--"
-              >
-                <Icon name="ic:round-keyboard-arrow-left" />
-              </rs-button>
-              <rs-button
-                variant="primary-outline"
-                class="!p-1 !w-8 !h-8"
-                :disabled="currentPage === totalPages"
-                @click="currentPage++"
-              >
-                <Icon name="ic:round-keyboard-arrow-right" />
-              </rs-button>
-            </div>
-          </div>
-        </div>
+        </div> -->
       </template>
     </rs-card>
   </div>
