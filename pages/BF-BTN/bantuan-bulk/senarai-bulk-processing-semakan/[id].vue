@@ -234,7 +234,7 @@
       <!-- Maklumat Bayaran Kepada Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Maklumat Bayaran Kepada (Payable To)</h2>
+          <h2 class="text-xl font-semibold">Bayaran Kepada (Payable To)</h2>
         </template>
         <template #body>
           <div
