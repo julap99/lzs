@@ -107,6 +107,21 @@
             }"
             v-model="formData.sewa_rumah_tanah_kedai"
             :disabled="readOnly" />
+
+          <div :class="getFieldClasses('total_perbelanjaan')" class="p-2 rounded">
+            <FormKit
+              type="number"
+              name="total_perbelanjaan"
+              label="Total Perbelanjaan (RM)"
+              step="0.01"
+              min="0"
+              validation="required"
+              :validation-messages="{
+                required: 'Total Perbelanjaan adalah wajib',
+              }"
+              v-model="formData.total_perbelanjaan"
+              :disabled="readOnly" />
+          </div>
       </div>
 
       <!-- Pendapatan Column -->

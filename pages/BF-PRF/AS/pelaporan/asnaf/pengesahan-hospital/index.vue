@@ -117,6 +117,13 @@
                 <div class="text-sm"><span class="font-semibold">{{ formatDateHijri(generatedAt) }}</span></div>
                 <p class="text-xl text-gray-700 mb-3 arabic">اَلسَلامُ عَلَيْكُم وَرَحْمَةُ اَللهِ وَبَرَكَاتُهُ‎</p>
               </div>
+
+              <div class="mt-6 text-left space-y-1">
+                <div class="font-bold text-base">{{ orgHeader.name }}</div>
+                <div v-for="(ln, i) in orgHeader.address" :key="i" class="text-sm">{{ ln }}</div>
+                <div class="text-sm mt-2">Tel: {{ orgHeader.tel }}</div>
+                <div class="text-sm">Faks: {{ orgHeader.fax }}</div>
+              </div>
             </template>
           </rs-card>
 
@@ -228,6 +235,16 @@ const filters = ref({
 })
 
 const showSurat = ref(false)
+
+const orgHeader = {
+  name: "Hospital Sungai Buloh",
+  address: [
+    "Jalan Hospital,",
+    "47000 Sungai Buloh, Selangor",
+  ],
+  tel: "+603-6145 4333",
+  fax: "+603-6145 2233/2244"
+}
 
 const today = new Date()
 const generatedAt = today

@@ -49,10 +49,33 @@
               <input v-model="data.value.namaNasField" type="text" class="border rounded px-2 py-1 text-sm w-full" :disabled="!data.value.isNew" />
             </template>
             <template v-slot:kaedahKemaskini="data">
-              <input v-model="data.value.kaedahKemaskini" type="text" class="border rounded px-2 py-1 text-sm w-full" :disabled="!data.value.isNew" />
+              <select 
+                v-model="data.value.kaedahKemaskini" 
+                class="border rounded px-2 py-1 text-sm w-full" 
+                :disabled="!data.value.isNew || !data.value.namaRuuField"
+                :required="data.value.isNew"
+              >
+                <option value="">Pilih Kaedah Kemaskini</option>
+                <option 
+                  v-for="option in kaedahKemaskiniOptions" 
+                  :key="option.id" 
+                  :value="option.namaKaedah"
+                >
+                  {{ option.namaKaedah }}
+                </option>
+              </select>
             </template>
             <template v-slot:status="data">
-              <input v-model="data.value.status" type="text" class="border rounded px-2 py-1 text-sm w-full" :disabled="!data.value.isNew" />
+              <select 
+                v-model="data.value.status" 
+                class="border rounded px-2 py-1 text-sm w-full" 
+                :disabled="!data.value.isNew || !data.value.kaedahKemaskini"
+                :required="data.value.isNew"
+              >
+                <option value="">Pilih Status</option>
+                <option value="Aktif">Aktif</option>
+                <option value="Tidak Aktif">Tidak Aktif</option>
+              </select>
             </template>
             <template v-slot:statusData="data">
               <input v-model="data.value.statusData" type="text" class="border rounded px-2 py-1 text-sm w-full" :disabled="!data.value.isNew" />
@@ -81,7 +104,6 @@
                 <Icon name="material-symbols:add" class="mr-1" /> Tambah
               </rs-button>
               <rs-button variant="primary" @click="saveData">Simpan</rs-button>
-              <rs-button variant="success">Hantar</rs-button>
             </div>
           </div>
         </template>
@@ -96,6 +118,9 @@
     title: "Konfigurasi Kelulusan Data (RUU)",
   });
   
+  // Get query parameters
+  const route = useRoute();
+  
   const breadcrumb = ref([
     {
       name: "Profiling",
@@ -109,10 +134,57 @@
     },
   ]);
   
+  // Function to get kategori name by kod
+  const getKategoriByKod = (kod) => {
+    // First check hardcoded mapping
+    const mapping = {
+      "1": "Peribadi",
+      "2": "Alamat", 
+      "3": "Pendidikan",
+      "4": "Pengislaman",
+      "5": "Perbankan",
+      "6": "Kesihatan",
+      "7": "Kemahiran",
+      "8": "Kediaman/Tempat Tinggal",
+      "9": "Pinjaman Harta",
+      "10": "Pemilikan Aset",
+      "11": "Pekerjaan",
+      "12": "Pendapatan dan Perbelanjaan Seisi Rumah",
+      "13": "Peribadi Tanggungan",
+      "14": "Pengislaman Tanggungan",
+      "15": "Perbankan Tanggungan",
+      "16": "Pendidikan Tanggungan",
+      "17": "Kesihatan Tanggungan",
+      "18": "Kemahiran Tanggungan",
+      "19": "Pekerjaan Tanggungan"
+    };
+    
+    // If found in hardcoded mapping, return it
+    if (mapping[kod]) {
+      return mapping[kod];
+    }
+    
+    // If not found, check saved categories from localStorage
+    try {
+      const savedCategories = localStorage.getItem('kategoriMaklumat');
+      if (savedCategories) {
+        const parsedCategories = JSON.parse(savedCategories);
+        const foundCategory = parsedCategories.find(cat => cat.kod === kod);
+        if (foundCategory) {
+          return foundCategory.namaKategori;
+        }
+      }
+    } catch (error) {
+      console.error('Error loading saved categories:', error);
+    }
+    
+    return `Kategori ${kod}`; // Fallback to show the kod if not found
+  };
+
   // Table data and reactivity control
   const tableKey = ref(0);
   const kelulusanDataRuu = ref([]);
-  const selectedKategori = ref("Peribadi");
+  const selectedKategori = ref("Peribadi"); // Will be updated in onMounted
   const kategoriOptions = ref([
     { value: "Peribadi", kod: "1" },
     { value: "Alamat", kod: "2" },
@@ -133,6 +205,43 @@
     { value: "Kesihatan Tanggungan", kod: "17" },
     { value: "Kemahiran Tanggungan", kod: "18" },
     { value: "Pekerjaan Tanggungan", kod: "19" },
+    { value: "Kategori Baru", kod: "20" },
+    { value: "Kategori Baru 21", kod: "21" },
+    { value: "Kategori Baru 22", kod: "22" },
+  ]);
+
+  // Function to load saved categories from localStorage
+  const loadSavedCategories = () => {
+    try {
+      const savedCategories = localStorage.getItem('kategoriMaklumat');
+      if (savedCategories) {
+        const parsedCategories = JSON.parse(savedCategories);
+        const savedCategoryNames = parsedCategories.map(cat => cat.namaKategori).filter(Boolean);
+        
+        // Merge with existing options, avoiding duplicates
+        const existingOptions = [...kategoriOptions.value];
+        savedCategoryNames.forEach(categoryName => {
+          const exists = existingOptions.some(opt => opt.value === categoryName);
+          if (!exists) {
+            // Find the kod for this category
+            const categoryData = parsedCategories.find(cat => cat.namaKategori === categoryName);
+            if (categoryData) {
+              existingOptions.push({ value: categoryName, kod: categoryData.kod });
+            }
+          }
+        });
+        kategoriOptions.value = existingOptions;
+      }
+    } catch (error) {
+      console.error('Error loading saved categories:', error);
+    }
+  };
+
+  // Kaedah Kemaskini options from konfigurasi_kaedah_kemaskini
+  const kaedahKemaskiniOptions = ref([
+    { id: 'KK001', namaKaedah: 'Asnaf Review' },
+    { id: 'KK002', namaKaedah: 'Update asnaf with approval/verify' },
+    { id: 'KK003', namaKaedah: 'Update Asnaf without Approval/verify' },
   ]);
   
   const filteredData = computed(() => {
@@ -181,8 +290,9 @@
       kadarPercuma: isNaN(parseFloat(item.kadarPercuma)) ? 0 : parseFloat(item.kadarPercuma),
       // Ensure date is valid
       tarikhMula: item.tarikhMula && !isNaN(new Date(item.tarikhMula).getTime()) ? item.tarikhMula : "2025-01-01",
-      // Ensure status is valid
-      status: item.status || "Aktif"
+      // Ensure status is valid and set isActive flag
+      status: item.status || "Aktif",
+      isActive: item.isActive !== undefined ? item.isActive : (item.status === 'Aktif')
     };
   };
   
@@ -192,29 +302,14 @@
       const savedData = localStorage.getItem('kelulusanDataRuu');
       if (savedData) {
         const parsedData = JSON.parse(savedData);
-        // Validate and sanitize parsed data
+        // Validate and sanitize parsed data with order index
         const validatedData = parsedData.map((item, idx) => ({
           ...validateDataItem(item),
           orderIndex: typeof item.orderIndex === 'number' ? item.orderIndex : (idx + 1),
         }));
         
-        // Merge with default data, giving priority to saved data
-        const mergedData = [...defaultData.map((d, idx) => ({ ...d, orderIndex: idx + 1 }))];
-        validatedData.forEach(savedItem => {
-          // Check if item already exists in default data
-          const existingIndex = mergedData.findIndex(item => item.idRuu === savedItem.idRuu);
-          if (existingIndex >= 0) {
-            // Replace existing item
-            mergedData[existingIndex] = validateDataItem(savedItem);
-          } else {
-            // Add new item
-            mergedData.push(validateDataItem(savedItem));
-          }
-        });
-        // Ensure stable order
-        kelulusanDataRuu.value = mergedData
-          .map((it, idx) => ({ ...it, orderIndex: typeof it.orderIndex === 'number' ? it.orderIndex : (idx + 1) }))
-          .sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0));
+        // Sort by order index and set data
+        kelulusanDataRuu.value = validatedData.sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0));
       } else {
         kelulusanDataRuu.value = defaultData.map((d, idx) => ({ ...d, orderIndex: idx + 1 }));
       }
@@ -233,22 +328,31 @@
   
   // Make sure the table refreshes when component mounts
   onMounted(() => {
+    loadSavedCategories(); // Load saved categories from localStorage
+    
+    // Set selectedKategori after loading saved categories
+    const kod = route.query.kod;
+    if (kod) {
+      const kategoriName = getKategoriByKod(kod);
+      selectedKategori.value = kategoriName;
+    }
+    
     loadData();
     refreshTable();
   });
   
   // Also refresh when the page becomes visible (when returning from form)
   onActivated(() => {
-    loadData();
-    refreshTable();
+    // Only refresh if data might have changed
+    if (kelulusanDataRuu.value.length === 0) {
+      loadData();
+      refreshTable();
+    }
   });
   
   const refreshTable = () => {
     nextTick(() => {
       tableKey.value++; // Force table to re-render
-      console.log("Table refreshed, records:", kelulusanDataRuu.value.length);
-      console.log("Pending approval:", pendingApprovalCount.value);
-      console.log("Sample data:", kelulusanDataRuu.value[0]);
     });
   };
 
@@ -258,9 +362,9 @@
       namaRuuField: "",
       namaNasField: "",
       kaedahKemaskini: "",
-      status: "Draf",
-      statusData: "Draf",
-      tarikhMula: "",
+      status: "Aktif", // Default to Aktif for new items
+      statusData: "Draf", // Default status data
+      tarikhMula: "", // No default date
       tarikhTamat: "",
       kategori: selectedKategori.value,
       isNew: true,
@@ -271,19 +375,91 @@
   };
 
   const saveData = () => {
-    // Finalize new rows and persist
-    const finalized = kelulusanDataRuu.value.map((item, idx) => ({
-      ...item,
-      isNew: false,
-      orderIndex: typeof item.orderIndex === 'number' ? item.orderIndex : (idx + 1),
-    }));
+    // Validate that all new rows have required fields
+    const newRows = kelulusanDataRuu.value.filter(item => item.isNew);
+    
+    if (newRows.length === 0) {
+      alert('Tiada data baru untuk disimpan');
+      return;
+    }
+
+    // Comprehensive validation for all required fields
+    for (const row of newRows) {
+      if (!row.namaRuuField || row.namaRuuField.trim() === '') {
+        alert('Nama RUU Field diperlukan untuk semua baris baru');
+        return;
+      }
+      if (!row.namaNasField || row.namaNasField.trim() === '') {
+        alert('Nama Field dalam NAS diperlukan untuk semua baris baru');
+        return;
+      }
+      if (!row.kaedahKemaskini || row.kaedahKemaskini.trim() === '') {
+        alert('Kaedah Kemaskini diperlukan untuk semua baris baru');
+        return;
+      }
+      if (!row.status || row.status.trim() === '') {
+        alert('Status diperlukan untuk semua baris baru');
+        return;
+      }
+      if (!row.statusData || row.statusData.trim() === '') {
+        alert('Status Data diperlukan untuk semua baris baru');
+        return;
+      }
+      if (!row.tarikhMula || row.tarikhMula.trim() === '') {
+        alert('Tarikh Mula diperlukan untuk semua baris baru');
+        return;
+      }
+    }
+
+    // Check for existing field combinations
+    const existingData = JSON.parse(localStorage.getItem('kelulusanDataRuu') || '[]');
+    for (const row of newRows) {
+      const duplicateField = existingData.find(existing => 
+        existing.namaRuuField === row.namaRuuField && 
+        existing.namaNasField === row.namaNasField &&
+        existing.kategori === row.kategori
+      );
+      
+      if (duplicateField) {
+        alert(`Kombinasi field "${row.namaRuuField}" dan "${row.namaNasField}" sudah wujud dalam konfigurasi sedia ada`);
+        return;
+      }
+    }
+
+    // Auto-generate ID and set status to "Menunggu Semakan"
+    const finalized = kelulusanDataRuu.value.map((item, idx) => {
+      if (item.isNew) {
+        return {
+          ...item,
+          idRuu: `RUU_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`, // Auto-generate ID
+          status: item.status, // Keep original status (Aktif/Tidak Aktif)
+          statusData: 'Menunggu Semakan', // Set statusData to Menunggu Semakan
+          isNew: false,
+          isActive: item.status === 'Aktif', // Set isActive flag based on original status
+          kategori: selectedKategori.value, // Ensure kategori is set to current selection
+          orderIndex: typeof item.orderIndex === 'number' ? item.orderIndex : (idx + 1),
+        };
+      }
+      return item;
+    });
+    
     kelulusanDataRuu.value = finalized;
+    
     try {
       localStorage.setItem('kelulusanDataRuu', JSON.stringify(finalized));
+      alert(`Data berjaya disimpan! ${newRows.length} rekod telah disimpan dengan status "Menunggu Semakan"`);
+      
+      // Force table refresh to display saved data
+      refreshTable();
+      
+      // Additional refresh to ensure data is visible
+      nextTick(() => {
+        tableKey.value++;
+      });
     } catch (e) {
       console.error('Error saving data:', e);
+      alert('Ralat semasa menyimpan data');
     }
-    refreshTable();
   };
   
   const formatDate = (dateString) => {

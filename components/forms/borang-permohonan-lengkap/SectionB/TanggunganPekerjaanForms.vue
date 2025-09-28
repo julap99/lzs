@@ -258,7 +258,7 @@
           >Simpan</rs-button
         >
         <rs-button type="button" variant="primary" @click="$emit('next-step')"
-          >Maklumat Pemilikan Aset</rs-button
+          >Pengesahan</rs-button
         >
       </div>
     </div>

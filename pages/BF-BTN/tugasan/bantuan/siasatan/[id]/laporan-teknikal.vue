@@ -55,8 +55,41 @@
             >
               <div class="space-y-6">
 
-                <!-- Status Kediaman and Tapak Rumah - Side by Side -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <!-- B400: Institutional Information -->
+                <div v-if="isB400" class="space-y-6">
+                  <!-- Institutional Details -->
+                  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <FormKit
+                      type="text"
+                      name="namaInstitusi"
+                      label="NAMA INSTITUSI"
+                      v-model="formData.namaInstitusi"
+                      placeholder="Masukkan nama institusi..."
+                    />
+
+                    <FormKit
+                      type="text"
+                      name="noBantuan"
+                      label="No Bantuan"
+                      v-model="formData.noBantuan"
+                      placeholder="Masukkan no bantuan..."
+                    />
+                  </div>
+
+                  <div>
+                    <FormKit
+                      type="textarea"
+                      name="alamatInstitusi"
+                      label="ALAMAT"
+                      v-model="formData.alamatInstitusi"
+                      rows="3"
+                      placeholder="Masukkan alamat lengkap institusi..."
+                    />
+                  </div>
+                </div>
+
+                <!-- Non-B400: Status Kediaman and Tapak Rumah - Side by Side -->
+                <div v-if="!isB400" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <FormKit
                     type="text"
                     name="StatusKediaman"
@@ -78,8 +111,8 @@
                   />
                 </div>
 
-                <!-- Binaan Rumah and Keadaan Rumah - Side by Side -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <!-- Non-B400: Binaan Rumah and Keadaan Rumah - Side by Side -->
+                <div v-if="!isB400" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <FormKit
                     type="select"
                     name="BinaanRumah"
@@ -119,8 +152,8 @@
                   />
                 </div>
 
-                <!-- Latar Belakang -->
-                <div class="space-y-2">
+                <!-- Non-B400: Latar Belakang -->
+                <div v-if="!isB400" class="space-y-2">
                   <FormKit
                     type="textarea"
                     name="latarBelakang"
@@ -136,8 +169,9 @@
                   </div>
                 </div>
 
-                <!-- Keperluan -->
+                <!-- Non-B400: Keperluan -->
                 <FormKit
+                  v-if="!isB400"
                   type="textarea"
                   name="keperluan"
                   label="Keperluan"
@@ -349,8 +383,8 @@
                   </p>
                 </div>
               </div>
-              <!-- LATAR BELAKANG Section -->
-              <div class="grid grid-cols-1 lg:grid-cols-4 gap-1">
+              <!-- Non-B400: LATAR BELAKANG Section -->
+              <div v-if="!isB400" class="grid grid-cols-1 lg:grid-cols-4 gap-1">
                 <div class="border-b pb-1">
                   <h4 class="font-semibold text-gray-900 text-sm">LATAR BELAKANG</h4>
                 </div>
@@ -361,8 +395,8 @@
                 </div>
               </div>
 
-              <!-- KEPERLUAN Section -->
-              <div class="grid grid-cols-1 lg:grid-cols-4 gap-1">
+              <!-- Non-B400: KEPERLUAN Section -->
+              <div v-if="!isB400" class="grid grid-cols-1 lg:grid-cols-4 gap-1">
                 <div class="border-b pb-1">
                   <h4 class="font-semibold text-gray-900 text-sm">KEPERLUAN</h4>
                 </div>
@@ -465,7 +499,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 
@@ -474,6 +508,9 @@ const router = useRouter();
 const toast = useToast();
 const processing = ref(false);
 const showPDFModal = ref(false);
+
+// Check if current bantuan is B400
+const isB400 = computed(() => String(route.params.id || '').toUpperCase() === 'B400');
 
 definePageMeta({
   title: "Laporan Teknikal - Siasatan Lapangan",
@@ -517,6 +554,10 @@ const formData = ref({
   StatusKediaman: "Milik Sendiri Tidak Berbayar",
   TapakRumah: "Milik Sendiri",
   BinaanRumah: "Separa Batu",
+  // B400 specific fields
+  namaInstitusi: "Masjid At-Taqwa",
+  alamatInstitusi: "Jalan Masjid, Kampung Seri Melati, 45800 Kuala Selangor, Selangor",
+  noBantuan: "NAS-2025-0006",
   KeadaanRumah: "Separa Uzur",
 });
 
@@ -558,14 +599,20 @@ const handleSave = async () => {
   try {
     processing.value = true;
     
-    // Validate required fields
+    // Validate required fields based on bantuan type
     const requiredFields = [
-      { field: 'keperluan', label: 'Keperluan' },
       { field: 'cadangan', label: 'Cadangan' },
-      { field: 'BinaanRumah', label: 'Binaan Rumah' },
-      { field: 'KeadaanRumah', label: 'Keadaan Rumah' },
-      { field: 'TapakRumah', label: 'Tapak Rumah' }
     ];
+
+    // Add non-B400 specific required fields
+    if (!isB400.value) {
+      requiredFields.push(
+        { field: 'keperluan', label: 'Keperluan' },
+        { field: 'BinaanRumah', label: 'Binaan Rumah' },
+        { field: 'KeadaanRumah', label: 'Keadaan Rumah' },
+        { field: 'TapakRumah', label: 'Tapak Rumah' }
+      );
+    }
     
     const missingFields = requiredFields.filter(field => !formData.value[field.field]);
     
@@ -638,10 +685,31 @@ onMounted(async () => {
   try {
     // Load existing data from API
     // This is mock data for now
-    formData.value = {
-      StatusKediaman: "Milik Sendiri Tidak Berbayar",
-      TapakRumah: "Milik Sendiri",
-      latarBelakang: `1. Keterangan Harta Benda:
+    if (isB400.value) {
+      // B400: Institutional aid default data
+      formData.value = {
+        namaInstitusi: "Masjid At-Taqwa",
+        alamatInstitusi: "Jalan Masjid, Kampung Seri Melati, 45800 Kuala Selangor, Selangor",
+        noBantuan: "NAS-2025-0006",
+        cadangan: `Dicadangkan sumbangan untuk kerja-kerja baikpulih institusi berikut :
+
+1. Baik pulih struktur bangunan masjid yang rosak.
+2. Mengganti bahan binaan yang uzur dan tidak selamat.
+3. Menaik taraf kemudahan asas masjid untuk keselesaan jemaah.`,
+        nilaiKerja: 43000, // This would be calculated from BQ
+        tarikhSiasatan: new Date().toISOString().split('T')[0], // Today's date
+        masaSiasatan: "",
+        cuacaSiasatan: "",
+        keadaanLokasi: "",
+        catatanTambahan: "Tempoh masa kerja yang dicadangkan tidak termasuk kerja-kerja tambahan adalah selama 8 MINGGU",
+        LokasiTapak: "Jalan Masjid, Kampung Seri Melati, 45800 Kuala Selangor, Selangor",
+      };
+    } else {
+      // Non-B400: Individual housing aid default data
+      formData.value = {
+        StatusKediaman: "Milik Sendiri Tidak Berbayar",
+        TapakRumah: "Milik Sendiri",
+        latarBelakang: `1. Keterangan Harta Benda:
 Binaan rumah daripada separa batu dan kayu.
 
 2. Status hakmilik tanah seperti berikut :
@@ -658,26 +726,27 @@ Ketua Keluarga : Pemohon (MISKIN)
 Pasangan : 1 orang isteri tinggal bersama
 Tanggungan : - NIL-
 Lain-lain : - NIL-`,
-      keperluan: `Keadaan rumah separa uzur. Sebahagian besar struktur rumah yang dibina daripada kayu telah uzur dan reput dimakan anal-anal.
+        keperluan: `Keadaan rumah separa uzur. Sebahagian besar struktur rumah yang dibina daripada kayu telah uzur dan reput dimakan anal-anal.
 Keadaan rumah tidak sempuma.
 
 Pemohon tidak mepunyai pendapatan yang mencukupi untuk membaiki kerosakan yang berlaku dirumahnya.
 Untuk rekod, rumah masih dalam keadaan baik untuk diduduki dan sesuai untuk dibaikpulih.`,
-      cadangan: `Dicadangkan kerja-kerja baikpulih berikut :
+        cadangan: `Dicadangkan kerja-kerja baikpulih berikut :
 
 1. Meroboh bahagian rumah yang rosak dan retak.
 2. Membina semula struktur bangunan rumah yang baru.
 3. Membaikpulih dan menaiktaraf pendawalan elektrik bahagian rumah yang terlibat.`,
-      nilaiKerja: 43000, // This would be calculated from BQ
-      tarikhSiasatan: new Date().toISOString().split('T')[0], // Today's date
-      masaSiasatan: "",
-      cuacaSiasatan: "",
-      keadaanLokasi: "",
-      catatanTambahan: "Tempoh masa kerja yang dicadangkan tidak termasuk kerja-kerja tambahan adalah selama 8 MINGGU",
-      LokasiTapak: "Jalan Rajawali, Kampung Bukit Kuching, 45800 Jeram",
-      // BinaanRumah: "Separa Batu",
-      // KeadaanRumah: "Separa Uzur",
-    };
+        nilaiKerja: 43000, // This would be calculated from BQ
+        tarikhSiasatan: new Date().toISOString().split('T')[0], // Today's date
+        masaSiasatan: "",
+        cuacaSiasatan: "",
+        keadaanLokasi: "",
+        catatanTambahan: "Tempoh masa kerja yang dicadangkan tidak termasuk kerja-kerja tambahan adalah selama 8 MINGGU",
+        LokasiTapak: "Jalan Rajawali, Kampung Bukit Kuching, 45800 Jeram",
+        BinaanRumah: "Separa Batu",
+        KeadaanRumah: "Separa Uzur",
+      };
+    }
   } catch (error) {
     toast.error("Ralat semasa memuatkan data laporan teknikal");
     console.error(error);

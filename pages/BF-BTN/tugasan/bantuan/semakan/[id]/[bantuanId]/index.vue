@@ -118,15 +118,35 @@
                       v-model="formData.productPackage"
                     />
                   </div>
+                  <div class="space-y-1" v-if="route.params.bantuanId === 'B134'">
+                    <FormKit
+                      type="select"
+                      name="productPackage"
+                      label="Product Package"
+                      :options="[
+                        { label: '-- Pilih Product Package --', value: '', disabled: true },
+                        { label: 'MODERATOR (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM', value: 'MODERATOR (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM' },
+                        { label: 'MODERATOR (MUKIM) - JAIS / MAIS - HONORARIUM', value: 'MODERATOR (MUKIM) - JAIS / MAIS - HONORARIUM' },
+                        { label: 'MODERATOR (NEGERI) - JAIS / MAIS - HONORARIUM', value: 'MODERATOR (NEGERI) - JAIS / MAIS - HONORARIUM' },
+                        { label: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM', value: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM' },
+                        { label: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (MUKIM) - JAIS / MAIS - HONORARIUM', value: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (MUKIM) - JAIS / MAIS - HONORARIUM' },
+                        { label: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (NEGERI) - JAIS / MAIS - HONORARIUM', value: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (NEGERI) - JAIS / MAIS - HONORARIUM' },
+                        { label: 'PENCERAMAH (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM', value: 'PENCERAMAH (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM' },
+                        { label: 'PENCERAMAH TOKOH AWAM (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM', value: 'PENCERAMAH TOKOH AWAM (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM' },
+                        { label: 'PENGERUSI MAJILIS (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM', value: 'PENGERUSI MAJILIS (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM' },
+                        { label: 'SUMBANGAN - HONORARIUM', value: 'SUMBANGAN - HONORARIUM' }
+                      ]"
+                      validation="required"
+                      :validation-messages="{ required: 'Product Package diperlukan' }"
+                      placeholder="Pilih Product Package"
+                      :classes="{ outer: 'mb-0' }"
+                      v-model="formData.productPackage"
+                    />
+                  </div>
+
 
                   <div class="space-y-1" v-if="route.params.bantuanId === 'B135'">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-								 
-											   
-												 
-																		 
-										   
-											 
+                    <label class="block text-sm font-medium text-gray-700 mb-2">	 
                       Entitlement Product
                     </label>
                     <div class="flex items-center">
@@ -141,6 +161,33 @@
                       </label>
                     </div>
                   </div>
+                  <div class="space-y-1" v-if="route.params.bantuanId === 'B134'">
+                    <FormKit
+                      type="select"
+                      name="entitlementProduct"
+                      label="Entitlement Product"
+                      v-model="formData.entitlementProduct"
+                      :options="[
+                        { label: '-- Pilih Entitlement Product --', value: '', disabled: true },
+                        { label: 'MODERATOR (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM', value: 'MODERATOR (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM' },
+                        { label: 'MODERATOR (MUKIM) - JAIS / MAIS - HONORARIUM', value: 'MODERATOR (MUKIM) - JAIS / MAIS - HONORARIUM' },
+                        { label: 'MODERATOR (NEGERI) - JAIS / MAIS - HONORARIUM', value: 'MODERATOR (NEGERI) - JAIS / MAIS - HONORARIUM' },
+                        { label: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM', value: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM' },
+                        { label: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (MUKIM) - JAIS / MAIS - HONORARIUM', value: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (MUKIM) - JAIS / MAIS - HONORARIUM' },
+                        { label: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (NEGERI) - JAIS / MAIS - HONORARIUM', value: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (NEGERI) - JAIS / MAIS - HONORARIUM' },
+                        { label: 'PENCERAMAH (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM', value: 'PENCERAMAH (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM' },
+                        { label: 'PENCERAMAH TOKOH AWAM (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM', value: 'PENCERAMAH TOKOH AWAM (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM' },
+                        { label: 'PENGERUSI MAJILIS (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM', value: 'PENGERUSI MAJILIS (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM' },
+                        { label: 'SUMBANGAN - HONORARIUM', value: 'SUMBANGAN - HONORARIUM' }
+                      ]"
+                      validation="required"
+                      :validation-messages="{ required: 'Entitlement Product diperlukan' }"
+                      placeholder="Pilih Entitlement Product"
+                      :classes="{ outer: 'mb-0' }"
+                    />
+                  </div>
+
+
 
                   <!-- <div class="space-y-1 md:col-span-2">
                     <FormKit
@@ -364,7 +411,7 @@
           </rs-card>
 
           <!-- Section 3: Senarai Entitlement Product -->
-          <rs-card v-if="route.params.bantuanId === 'B135'" class="shadow-sm border-0 bg-white">
+          <rs-card v-if="route.params.bantuanId === 'B135' " class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
                 <div class="flex-shrink-0">
@@ -460,6 +507,115 @@
                     <div v-if="selectedEntitlements.length === 0" class="col-span-full text-center py-8 text-gray-500">
                       <Icon name="ph:gift" class="w-12 h-12 mx-auto mb-2 text-gray-400" />
                       <p class="text-sm">Tiada entitlement product dipilih. Pilih checkbox di atas untuk menambah.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Show message when Entitlement Product is unchecked -->
+                <div v-else class="text-center py-8 text-gray-500">
+                  <Icon name="ph:gift" class="w-12 h-12 mx-auto mb-2 text-gray-400" />
+                  <p class="text-sm">Tiada entitlement product dipilih. Pilih checkbox di atas untuk menambah.</p>
+                </div>
+              </div>
+            </template>
+          </rs-card>
+
+          <rs-card v-if="route.params.bantuanId === 'B134' " class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div
+                    class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center"
+                  >
+                    <Icon name="ph:gift" class="w-6 h-6 text-indigo-600" />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Senarai Entitlement Product
+                  </h2>
+                  <p class="text-sm text-gray-500">
+                    Bantuan yang dipilih berdasarkan entitlement product
+                  </p>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <div class="space-y-4">
+                <!-- Show cards when Entitlement Product is checked -->
+                <div v-if="formData.entitlementProduct  === true">
+                  <!-- Entitlement Product Cards -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div 
+                      v-for="(product, index) in selectedEntitlements" 
+                      :key="product.id || index"
+                    class="relative border rounded-lg p-4 transition-all duration-200 hover:shadow-md"
+                    :class="{
+                      'border-green-200 bg-green-50': product.status === 'Aktif' && !isProductEditing(index),
+                      'border-blue-200 bg-blue-50': isProductEditing(index) || (product.status === 'Tersedia' && !isProductEditing(index)),
+                      'border-gray-200 bg-white': product.status === 'Tidak Aktif' && !isProductEditing(index)
+                    }"
+                    >
+                      <!-- Status Badge -->
+                      <div class="absolute top-2 right-2">
+                        <rs-badge 
+                          :variant="isProductEditing(index) ? 'primary' : getProductStatusVariant(product.status)"
+                          class="text-xs"
+                        >
+                          {{ isProductEditing(index) ? 'Sedang Edit' : product.status }}
+                        </rs-badge>
+                      </div>
+
+                      <!-- Product Info -->
+                      <div class="pr-16">
+                        <h3 class="font-semibold text-gray-900 text-sm mb-2">{{ product.nama }}</h3>
+                        <p class="text-xs text-gray-600 mb-3">{{ product.penerangan }}</p>
+                      </div>
+
+
+                      <!-- Action Buttons -->
+                      <div class="flex items-center justify-between mt-4 pt-3 border-t border-gray-200">
+                        <div v-if="isProductEditing(index)" class="flex space-x-2">
+                          <rs-button 
+                            variant="success" 
+                            size="sm"
+                            @click="saveProduct(index)"
+                          >
+                            Simpan
+                          </rs-button>
+                          <rs-button 
+                            variant="secondary" 
+                            size="sm"
+                            @click="cancelEdit"
+                          >
+                            Batal
+                          </rs-button>
+                        </div>
+                        <div v-else class="flex space-x-2">
+                          <rs-button
+                            variant="primary-outline"
+                            size="sm"
+                            @click="editProduct(index)"
+                            class="!px-2 !py-1"
+                          >
+                            <Icon name="ph:pencil" class="w-3 h-3 mr-1" />
+                            Edit
+                          </rs-button>
+                          <button
+                            @click="deleteEntitlement(product, index)"
+                            class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
+                          >
+                            <Icon name="ph:trash" class="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Empty State when checked but no items selected -->
+                    <div v-if="selectedEntitlements.length === 0" class="col-span-full text-center py-8 text-gray-500">
+                      <Icon name="ph:gift" class="w-12 h-12 mx-auto mb-2 text-gray-400" />
+                      <p class="text-sm">Tiada entitlement product dipilih. Pilih entitlement di atas untuk menambah.</p>
                     </div>
                   </div>
                 </div>
@@ -700,7 +856,7 @@
                         Dokumen
                       </th>
                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Action
+                        Tindakan
                       </th>
                       <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Status
@@ -779,6 +935,118 @@
               </div>
             </template>
           </rs-card>
+          <rs-card class="shadow-sm border-0 bg-white">
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div
+                    class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
+                  >
+                    <Icon name="ph:chat" class="w-6 h-6 text-green-600" />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Pengesahan Dokumen
+                  </h2>
+                  <p class="text-sm text-gray-500">
+                    Sila sahkan dokumen sokongan yang telah dimuat naik
+                  </p>
+                </div>
+              </div>
+            </template>
+            <!-- Section: Dokumen Sokongan Dari LZS -->
+            <div class="mt-8">
+              <h4 class="font-semibold mb-2">Dokumen Sokongan Dari LZS</h4>
+              <div class="overflow-x-auto">
+                <table class="min-w-full border border-gray-400 text-sm">
+                  <thead>
+                    <tr class="bg-gray-100">
+                      <th class="border border-gray-400 px-2 py-1 w-16 text-center">No</th>
+                      <th class="border border-gray-400 px-2 py-1">Dokumen</th>
+                      <th class="border border-gray-400 px-2 py-1 w-40 text-center">Tindakan</th>
+                      <th class="border border-gray-400 px-2 py-1">Catatan</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(row, i) in lzsDokumenRows" :key="row.id">
+                      <td class="border border-gray-400 px-2 py-1 text-center">
+                        {{ i + 1 }}
+                      </td>
+
+                      <!-- Dokumen (select) -->
+                      <td class="border border-gray-400 px-2 py-1">
+                        <input
+                          v-model="row.dokumen"
+                          type="text"
+                          class="w-full border-gray-300 rounded px-2 py-1"
+                          placeholder="Nama/rujukan dokumen"
+                        />
+                      </td>
+
+                      <!-- Action (Lihat, Upload) -->
+                      <td class="border border-gray-400 px-2 py-1">
+                        <div class="flex items-center justify-center gap-3">
+                          <button
+                            type="button"
+                            class="text-primary underline disabled:text-gray-400"
+                            :disabled="!canViewLzs(row)"
+                            @click="viewLzsDoc(row)"
+                            title="Lihat"
+                          >
+                            Lihat
+                          </button>
+
+                          <!-- Upload -->
+                          <label class="cursor-pointer text-primary underline">
+                            <input
+                              type="file"
+                              class="hidden"
+                              accept=".pdf,.jpg,.jpeg,.png"
+                              @change="onLzsFileChange(i, $event)"
+                            />
+                            Upload
+                          </label>
+                        </div>
+
+                        <!-- Nama fail ringkas bila sudah upload -->
+                        <div v-if="row.fileName" class="text-xs text-gray-600 mt-1 truncate">
+                          {{ row.fileName }}
+                        </div>
+                      </td>
+
+                      <!-- Catatan -->
+                      <td class="border border-gray-400 px-2 py-1">
+                        <input
+                          v-model="row.catatan"
+                          type="text"
+                          class="w-full border-gray-300 rounded px-2 py-1"
+                          placeholder="Catatan (jika ada)"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- (Pilihan) Tambah/Buang baris -->
+              <div class="flex gap-3 mt-3 justify-end">
+                <rs-button type="button" variant="primary" @click="addLzsRow">Tambah</rs-button>
+                <rs-button
+                  type="button"
+                  variant="danger"
+                  @click="removeLzsRow"
+                  :disabled="lzsDokumenRows.length <= 1"
+                >
+                  Buang
+                </rs-button>
+              </div>
+            </div>
+          </rs-card>
+
+
+          
+          
 
           <!-- Section 3: Hasil Siasatan -->
           <!-- <rs-card 
@@ -1069,9 +1337,140 @@
             </template>
           </rs-card>
 
+          <rs-card 
+            v-if="route.params.bantuanId === 'B134'"
+            class="shadow-sm border-0 bg-white"
+          >
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div
+                    class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
+                  >
+                    <Icon
+                      name="iconamoon:check-circle-2-duotone"
+                      class="w-6 h-6 text-yellow-600"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Prosedur Agihan
+                  </h2>
+                  <p class="text-sm text-gray-500">
+                    Prosedur Agihan Bantuan
+                  </p>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <div class="space-y-4">
+                <!-- Accordion: Laluan Proses Details -->
+                <div class="space-y-3">
+                  <!-- Permohonan Accordion Item -->
+                  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button
+                      type="button"
+                      class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
+                      @click="accordionOpen.permohonan = !accordionOpen.permohonan"
+                    >
+                      <span class="font-medium text-gray-900">Permohonan</span>
+                      <Icon
+                        :name="accordionOpen.permohonan ? 'ic:round-expand-less' : 'ic:round-expand-more'"
+                        class="w-6 h-6 text-gray-500"
+                      />
+                    </button>
+                    <div v-show="accordionOpen.permohonan" class="px-4 pb-4 pt-1">
+                      <div class="space-y-3">
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Permohonan Dibuat Oleh</label>
+                          <p class="text-sm text-gray-900">{{ permohonanDetails.dibuatOleh }}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Permohonan</label>
+                          <p class="text-sm text-gray-900">{{ formatDateTime(permohonanDetails.tarikhPermohonan) }}</p>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">Sebab Memohon Bantuan</label>
+                          <p class="text-sm text-gray-900 leading-relaxed">{{ permohonanDetails.sebabMemohon }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </rs-card>
+
           <!-- Section: Maklumat Lawatan & Siasatan -->
           <rs-card 
             v-if="route.params.bantuanId === 'B135'"
+            class="shadow-sm border-0 bg-white"
+          >
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div
+                    class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"
+                  >
+                    <Icon
+                      name="ph:clipboard-text"
+                      class="w-6 h-6 text-blue-600"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Maklumat Siasatan
+                  </h2>
+                  <p class="text-sm text-gray-500">
+                    Maklumat siasatan 
+                  </p>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <div class="space-y-4">
+                <!-- Ringkasan Profil -->
+                <div class="bg-gray-50 p-4 rounded-lg border">
+                  <h3 class="text-sm font-semibold text-gray-700 mb-3">Ringkasan Profil</h3>
+                  <ul class="space-y-2 text-sm text-gray-600">
+                    <li>• Jenis Pekerjaan: Suri rumah sepenuh masa</li>
+                    <li>• Status Kediaman: Rumah Sendiri</li>
+                    <li>• Jumlah bayaran rumah: RM0</li>
+                    <li>• Bil Tanggungan: 3 Orang (2 Anak + Suami)</li>
+                    <li>• Status Tanggungan: Anak sakit kronik, Suami tidak bekerja</li>
+                  </ul>
+                </div>
+
+                <!-- Kaedah Siasatan -->
+                <div class="space-y-3">
+                  <!-- <h3 class="text-sm font-semibold text-red-600">Kaedah Siasatan</h3> -->
+                  <FormKit
+                    type="select"
+                    label="Kaedah Siasatan"
+                    :options="kaedahSiasatanOptions"
+                    v-model="formData.kaedahSiasatan"
+                    :classes="{ input: 'text-sm' }"
+                  />
+                  
+                  <!-- <FormKit
+                    type="textarea"
+                    label="Catatan Tambahan"
+                    v-model="formData.catatanSiasatan"
+                    rows="3"
+                    placeholder="Enter text..."
+                    :classes="{ input: 'text-sm' }"
+                  /> -->
+                </div>
+              </div>
+            </template>
+          </rs-card>
+
+          <rs-card 
+            v-if="route.params.bantuanId === 'B134'"
             class="shadow-sm border-0 bg-white"
           >
             <template #header>
@@ -1227,9 +1626,103 @@
               </div>
             </template>
           </rs-card>
+
+          <rs-card 
+            v-if="route.params.bantuanId === 'B134'"
+            class="shadow-sm border-0 bg-white"
+          >
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div
+                    class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center"
+                  >
+                    <Icon
+                      name="ph:check-circle"
+                      class="w-6 h-6 text-yellow-600"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Keputusan Siasatan
+                  </h2>
+                  <p class="text-sm text-gray-500">
+                    Kemaskini status siasatan lapangan
+                  </p>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <div class="space-y-4">
+                <FormKit
+                  type="select"
+                  label="Status Sokongan"
+                  :options="statusLawatanOptions"
+                  v-model="formData.statusLawatan"
+                  :classes="{ input: 'text-sm' }"
+                />
+                
+                <FormKit
+                  type="textarea"
+                  label="Catatan"
+                  v-model="catatanLapangan.catatan"
+                  rows="4"
+                  placeholder="Masukkan catatan, dapatan dan pemerhatian semasa siasatan..."
+                  :classes="{ input: 'text-sm' }"
+                />
+
+                <FormKit
+                  type="select"
+                  label="Status Proses"
+                  :options="statusprosesOptions"
+                  v-model="formData.statusproses"
+                  :classes="{ input: 'text-sm' }"
+                />
+
+                <div class="text-xs text-gray-500">
+                  <Icon name="ph:clock" class="w-4 h-4 inline mr-1" />
+                  Masa/Tarikh: {{ catatanLapangan.masaTarikh }}
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="space-y-3 pt-4 border-t">
+                  <rs-button
+                    variant="info"
+                    @click="handleHantar"
+                    class="w-full !py-3 text-sm font-medium"
+                  >
+                    <Icon name="ph:check-circle" class="w-5 h-5 mr-2" />
+                    Hantar
+                  </rs-button>
+
+                  <rs-button
+                    variant="primary"
+                    @click="handleSimpan"
+                    class="w-full !py-3 text-sm font-medium"
+                  >
+                    <Icon name="ph:check-circle" class="w-5 h-5 mr-2" />
+                    Simpan
+                  </rs-button>
+
+                  <rs-button
+                    variant="primary-outline"
+                    @click="handleBatal"
+                    class="w-full !py-3 text-sm font-medium"
+                  >
+                    <Icon name="ph:arrow-left" class="w-5 h-5 mr-2" />
+                    Batal / Kembali
+                  </rs-button>
+                </div>
+              </div>
+            </template>
+          </rs-card>
+
+
           <!-- Section 6: Status & Catatan Semakan -->
           <rs-card 
-            v-if="route.params.bantuanId !== 'B135'"
+            v-if="route.params.bantuanId !== 'B135' && route.params.bantuanId !== 'B134'"
             class="shadow-sm border-0 bg-white sticky top-6"
           >
             <template #header>
@@ -1269,6 +1762,17 @@
                     </rs-badge>
                   </div>
                 </div>
+                <div class="space-y-1">
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Proses</label>
+                      <FormKit
+                        type="select"
+                        v-model="selectedProses"
+                        :options="prosesOptions"
+                        placeholder="Pilih Proses"
+                        class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900"
+                      />
+                </div>
+                
 
                 <!-- Catatan Pegawai -->
                 <div class="space-y-1">
@@ -1466,6 +1970,12 @@ const statusLawatanOptions = ref([
   { label: "Tidak Sokong", value: "tidak_sokong" },
 ]);
 
+const selectedProses = ref('');
+const prosesOptions = [
+  { label: 'Proses di NAS', value: 'nas' },
+  { label: 'Hantar ke Al-Amal', value: 'alAmal' }
+];
+
 // Dropdown options
 const statusprosesOptions = ref([
   { label: "--Sila Pilih--", value: "belum_selesai" },
@@ -1588,6 +2098,40 @@ const mockByBantuanId = {
       { id: "salinan-akaun-bank", nama: "Salinan akaun bank pelajar yang mengandungi: Nama bank, Nama dan no akaun bank", status: "", url: "/path/to/doc2.pdf" },
       { id: "kad-pengenalan-ketua-keluarga", nama: "Salinan kad pengenalan ketua keluarga/ penjaga", status: "", url: "/path/to/doc3.pdf" },
       { id: "kad-pengenalan-pelajar", nama: "Salinan kad pengenalan/surat beranak pelajar", status: "", url: "/path/to/doc4.pdf" },
+    ],
+    statusSokongan: "",
+    catatanPengesyoran: "",
+    kadarBantuan: null,
+    tempohBantuan: "",
+    jumlahKeseluruhan: 0,
+    tarikhMula: "",
+    tarikhTamat: "",
+    penerima: "",
+    namaPenerima: "",
+    kaedahPembayaran: "",
+    namaBank: "",
+    noAkaunBank: "",
+    statusPermohonan: "Dalam Semakan",
+    statusPermohonanBaru: "",
+    catatanPegawai: "",
+    tarikhSemak: new Date(),
+  },
+  B110: {
+    jenisBantuan: "B110 - (HQ) BANTUAN HUTANG PERUBATAN (JPSK)",
+    aid: "B110 - (HQ) BANTUAN HUTANG PERUBATAN (JPSK)",
+    aidProduct: "BANTUAN PERUBATAN KLINIKAL",
+    productPackage: "BANTUAN PERUBATAN KLINIKAL",
+    entitlementProduct: "BANTUAN PERUBATAN KLINIKAL",
+    segera: false,
+    kelulusanKhas: false,
+    tarikhPermohonan: new Date().toISOString(),
+    sla: "3h",
+    dokumenSokongan: [
+      { id: "pengesahan", nama: "Surat/Memo/Borang Pengesahan Kesihatan pemohon daripada pihak hospital atau institusi perubatan yang diiktiraf Kementerian Kesihatan Malaysia (KKM). Tempoh sah laku pengesahan tersebut adalah enam (6) bulan sahaja", status: "", url: "/path/to/doc1.pdf" },
+      { id: "surat-rehab", nama: "Surat/pengesahan daripada Pegawai Rehabilitasi bagi permohonan bantuan peralatan perubatan/ Peralatan pemulihan/khidmat pemulihan rehabilitasi. Tempoh sah laku pengesahan tersebut adalah enam (6) bulan sahaja", status: "", url: "/path/to/doc2.pdf" },
+      { id: "kos-rawatan", nama: "Sebut harga kos rawatan/ keperluan perubatan/ pembedahan/ peralatan. Tempoh sah laku sebut harga tersebut adalah tiga (3) bulan. (Diuruskan oleh TPA)", status: "", url: "/path/to/doc3.pdf" },
+      { id: "salinan-dokumen", nama: "Salinan dokumen kemasukan yang sah (bukan warganegara sahaja)", status: "", url: "/path/to/doc4.pdf" },
+      { id: "kedutaan", nama: "Pengesahan daripada kedutaan/Atasan (Jika berkenaan)", status: "", url: "/path/to/doc5.pdf" },
     ],
     statusSokongan: "",
     catatanPengesyoran: "",
@@ -1806,7 +2350,7 @@ const mockByBantuanId = {
     aid: "B135 - (HQ) SAGUHATI GALAKAN SAUDARA BARU (MUALAF)",
     aidProduct: "(HQ) SAGUHATI GALAKAN SAUDARA BARU (MUALAF)",
     productPackage: "(HQ) SAGUHATI GALAKAN SAUDARA BARU",
-    entitlementProduct: true,
+    entitlementProduct: false,
     adakahMualaf: "yes",
     tarikhMasukIslam: "2024-03-15",
     namaLain: "Mary Catherine Johnson",
@@ -1880,6 +2424,162 @@ const mockByBantuanId = {
     catatanPegawai: "",
     tarikhSemak: new Date(),
   },
+  B134: {
+    jenisBantuan: "B134 - BANTUAN PROGRAM PENERAPAN NILAI ISLAM",
+    aid: "B134 - BANTUAN PROGRAM PENERAPAN NILAI ISLAM",
+    aidProduct: "JAIS / MAIS - HONORARIUM",
+    productPackage: "(JAIS / MAIS - HONORARIUM",
+    entitlementProduct: true,
+    adakahMualaf: "yes",
+    tarikhMasukIslam: "2024-03-15",
+    namaLain: "Mary Catherine Johnson",
+    tarikhMasukKFAM: "2024-04-01",
+    dokumenPengislaman: null,
+    entitlementProducts: [
+      {
+        id: "ent-001",
+        nama: "MODERATOR (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM",
+        penerangan: "Honorarium bagi moderator peringkat bahagian/daerah di bawah JAIS/MAIS.",
+        kategori: "Moderator",
+        jumlah: 0,
+        tempoh: "Sekali",
+        status: "Aktif",
+        dipilih: true
+      },
+      {
+        id: "ent-002",
+        nama: "MODERATOR (MUKIM) - JAIS / MAIS - HONORARIUM",
+        penerangan: "Honorarium bagi moderator peringkat mukim di bawah JAIS/MAIS.",
+        kategori: "Moderator",
+        jumlah: 0,
+        tempoh: "Sekali",
+        status: "Tersedia",
+        dipilih: true
+      },
+      {
+        id: "ent-003",
+        nama: "MODERATOR (NEGERI) - JAIS / MAIS - HONORARIUM",
+        penerangan: "Honorarium bagi moderator peringkat negeri di bawah JAIS/MAIS.",
+        kategori: "Moderator",
+        jumlah: 0,
+        tempoh: "Sekali",
+        status: "Tersedia",
+        dipilih: true
+      },
+      {
+        id: "ent-004",
+        nama: "PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM",
+        penerangan: "Honorarium bagi pembimbing program ibadah dan kuliah peringkat bahagian/daerah.",
+        kategori: "Pembimbing",
+        jumlah: 0,
+        tempoh: "Sekali",
+        status: "Tersedia",
+        dipilih: true
+      },
+      {
+        id: "ent-005",
+        nama: "PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (MUKIM) - JAIS / MAIS - HONORARIUM",
+        penerangan: "Honorarium bagi pembimbing program ibadah dan kuliah peringkat mukim.",
+        kategori: "Pembimbing",
+        jumlah: 0,
+        tempoh: "Sekali",
+        status: "Tersedia",
+        dipilih: true
+      },
+      {
+        id: "ent-006",
+        nama: "PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (NEGERI) - JAIS / MAIS - HONORARIUM",
+        penerangan: "Honorarium bagi pembimbing program ibadah dan kuliah peringkat negeri.",
+        kategori: "Pembimbing",
+        jumlah: 0,
+        tempoh: "Sekali",
+        status: "Tersedia",
+        dipilih: true
+      },
+      {
+        id: "ent-007",
+        nama: "PENCERAMAH (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM",
+        penerangan: "Honorarium bagi penceramah untuk semua peringkat program JAIS/MAIS.",
+        kategori: "Penceramah",
+        jumlah: 0,
+        tempoh: "Sekali",
+        status: "Tersedia",
+        dipilih: true
+      },
+      {
+        id: "ent-008",
+        nama: "PENCERAMAH TOKOH AWAM (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM",
+        penerangan: "Honorarium bagi penceramah tokoh awam untuk semua peringkat program.",
+        kategori: "Penceramah",
+        jumlah: 0,
+        tempoh: "Sekali",
+        status: "Tersedia",
+        dipilih: true
+      },
+      {
+        id: "ent-009",
+        nama: "PENGERUSI MAJILIS (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM",
+        penerangan: "Honorarium bagi pengerusi majlis peringkat bahagian/daerah.",
+        kategori: "Pengerusi",
+        jumlah: 0,
+        tempoh: "Sekali",
+        status: "Tersedia",
+        dipilih: true
+      },
+      {
+        id: "ent-010",
+        nama: "SUMBANGAN - HONORARIUM",
+        penerangan: "Sumbangan berbentuk honorarium untuk penglibatan program.",
+        kategori: "Sumbangan",
+        jumlah: 0,
+        tempoh: "Sekali",
+        status: "Tersedia",
+        dipilih: true
+      }
+    ]
+,
+    segera: false,
+    kelulusanKhas: false,
+    tarikhPermohonan: new Date().toISOString(),
+    sla: "3h",
+    dokumenSokongan: [
+      {
+        id: "kertas-kerja-pelaksanaan",
+        nama: "Kertas Kerja Pelaksanaan/Cadangan Permohonan Agihan Lembaga Zakat Selangor oleh Agensi.",
+        status: "",
+        url: ""
+      },
+      {
+        id: "penyata-bank-terkini",
+        nama: "Penyata bank terkini pemohon (Selain Agensi sahaja).",
+        status: "",
+        url: ""
+      },
+      {
+        id: "surat-pengesahan-aktiviti",
+        nama: "Surat pengesahan menjalankan aktiviti dari pihak berkaitan (Selain Agensi sahaja).",
+        status: "",
+        url: ""
+      }
+    ],
+
+    statusSokongan: "",
+    catatanPengesyoran: ``,
+    kadarBantuan: null,
+    tempohBantuan: "",
+    jumlahKeseluruhan: 0,
+    tarikhMula: "",
+    tarikhTamat: "",
+    penerima: "",
+    namaPenerima: "",
+    kaedahPembayaran: "",
+    namaBank: "",
+    noAkaunBank: "",
+    statusPermohonan: "Dalam Semakan",
+    statusPermohonanBaru: "",
+    catatanPegawai: "",
+    tarikhSemak: new Date(),
+  },
 };
 
 onMounted(() => {
@@ -1889,6 +2589,8 @@ onMounted(() => {
     Object.assign(formData.value, record);
   }
 });
+
+
 
 // Configuration data
 const statusDokumenOptions = [
@@ -2110,6 +2812,10 @@ const getStatusClass = (status) => {
   return classes[status] || "bg-gray-100 text-gray-800";
 };
 
+
+
+
+
 const getProductStatusVariant = (status) => {
   const variants = {
     "Aktif": "success",
@@ -2304,7 +3010,148 @@ const loadPenerimaData = () => {
     editData.noAkaunBank = '';
   }
 };
+const columns = [
+  { label: 'No', field: 'no' },
+  { label: 'Dokumen', field: 'jenis' },
+  { label: 'Catatan', field: 'catatan' },
+];
 
+/* ====== Seksyen Asal: Dokumen (kekalkan) ====== */
+const jenisDokumenOptions = ref([
+  { value: 'ic',        label: 'Salinan Kad Pengenalan', templateUrl: '/templates/borang-ic.pdf' },
+  { value: 'bil',       label: 'Bil Utiliti Terkini',     templateUrl: '/templates/borang-bil.pdf' },
+  { value: 'surat',     label: 'Surat Pengesahan',        templateUrl: '/templates/surat-pengesahan.pdf' },
+  { value: 'penyata',   label: 'Penyata Bank',            templateUrl: '' },
+  { value: 'gambar',    label: 'Gambar Sokongan',         templateUrl: '' },
+])
+
+let rowSeq = 1
+const newRow = () => ({
+  id: `doc-${Date.now()}-${rowSeq++}`,
+  jenis: '',
+  keterangan: '',
+  file: null,
+  fileName: '',
+  fileSize: 0,
+})
+
+const dokumenSokonganRows = ref([newRow()])
+
+const getTemplateUrl = (jenis) => {
+  const opt = jenisDokumenOptions.value.find(o => o.value === jenis)
+  return opt?.templateUrl || ''
+}
+
+const downloadTemplate = (jenis) => {
+  const url = getTemplateUrl(jenis)
+  if (!url) return
+  window.open(url, '_blank', 'noopener,noreferrer')
+}
+
+const MAX_SIZE_MB = 5
+const ALLOWED_EXT = ['pdf', 'jpg', 'jpeg', 'png']
+
+const onFileChange = (index, evt) => {
+  const file = evt?.target?.files?.[0]
+  if (!file) return
+
+  const ext = file.name.split('.').pop()?.toLowerCase() || ''
+  const sizeMB = file.size / (1024 * 1024)
+
+  if (!ALLOWED_EXT.includes(ext)) {
+    alert(`Jenis fail tidak disokong. Benarkan: ${ALLOWED_EXT.join(', ').toUpperCase()}`)
+    evt.target.value = ''
+    return
+  }
+  if (sizeMB > MAX_SIZE_MB) {
+    alert(`Saiz fail melebihi had ${MAX_SIZE_MB}MB.`)
+    evt.target.value = ''
+    return
+  }
+
+  const row = dokumenSokonganRows.value[index]
+  row.file = file
+  row.fileName = file.name
+  row.fileSize = file.size
+}
+
+const addDokumenRow = () => {
+  dokumenSokonganRows.value.push(newRow())
+}
+const removeDokumenRow = () => {
+  if (dokumenSokonganRows.value.length > 1) {
+    dokumenSokonganRows.value.pop()
+  }
+}
+
+/* ====== Seksyen Baharu: Dokumen Sokongan Dari LZS ====== */
+
+
+let lzsSeq = 1
+const newLzsRow = () => ({
+  id: `lzs-${Date.now()}-${lzsSeq++}`,
+  dokumen: '',
+  catatan: '',
+  // simpan fail / pautan untuk "Lihat"
+  file: null,           // File object jika muat naik
+  fileName: '',         // Paparan nama fail
+  fileUrl: '',          // Boleh jadi URL dari server; fallback = URL.createObjectURL(file)
+})
+
+const lzsDokumenRows = ref([newLzsRow()])
+
+/** Boleh lihat jika ada fileUrl atau file */
+const canViewLzs = (row) => Boolean(row.fileUrl || row.file)
+
+/** Buka dokumen untuk dilihat */
+const viewLzsDoc = (row) => {
+  let url = row.fileUrl
+  if (!url && row.file) {
+    url = URL.createObjectURL(row.file) // preview local
+  }
+  if (url) window.open(url, '_blank', 'noopener,noreferrer')
+}
+
+/** Upload handler untuk LZS rows */
+const onLzsFileChange = (index, evt) => {
+  const file = evt?.target?.files?.[0]
+  if (!file) return
+
+  const ext = file.name.split('.').pop()?.toLowerCase() || ''
+  const sizeMB = file.size / (1024 * 1024)
+  if (!ALLOWED_EXT.includes(ext)) {
+    alert(`Jenis fail tidak disokong. Benarkan: ${ALLOWED_EXT.join(', ').toUpperCase()}`)
+    evt.target.value = ''
+    return
+  }
+  if (sizeMB > MAX_SIZE_MB) {
+    alert(`Saiz fail melebihi had ${MAX_SIZE_MB}MB.`)
+    evt.target.value = ''
+    return
+  }
+
+  const row = lzsDokumenRows.value[index]
+  row.file = file
+  row.fileName = file.name
+  // Jika ada API upload sebenar, gantikan baris di bawah dengan respons URL dari server
+  row.fileUrl = URL.createObjectURL(file)
+}
+
+/** (Pilihan) tambah/buang baris LZS */
+const addLzsRow = () => {
+  lzsDokumenRows.value.push(newLzsRow())
+}
+const removeLzsRow = () => {
+  if (lzsDokumenRows.value.length > 1) {
+    lzsDokumenRows.value.pop()
+  }
+}
+
+/* (Optional) expose for parent usage */
+// defineExpose({
+//   dokumenSokonganRows, addDokumenRow, removeDokumenRow, getTemplateUrl, downloadTemplate, onFileChange,
+//   lzsDokumenRows, addLzsRow, removeLzsRow, canViewLzs, viewLzsDoc, onLzsFileChange,
+// })
 </script>
 
 <style lang="scss" scoped>

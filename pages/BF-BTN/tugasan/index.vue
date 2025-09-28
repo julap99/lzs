@@ -856,7 +856,7 @@
   <!-- Modal: Tugas Kepada -->
   <div
     v-if="isAssignModalOpen"
-    class="fixed inset-0 z-50 z-[9999] flex items-center justify-center"
+    class="fixed inset-0 flex items-center justify-center"
   >
     <div class="absolute inset-0 bg-black/50" @click="closeAssignModal"></div>
     <div class="relative bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
@@ -1039,6 +1039,7 @@ const applications = ref([
 ]);
 
 // Mock data for Siasatan tab - would be replaced with API call
+console.log("Loading Siasatan data with Faridah entry");
 const siasatanData = ref([
   {
     pemohon: "Mohd Rosli bin Saad (800101-01-1234)",
@@ -1079,7 +1080,20 @@ const siasatanData = ref([
     noRujukan: "NAS-2025-0004",
     tindakan: "bantuan/siasatan/siasatan-eoad-2/NAS-2025-0004",
   },
+  {
+    pemohon: "Masjid At-Taqwa",
+    kariah: "Masjid At-Taqwa",
+    daerah: "Kuala Selangor",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    jenistugasan: "Bantuan",
+    noRujukan: "NAS-2025-0005",
+    tindakan: "bantuan/siasatan/siasatan-eoad-2/NAS-2025-0005",
+  },
 ]);
+
+console.log("Total Siasatan entries:", siasatanData.value.length);
+console.log("Siasatan entries:", siasatanData.value.map(item => item.pemohon));
 
 // Mock data for Permohonan sub-tab (own dataset, same format as Siasatan)
 const permohonanData = ref([
@@ -1140,6 +1154,24 @@ const semakanData = ref([
     status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
     noRujukan: "NAS-2025-0005",
     tindakan: "bantuan/semakan/NAS-2025-0005",
+  },
+  {
+    pemohon: "Mohd Kamal bin Mohd Luffy (990504-08-2567)",
+    kariah: "Masjid Al-Ikhlas",
+    daerah: "Kuala Selangor",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0006",
+    tindakan: "bantuan/semakan/NAS-2025-0006",
+  },
+  {
+    pemohon: "Majlis Agama Islam Selangor (MAIS) (254900406XLRQPZSC186)",
+    kariah: "Masjid Bandar Utama",
+    daerah: "Shah Alam",
+    bilanganBantuan: 1,
+    status: "Segera - 0\nMelebihi SLA - 0\nPerlu Diproses - 1",
+    noRujukan: "NAS-2025-0007",
+    tindakan: "bantuan/semakan/NAS-2025-0007",
   },
 ]);
 
@@ -1610,7 +1642,7 @@ const onChangeSimulasiPeranan = () => {
   if (selectedRole.value === "Penyemak") {
     permohonanTable.value = true;
     semakanTable.value = true;
-    siasatanTable.value = false;
+    siasatanTable.value = true;
     sokonganTable.value = false;
     reworkTable.value = false;
     kelulusanTable.value = false;

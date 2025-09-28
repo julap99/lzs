@@ -272,6 +272,7 @@
                 label="Alamat 1"
                 validation="required"
                 :disabled="readOnly"
+                readonly
                 v-model="edu.alamat_sekolah_1"
               />
 
@@ -280,6 +281,7 @@
                 :name="`eduTanggungan${index}Alamat2`"
                 label="Alamat 2"
                 :disabled="readOnly"
+                readonly
                 v-model="edu.alamat_sekolah_2"
                 v-if="edu.alamat_sekolah_1"
               />
@@ -290,6 +292,7 @@
                   :name="`eduTanggungan${index}Alamat3`"
                   label="Alamat 3"
                   :disabled="readOnly"
+                  readonly
                   v-model="edu.alamat_sekolah_3"
                   v-if="edu.alamat_sekolah_1"
                 />
@@ -302,6 +305,7 @@
                   label="Daerah"
                   validation="required"
                   :disabled="readOnly"
+                  readonly
                   v-model="edu.daerah_sekolah"
                 />
 
@@ -311,6 +315,7 @@
                   label="Bandar"
                   validation="required"
                   :disabled="readOnly"
+                  readonly
                   v-model="edu.bandar_sekolah"
                 />
 
@@ -320,6 +325,7 @@
                   label="Poskod"
                   validation="required"
                   :disabled="readOnly"
+                  readonly
                   v-model="edu.poskod_sekolah"
                 />
               </div>

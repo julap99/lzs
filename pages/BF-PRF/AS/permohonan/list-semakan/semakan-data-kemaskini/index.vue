@@ -382,6 +382,7 @@ const pendapatanPerbelanjaan = ref({
   bil_utiliti: 200,
   takaful: 100,
   sewa_rumah_tanah_kedai: 0,
+  total_perbelanjaan: 2750,
   
   // Pendapatan
   gaji_elaun_pendapatan: 2500,
@@ -405,6 +406,7 @@ const pendapatanPerbelanjaanSelepas = ref({
   bil_utiliti: 250,
   takaful: 150,
   sewa_rumah_tanah_kedai: 0,
+  total_perbelanjaan: 3200,
   
   // Pendapatan - Updated values
   gaji_elaun_pendapatan: 2800,

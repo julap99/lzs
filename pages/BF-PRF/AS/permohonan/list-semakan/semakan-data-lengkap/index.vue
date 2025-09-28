@@ -723,6 +723,26 @@ const formData = ref({
   tahap_kesihatan: "Sihat",
 
   kemahiran: ["Perniagaan"],
+  
+  // Perbelanjaan (mock)
+  perbelanjaan_makanan_minuman: 700.00,
+  sewa_bayaran_pinjaman_perumahan: 900.00,
+  perbelanjaan_persekolahan_anak: 200.00,
+  pengangkutan_tambang_bas_sekolah: 120.00,
+  bil_utiliti: 180.00,
+  takaful: 110.00,
+  sewa_rumah_tanah_kedai: 0.00,
+  total_perbelanjaan: 2210.00,
+
+  // Pendapatan (mock)
+  gaji_elaun_pendapatan: 2800.00,
+  pendapatan_isteri_suami_ibubapa_penjaga: 0.00,
+  pencen_perkeso: 0.00,
+  sumbangan_anak_anak: 150.00,
+  bantuan_jkm: 0.00,
+  pendapatan_tanggungan_serumah: 0.00,
+  total_pendapatan: 2950.00,
+  pendapatan_lain_lain: [{ amount: 0 }],
 });
 
 

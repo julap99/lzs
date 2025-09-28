@@ -18,6 +18,14 @@
         v-model="formData.wang_simpanan"
         :disabled="readOnly" />
 
+        <FormKit
+          type="radio"
+          name="jenis_wang_simpanan"
+          label="Jenis wang simpanan"
+          :options="['Tunai', 'Bank']"
+          v-model="formData.jenis_wang_simpanan"
+          :disabled="readOnly" />
+
       <FormKit
         type="number"
         name="emas"
