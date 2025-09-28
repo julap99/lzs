@@ -88,12 +88,9 @@
             placeholder="Pilih kariah"
             :options="kariahOptions"
             v-model="formData.kariah"
-            searchable
-            :searchable-options="{
-              searchable: true,
-              clearable: true,
-              placeholder: 'Cari kariah...'
-            }"
+            :searchable="true"
+            :clearable="true"
+            :filterable="true"
           />
 
           <!-- f) Jenis masjid - dropdown (conditional for masjid type) -->
