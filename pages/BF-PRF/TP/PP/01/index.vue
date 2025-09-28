@@ -244,7 +244,7 @@ const mockSyarikatData = [
     namaSyarikat: 'Pusat Dialisis As-Salam Shah Alam',
     jenisPengenalan: 'ID Syarikat',
     idSyarikat: 'PPM-2021-015',
-    status: 'Verified',
+    status: 'Telah Disahkan',
     tindakan: { id: 'RE-202506-0012' }
   },
   {
@@ -252,7 +252,7 @@ const mockSyarikatData = [
     namaSyarikat: 'Klinik Kesihatan Al-Ikhlas',
     jenisPengenalan: 'ID Syarikat',
     idSyarikat: 'PPM-2022-008',
-    status: 'Tidak Verified',
+    status: 'Belum Disahkan',
     tindakan: { id: 'RE-202507-0014' }
   },
   {
@@ -260,7 +260,7 @@ const mockSyarikatData = [
     namaSyarikat: 'Pembekal Makanan Halal Al-Amin Sdn Bhd',
     jenisPengenalan: 'ID Syarikat',
     idSyarikat: 'PPM-2022-008',
-    status: 'Verified',
+    status: 'Telah Disahkan',
     tindakan: { id: 'RE-202505-0016' }
   }
 ];
@@ -278,8 +278,8 @@ const getPlaceholder = () => {
 
 const getNPSStatusVariant = (status) => {
   const variants = {
-    'Verified': 'success',
-    'Tidak Verified': 'warning',
+    'Telah Disahkan': 'success',
+    'Belum Disahkan': 'warning',
   };
   return variants[status] || 'default';
 };
