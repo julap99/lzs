@@ -807,11 +807,9 @@ const countryOptions = [
   'France', 'Netherlands', 'Saudi Arabia', 'United Arab Emirates', 'Qatar'
 ];
 
-// Malaysia states
+// Malaysia states - LZS system only caters to Selangor
 const malaysiaStates = [
-  'Selangor', 'Johor', 'Kedah', 'Kelantan', 'Melaka', 'Negeri Sembilan', 'Pahang',
-  'Perak', 'Perlis', 'Pulau Pinang', 'Sabah', 'Sarawak', 'Terengganu', 'Kuala Lumpur',
-  'Labuan', 'Putrajaya'
+  'Selangor'
 ];
 
 // Selangor districts
@@ -1258,7 +1256,7 @@ const formData = ref({
   postcode: "",
   city: "",
   district: "",
-  state: "",
+  state: "Selangor", // Default to Selangor for LZS system
 
   // Step 3: Maklumat Perhubungan (BA Requirement 7: Add jawatan field)
   representatives: [
