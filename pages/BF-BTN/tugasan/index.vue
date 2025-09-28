@@ -35,6 +35,164 @@
                 }"
                 advanced
               >
+                <template v-slot:namaPemohon="{ text }">
+                  <!-- Ahmad bin Abdullah -->
+                  <div 
+                    v-if="text === 'Ahmad bin Abdullah'" 
+                    class="relative inline-block"
+                    @mouseenter="tooltips['ahmad-profiling'] = true" 
+                    @mouseleave="tooltips['ahmad-profiling'] = false"
+                  >
+                    {{ text }}
+                    <transition name="tooltip">
+                      <span 
+                        v-if="tooltips['ahmad-profiling']" 
+                        class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                      >
+                        Bantuan Pendidikan
+                      </span>
+                    </transition>
+                  </div>
+                  <!-- Amirul Hakim bin Zainuddin -->
+                  <div 
+                    v-else-if="text === 'Amirul Hakim bin Zainuddin'" 
+                    class="relative inline-block"
+                    @mouseenter="tooltips['amirul-profiling'] = true" 
+                    @mouseleave="tooltips['amirul-profiling'] = false"
+                  >
+                    {{ text }}
+                    <transition name="tooltip">
+                      <span 
+                        v-if="tooltips['amirul-profiling']" 
+                        class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                      >
+                        Dialisis
+                      </span>
+                    </transition>
+                  </div>
+                  <!-- Majlis Agama Islam Selangor (MAIS) -->
+                  <div 
+                    v-else-if="text === 'Majlis Agama Islam Selangor (MAIS)'" 
+                    class="relative inline-block"
+                    @mouseenter="tooltips['mais-profiling'] = true" 
+                    @mouseleave="tooltips['mais-profiling'] = false"
+                  >
+                    {{ text }}
+                    <transition name="tooltip">
+                      <span 
+                        v-if="tooltips['mais-profiling']" 
+                        class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                      >
+                        BTS
+                      </span>
+                    </transition>
+                  </div>
+                  <!-- Maryam binti Abdullah -->
+                  <div 
+                    v-else-if="text === 'Maryam binti Abdullah'" 
+                    class="relative inline-block"
+                    @mouseenter="tooltips['maryam-profiling'] = true" 
+                    @mouseleave="tooltips['maryam-profiling'] = false"
+                  >
+                    {{ text }}
+                    <transition name="tooltip">
+                      <span 
+                        v-if="tooltips['maryam-profiling']" 
+                        class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                      >
+                        Saguhati Pengislaman
+                      </span>
+                    </transition>
+                  </div>
+                  <!-- Mohd Amin bin Mohd Ali -->
+                  <div 
+                    v-else-if="text === 'Mohd Amin bin Mohd Ali'" 
+                    class="relative inline-block"
+                    @mouseenter="tooltips['mohd-amin-profiling'] = true" 
+                    @mouseleave="tooltips['mohd-amin-profiling'] = false"
+                  >
+                    {{ text }}
+                    <transition name="tooltip">
+                      <span 
+                        v-if="tooltips['mohd-amin-profiling']" 
+                        class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                      >
+                        Sewa Rumah
+                      </span>
+                    </transition>
+                  </div>
+                  <!-- Mohd Kamal bin Mohd Luffy -->
+                  <div 
+                    v-else-if="text === 'Mohd Kamal bin Mohd Luffy'" 
+                    class="relative inline-block"
+                    @mouseenter="tooltips['mohd-kamal-profiling'] = true" 
+                    @mouseleave="tooltips['mohd-kamal-profiling'] = false"
+                  >
+                    {{ text }}
+                    <transition name="tooltip">
+                      <span 
+                        v-if="tooltips['mohd-kamal-profiling']" 
+                        class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                      >
+                        Bantuan Perubatan
+                      </span>
+                    </transition>
+                  </div>
+                  <!-- Masjid At-Taqwa -->
+                  <div 
+                    v-else-if="text === 'Masjid At-Taqwa'" 
+                    class="relative inline-block"
+                    @mouseenter="tooltips['masjid-profiling'] = true" 
+                    @mouseleave="tooltips['masjid-profiling'] = false"
+                  >
+                    {{ text }}
+                    <transition name="tooltip">
+                      <span 
+                        v-if="tooltips['masjid-profiling']" 
+                        class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                      >
+                        Baik Pulih Masjid
+                      </span>
+                    </transition>
+                  </div>
+                  <!-- Siti binti Hassan -->
+                  <div 
+                    v-else-if="text === 'Siti binti Hassan'" 
+                    class="relative inline-block"
+                    @mouseenter="tooltips['siti-profiling'] = true" 
+                    @mouseleave="tooltips['siti-profiling'] = false"
+                  >
+                    {{ text }}
+                    <transition name="tooltip">
+                      <span 
+                        v-if="tooltips['siti-profiling']" 
+                        class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                      >
+                        Bantuan Pendidikan
+                      </span>
+                    </transition>
+                  </div>
+                  <!-- Mohd Rosli bin Saad -->
+                  <div 
+                    v-else-if="text === 'Mohd Rosli bin Saad'" 
+                    class="relative inline-block"
+                    @mouseenter="tooltips['mohd-rosli-profiling'] = true" 
+                    @mouseleave="tooltips['mohd-rosli-profiling'] = false"
+                  >
+                    {{ text }}
+                    <transition name="tooltip">
+                      <span 
+                        v-if="tooltips['mohd-rosli-profiling']" 
+                        class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                      >
+                        BDST
+                      </span>
+                    </transition>
+                  </div>
+                  <!-- Default for other names -->
+                  <span v-else>{{ text }}</span>
+                </template>
+
                 <template v-slot:status="{ text }">
                   <div class="flex flex-col gap-1">
                     <template v-if="text.includes('\n')">
@@ -259,6 +417,164 @@
                        }"
                        advanced
                      >
+                       <template v-slot:pemohon="{ text }">
+                         <!-- Ahmad bin Abdullah -->
+                         <div 
+                           v-if="text.includes('Ahmad bin Abdullah')" 
+                           class="relative inline-block"
+                           @mouseenter="tooltips['ahmad-semakan'] = true" 
+                           @mouseleave="tooltips['ahmad-semakan'] = false"
+                         >
+                           {{ text }}
+                           <transition name="tooltip">
+                             <span 
+                               v-if="tooltips['ahmad-semakan']" 
+                               class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                             >
+                               Bantuan Pendidikan
+                             </span>
+                           </transition>
+                         </div>
+                         <!-- Amirul Hakim bin Zainuddin -->
+                         <div 
+                           v-else-if="text.includes('Amirul Hakim bin Zainuddin')" 
+                           class="relative inline-block"
+                           @mouseenter="tooltips['amirul-semakan'] = true" 
+                           @mouseleave="tooltips['amirul-semakan'] = false"
+                         >
+                           {{ text }}
+                           <transition name="tooltip">
+                             <span 
+                               v-if="tooltips['amirul-semakan']" 
+                               class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                             >
+                               Dialisis
+                             </span>
+                           </transition>
+                         </div>
+                         <!-- Majlis Agama Islam Selangor (MAIS) -->
+                         <div 
+                           v-else-if="text.includes('Majlis Agama Islam Selangor (MAIS)')" 
+                           class="relative inline-block"
+                           @mouseenter="tooltips['mais-semakan'] = true" 
+                           @mouseleave="tooltips['mais-semakan'] = false"
+                         >
+                           {{ text }}
+                           <transition name="tooltip">
+                             <span 
+                               v-if="tooltips['mais-semakan']" 
+                               class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                             >
+                               BTS
+                             </span>
+                           </transition>
+                         </div>
+                         <!-- Maryam binti Abdullah -->
+                         <div 
+                           v-else-if="text.includes('Maryam binti Abdullah')" 
+                           class="relative inline-block"
+                           @mouseenter="tooltips['maryam-semakan'] = true" 
+                           @mouseleave="tooltips['maryam-semakan'] = false"
+                         >
+                           {{ text }}
+                           <transition name="tooltip">
+                             <span 
+                               v-if="tooltips['maryam-semakan']" 
+                               class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                             >
+                               Saguhati Pengislaman
+                             </span>
+                           </transition>
+                         </div>
+                         <!-- Mohd Amin bin Mohd Ali -->
+                         <div 
+                           v-else-if="text.includes('Mohd Amin bin Mohd Ali')" 
+                           class="relative inline-block"
+                           @mouseenter="tooltips['mohd-amin-semakan'] = true" 
+                           @mouseleave="tooltips['mohd-amin-semakan'] = false"
+                         >
+                           {{ text }}
+                           <transition name="tooltip">
+                             <span 
+                               v-if="tooltips['mohd-amin-semakan']" 
+                               class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                             >
+                               Sewa Rumah
+                             </span>
+                           </transition>
+                         </div>
+                         <!-- Mohd Kamal bin Mohd Luffy -->
+                         <div 
+                           v-else-if="text.includes('Mohd Kamal bin Mohd Luffy')" 
+                           class="relative inline-block"
+                           @mouseenter="tooltips['mohd-kamal-semakan'] = true" 
+                           @mouseleave="tooltips['mohd-kamal-semakan'] = false"
+                         >
+                           {{ text }}
+                           <transition name="tooltip">
+                             <span 
+                               v-if="tooltips['mohd-kamal-semakan']" 
+                               class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                             >
+                               Bantuan Perubatan
+                             </span>
+                           </transition>
+                         </div>
+                         <!-- Masjid At-Taqwa -->
+                         <div 
+                           v-else-if="text.includes('Masjid At-Taqwa')" 
+                           class="relative inline-block"
+                           @mouseenter="tooltips['masjid-semakan'] = true" 
+                           @mouseleave="tooltips['masjid-semakan'] = false"
+                         >
+                           {{ text }}
+                           <transition name="tooltip">
+                             <span 
+                               v-if="tooltips['masjid-semakan']" 
+                               class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                             >
+                               Baik Pulih Masjid
+                             </span>
+                           </transition>
+                         </div>
+                         <!-- Siti binti Hassan -->
+                         <div 
+                           v-else-if="text.includes('Siti binti Hassan')" 
+                           class="relative inline-block"
+                           @mouseenter="tooltips['siti-semakan'] = true" 
+                           @mouseleave="tooltips['siti-semakan'] = false"
+                         >
+                           {{ text }}
+                           <transition name="tooltip">
+                             <span 
+                               v-if="tooltips['siti-semakan']" 
+                               class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                             >
+                               Bantuan Pendidikan
+                             </span>
+                           </transition>
+                         </div>
+                         <!-- Mohd Rosli bin Saad -->
+                         <div 
+                           v-else-if="text.includes('Mohd Rosli bin Saad')" 
+                           class="relative inline-block"
+                           @mouseenter="tooltips['mohd-rosli-semakan'] = true" 
+                           @mouseleave="tooltips['mohd-rosli-semakan'] = false"
+                         >
+                           {{ text }}
+                           <transition name="tooltip">
+                             <span 
+                               v-if="tooltips['mohd-rosli-semakan']" 
+                               class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                             >
+                               BDST
+                             </span>
+                           </transition>
+                         </div>
+                         <!-- Default for other names -->
+                         <span v-else>{{ text }}</span>
+                       </template>
+
                        <template v-slot:status="{ text }">
                          <div class="flex flex-col gap-1">
                            <template v-if="text.includes('\n')">
@@ -359,6 +675,164 @@
                       }"
                       advanced
                     >
+                      <template v-slot:pemohon="{ text }">
+                        <!-- Ahmad bin Abdullah -->
+                        <div 
+                          v-if="text.includes('Ahmad bin Abdullah')" 
+                          class="relative inline-block"
+                          @mouseenter="tooltips['ahmad-siasatan'] = true" 
+                          @mouseleave="tooltips['ahmad-siasatan'] = false"
+                        >
+                          {{ text }}
+                          <transition name="tooltip">
+                            <span 
+                              v-if="tooltips['ahmad-siasatan']" 
+                              class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                            >
+                              Bantuan Pendidikan
+                            </span>
+                          </transition>
+                        </div>
+                        <!-- Amirul Hakim bin Zainuddin -->
+                        <div 
+                          v-else-if="text.includes('Amirul Hakim bin Zainuddin')" 
+                          class="relative inline-block"
+                          @mouseenter="tooltips['amirul-siasatan'] = true" 
+                          @mouseleave="tooltips['amirul-siasatan'] = false"
+                        >
+                          {{ text }}
+                          <transition name="tooltip">
+                            <span 
+                              v-if="tooltips['amirul-siasatan']" 
+                              class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                            >
+                              Dialisis
+                            </span>
+                          </transition>
+                        </div>
+                        <!-- Majlis Agama Islam Selangor (MAIS) -->
+                        <div 
+                          v-else-if="text.includes('Majlis Agama Islam Selangor (MAIS)')" 
+                          class="relative inline-block"
+                          @mouseenter="tooltips['mais-siasatan'] = true" 
+                          @mouseleave="tooltips['mais-siasatan'] = false"
+                        >
+                          {{ text }}
+                          <transition name="tooltip">
+                            <span 
+                              v-if="tooltips['mais-siasatan']" 
+                              class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                            >
+                              BTS
+                            </span>
+                          </transition>
+                        </div>
+                        <!-- Maryam binti Abdullah -->
+                        <div 
+                          v-else-if="text.includes('Maryam binti Abdullah')" 
+                          class="relative inline-block"
+                          @mouseenter="tooltips['maryam-siasatan'] = true" 
+                          @mouseleave="tooltips['maryam-siasatan'] = false"
+                        >
+                          {{ text }}
+                          <transition name="tooltip">
+                            <span 
+                              v-if="tooltips['maryam-siasatan']" 
+                              class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                            >
+                              Saguhati Pengislaman
+                            </span>
+                          </transition>
+                        </div>
+                        <!-- Mohd Amin bin Mohd Ali -->
+                        <div 
+                          v-else-if="text.includes('Mohd Amin bin Mohd Ali')" 
+                          class="relative inline-block"
+                          @mouseenter="tooltips['mohd-amin-siasatan'] = true" 
+                          @mouseleave="tooltips['mohd-amin-siasatan'] = false"
+                        >
+                          {{ text }}
+                          <transition name="tooltip">
+                            <span 
+                              v-if="tooltips['mohd-amin-siasatan']" 
+                              class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                            >
+                              Sewa Rumah
+                            </span>
+                          </transition>
+                        </div>
+                        <!-- Mohd Kamal bin Mohd Luffy -->
+                        <div 
+                          v-else-if="text.includes('Mohd Kamal bin Mohd Luffy')" 
+                          class="relative inline-block"
+                          @mouseenter="tooltips['mohd-kamal-siasatan'] = true" 
+                          @mouseleave="tooltips['mohd-kamal-siasatan'] = false"
+                        >
+                          {{ text }}
+                          <transition name="tooltip">
+                            <span 
+                              v-if="tooltips['mohd-kamal-siasatan']" 
+                              class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                            >
+                              Bantuan Perubatan
+                            </span>
+                          </transition>
+                        </div>
+                        <!-- Masjid At-Taqwa -->
+                        <div 
+                          v-else-if="text.includes('Masjid At-Taqwa')" 
+                          class="relative inline-block"
+                          @mouseenter="tooltips['masjid-siasatan'] = true" 
+                          @mouseleave="tooltips['masjid-siasatan'] = false"
+                        >
+                          {{ text }}
+                          <transition name="tooltip">
+                            <span 
+                              v-if="tooltips['masjid-siasatan']" 
+                              class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                            >
+                              Baik Pulih Masjid
+                            </span>
+                          </transition>
+                        </div>
+                        <!-- Siti binti Hassan -->
+                        <div 
+                          v-else-if="text.includes('Siti binti Hassan')" 
+                          class="relative inline-block"
+                          @mouseenter="tooltips['siti-siasatan'] = true" 
+                          @mouseleave="tooltips['siti-siasatan'] = false"
+                        >
+                          {{ text }}
+                          <transition name="tooltip">
+                            <span 
+                              v-if="tooltips['siti-siasatan']" 
+                              class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                            >
+                              Bantuan Pendidikan
+                            </span>
+                          </transition>
+                        </div>
+                        <!-- Mohd Rosli bin Saad -->
+                        <div 
+                          v-else-if="text.includes('Mohd Rosli bin Saad')" 
+                          class="relative inline-block"
+                          @mouseenter="tooltips['mohd-rosli-siasatan'] = true" 
+                          @mouseleave="tooltips['mohd-rosli-siasatan'] = false"
+                        >
+                          {{ text }}
+                          <transition name="tooltip">
+                            <span 
+                              v-if="tooltips['mohd-rosli-siasatan']" 
+                              class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 whitespace-nowrap"
+                            >
+                              BDST
+                            </span>
+                          </transition>
+                        </div>
+                        <!-- Default for other names -->
+                        <span v-else>{{ text }}</span>
+                      </template>
+
                       <template v-slot:status="{ text }">
                         <div class="flex flex-col gap-1">
                           <template v-if="text.includes('\n')">
@@ -1016,6 +1490,9 @@ const filters = ref({
 });
 const currentPage = ref(1);
 const pageSize = ref(10);
+
+// Tooltips state
+const tooltips = ref({});
 
 // Mock data for Profiling tab - would be replaced with API call
 const applications = ref([
@@ -1683,4 +2160,14 @@ const onChangeSimulasiPeranan = () => {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.tooltip-enter-active,
+.tooltip-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.tooltip-enter-from,
+.tooltip-leave-to {
+  opacity: 0;
+}
+</style>
