@@ -29,11 +29,15 @@
           <div class="mt-6">
             <rs-table
               :data="tableData"
-              :field="['namaRuuField', 'namaNasField', 'kaedahKemaskini', 'statusKelulusan']"
+              :field="['namaRuuField', 'namaNasField', 'kaedahKemaskini', 'status', 'statusData', 'tarikhMula', 'tarikhTamat', 'statusKelulusan']"
               :columns="[
                 { key: 'namaRuuField', label: 'Nama RUU field' },
                 { key: 'namaNasField', label: 'Nama Field dalam NAS' },
                 { key: 'kaedahKemaskini', label: 'Kaedah Kemaskini' },
+                { key: 'status', label: 'Status' },
+                { key: 'statusData', label: 'Status data' },
+                { key: 'tarikhMula', label: 'Tarikh Mula' },
+                { key: 'tarikhTamat', label: 'Tarikh Tamat' },
                 { key: 'statusKelulusan', label: 'Status Kelulusan Data (RUU)' }
               ]"
               :pageSize="10"
@@ -43,6 +47,17 @@
                 hover: true,
               }"
             >
+              <template v-slot:status="data">
+                <rs-badge :variant="data.value.status === 'Aktif' ? 'success' : 'danger'">
+                  {{ data.value.status }}
+                </rs-badge>
+              </template>
+              <template v-slot:tarikhMula="data">
+                {{ formatDate(data.value.tarikhMula) }}
+              </template>
+              <template v-slot:tarikhTamat="data">
+                {{ data.value.tarikhTamat ? formatDate(data.value.tarikhTamat) : '' }}
+              </template>
               <template v-slot:statusKelulusan="data">
                 <select 
                   v-model="data.value.statusKelulusan"
@@ -178,18 +193,30 @@ const tableData = ref([
     namaRuuField: "Identification Type",
     namaNasField: "Jenis ID",
     kaedahKemaskini: "Update asnaf with approval/verify",
+    status: "Tidak Aktif",
+    statusData: "Draf",
+    tarikhMula: "2026-01-01",
+    tarikhTamat: "",
     statusKelulusan: ""
   },
   {
     namaRuuField: "Passport No",
     namaNasField: "Pengenalan ID",
     kaedahKemaskini: "Asnaf Review",
+    status: "Tidak Aktif",
+    statusData: "Draf",
+    tarikhMula: "2026-01-01",
+    tarikhTamat: "",
     statusKelulusan: ""
   },
   {
     namaRuuField: "MyKad",
     namaNasField: "Pengenalan ID",
     kaedahKemaskini: "Asnaf Review",
+    status: "Tidak Aktif",
+    statusData: "Draf",
+    tarikhMula: "2026-01-01",
+    tarikhTamat: "",
     statusKelulusan: ""
   }
 ]);
@@ -197,10 +224,47 @@ const tableData = ref([
 // Get URL parameters
 const route = useRoute();
 
+// Helper: map kod -> kategori description
+const getKategoriFromKod = (kod) => {
+  const map = {
+    "1": "Peribadi",
+    "2": "Alamat",
+    "3": "Pendidikan",
+    "4": "Pengislaman",
+    "5": "Perbankan",
+    "6": "Kesihatan",
+    "7": "Kemahiran",
+    "8": "Kediaman/Tempat Tinggal",
+    "9": "Pinjaman Harta",
+    "10": "Pemilikan Aset",
+    "11": "Pekerjaan",
+    "12": "Pendapatan dan Perbelanjaan Seisi Rumah",
+    "13": "Peribadi Tanggungan",
+    "14": "Pengislaman Tanggungan",
+    "15": "Perbankan Tanggungan",
+    "16": "Pendidikan Tanggungan",
+    "17": "Kesihatan Tanggungan",
+    "18": "Kemahiran Tanggungan",
+    "19": "Pekerjaan Tanggungan",
+  };
+  return map[String(kod)] || "Peribadi";
+};
+
+// Format date function
+const formatDate = (dateString) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric'
+  });
+};
+
 onMounted(() => {
-  // Set kategori from URL parameter if available
+  // Set kategori from URL parameter if available (map kod -> description)
   if (route.query.kod) {
-    formData.value.kategoriMaklumat = route.query.kod === '1' ? 'Peribadi' : decodeURIComponent(route.query.kod);
+    formData.value.kategoriMaklumat = getKategoriFromKod(route.query.kod);
   }
   
   // Set current date as default
