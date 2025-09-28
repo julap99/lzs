@@ -1201,12 +1201,15 @@ const kariahOptions = computed(() => {
   }));
 });
 
-// BA Requirement 3: Jenis Masjid options (confirmed)
+// BA Requirement 3: Jenis Masjid options (updated per BA requirements)
 const jenisMasjidOptions = [
-  { label: 'Masjid Negeri', value: 'masjid_negeri' },
-  { label: 'Masjid Diraja', value: 'masjid_diraja' },
-  { label: 'Masjid Jamek', value: 'masjid_jamek' },
-  { label: 'Masjid Kariah', value: 'masjid_kariah' },
+  { label: 'Bandar', value: 'bandar' },
+  { label: 'Negeri', value: 'negeri' },
+  { label: 'Kariah', value: 'kariah' },
+  { label: 'Diraja', value: 'diraja' },
+  { label: 'Jamek', value: 'jamek' },
+  { label: 'Institusi', value: 'institusi' },
+  { label: 'Bandar Diraja', value: 'bandar_diraja' },
 ];
 
 // BA Requirement 3: Updated computed properties for conditional field visibility
