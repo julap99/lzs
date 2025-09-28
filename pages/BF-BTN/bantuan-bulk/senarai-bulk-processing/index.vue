@@ -5,8 +5,18 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Senarai Bulk Processing</h2>
-          <rs-button variant="primary" @click="navigateTo('cipta-bantuan-bulk/tambah')">
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:list" class="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Senarai Bulk Processing</h2>
+              <p class="text-sm text-gray-500">Senarai bantuan bulk processing</p>
+            </div>
+          </div>
+          <rs-button variant="primary" @click="navigateTo('senarai-bulk-processing/tambah')">
             <Icon name="material-symbols:add" class="mr-1" /> Tambah
           </rs-button>
         </div>
@@ -52,39 +62,31 @@
                 </rs-badge>
               </template>
 
-              <template v-slot:actions="{ text, index }">
+              <template v-slot:actions="{ text}">
                 <div class="flex justify-center items-center gap-2">
                   <!-- Edit -->
-                  <div class="relative flex items-center justify-center" @mouseenter="tooltips['edit'+index] = true" @mouseleave="tooltips['edit'+index] = false">
-                    <rs-button 
-                      variant="info-text" 
-                      class="p-1 w-8 h-8"
-                      @click="editBantuan(text)"
-                    >
-                      <Icon name="ic:outline-edit" size="18" />
-                    </rs-button>
-                    <transition name="tooltip">
-                      <span v-if="tooltips['edit'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
-                        Edit
-                      </span>
-                    </transition>
-                  </div>
+                  
+              <rs-button
+                variant="primary"
+                size="sm"
+                @click="viewBantuan(text)"
+                title="Kemaskini"
+              >
+                <Icon name="ic:baseline-edit" class="w-4 h-4" />
+              </rs-button>
+
 
                   <!-- Delete -->
-                  <div class="relative flex items-center justify-center" @mouseenter="tooltips['delete'+index] = true" @mouseleave="tooltips['delete'+index] = false">
-                    <rs-button 
-                      variant="danger-text" 
-                      class="p-1 w-8 h-8"
-                      @click="confirmDelete(text)"
-                    >
-                      <Icon name="ic:outline-delete" size="18" />
-                    </rs-button>
-                    <transition name="tooltip">
-                      <span v-if="tooltips['delete'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
-                        Hapus
-                      </span>
-                    </transition>
-                  </div>
+                  <rs-button
+                variant="danger"
+                size="sm"
+                @click="confirmDelete(text)"
+                :disabled="!canDeleteUser(text)"
+                title="Hapus"
+              >
+                <Icon name="ic:baseline-delete" class="w-4 h-4" />
+              </rs-button>
+
                 </div>
               </template>
             </rs-table>
@@ -127,22 +129,16 @@
                 </rs-badge>
               </template>
 
-              <template v-slot:actions="{ text, index }">
+              <template v-slot:actions="{ text}">
                 <div class="flex justify-center items-center gap-2">
-                  <div class="relative flex items-center justify-center" @mouseenter="tooltips['view'+index] = true" @mouseleave="tooltips['view'+index] = false">
-                    <rs-button 
-                      variant="info-text" 
-                      class="p-1 w-8 h-8"
-                      @click="viewBantuan(text)"
-                    >
-                      <Icon name="ic:outline-visibility" size="18" />
-                    </rs-button>
-                    <transition name="tooltip">
-                      <span v-if="tooltips['view'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
-                        Lihat
-                      </span>
-                    </transition>
-                  </div>
+                  <rs-button
+                    variant="info"
+                    size="sm"
+                    @click="viewBantuan(text)"
+                    title="Lihat"
+                  >
+                    <Icon name="ic:outline-visibility" class="w-4 h-4" />
+                  </rs-button>
                 </div>
               </template>
             </rs-table>
@@ -185,22 +181,16 @@
                 </rs-badge>
               </template>
 
-              <template v-slot:actions="{ text, index }">
+              <template v-slot:actions="{ text}">
                 <div class="flex justify-center items-center gap-2">
-                  <div class="relative flex items-center justify-center" @mouseenter="tooltips['view'+index] = true" @mouseleave="tooltips['view'+index] = false">
-                    <rs-button 
-                      variant="info-text" 
-                      class="p-1 w-8 h-8"
-                      @click="viewBantuan(text)"
-                    >
-                      <Icon name="ic:outline-visibility" size="18" />
-                    </rs-button>
-                    <transition name="tooltip">
-                      <span v-if="tooltips['view'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
-                        Lihat
-                      </span>
-                    </transition>
-                  </div>
+                  <rs-button
+                    variant="info"
+                    size="sm"
+                    @click="viewBantuan(text)"
+                    title="Lihat"
+                  >
+                    <Icon name="ic:outline-visibility" class="w-4 h-4" />
+                  </rs-button>
                 </div>
               </template>
             </rs-table>
@@ -243,22 +233,16 @@
                 </rs-badge>
               </template>
 
-              <template v-slot:actions="{ text, index }">
+              <template v-slot:actions="{ text}">
                 <div class="flex justify-center items-center gap-2">
-                  <div class="relative flex items-center justify-center" @mouseenter="tooltips['view'+index] = true" @mouseleave="tooltips['view'+index] = false">
-                    <rs-button 
-                      variant="info-text" 
-                      class="p-1 w-8 h-8"
-                      @click="viewBantuan(text)"
-                    >
-                      <Icon name="ic:outline-visibility" size="18" />
-                    </rs-button>
-                    <transition name="tooltip">
-                      <span v-if="tooltips['view'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
-                        Lihat
-                      </span>
-                    </transition>
-                  </div>
+                  <rs-button
+                    variant="info"
+                    size="sm"
+                    @click="viewBantuan(text)"
+                    title="Lihat"
+                  >
+                    <Icon name="ic:outline-visibility" class="w-4 h-4" />
+                  </rs-button>
                 </div>
               </template>
             </rs-table>
@@ -431,7 +415,7 @@ const bantuanList = ref([
   },
   {
     id: 'BP-2025-01589',
-    tajuk: 'TUNTUTAN KFAM APRIL 2025 - GURU',
+    tajuk: 'TUNTUTAN KFAM APRIL 2025 - GURU',
     aid: '(HQ) ELAUN GURU PEMBIMBING ASNAF (MUALLAF)',
     aidProduct: '(HQ) ELAUN GURU PEMBIMBING ASNAF (MUALLAF)',
     jumlahAmaun: 'RM54,710.00',
@@ -522,16 +506,21 @@ const getStatusVariant = (status) => {
 };
 
 const editBantuan = (id) => {
-  navigateTo(`cipta-bantuan-bulk/${id}/edit`);
+  navigateTo(`senarai-bulk-processing/${id}/edit`);
 };
 
 const viewBantuan = (id) => {
-  navigateTo(`cipta-bantuan-bulk/${id}`);
+  navigateTo(`senarai-bulk-processing/${id}`);
 };
 
 const confirmDelete = (id) => {
   selectedBantuanId.value = id;
   showDeleteModal.value = true;
+};
+
+const canDeleteUser = (id) => {
+  // Add logic to determine if user can delete this item
+  return true;
 };
 
 const handleDelete = async () => {
