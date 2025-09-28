@@ -5471,13 +5471,35 @@
 <script setup>
 import { ref, computed, watch, onMounted } from "vue";
 import { useToast } from "vue-toastification";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 // ============================================================================
 // ROUTER & TOAST SETUP
 // ============================================================================
 const router = useRouter();
 const toast = useToast();
+const route = useRoute();
+
+// Check if this is being loaded in an iframe
+const isIframe = computed(() => route.query.iframe === 'true');
+
+// Apply iframe mode class to body
+onMounted(() => {
+  if (isIframe.value) {
+    document.body.classList.add('iframe-mode');
+  } else {
+    document.body.classList.remove('iframe-mode');
+  }
+});
+
+// Watch for route changes
+watch(isIframe, (newValue) => {
+  if (newValue) {
+    document.body.classList.add('iframe-mode');
+  } else {
+    document.body.classList.remove('iframe-mode');
+  }
+});
 
 definePageMeta({
   title: "Borang Permohonan Lengkap",
@@ -8899,3 +8921,23 @@ const downloadDocument = (doc) => {
 </script>
 
 <style scoped></style>
+
+<style>
+/* Hide sidemenu when loaded in iframe */
+body.iframe-mode .sidebar,
+body.iframe-mode .sidemenu,
+body.iframe-mode [class*="sidebar"],
+body.iframe-mode [class*="sidemenu"],
+body.iframe-mode nav[class*="sidebar"],
+body.iframe-mode aside[class*="sidebar"] {
+  display: none !important;
+}
+
+/* Adjust main content when sidemenu is hidden */
+body.iframe-mode .main-content,
+body.iframe-mode main,
+body.iframe-mode [class*="main-content"] {
+  margin-left: 0 !important;
+  width: 100% !important;
+}
+</style>

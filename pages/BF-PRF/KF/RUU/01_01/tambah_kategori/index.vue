@@ -17,7 +17,6 @@
           <FormKit
             type="form"
             :actions="false"
-            @submit="handleSubmit"
             v-model="formData"
           >
             <!-- Form Fields -->
@@ -27,86 +26,95 @@
                 <!-- Kod -->
                 <div class="flex items-center gap-3">
                   <label class="text-sm font-medium w-40">Kod :</label>
-                  <input 
-                    v-model="formData.kod" 
-                    type="text" 
+                  <FormKit
+                    type="text"
+                    name="kod"
+                    v-model="formData.kod"
                     placeholder="Contoh: 1"
-                    class="border border-gray-300 rounded px-3 py-2 text-sm flex-1 max-w-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                    required
+                    validation="required|matches:/^[a-zA-Z0-9]+$/"
+                    :validation-messages="{
+                      matches: 'Hanya huruf dan nombor dibenarkan untuk Kod'
+                    }"
+                    :classes="{
+                      input: 'border border-gray-300 rounded px-3 py-2 text-sm flex-1 max-w-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+                    }"
                   />
                 </div>
 
                 <!-- Kategori Maklumat -->
                 <div class="flex items-center gap-3">
                   <label class="text-sm font-medium w-40">Kategori Maklumat :</label>
-                  <input 
-                    v-model="formData.namaKategori" 
-                    type="text" 
+                  <FormKit
+                    type="text"
+                    name="namaKategori"
+                    v-model="formData.namaKategori"
                     placeholder="Contoh: Peribadi"
-                    class="border border-gray-300 rounded px-3 py-2 text-sm flex-1 max-w-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                    required
+                    validation="required"
+                    :classes="{
+                      input: 'border border-gray-300 rounded px-3 py-2 text-sm flex-1 max-w-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+                    }"
                   />
                 </div>
 
                 <!-- Status (radio buttons) Aktif / Tidak Aktif -->
                 <div class="flex items-center gap-3">
                   <label class="text-sm font-medium w-40">Status :</label>
-                  <div class="flex items-center gap-6">
-                    <label class="flex items-center gap-2 text-sm cursor-pointer">
-                      <input 
-                        type="radio" 
-                        name="status"
-                        value="Aktif"
-                        v-model="formData.status"
-                        class="text-blue-600 focus:ring-blue-500"
-                        required
-                      />
-                      Aktif
-                    </label>
-                    <label class="flex items-center gap-2 text-sm cursor-pointer">
-                      <input 
-                        type="radio" 
-                        name="status"
-                        value="Tidak Aktif"
-                        v-model="formData.status"
-                        class="text-blue-600 focus:ring-blue-500"
-                        required
-                      />
-                      Tidak Aktif
-                    </label>
-                  </div>
+                  <FormKit
+                    type="radio"
+                    name="status"
+                    v-model="formData.status"
+                    :options="[
+                      { label: 'Aktif', value: 'Aktif' },
+                      { label: 'Tidak Aktif', value: 'Tidak Aktif' }
+                    ]"
+                    validation="required"
+                    :classes="{
+                      wrapper: 'flex items-center gap-6',
+                      fieldset: 'flex items-center gap-6',
+                      option: 'flex items-center gap-2 text-sm cursor-pointer'
+                    }"
+                  />
                 </div>
 
                 <!-- Status Data -->
                 <div class="flex items-center gap-3">
                   <label class="text-sm font-medium w-40">Status data :</label>
-                  <input 
-                    v-model="formData.statusData" 
-                    type="text" 
+                  <FormKit
+                    type="text"
+                    name="statusData"
+                    v-model="formData.statusData"
                     placeholder="Contoh: Draf"
-                    class="border border-gray-300 rounded px-3 py-2 text-sm flex-1 max-w-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                    required
+                    validation="required"
+                    :classes="{
+                      input: 'border border-gray-300 rounded px-3 py-2 text-sm flex-1 max-w-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+                    }"
                   />
                 </div>
 
                 <!-- Tarikh Mula -->
                 <div class="flex items-center gap-3">
                   <label class="text-sm font-medium w-40">Tarikh Mula :</label>
-                  <input 
-                    v-model="formData.tarikhMula" 
-                    type="date" 
-                    class="border border-gray-300 rounded px-3 py-2 text-sm flex-1 max-w-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                    required
+                  <FormKit
+                    type="date"
+                    name="tarikhMula"
+                    v-model="formData.tarikhMula"
+                    validation="required"
+                    :classes="{
+                      input: 'border border-gray-300 rounded px-3 py-2 text-sm flex-1 max-w-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+                    }"
                   />
                 </div>
 
                 <!-- Tarikh Tamat -->
                 <div class="flex items-center gap-3">
                   <label class="text-sm font-medium w-40">Tarikh Tamat :</label>
-                  <input 
-                    v-model="formData.tarikhTamat" 
-                    type="date" 
-                    class="border border-gray-300 rounded px-3 py-2 text-sm flex-1 max-w-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  <FormKit
+                    type="date"
+                    name="tarikhTamat"
+                    v-model="formData.tarikhTamat"
+                    :classes="{
+                      input: 'border border-gray-300 rounded px-3 py-2 text-sm flex-1 max-w-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+                    }"
                   />
                 </div>
 
@@ -161,7 +169,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, watch } from "vue";
 
 definePageMeta({
   title: "Kategori Maklumat",
@@ -206,7 +214,7 @@ const validateForm = () => {
     alert('Hanya huruf dan nombor dibenarkan untuk Kod');
     return false;
   }
-  if (!formData.namaKategori) {
+  if (!formData.namaKategori || formData.namaKategori.trim() === '') {
     alert('Kategori Maklumat diperlukan');
     return false;
   }
@@ -250,7 +258,9 @@ const handleTambahKategori = async () => {
     existing.push(record);
     localStorage.setItem('kategoriMaklumat', JSON.stringify(existing));
     alert('Kategori Maklumat berjaya disimpan!');
-    await navigateTo('/BF-PRF/KF/RUU/01_01');
+    
+    // Keep the form data visible so user can see what was saved
+    // The form will show the saved data instead of clearing it
   } catch (e) {
     console.error('Error saving category:', e);
   } finally {
@@ -260,23 +270,43 @@ const handleTambahKategori = async () => {
 
 // Handle Tambah Maklumat Kelulusan
 const handleTambahMaklumatKelulusan = async () => {
+  console.log('=== HANDLE TAMBAH MAKLUMAT KELULUSAN CALLED ===');
+  console.log('Current formData:', JSON.stringify(formData, null, 2));
+  console.log('formData.kod value:', formData.kod);
+  console.log('formData.kod type:', typeof formData.kod);
+  console.log('formData.kod length:', formData.kod ? formData.kod.length : 'undefined');
+  
   isSubmitting.value = true;
   try {
     const kategoriKod = String(formData.kod || '').trim();
+    console.log('Raw formData.kod:', formData.kod);
+    console.log('After String() conversion:', String(formData.kod || ''));
+    console.log('After trim():', kategoriKod);
+    console.log('Final kategoriKod:', kategoriKod);
+    console.log('kategoriKod type:', typeof kategoriKod);
+    console.log('kategoriKod length:', kategoriKod.length);
+    
     if (!kategoriKod) {
       alert('Sila isi Kod kategori dahulu.');
       return;
     }
-    // Pass selected kategori kod (and name) via query params
-    await navigateTo({
+    
+    const navigationUrl = {
       path: '/BF-PRF/KF/RUU/01_01/tambah_maklumat_kelulusan',
       query: { kod: kategoriKod }
-    });
+    };
+    console.log('Navigation URL object:', navigationUrl);
+    console.log('Query string will be:', `?kod=${kategoriKod}`);
+    
+    // Pass selected kategori kod (and name) via query params
+    await navigateTo(navigationUrl);
+    console.log('Navigation completed successfully');
   } catch (e) {
     console.error('Error navigating:', e);
   } finally {
     isSubmitting.value = false;
   }
+  console.log('===============================================');
 };
 
 // Handle Simpan
@@ -321,17 +351,42 @@ const loadExistingCategories = () => {
   return [];
 };
 
+// Watch for changes in formData.kod
+watch(() => formData.kod, (newValue, oldValue) => {
+  console.log('FormData.kod changed from:', oldValue, 'to:', newValue);
+  console.log('Type of new value:', typeof newValue);
+}, { immediate: true });
+
+// Function to clear saved form data
+const clearSavedFormData = () => {
+  localStorage.removeItem('kategoriMaklumatForm');
+  console.log('Cleared saved form data from localStorage');
+};
+
 onMounted(() => {
-  // Load saved data from localStorage if available
+  console.log('=== TAMBAH KATEGORI PAGE MOUNTED ===');
+  console.log('Initial formData:', formData);
+  console.log('Initial formData.kod:', formData.kod);
+  
+  // Check if there's saved data in localStorage
   const savedData = localStorage.getItem('kategoriMaklumatForm');
+  console.log('Saved form data exists:', !!savedData);
+  
   if (savedData) {
     try {
       const parsedData = JSON.parse(savedData);
+      console.log('Loading saved form data:', parsedData);
+      console.log('Saved data kod:', parsedData.kod);
       Object.assign(formData, parsedData);
+      console.log('FormData after loading saved data:', formData);
+      console.log('FormData.kod after loading:', formData.kod);
     } catch (e) {
       console.error('Error loading saved form data:', e);
     }
+  } else {
+    console.log('No saved form data found');
   }
+  console.log('=====================================');
 });
 </script>
 
