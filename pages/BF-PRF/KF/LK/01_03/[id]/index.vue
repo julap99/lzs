@@ -107,7 +107,10 @@
           <!-- Footer -->
           <div class="flex justify-between pt-4">
             <rs-button btnType="button" variant="secondary" @click="goBack">Kembali</rs-button>
+            <div class="flex gap-2">
             <rs-button btnType="submit" variant="primary">Simpan</rs-button>
+            <rs-button btnType="button" variant="primary" @click="onHantar">Hantar</rs-button>
+            </div>
           </div>
         </form>
       </template>
