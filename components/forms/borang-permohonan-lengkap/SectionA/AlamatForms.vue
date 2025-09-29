@@ -51,6 +51,20 @@
 
         <FormKit
           type="select"
+          name="poskod"
+          label="Poskod"
+          placeholder="Pilih poskod"
+          :options="poskodOptions"
+          validation="required"
+          v-model="formData.addressInfo.poskod"
+          :disabled="readOnly"
+          :validation-messages="{
+            required: 'Poskod adalah wajib',
+          }"
+        />
+
+        <FormKit
+          type="select"
           name="negeri"
           label="Negeri"
           value="Selangor"
@@ -90,20 +104,6 @@
             }"
           />
         </div>
-
-        <FormKit
-          type="select"
-          name="poskod"
-          label="Poskod"
-          placeholder="Pilih poskod"
-          :options="poskodOptions"
-          validation="required"
-          v-model="formData.addressInfo.poskod"
-          :disabled="readOnly"
-          :validation-messages="{
-            required: 'Poskod adalah wajib',
-          }"
-        />
 
         <FormKit
           type="select"
