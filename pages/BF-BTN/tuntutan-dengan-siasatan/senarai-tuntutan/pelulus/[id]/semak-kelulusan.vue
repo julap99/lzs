@@ -30,10 +30,13 @@
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormKit type="text" label="Nama Pemohon" :modelValue="pemohonView.nama" :disabled="true" />
-            <FormKit type="text" label="No. Kad Pengenalan / No. Institusi" :modelValue="pemohonView.noId" :disabled="true" />
+            <FormKit type="text" label="No. Kad Pengenalan" :modelValue="pemohonView.noId" :disabled="true" />
             <FormKit type="text" label="Emel" :modelValue="pemohonView.email" :disabled="true" />
             <FormKit type="text" label="No. Telefon" :modelValue="pemohonView.telefon" :disabled="true" />
-            <FormKit type="text" label="Alamat" :modelValue="pemohonView.alamat" :disabled="true" />
+            <FormKit type="text" label="No. Kad Pengenalan / No. Institusi" :modelValue="pemohonView.noId" :disabled="true" />
+            <FormKit type="text" label="Status Household" :modelValue="pemohonView.statusHousehold" :disabled="true" />
+            <FormKit type="text" label="Status Individu" :modelValue="pemohonView.statusIndividu" :disabled="true" />
+            <FormKit type="text" label="Status Multidimensi" :modelValue="pemohonView.statusMultidimensi" :disabled="true" />
           </div>
         </template>
       </rs-card>
@@ -47,10 +50,11 @@
         </template>
         <template #body>
           <div class="bg-gray-50 p-4 rounded-lg mb-6">
-            <h4 class="text-md font-medium mb-4">Butiran Asas Jenis Bantuan</h4>
+            <!-- Removed the heading -->
+            <!-- <h4 class="text-md font-medium mb-4">Butiran Asas Jenis Bantuan</h4> -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormKit type="text" label="Aid (Kod Bantuan)" :modelValue="row.bantuanData?.kodBantuan || '-'" :disabled="true" />
-              <FormKit type="text" label="Aid Product" :modelValue="row.bantuanData?.jenisBantuan || '-'" :disabled="true" />
+              <FormKit type="text" label="No. Bantuan" :modelValue="row.bantuanData?.kodBantuan || '-'" :disabled="true" />
+              <FormKit type="text" label="Aid" :modelValue="row.bantuanData?.jenisBantuan || '-'" :disabled="true" />
               <FormKit type="text" label="Product Package" :modelValue="row.bantuanData?.pakejBantuan || '-'" :disabled="true" />
               <FormKit type="text" label="Entitlement Product" :modelValue="row.bantuanData?.kelayakanBantuan || '-'" :disabled="true" />
             </div>
@@ -79,6 +83,7 @@
       </rs-card>
 
       <!-- Section 3: Maklumat Dokumen Sokongan (3.4) -->
+      <!-- Ensure the document links display the same way -->
       <rs-card>
         <template #header>
           <div class="flex items-center">
@@ -102,7 +107,7 @@
       </rs-card>
 
       <!-- Section 4: Keputusan Siasatan (3.5, Read-Only) -->
-      <rs-card>
+      <rs-card v-if="row?.siasatan">
         <template #header>
           <div class="flex items-center">
             Keputusan Siasatan
@@ -113,6 +118,7 @@
             <FormKit type="text" label="Kaedah Siasatan" :modelValue="siasatan.kaedah || '-'" :disabled="true" />
             <FormKit type="text" label="Status Sokongan" :modelValue="siasatan.status || '-'" :disabled="true" />
             <FormKit type="text" label="Catatan" :modelValue="siasatan.catatan || '-'" :disabled="true" />
+            <FormKit type="text" label="Nama Pegawai" :modelValue="siasatan.namaPegawai" :disabled="true" />
             <FormKit type="text" label="Tarikh" :modelValue="siasatan.tarikh ? formatDate(siasatan.tarikh) : '-'" :disabled="true" />
           </div>
         </template>
@@ -195,17 +201,21 @@ type Dok = { name: string; url: string }
 
 type Pemohon = {
   nama: string
-  noId: string        // IC / Vendor
+  noId: string
   telefon: string
   email: string
   alamat: string
+  statusHousehold?: string
+  statusIndividu?: string
+  statusMultidimensi?: string
 }
 
 type SiasatanInfoStrict = {
   kaedah: 'Semak Dokumen Sahaja' | 'Telefon' | 'Lapangan'
   status: 'Sokong' | 'Tidak Sokong'
   catatan?: string
-  tarikh?: string // ISO string
+  tarikh?: string
+  namaPegawai?: string
 }
 // View-friendly version with all fields optional for safely handling missing data
 type SiasatanInfoView = Partial<SiasatanInfoStrict>
@@ -213,6 +223,7 @@ type SiasatanInfoView = Partial<SiasatanInfoStrict>
 type TuntutanItem = {
   id: string            // route id
   idPermohonan: string
+  noBantuan?: string
   noGL: string
   noInvois?: string
   amaunTuntutan: number
@@ -313,17 +324,33 @@ const paramId = computed<string>(() => {
   return String(p.id ?? p.rujukan ?? p.ref ?? p.slug ?? '')
 })
 
-const row = computed<TuntutanItem | null>(() => getById(paramId.value))
+const row = computed<TuntutanItem | null>(() => {
+  const rowData = getById(paramId.value)
+  if (rowData) {
+    rowData.noBantuan = rowData.noBantuan || '-'  // Ensure noBantuan exists
+  }
+  return rowData
+})
 
 const pemohonView = computed(() => {
   const p = row.value?.pemohon
-  return { nama: p?.nama ?? '-', noId: p?.noId ?? '-', telefon: p?.telefon ?? '-', email: p?.email ?? '-', alamat: p?.alamat ?? '-' }
+  return {
+    nama: p?.nama ?? '-',
+    noId: p?.noId ?? '-',
+    telefon: p?.telefon ?? '-',
+    email: p?.email ?? '-',
+    alamat: p?.alamat ?? '-',
+    statusHousehold: p?.statusHousehold ?? '-', // Add fallback
+    statusIndividu: p?.statusIndividu ?? '-',   // Add fallback
+    statusMultidimensi: p?.statusMultidimensi ?? '-', // Add fallback
+  }
 })
 
 const breadcrumb = ref([
-  { name: 'Tuntutan dengan Siasatan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus' },
-  { name: 'Senarai Tuntutan Pelulus', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus' },
-  { name: 'Semakan & Kelulusan', type: 'current', path: `/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus/${paramId.value}/semak-kelulusan` },
+  { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus' },
+  { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus' },
+  { name: 'Senarai Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus' },
+  { name: 'Kelulusan Tuntutan', type: 'current', path: `/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus/${paramId.value}/semak-kelulusan` },
 ])
 
 const currentUser = computed(() => ({ name: row.value?.pegawaiETD || '-', role: 'Pelulus' }))
