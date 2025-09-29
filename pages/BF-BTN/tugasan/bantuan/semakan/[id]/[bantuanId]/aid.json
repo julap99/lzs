@@ -1,0 +1,103 @@
+{
+  "aids": [
+    {
+      "aid": "BANTUAN PROGRAM PENERAPAN NILAI ISLAM",
+      "aid_products": [
+        {
+          "name": "JAIS / MAIS - HONORARIUM",
+          "items": [
+            {
+              "product_package": "MODERATOR (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM",
+              "entitlement_product": "MODERATOR (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM"
+            },
+            {
+              "product_package": "MODERATOR (MUKIM) - JAIS / MAIS - HONORARIUM",
+              "entitlement_product": "MODERATOR (MUKIM) - JAIS / MAIS - HONORARIUM"
+            },
+            {
+              "product_package": "MODERATOR (NEGERI) - JAIS / MAIS - HONORARIUM",
+              "entitlement_product": "MODERATOR (NEGERI) - JAIS / MAIS - HONORARIUM"
+            },
+            {
+              "product_package": "PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM",
+              "entitlement_product": "PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM"
+            },
+            {
+              "product_package": "PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (MUKIM) - JAIS / MAIS - HONORARIUM",
+              "entitlement_product": "PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (MUKIM) - JAIS / MAIS - HONORARIUM"
+            },
+            {
+              "product_package": "PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (NEGERI) - JAIS / MAIS - HONORARIUM",
+              "entitlement_product": "PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (NEGERI) - JAIS / MAIS - HONORARIUM"
+            },
+            {
+              "product_package": "PENCERAMAH (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM",
+              "entitlement_product": "PENCERAMAH (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM"
+            },
+            {
+              "product_package": "PENCERAMAH TOKOH AWAM (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM",
+              "entitlement_product": "PENCERAMAH TOKOH AWAM (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM"
+            },
+            {
+              "product_package": "PENGERUSI MAJILIS (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM",
+              "entitlement_product": "PENGERUSI MAJILIS (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM"
+            },
+            {
+              "product_package": "SUMBANGAN - HONORARIUM",
+              "entitlement_product": "SUMBANGAN - HONORARIUM"
+            }
+          ]
+        },
+        {
+          "name": "SELAIN JAIS / MAIS",
+          "items": [
+            {
+              "product_package": "(GL) KOLEJ / UNIVERSITI / BADAN PERSATUAN - SELAIN JAIS / MAIS (GL)",
+              "entitlement_product": "(GL) KOLEJ / UNIVERSITI / BADAN PERSATUAN - SELAIN JAIS / MAIS (GL)"
+            },
+            {
+              "product_package": "KOLEJ / UNIVERSITI / BADAN PERSATUAN - SELAIN JAIS / MAIS",
+              "entitlement_product": "KOLEJ / UNIVERSITI / BADAN PERSATUAN - SELAIN JAIS / MAIS"
+            },
+            {
+              "product_package": "(GL) MASJID - SELAIN JAIS / MAIS",
+              "entitlement_product": "(GL) MASJID - SELAIN JAIS / MAIS"
+            },
+            {
+              "product_package": "MASJID - SELAIN JAIS / MAIS",
+              "entitlement_product": "MASJID - SELAIN JAIS / MAIS"
+            },
+            {
+              "product_package": "(GL) SEK. MEN. KEB. / AGAMA - SELAIN JAIS / MAIS",
+              "entitlement_product": "(GL) SEK. MEN. KEB. / AGAMA - SELAIN JAIS / MAIS"
+            },
+            {
+              "product_package": "SEK. MEN. KEB. / AGAMA - SELAIN JAIS / MAIS",
+              "entitlement_product": "SEK. MEN. KEB. / AGAMA - SELAIN JAIS / MAIS"
+            },
+            {
+              "product_package": "(GL) SEK. REN. KEB / AGAMA - SELAIN JAIS / MAIS",
+              "entitlement_product": "(GL) SEK. REN. KEB / AGAMA - SELAIN JAIS / MAIS"
+            },
+            {
+              "product_package": "SEK. REN. KEB / AGAMA - SELAIN JAIS / MAIS",
+              "entitlement_product": "SEK. REN. KEB / AGAMA - SELAIN JAIS / MAIS"
+            },
+            {
+              "product_package": "SUMBANGAN - SELAIN JAIS / MAIS",
+              "entitlement_product": "SUMBANGAN - SELAIN JAIS / MAIS"
+            },
+            {
+              "product_package": "(GL) SURAU - SELAIN JAIS / MAIS",
+              "entitlement_product": "(GL) SURAU - SELAIN JAIS / MAIS"
+            },
+            {
+              "product_package": "SURAU - SELAIN JAIS / MAIS",
+              "entitlement_product": "SURAU - SELAIN JAIS / MAIS"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

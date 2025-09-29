@@ -356,15 +356,23 @@
 
           <div class="flex justify-between gap-3 mt-6">
             <rs-button
-            disabled
               type="button"
-              variant="secondary"
-              @click="handleSaveStepA1"
-              >Simpan</rs-button
+              variant="primary-outline"
+              @click="back"
+              >Kembali</rs-button
             >
-            <rs-button type="submit" variant="primary" @click="nextStepA"
-              >Maklumat Pendidikan</rs-button
-            >
+            <div class="flex gap-3">
+              <rs-button
+                disabled
+                type="button"
+                variant="secondary"
+                @click="handleSaveStepA1"
+                >Simpan</rs-button
+              >
+              <rs-button type="submit" variant="primary" @click="nextStepA"
+                >Maklumat Pendidikan</rs-button
+              >
+            </div>
           </div>
         </FormKit>
 
@@ -7306,6 +7314,10 @@ watch(
 // ============================================================================
 // STEP NAVIGATION FUNCTIONS
 // ============================================================================
+const back = () => {
+  navigateTo("/BF-PRF/AS/KA/senarai-preview");
+};
+
 const nextStepA = () => {
   if (currentStepA.value < totalStepsA) {
     currentStepA.value++;

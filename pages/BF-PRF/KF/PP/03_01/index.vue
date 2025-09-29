@@ -18,18 +18,13 @@
       </template>
 
       <template #body>
-        <!-- Debug info - remove in production -->
-        <div class="mb-4 p-2 bg-gray-100 rounded">
-          <p>Jumlah Konfigurasi: {{ kifayahLimits.length }}</p>
-          <p>Kelulusan Menunggu: {{ pendingApprovalCount }}</p>
-        </div>
 
         <!-- Table Section: 6 columns (+ actions). Id Komponen Profiling is hidden per requirements -->
         <rs-table
           class="mt-4"
           :key="tableKey"
           :data="kifayahLimits"
-          :field="['namaPendaftaran', 'kodProses', 'idMenu', 'tarikhMula', 'statusData', 'actions']"
+          :field="['namaPendaftaran', 'kodProses', 'idMenu', 'tarikhMula', 'statusData', 'tindakan']"
           :pageSize="10"
           :showNoColumn="false"
           :showFilter="true"
@@ -68,38 +63,38 @@
               {{ data.value.statusData || 'Draf' }}
             </rs-badge>
           </template>
-
+          
           <!-- Actions (not part of 3.6.x, kept for UX) -->
-          <template v-slot:actions="data">
-            <div class="flex flex-col items-center space-y-2">
-              <rs-button
-                variant="primary"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="navigateTo(`/BF-PRF/KF/PP/03_03?id=${data.value.idKomponenProfiling}`)"
-              >
-                <Icon name="mdi:pen" size="1.5rem" />
-              </rs-button>
+          <template v-slot:tindakan="data">
+           <div class="flex items-center gap-2">
+            <rs-button
+              variant="primary"
+              size="sm"
+              class="h-8 px-3 text-white"
+              @click="navigateTo(`/BF-PRF/KF/PP/03_03?id=${data.value.idKomponenProfiling}`)"
+            >
+              Kemaskini
+            </rs-button>
 
-              <rs-button
-                variant="secondary"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="navigateTo({ path: '/BF-PRF/KF/PP/03_04', query: { id: data.value.idKomponenProfiling } })"
-              >
-                <Icon name="mdi:eye" size="1.5rem" />
-              </rs-button>
+            <rs-button
+              variant="secondary"
+              size="sm"
+              class="h-8 px-3 text-white"
+              @click="navigateTo({ path: '/BF-PRF/KF/PP/03_04', query: { id: data.value.idKomponenProfiling } })"
+            >
+              Lihat
+            </rs-button>
 
-              <!-- Delete Button -->
-              <rs-button
-                variant="danger"
-                size="sm"
-                class="!px-2 !py-1"
-                @click="deleteItem(data.value.idKomponenProfiling)"
-              >
-                <Icon name="mdi:delete" size="1.5rem" />
-              </rs-button>
-            </div>
+            <rs-button
+              variant="danger"
+              size="sm"
+              class="h-8 px-3 text-white"
+              @click="deleteItem(data.value.idKomponenProfiling)"
+            >
+              Buang
+            </rs-button>
+          </div>
+
           </template>
         </rs-table>
       </template>
@@ -122,6 +117,9 @@ const breadcrumb = ref([
 // Table data and reactivity control
 const tableKey = ref(0);
 const kifayahLimits = ref([]);
+
+// Tooltips state
+const tooltips = ref({});
 
 // Default data (empty array - no hardcoded data)
 const defaultData = [];
@@ -233,3 +231,15 @@ const deleteItem = (id) => {
   }
 };
 </script>
+
+<style scoped>
+.tooltip-enter-active,
+.tooltip-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.tooltip-enter-from,
+.tooltip-leave-to {
+  opacity: 0;
+}
+</style>

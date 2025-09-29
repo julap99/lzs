@@ -97,7 +97,18 @@
           <!-- Maklumat Pengiraan Section -->
           <div class="space-y-6 mt-8">
             <h3 class="text-lg font-medium">Maklumat Pengiraan</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <FormKit 
+                type="select" 
+                name="skopDaerah" 
+                label="Skop Lokasi"
+                :options="[
+                  { label: 'Dalam Daerah', value: 'Dalam Daerah' },
+                  { label: 'Luar Daerah', value: 'Luar Daerah' }
+                ]"
+                placeholder="Pilih skop"
+                validation="required"
+              />
               <FormKit 
                 type="text" 
                 name="kadarElaun" 
@@ -266,6 +277,7 @@ const formData = ref({
   status: 'Menunggu Semakan PT',
   kadarElaun: '50.00',
   jumlahElaun: '250.00',
+  skopDaerah: 'Dalam Daerah',
   ptRemarks: '',
   senaraiPenolong: [
     {
@@ -400,3 +412,31 @@ const goBack = () => {
 <style scoped>
 /* Add any additional styles here */
 </style>
+// Calculation: Dalam Daerah -> RM50 x 3 sesi, Luar Daerah -> RM50 x 3 sesi + RM50
+const BASE_RATE = 50;
+function perPersonAllowance() {
+  const extra = formData.value.skopDaerah === 'Luar Daerah' ? BASE_RATE : 0;
+  return (BASE_RATE * 3) + extra; // 150 or 200
+}
+
+function recalcAllowances() {
+  // update per-person elaun based on attendance and scope
+  const per = perPersonAllowance();
+  let total = 0;
+  for (const p of formData.value.senaraiPenolong || []) {
+    const hadir = String(p.statusKehadiran || '').toLowerCase() === 'hadir';
+    const elaun = hadir ? per : 0;
+    p.elaun = elaun.toFixed(2);
+    total += elaun;
+  }
+  formData.value.kadarElaun = BASE_RATE.toFixed(2);
+  formData.value.jumlahElaun = total.toFixed(2);
+  tableKey.value++;
+}
+
+// initial calc
+recalcAllowances();
+
+// recalc whenever scope or attendance changes
+watch(() => formData.value.skopDaerah, () => recalcAllowances());
+watch(() => formData.value.senaraiPenolong.map(p => p.statusKehadiran), () => recalcAllowances());

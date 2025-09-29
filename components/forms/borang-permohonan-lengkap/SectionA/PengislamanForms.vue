@@ -154,10 +154,6 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  islamicDatesValidation: {
-    type: Object,
-    default: () => ({ isValid: true, message: '' })
-  },
   showFooterButtons: {
     type: Boolean,
     default: true
@@ -167,6 +163,9 @@ const props = defineProps({
     default: false
   }
 })
+
+// Islamic dates validation - moved from parent component
+const islamicDatesValidation = { isValid: true, message: "" };
 
 // Emits
 const emit = defineEmits(['next-step', 'prev-step', 'save-step'])

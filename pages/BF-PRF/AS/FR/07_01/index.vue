@@ -1,61 +1,26 @@
 <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
+    <!-- Maklumat Pemohon - Iframe Component -->
     <rs-card class="mt-4">
-      <template #header>
-        <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Maklumat Pemohon</h2>
-          <rs-badge
-            v-if="formData.status"
-            :variant="getStatusVariant(formData.status)">
-            {{ formData.status }}
-          </rs-badge>
-        </div>
-      </template>
-
-      <template #body>
-        <rs-fieldset class="mb-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >Nama</label
-              >
-              <p class="text-gray-900">{{ formData.nama }}</p>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >Alamat</label
-              >
-              <p class="text-gray-900">{{ formData.alamat }}</p>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >Jenis Pengenalan</label
-              >
-              <p class="text-gray-900">{{ formData.jenisPengenalan }}</p>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >No Pengenalan</label
-              >
-              <p class="text-gray-900">{{ formData.noPengenalan }}</p>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >No Telefon</label
-              >
-              <p class="text-gray-900">{{ formData.noTelefon }}</p>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >E-mel</label
-              >
-              <p class="text-gray-900">{{ formData.email }}</p>
-            </div>
+        <template #header>
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold">Maklumat Pemohon</h2>
+            <!-- <rs-badge variant="warning">
+              Menunggu Siasatan
+            </rs-badge> -->
           </div>
-        </rs-fieldset>
-      </template>
-    </rs-card>
+        </template>
+        <template #body>
+          <div class="w-full">
+            <iframe
+              src="https://lzs-nine.vercel.app/BF-PRF/AS/FR/02_readonly?iframe=true"
+              class="w-full h-96 border-0 rounded-lg"
+              title="Maklumat Pemohon"
+            ></iframe>
+          </div>
+        </template>
+      </rs-card>
 
     <!-- ===== Pengesahan Status ===== -->
     <rs-card class="mt-4">

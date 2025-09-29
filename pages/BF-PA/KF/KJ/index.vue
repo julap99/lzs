@@ -84,7 +84,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span class="text-sm text-gray-900">
                       {{ formatTarikhKuatkuasa(data.text) }}
                     </span>
@@ -132,7 +132,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span class="text-sm text-gray-900">
                       {{ formatTarikhKuatkuasa(data.text) }}
                     </span>
@@ -172,7 +172,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span class="text-sm text-gray-900">
                       {{ formatTarikhKuatkuasa(data.text) }}
                     </span>
@@ -225,7 +225,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span class="text-sm text-gray-900">
                       {{ formatTarikhKuatkuasa(data.text) }}
                     </span>
@@ -265,7 +265,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span class="text-sm text-gray-900">
                       {{ formatTarikhKuatkuasa(data.text) }}
                     </span>
@@ -312,7 +312,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span class="text-sm text-gray-900">
                       {{ formatTarikhKuatkuasa(data.text) }}
                     </span>
@@ -357,7 +357,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -410,7 +410,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -456,7 +456,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -502,7 +502,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -701,107 +701,107 @@ const tableKey = ref(0);
 const positionsList = ref([
   {
     rujukan: "KJ-2024-001",
-    kategoriPenolongAmil: "Penolong Amil Fitrah",
+    kategoriPenolongAmil: "Fitrah",
     namaJawatan: "Ketua Penolong Amil",
     status: "Aktif",
-    tarikhKuatkuasa: "01-01-2024",
+    tarikhPaparan: "01-01-2024",
     tindakan: 1
   },
   {
     rujukan: "KJ-2024-002",
-    kategoriPenolongAmil: "Penolong Amil Fitrah",
+    kategoriPenolongAmil: "Fitrah",
     namaJawatan: "Penolong Amil",
     status: "Aktif",
-    tarikhKuatkuasa: "01-01-2024",
+    tarikhPaparan: "01-01-2024",
     tindakan: 2
   },
   {
     rujukan: "KJ-2024-003",
-    kategoriPenolongAmil: "Penolong Amil Padi",
+    kategoriPenolongAmil: "Padi",
     namaJawatan: "Ketua Penolong Amil",
     status: "Aktif",
-    tarikhKuatkuasa: "01-01-2024",
+    tarikhPaparan: "01-01-2024",
     tindakan: 3
   },
   {
     rujukan: "KJ-2024-004",
-    kategoriPenolongAmil: "Penolong Amil Padi",
+    kategoriPenolongAmil: "Padi",
     namaJawatan: "Penolong Amil",
     status: "Aktif",
-    tarikhKuatkuasa: "01-01-2024",
+    tarikhPaparan: "01-01-2024",
     tindakan: 4
   },
   {
     rujukan: "KJ-2024-005",
-    kategoriPenolongAmil: "Penolong Amil Kariah",
+    kategoriPenolongAmil: "Kariah",
     namaJawatan: "Ketua Penolong Amil",
     status: "Menunggu Pengesahan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
+    tarikhPaparan: "", // Empty - not yet approved
     tindakan: 5
   },
   {
     rujukan: "KJ-2024-006",
-    kategoriPenolongAmil: "Penolong Amil Komuniti",
+    kategoriPenolongAmil: "Komuniti",
     namaJawatan: "Penolong Amil",
     status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
+    tarikhPaparan: "", // Empty - not yet approved
     tindakan: 6
   },
   {
     rujukan: "KJ-2024-007",
-    kategoriPenolongAmil: "Penolong Amil Komuniti",
+    kategoriPenolongAmil: "Komuniti",
     namaJawatan: "Penolong Amil",
     status: "Tidak Aktif",
-    tarikhKuatkuasa: "01-01-2023",
+    tarikhPaparan: "01-01-2023",
     tindakan: 7
   },
   {
     rujukan: "KJ-2024-008",
-    kategoriPenolongAmil: "Penolong Amil Kariah",
+    kategoriPenolongAmil: "Kariah",
     namaJawatan: "Penolong Amil",
     status: "Tidak Aktif",
-    tarikhKuatkuasa: "01-01-2023",
+    tarikhPaparan: "01-01-2023",
     tindakan: 8
   },
   // Additional items for "Sedang Proses - Lulus" to showcase bulk approval
   {
     rujukan: "KJ-2024-009",
-    kategoriPenolongAmil: "Penolong Amil Fitrah",
+    kategoriPenolongAmil: "Fitrah",
     namaJawatan: "Penolong Amil",
     status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
+    tarikhPaparan: "", // Empty - not yet approved
     tindakan: 9
   },
   {
     rujukan: "KJ-2024-010",
-    kategoriPenolongAmil: "Penolong Amil Padi",
+    kategoriPenolongAmil: "Padi",
     namaJawatan: "Penolong Amil",
     status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
+    tarikhPaparan: "", // Empty - not yet approved
     tindakan: 10
   },
   {
     rujukan: "KJ-2024-011",
-    kategoriPenolongAmil: "Penolong Amil Kariah",
+    kategoriPenolongAmil: "Kariah",
     namaJawatan: "Penolong Amil",
     status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
+    tarikhPaparan: "", // Empty - not yet approved
     tindakan: 11
   },
   {
     rujukan: "KJ-2024-012",
-    kategoriPenolongAmil: "Penolong Amil Komuniti",
+    kategoriPenolongAmil: "Komuniti",
     namaJawatan: "Penolong Amil",
     status: "Menunggu Kelulusan",
-    tarikhKuatkuasa: "", // Empty - not yet approved
+    tarikhPaparan: "", // Empty - not yet approved
     tindakan: 12
   },
   {
     rujukan: "KJ-2024-013",
-    kategoriPenolongAmil: "Penolong Amil Fitrah",
+    kategoriPenolongAmil: "Fitrah",
     namaJawatan: "Penolong Amil",
     status: "Ditolak Ketua Jabatan",
-    tarikhKuatkuasa: "", // Empty - rejected
+    tarikhPaparan: "", // Empty - rejected
     tindakan: 13
   }
 ]);
@@ -825,8 +825,8 @@ const tableColumns = [
   },
 
   {
-    key: 'tarikhKuatkuasa',
-    name: 'Tarikh Kuatkuasa',
+    key: 'tarikhPaparan',
+    name: 'Tarikh Paparan',
     sortable: true,
   },
   {
@@ -1011,7 +1011,7 @@ const getStatusVariant = (status) => {
   return variants[status] || 'disabled';
 };
 
-// Helper function to format tarikhKuatkuasa display
+// Helper function to format tarikhPaparan display
 const formatTarikhKuatkuasa = (date) => {
   if (!date || date === '') {
     return 'Belum ditetapkan';
@@ -1112,7 +1112,7 @@ const performBulkApproval = async () => {
     }
     toApprove.forEach(position => {
       position.status = 'Aktif';
-      position.tarikhKuatkuasa = formattedDate;
+      position.tarikhPaparan = formattedDate;
     });
     
     toast.success(`${toApprove.length} jawatan berjaya diluluskan`);

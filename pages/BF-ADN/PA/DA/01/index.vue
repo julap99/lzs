@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
@@ -16,7 +16,7 @@
           :actions="false"
           class="space-y-8"
         >
-          <!-- Maklumat Individu Dibantu -->
+         
           <div class="space-y-6">
             
             <div class="bg-gray-50 p-6 rounded-lg">
@@ -36,7 +36,7 @@
               />
             </div>
 
-            <!-- Maklumat Pengadu (jika wakil) -->
+           
             <div v-if="formData.isWakil === 'wakil'" class="space-y-6 mt-6">
               <div class="flex items-center gap-2">
                 <h2 class="text-lg font-semibold">Maklumat Pengadu (Wakil)</h2>
@@ -89,14 +89,14 @@
             <div
               class="bg-white p-6 rounded-lg border border-gray-200 space-y-6"
             >
-              <!-- Maklumat Peribadi -->
+            
               <div class="space-y-4">
                 <h3 class="text-md font-medium text-gray-700">
                   Maklumat Peribadi
                 </h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <!-- Jenis ID & Nombor -->
+               
                   <div class="space-y-2">
                     <FormKit
                       v-model="formData.jenisID"
@@ -146,7 +146,7 @@
                 </div>
               </div>
 
-              <!-- Alamat -->
+          
               <div class="space-y-4">
                 <h3 class="text-md font-medium text-gray-700">Alamat</h3>
                 <div class="space-y-4">
@@ -221,7 +221,7 @@
                 </div>
               </div>
 
-              <!-- Butiran Aduan -->
+             
               <div class="space-y-4">
                 <h3 class="text-md font-medium text-gray-700">Butiran Aduan</h3>
                 <div class="space-y-4">
@@ -261,24 +261,8 @@
                     help="Format yang diterima: JPG, PNG, PDF"
                   />
 
-                  <!-- Aduan Untuk -->
-                  <!-- <div class="bg-gray-50 p-6 rounded-lg">
-                    <h2 class="text-lg font-semibold mb-4">Aduan Untuk</h2>
-                    <FormKit
-                      v-model="formData.isWakil"
-                      type="radio"
-                      :options="[
-                        { label: 'Diri sendiri', value: 'diri_sendiri' },
-                        { label: 'Orang lain (wakil)', value: 'wakil' },
-                      ]"
-                      :classes="{
-                        fieldset: 'border-0 !p-0',
-                        legend: '!font-semibold !text-sm mb-0',
-                        options: '!flex !flex-col gap-4 mt-3',
-                      }"
-                    />
-                  </div> -->
-                  <!-- Consent Section -->
+
+              
                   <div class="space-y-4">
                     <h3 class="text-md font-medium text-gray-700">Persetujuan</h3>
                     
@@ -614,5 +598,16 @@ const handleConfirm = () => {
 
 const handleCancel = () => {
   showConfirmModal.value = false;
-};
-</script>
+}; 
+</script> -->
+
+<template>
+  <iframe 
+  src="https://bp.corrad.ai/workflow/89222165-3a2d-44e8-98b1-5109cffbf7a4?debug=false&hideComplete=true&theme=light"
+  width="100%" 
+  height="700vh"
+  style="border: none; border-radius: 8px;">
+</iframe>
+</template>
+
+

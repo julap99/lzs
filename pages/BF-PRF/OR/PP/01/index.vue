@@ -54,6 +54,20 @@
               />
             </div>
 
+            <div v-if="shouldShowDaerah" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              <FormKit
+                type="select"
+                name="daerah"
+                label="Daerah"
+                validation="required"
+                :options="daerahOptions"
+                placeholder="Pilih daerah"
+                v-model="formData.daerah"
+                :validation-messages="{ required: 'Daerah adalah wajib' }"
+                :disabled="!formData.organizationType"
+              />
+            </div>
+
             <!-- Search Method Info -->
             <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <div class="flex items-start">
@@ -109,37 +123,38 @@
               </template>
             </rs-card>
 
-            <!-- Detailed Search Results (ID FR 3.2.1 - 3.2.5) -->
+            <!-- Enhanced Search Results Table -->
             <rs-card>
               <template #header>
                 <h4 class="text-lg font-medium">Hasil Carian</h4>
               </template>
               <template #body>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Organisasi</label>
-                    <p class="text-gray-900 bg-gray-50 p-2 rounded border">{{ searchResult.organizationName }}</p>
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Organisasi</label>
-                    <p class="text-gray-900 bg-gray-50 p-2 rounded border">{{ searchResult.organizationType }}</p>
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Status Pendaftaran</label>
-                    <p class="text-gray-900 bg-gray-50 p-2 rounded border">{{ searchResult.registrationStatus }}</p>
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Lokasi</label>
-                    <p class="text-gray-900 bg-gray-50 p-2 rounded border">{{ searchResult.location }}</p>
-                  </div>
-                </div>
-              </template>
-              <template #footer>
-                <div class="flex justify-end">
-                  <rs-button variant="primary" @click="navigateNext">
-                    Kemaskini Profil
-                  </rs-button>
-                </div>
+                <rs-table
+                  :data="searchResults"
+                  :columns="searchResultColumns"
+                  :showNoColumn="true"
+                  :pageSize="10"
+                  :options="{ variant: 'default', hover: true, striped: true }"
+                  :options-advanced="{ sortable: true, filterable: false }"
+                  advanced
+                >
+                  <template v-slot:status="{ text }">
+                    <rs-badge :variant="getStatusVariant(text)">
+                      {{ text }}
+                    </rs-badge>
+                  </template>
+                  <template v-slot:tindakan="{ text }">
+                    <div class="flex space-x-3">
+                      <button
+                        @click="navigateToUpdate(text.id)"
+                        title="Kemaskini"
+                        class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                      >
+                        <Icon name="ic:outline-edit" size="20" class="text-warning" />
+                      </button>
+                    </div>
+                  </template>
+                </rs-table>
               </template>
             </rs-card>
           </div>
@@ -213,12 +228,39 @@ const idTypeOptions = [
   { label: "No Pendaftaran Organisasi (SSM/ROS)", value: "no_pendaftaran" },
 ];
 
+// Daerah Options (Selangor only)
+const daerahOptions = [
+  { label: "Gombak", value: "gombak" },
+  { label: "Hulu Langat", value: "hulu_langat" },
+  { label: "Hulu Selangor", value: "hulu_selangor" },
+  { label: "Klang", value: "klang" },
+  { label: "Kuala Langat", value: "kuala_langat" },
+  { label: "Kuala Selangor", value: "kuala_selangor" },
+  { label: "Petaling", value: "petaling" },
+  { label: "Sabak Bernam", value: "sabak_bernam" },
+  { label: "Sepang", value: "sepang" },
+];
+
 const formData = ref({
   organizationType: "",
   organizationName: "",
   idType: "",
   idNumber: "",
+  daerah: "",
 });
+
+// Enhanced search results with table data
+const searchResults = ref([]);
+
+// Search result table columns
+const searchResultColumns = [
+  { key: 'namaOrganisasi', label: 'Nama Organisasi', sortable: true },
+  { key: 'noPendaftaran', label: 'No. Pendaftaran Organisasi', sortable: true },
+  { key: 'jenisOrganisasi', label: 'Jenis Organisasi', sortable: true },
+  { key: 'kariah', label: 'Kariah', sortable: true },
+  { key: 'status', label: 'Status', sortable: true },
+  { key: 'tindakan', label: 'Tindakan', sortable: false },
+];
 
 // Mock search result data
 const searchResult = ref({
@@ -227,6 +269,12 @@ const searchResult = ref({
   organizationType: "",
   registrationStatus: "",
   location: "",
+});
+
+// Computed property to determine if daerah field should be shown
+const shouldShowDaerah = computed(() => {
+  const selectedType = formData.value.organizationType;
+  return selectedType === 'masjid' || selectedType === 'surau' || selectedType === 'institusi';
 });
 
 // Computed property to determine if search button should be enabled
@@ -240,8 +288,12 @@ const canSearch = computed(() => {
                      formData.value.idNumber && 
                      formData.value.idNumber.trim().length > 0;
   
-  // User must provide at least one complete search method
-  return hasOrganizationSearch || hasIDSearch;
+  // Daerah is required only for masjid, surau, and institusi
+  const needsDaerah = shouldShowDaerah.value;
+  const hasDaerah = !needsDaerah || (formData.value.daerah && formData.value.daerah.trim().length > 0);
+  
+  // User must provide at least one complete search method AND daerah (if required)
+  return (hasOrganizationSearch || hasIDSearch) && hasDaerah;
 });
 
 const getPlaceholder = () => {
@@ -260,6 +312,7 @@ const resetForm = () => {
   formData.value.organizationName = "";
   formData.value.idType = "";
   formData.value.idNumber = "";
+  formData.value.daerah = "";
   searchCompleted.value = false;
   profileExists.value = false;
 };
@@ -284,8 +337,29 @@ const performSearch = async () => {
     profileExists.value = Math.random() >= 0.5; // 50% chance of finding profile
     
     if (profileExists.value) {
-      // Mock search result data (ID FR 3.2.1 - 3.2.5)
-      // Use provided data or fallback to mock data
+      // Enhanced search results with table data
+      searchResults.value = [
+        {
+          id: 'ORG-202507-0001',
+          namaOrganisasi: formData.value.organizationName || "Masjid Al-Hidayah",
+          noPendaftaran: formData.value.idNumber || "PPM-2021-001",
+          jenisOrganisasi: formData.value.organizationType || "Masjid",
+          kariah: "Kariah Petaling Jaya",
+          status: "Aktif",
+          tindakan: { id: 'ORG-202507-0001' }
+        },
+        {
+          id: 'ORG-202506-0002',
+          namaOrganisasi: "Masjid Al-Amin",
+          noPendaftaran: "PPM-2021-002",
+          jenisOrganisasi: "Masjid",
+          kariah: "Kariah Shah Alam",
+          status: "Aktif",
+          tindakan: { id: 'ORG-202506-0002' }
+        }
+      ];
+      
+      // Legacy search result data for backward compatibility
       searchResult.value = {
         idType: formData.value.idType ? 
           (formData.value.idType === "id_organisasi" ? "ID Organisasi" : "No Pendaftaran (SSM/ROS)") : 
@@ -311,6 +385,22 @@ const navigateNext = () => {
   }
 };
 
+// Enhanced navigation for search results
+const navigateToUpdate = (id) => {
+  navigateTo(`/BF-PRF/OR/PP/kemaskini/${id}`);
+};
+
+// Status variant helper for search results
+const getStatusVariant = (status) => {
+  const variants = {
+    'Aktif': 'success',
+    'Tidak Aktif': 'danger',
+    'Menunggu Pengesahan': 'warning',
+    'Dalam Pembetulan': 'warning'
+  };
+  return variants[status] || 'default';
+};
+
 const handleSubmit = (data) => {
   console.log("Form submitted:", data);
   validateAndSearch();
@@ -324,11 +414,15 @@ watch(
   }
 );
 
-// Watch for changes in organization type to clear organization name
+// Watch for changes in organization type to clear organization name and daerah
 watch(
   () => formData.value.organizationType,
   () => {
     formData.value.organizationName = "";
+    // Clear daerah when switching to a type that doesn't need it
+    if (!shouldShowDaerah.value) {
+      formData.value.daerah = "";
+    }
   }
 );
 </script>

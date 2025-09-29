@@ -21,7 +21,7 @@
         type="text"
         name="jenis_permohonan"
         label="Jenis Permohonan"
-        value="Baru"
+        value="Kemaskini"
         validation="required"
         disabled
       />

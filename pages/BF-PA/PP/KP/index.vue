@@ -115,6 +115,14 @@
                 <table class="min-w-full text-sm divide-y">
                   <thead class="bg-gray-50 text-left">
                     <tr>
+                      <th class="w-4 p-4">
+                        <input
+                          type="checkbox"
+                          class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500"
+                          @change="selectAll('aktif', $event)"
+                          :checked="areAllSelected('aktif')"
+                        />
+                      </th>
                       <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
                       <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                       <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
@@ -128,6 +136,14 @@
                   </thead>
                   <tbody class="divide-y bg-white">
                     <tr v-for="request in getTabRequests('aktif')" :key="request.id" class="hover:bg-gray-50">
+                      <td class="w-4 p-4">
+                        <input
+                          type="checkbox"
+                          class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500"
+                          v-model="selectedRequests.aktif"
+                          :value="request.id"
+                        />
+                      </td>
                       <td class="px-4 py-3 text-gray-900">{{ request.noRujukan || request.rujukan }}</td>
                       <td class="px-4 py-3 text-gray-900">{{ request.nama || request.penolongAmil?.nama }}</td>
                       <td class="px-4 py-3 text-gray-900">{{ request.idPengenalan || request.penolongAmil?.noKP }}</td>
@@ -171,7 +187,7 @@
                       </td>
                     </tr>
                     <tr v-if="getTabRequests('aktif').length === 0" class="hover:bg-gray-50">
-                      <td class="px-4 py-6 text-center text-gray-500" colspan="9">
+                      <td class="px-4 py-6 text-center text-gray-500" colspan="10">
                         Tiada rekod Aktif ditemui.
                       </td>
                     </tr>
@@ -187,6 +203,14 @@
                 <table class="min-w-full text-sm divide-y">
                   <thead class="bg-gray-50 text-left">
                     <tr>
+                      <th class="w-4 p-4">
+                        <input
+                          type="checkbox"
+                          class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500"
+                          @change="selectAll('suspended', $event)"
+                          :checked="areAllSelected('suspended')"
+                        />
+                      </th>
                       <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
                       <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                       <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
@@ -200,6 +224,14 @@
                   </thead>
                   <tbody class="divide-y bg-white">
                     <tr v-for="request in getTabRequests('suspended')" :key="request.id" class="hover:bg-gray-50">
+                      <td class="w-4 p-4">
+                        <input
+                          type="checkbox"
+                          class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500"
+                          v-model="selectedRequests.suspended"
+                          :value="request.id"
+                        />
+                      </td>
                       <td class="px-4 py-3 text-gray-900">{{ request.noRujukan || request.rujukan }}</td>
                       <td class="px-4 py-3 text-gray-900">{{ request.nama || request.penolongAmil?.nama }}</td>
                       <td class="px-4 py-3 text-gray-900">{{ request.idPengenalan || request.penolongAmil?.noKP }}</td>
@@ -221,7 +253,7 @@
                           >
                             <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
                           </button>
-                          <!-- PIC specific actions -->
+                          <!-- PIC specific actions -->3
                           <template v-if="currentRole === 'pic'">
                             <button
                               @click="terminateService(request)"
@@ -242,7 +274,7 @@
                       </td>
                     </tr>
                     <tr v-if="getTabRequests('suspended').length === 0" class="hover:bg-gray-50">
-                      <td class="px-4 py-6 text-center text-gray-500" colspan="9">
+                      <td class="px-4 py-6 text-center text-gray-500" colspan="10">
                         Tiada rekod Dalam Pemerhatian ditemui.
                       </td>
                     </tr>
@@ -258,6 +290,14 @@
                 <table class="min-w-full text-sm divide-y">
                   <thead class="bg-gray-50 text-left">
                     <tr>
+                      <th class="w-4 p-4">
+                        <input
+                          type="checkbox"
+                          class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500"
+                          @change="selectAll('terminated', $event)"
+                          :checked="areAllSelected('terminated')"
+                        />
+                      </th>
                       <th class="px-4 py-3 font-medium text-gray-900">Rujukan</th>
                       <th class="px-4 py-3 font-medium text-gray-900">Nama</th>
                       <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
@@ -271,6 +311,14 @@
                   </thead>
                   <tbody class="divide-y bg-white">
                     <tr v-for="request in getTabRequests('terminated')" :key="request.id" class="hover:bg-gray-50">
+                      <td class="w-4 p-4">
+                        <input
+                          type="checkbox"
+                          class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500"
+                          v-model="selectedRequests.terminated"
+                          :value="request.id"
+                        />
+                      </td>
                       <td class="px-4 py-3 text-gray-900">{{ request.noRujukan || request.rujukan }}</td>
                       <td class="px-4 py-3 text-gray-900">{{ request.nama || request.penolongAmil?.nama }}</td>
                       <td class="px-4 py-3 text-gray-900">{{ request.idPengenalan || request.penolongAmil?.noKP }}</td>
@@ -296,7 +344,7 @@
                       </td>
                     </tr>
                     <tr v-if="getTabRequests('terminated').length === 0" class="hover:bg-gray-50">
-                      <td class="px-4 py-6 text-center text-gray-500" colspan="9">
+                      <td class="px-4 py-6 text-center text-gray-500" colspan="10">
                         Tiada rekod Telah Ditamatkan ditemui.
                       </td>
                     </tr>
@@ -399,7 +447,7 @@
             <FormKit
               type="textarea"
               v-model="warningLetterData.customReason"
-              placeholder="Nyatakan sebab khusus surat amaran..."
+              
               :classes="{
                 input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
                 wrapper: 'w-full'
@@ -409,14 +457,7 @@
               validation="required|length:10,500"
               validation-label="Sebab lain-lain"
             />
-            <div class="flex justify-between items-center mt-1">
-              <p class="text-xs text-gray-500">
-                Minimum 10 aksara, maksimum 500 aksara
-              </p>
-              <span class="text-xs" :class="getCounterClass(warningLetterData.customReason?.length || 0)">
-                {{ warningLetterData.customReason?.length || 0 }}/500
-              </span>
-            </div>
+            
           </div>
 
           <!-- File Upload Field -->
@@ -425,20 +466,20 @@
               Dokumen Sokongan
             </label>
             <FormKit
-              type="file"
-              v-model="warningLetterData.file"
+              type="dropzone"
+              v-model="warningLetterData.supportingDocuments"
               accept=".pdf,.doc,.docx"
+              multiple="false"
+              max-files="1"
+              max-size="5242880"
               :classes="{
-                input: 'block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-primary file:text-white hover:file:bg-primary-dark',
+                dropzone: 'small-dropzone border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors',
                 wrapper: 'w-full'
               }"
               validation="required"
               validation-label="Fail surat amaran"
-              @change="handleFileChange"
             />
-            <p class="mt-1 text-xs text-gray-500">
-              Format yang diterima: PDF, DOC, DOCX (Maksimum 5MB)
-            </p>
+            
           </div>
           
           <!-- Notes Field -->
@@ -449,7 +490,7 @@
             <FormKit
               type="textarea"
               v-model="warningLetterData.notes"
-              placeholder="Masukkan catatan atau arahan tambahan untuk surat amaran ini..."
+              
               :classes="{
                 input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
                 wrapper: 'w-full'
@@ -460,14 +501,7 @@
               validation-label="Catatan"
               @input="validateNotes"
             />
-            <div class="flex justify-between items-center mt-1">
-              <p class="text-xs text-gray-500">
-                Minimum 10 aksara, maksimum 500 aksara
-              </p>
-              <span class="text-xs" :class="getCounterClass(warningLetterData.notes.length)">
-                {{ warningLetterData.notes.length }}/500
-              </span>
-            </div>
+            
           </div>
         </div>
       </div>
@@ -562,9 +596,9 @@
           </div>
 
           <!-- NEW: Reason dropdown based on category -->
-          <div v-if="terminateData.category === 'tukar_kariah'">
+          <div v-if="terminateData.category === 'tamatkan_lantikan'">
             <label class="block text-sm font-medium text-gray-700 mb-2">
-              Sebab Tukar Kariah <span class="text-red-500">*</span>
+              Sebab Tamatkan Lantikan <span class="text-red-500">*</span>
             </label>
             <FormKit
               type="select"
@@ -575,7 +609,7 @@
                 wrapper: 'w-full'
               }"
               validation="required"
-              validation-label="Sebab tukar kariah"
+              validation-label="Sebab Tamatkan Lantikan"
             />
           </div>
 
@@ -586,7 +620,7 @@
             <FormKit
               type="select"
               v-model="terminateData.reason"
-              :options="terminationReasonDisciplineOptions"
+              :options="terminationReasonDisiplineOptions"
               :classes="{
                 input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
                 wrapper: 'w-full'
@@ -604,7 +638,6 @@
             <FormKit
               type="textarea"
               v-model="terminateData.customReason"
-              placeholder="Sila nyatakan sebab penamatan yang lain..."
               :classes="{
                 input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
                 wrapper: 'w-full'
@@ -614,14 +647,7 @@
               validation="required|length:10,500"
               validation-label="Sebab lain-lain"
             />
-            <div class="flex justify-between items-center mt-1">
-              <p class="text-xs text-gray-500">
-                Minimum 10 aksara, maksimum 500 aksara
-              </p>
-              <span class="text-xs" :class="getTerminateNotesCounterClass()">
-                {{ terminateData.customReason.length }}/500
-              </span>
-            </div>
+            
           </div>
 
           <!-- Supporting Documents Upload -->
@@ -630,20 +656,19 @@
               Dokumen Sokongan <span class="text-red-500">*</span>
             </label>
             <FormKit
-              type="file"
+              type="dropzone"
               v-model="terminateData.supportingDocuments"
               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+              multiple="true"
+              max-size="5242880"
               :classes="{
-                input: 'block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-primary file:text-white hover:file:bg-primary-dark',
+                dropzone: 'small-dropzone border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors',
                 wrapper: 'w-full'
               }"
               validation="required"
               validation-label="Dokumen sokongan"
-              @change="handleTerminateFileChange"
             />
-            <p class="mt-1 text-xs text-gray-500">
-              Format yang diterima: PDF, DOC, DOCX, JPG, JPEG, PNG (Maksimum 5MB)
-            </p>
+            
           </div>
 
           <!-- Additional Notes Field -->
@@ -654,7 +679,6 @@
             <FormKit
               type="textarea"
               v-model="terminateData.additionalNotes"
-              placeholder="Masukkan catatan tambahan jika perlu..."
               :classes="{
                 input: 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm',
                 wrapper: 'w-full'
@@ -664,14 +688,7 @@
               validation="length:0,500"
               validation-label="Catatan tambahan"
             />
-            <div class="flex justify-between items-center mt-1">
-              <p class="text-xs text-gray-500">
-                Maksimum 500 aksara
-              </p>
-              <span class="text-xs" :class="getTerminateNotesCounterClass()">
-                {{ terminateData.additionalNotes.length }}/500
-              </span>
-            </div>
+            
           </div>
 
           <!-- Confirmation Checkbox -->
@@ -690,9 +707,7 @@
               <label class="font-medium text-gray-700">
                 Saya mengesahkan bahawa saya telah mempertimbangkan semua aspek sebelum menamatkan perkhidmatan ini
               </label>
-              <p class="text-gray-500 mt-1">
-                Tindakan ini tidak boleh dibatalkan dan akan menamatkan perkhidmatan Penolong Amil secara kekal.
-              </p>
+              
             </div>
           </div>
         </div>
@@ -734,6 +749,13 @@ definePageMeta({
   ],
 });
 
+// For checkboxes
+const selectedRequests = ref({
+  aktif: [],
+  suspended: [],
+  terminated: [],
+});
+
 // Enhanced reactive data
 const breadcrumb = ref([
   { name: "BF-PA", type: "link", path: "/BF-PA" },
@@ -773,10 +795,25 @@ const showNotification = ref(false);
 const notificationTitle = ref("");
 const notificationMessage = ref("");
 
+const areAllSelected = (tab) => {
+  const tabRequests = getTabRequests(tab);
+  if (tabRequests.length === 0) return false;
+  return selectedRequests.value[tab].length === tabRequests.length;
+};
+
+const selectAll = (tab, event) => {
+  const tabRequests = getTabRequests(tab);
+  if (event.target.checked) {
+    selectedRequests.value[tab] = tabRequests.map((r) => r.id);
+  } else {
+    selectedRequests.value[tab] = [];
+  }
+};
+
 // Warning Letter Modal State
 const showWarningModal = ref(false);
 const warningLetterData = ref({
-  file: null,
+  supportingDocuments: [],
   notes: "",
   reason: "",        // NEW
   customReason: "",  // NEW
@@ -803,35 +840,42 @@ watch(() => warningLetterData.value.reason, () => {
 // Terminate Service Modal State
 const showTerminateModal = ref(false);
 const terminateData = ref({
-  category: "",           // NEW: 'tukar_kariah' | 'masalah_disiplin'
+  category: "",           // NEW: 'tamatkan_lantikan' | 'masalah_disiplin'
   reason: "",             // NEW: reason from selected category
   customReason: "",       // NEW: when reason === 'lain-lain'
-  supportingDocuments: null,
+  paCategory: "",        // NEW: PA category when tamatkan lantikan
+  supportingDocuments: [],
   additionalNotes: "",
   confirmation: false,
 });
 const currentTerminateRequest = ref(null);
-const terminateFileError = ref("");
 const isTerminateSubmitting = ref(false);
 
 // NEW: radio options kategori penamatan
 const terminationCategoryOptions = [
-  { label: "Tukar Kariah", value: "tukar_kariah" },
+  { label: "Tamatkan Lantikan", value: "tamatkan_lantikan" },
   { label: "Masalah Disiplin", value: "masalah_disiplin" },
   { label: "Meninggal Dunia", value: "meninggal_dunia" },
 ];
 
-// NEW: dropdown options sebab bagi Tukar Kariah
+// NEW: dropdown options sebab bagi Tamatkan Lantikan
 const terminationReasonMoveOptions = [
-  { label: "Berpindah alamat/kariah", value: "berpindah_alamat" },
-  { label: "Pertukaran institusi (masjid/Masjid)", value: "pertukaran_institusi" },
-  { label: "Penggabungan/penutupan institusi", value: "penggabungan_penutupan" },
-  { label: "Pertukaran kategori (PAK → KPAK dll.)", value: "pertukaran_kategori" },
+  { label: "Berpindah alamat", value: "berpindah_alamat" },
+  { label: "Pertukaran institusi", value: "pertukaran_institusi" },
+  { label: "Penutupan institusi", value: "penggabungan_penutupan" },
+  { label: "Pertukaran Jawatan", value: "pertukaran_kategori" },
   { label: "Lain-lain", value: "lain-lain" },
 ];
 
 // NEW: dropdown options sebab bagi Masalah Disiplin
-const terminationReasonDisciplineOptions = [
+const paCategoryOptions = [
+  { label: "PAK", value: "pak" },
+  { label: "PAK+", value: "pak_plus" },
+  { label: "PAP", value: "pap" },
+  { label: "PAF", value: "paf" },
+];
+
+const terminationReasonDisiplineOptions = [
   { label: "Tidak hadir mesyuarat tanpa sebab munasabah", value: "tidak_hadir_mesyuarat" },
   { label: "Gagal mematuhi arahan/peraturan", value: "gagal_mematuhi_arahan" },
   { label: "Pelanggaran berulang kod etika", value: "pelanggaran_berulang" },
@@ -845,6 +889,7 @@ const terminationReasonDisciplineOptions = [
 watch(() => terminateData.value.category, () => {
   terminateData.value.reason = "";
   terminateData.value.customReason = "";
+  terminateData.value.paCategory = "";
 });
 // kosongkan customReason bila reason bukan 'lain-lain'
 watch(() => terminateData.value.reason, () => {
@@ -991,361 +1036,63 @@ const requests = ref([
   {
     id: "KP004",
     noRujukan: "KP-2024-004",
-    nama: "Siti Aminah binti Ismail",
-    idPengenalan: "880723123456",
-    kategori: "Penolong Amil Padi",
+    nama: "Siti Aishah binti Abdullah",
+    idPengenalan: "900120101234",
+    kategori: "Penolong Amil Kariah",
     sesi: "2025-2030",
-    daerah: "Hulu Selangor",
-    institusi: "Masjid Al-Amin",
-    status: "aktif",
+    daerah: "Gombak",
+    institusi: "Masjid Al-Hidayah",
+    status: "terminated",
     jantina: "Perempuan",
     statusPerkahwinan: "Bujang",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 12, Taman Arif, 44000 Kuala Kubu Bharu, Selangor",
-    negeri: "Selangor",
-    bandar: "Kuala Kubu Bharu",
-    poskod: "44000",
-    noTelefon: "04-733 4567",
-    noTelefonBimbit: "015-678 9012",
-    emel: "siti.aminah@email.com",
-    pekerjaan: "Pegawai Pertanian",
-    namaMajikan: "Lembaga Pertubuhan Peladang",
+    alamat: "No. 1, Jalan Universiti, 50603 Kuala Lumpur",
+    negeri: "Kuala Lumpur",
+    bandar: "Kuala Lumpur",
+    poskod: "50603",
+    noTelefon: "03-7967 1234",
+    noTelefonBimbit: "016-123 4567",
+    emel: "siti.aishah@email.com",
+    pekerjaan: "Pelajar",
+    namaMajikan: "-",
     tahapPendidikan: "Ijazah Sarjana Muda",
-    institusiPendidikan: "Universiti Putra Malaysia",
-    tarikhMulaPerkhidmatan: "10-09-2023",
-    tempohPerkhidmatan: "7 bulan",
+    institusiPendidikan: "Universiti Malaya",
+    tarikhMulaPerkhidmatan: "01-09-2023",
+    tempohPerkhidmatan: "6 bulan",
     jumlahSuratAmaran: "0",
-    statusTerakhir: "Aktif"
+    statusTerakhir: "Telah Ditamatkan",
   },
   {
     id: "KP005",
     noRujukan: "KP-2024-005",
-    nama: "Zainal bin Ibrahim",
-    idPengenalan: "870415234567",
-    kategori: "Penolong Amil Kariah",
-    sesi: "2025-2030",
-    daerah: "Kuala Selangor",
-    institusi: "Masjid Al-Amin",
-    status: "terminated",
-    jantina: "Lelaki",
-    statusPerkahwinan: "Berkahwin",
-    bangsa: "Melayu",
-    agama: "Islam",
-    alamat: "No. 56, Jalan Raja Lumu, 45000 Kuala Selangor, Selangor",
-    negeri: "Selangor",
-    bandar: "Kuala Selangor",
-    poskod: "45000",
-    noTelefon: "09-744 5678",
-    noTelefonBimbit: "016-789 0123",
-    emel: "zainal.ibrahim@email.com",
-    pekerjaan: "Peniaga",
-    namaMajikan: "Perusahaan Zainal Enterprise",
-    tahapPendidikan: "Pendidikan Menengah",
-    institusiPendidikan: "Sekolah Menengah Kebangsaan Kota Bharu",
-    tarikhMulaPerkhidmatan: "05-01-2023",
-    tempohPerkhidmatan: "1 tahun 3 bulan",
-    jumlahSuratAmaran: "3",
-    statusTerakhir: "Telah Ditamatkan"
-  },
-  {
-    id: "KP006",
-    noRujukan: "KP-2024-006",
-    nama: "Nurul Huda binti Ahmad",
-    idPengenalan: "930625345678",
-    kategori: "Penolong Amil Kariah",
-    sesi: "2025-2030",
-    daerah: "Kuala Langat",
-    institusi: "Masjid Al-Amin",
-    status: "aktif",
-    jantina: "Perempuan",
-    statusPerkahwinan: "Berkahwin",
-    bangsa: "Melayu",
-    agama: "Islam",
-    alamat: "No. 89, Jalan Sultan Alam Shah, 42700 Banting, Selangor",
-    negeri: "Selangor",
-    bandar: "Banting",
-    poskod: "42700",
-    noTelefon: "09-622 6789",
-    noTelefonBimbit: "017-890 1234",
-    emel: "nurul.huda@email.com",
-    pekerjaan: "Pegawai Kesihatan",
-    namaMajikan: "Hospital Sultanah Nur Zahirah",
-    tahapPendidikan: "Ijazah Sarjana",
-    institusiPendidikan: "Universiti Sains Malaysia",
-    tarikhMulaPerkhidmatan: "15-03-2023",
-    tempohPerkhidmatan: "1 tahun 1 bulan",
-    jumlahSuratAmaran: "0",
-    statusTerakhir: "Aktif"
-  },
-  {
-    id: "KP007",
-    noRujukan: "KP-2024-007",
-    nama: "Abdul Rahman bin Hassan",
-    idPengenalan: "890715456789",
+    nama: "Ahmad bin Ibrahim",
+    idPengenalan: "880808088888",
     kategori: "Penolong Amil Fitrah",
     sesi: "2025-2030",
-    daerah: "Gombak",
-    institusi: "Masjid Al-Amin",
-    status: "suspended",
-    jantina: "Lelaki",
-    statusPerkahwinan: "Bercerai",
-    bangsa: "Melayu",
-    agama: "Islam",
-    alamat: "No. 34, Jalan Samudera, 68100 Batu Caves, Selangor",
-    negeri: "Selangor",
-    bandar: "Batu Caves",
-    poskod: "68100",
-    noTelefon: "09-516 7890",
-    noTelefonBimbit: "018-901 2345",
-    emel: "abdul.rahman@email.com",
-    pekerjaan: "Pegawai Perhutanan",
-    namaMajikan: "Jabatan Perhutanan Negeri Pahang",
-    tahapPendidikan: "Ijazah Sarjana Muda",
-    institusiPendidikan: "Universiti Teknologi Mara",
-    tarikhMulaPerkhidmatan: "01-05-2023",
-    tempohPerkhidmatan: "11 bulan",
-    jumlahSuratAmaran: "2",
-    statusTerakhir: "Dalam Pemerhatian"
-  },
-  {
-    id: "KP008",
-    noRujukan: "KP-2024-008",
-    nama: "Noraini binti Mohamed",
-    idPengenalan: "910318567890",
-    kategori: "Penolong Amil Padi",
-    sesi: "2025-2030",
-    daerah: "Sabak Bernam",
+    daerah: "Hulu Langat",
     institusi: "Masjid Al-Amin",
     status: "aktif",
-    jantina: "Perempuan",
+    jantina: "Lelaki",
     statusPerkahwinan: "Berkahwin",
     bangsa: "Melayu",
     agama: "Islam",
-    alamat: "No. 67, Jalan Perdana, 45200 Sabak Bernam, Selangor",
+    alamat: "No. 22, Jalan Cempaka, 43000 Kajang, Selangor",
     negeri: "Selangor",
-    bandar: "Sabak Bernam",
-    poskod: "45200",
-    noTelefon: "06-762 8901",
-    noTelefonBimbit: "019-012 3456",
-    emel: "noraini.mohamed@email.com",
-    pekerjaan: "Guru",
-    namaMajikan: "Sekolah Rendah Kebangsaan Seremban",
-    tahapPendidikan: "Ijazah Sarjana Muda",
-    institusiPendidikan: "Universiti Pendidikan Sultan Idris",
-    tarikhMulaPerkhidmatan: "20-07-2023",
-    tempohPerkhidmatan: "9 bulan",
-    jumlahSuratAmaran: "0",
-    statusTerakhir: "Aktif"
-  },
-  {
-    id: "KP009",
-    noRujukan: "KP-2024-009",
-    nama: "Ismail bin Yusof",
-    idPengenalan: "860420678901",
-    kategori: "Penolong Amil Kariah",
-    sesi: "2025-2030",
-    daerah: "Sepang",
-    institusi: "Masjid Al-Amin",
-    status: "terminated",
-    jantina: "Lelaki",
-    statusPerkahwinan: "Janda/Duda",
-    bangsa: "Melayu",
-    agama: "Islam",
-    alamat: "No. 23, Jalan Teknokrat, 63000 Cyberjaya, Selangor",
-    negeri: "Selangor",
-    bandar: "Cyberjaya",
-    poskod: "63000",
-    noTelefon: "06-283 9012",
-    noTelefonBimbit: "011-123 4567",
-    emel: "ismail.yusof@email.com",
-    pekerjaan: "Pegawai Pelancongan",
-    namaMajikan: "Lembaga Pelancongan Melaka",
-    tahapPendidikan: "Diploma",
-    institusiPendidikan: "Kolej Kariah Melaka",
-    tarikhMulaPerkhidmatan: "10-02-2023",
+    bandar: "Kajang",
+    poskod: "43000",
+    noTelefon: "03-8736 5678",
+    noTelefonBimbit: "017-234 5678",
+    emel: "ahmad.ibrahim@email.com",
+    pekerjaan: "Peniaga",
+    namaMajikan: "Sendiri",
+    tahapPendidikan: "SPM",
+    institusiPendidikan: "SMK Tinggi Kajang",
+    tarikhMulaPerkhidmatan: "15-02-2023",
     tempohPerkhidmatan: "1 tahun 2 bulan",
-    jumlahSuratAmaran: "3",
-    statusTerakhir: "Telah Ditamatkan"
-  },
-  {
-    id: "KP010",
-    noRujukan: "KP-2024-010",
-    nama: "Rohana binti Sulaiman",
-    idPengenalan: "940712789012",
-    kategori: "Penolong Amil Kariah",
-    sesi: "2025-2030",
-    daerah: "Petaling",
-    institusi: "Masjid Al-Amin",
-    status: "aktif",
-    jantina: "Perempuan",
-    statusPerkahwinan: "Bujang",
-    bangsa: "Melayu",
-    agama: "Islam",
-    alamat: "No. 90, Jalan SS 21/1, 47400 Petaling Jaya, Selangor",
-    negeri: "Selangor",
-    bandar: "Petaling Jaya",
-    poskod: "47400",
-    noTelefon: "07-224 0123",
-    noTelefonBimbit: "010-234 5678",
-    emel: "rohana.sulaiman@email.com",
-    pekerjaan: "Pegawai Undang-undang",
-    namaMajikan: "Jabatan Peguam Negara",
-    tahapPendidikan: "Ijazah Sarjana",
-    institusiPendidikan: "Universiti Teknologi Malaysia",
-    tarikhMulaPerkhidmatan: "05-04-2023",
-    tempohPerkhidmatan: "1 tahun",
     jumlahSuratAmaran: "0",
-    statusTerakhir: "Aktif"
+    statusTerakhir: "Aktif",
   },
-  {
-  id: "KP011",
-  noRujukan: "KP-2024-011",
-  nama: "Hafiz bin Saadon",
-  idPengenalan: "950812086543",
-  kategori: "Penolong Amil Kariah",
-  sesi: "2025-2030",
-  daerah: "Hulu Langat",
-  institusi: "Masjid Al-Amin",
-  status: "aktif",
-  jantina: "Lelaki",
-  statusPerkahwinan: "Bujang",
-  bangsa: "Melayu",
-  agama: "Islam",
-  alamat: "No. 21, Jalan Reko, 43000 Kajang, Selangor",
-  negeri: "Selangor",
-  bandar: "Kajang",
-  poskod: "43000",
-  noTelefon: "03-8920 1122",
-  noTelefonBimbit: "012-889 2211",
-  emel: "hafiz.saadon@email.com",
-  pekerjaan: "Eksekutif",
-  namaMajikan: "Syarikat Perkhidmatan Kajang",
-  tahapPendidikan: "Ijazah Sarjana Muda",
-  institusiPendidikan: "Universiti Kebangsaan Malaysia",
-  tarikhMulaPerkhidmatan: "12-11-2023",
-  tempohPerkhidmatan: "1 tahun 9 bulan",
-  jumlahSuratAmaran: "0",
-  statusTerakhir: "Aktif"
-},{
-  id: "KP012",
-  noRujukan: "KP-2024-012",
-  nama: "Aisyah binti Zulkifli",
-  idPengenalan: "940106105432",
-  kategori: "Penolong Amil Fitrah",
-  sesi: "2025-2030",
-  daerah: "Hulu Langat",
-  institusi: "Masjid Al-Amin",
-  status: "suspended",
-  jantina: "Perempuan",
-  statusPerkahwinan: "Berkahwin",
-  bangsa: "Melayu",
-  agama: "Islam",
-  alamat: "No. 8, Jalan Delima, 43000 Kajang, Selangor",
-  negeri: "Selangor",
-  bandar: "Kajang",
-  poskod: "43000",
-  noTelefon: "03-8735 7788",
-  noTelefonBimbit: "013-772 8899",
-  emel: "aisyah.zulkifli@email.com",
-  pekerjaan: "Guru",
-  namaMajikan: "SK Saujana Impian",
-  tahapPendidikan: "Ijazah Sarjana Muda",
-  institusiPendidikan: "Universiti Malaya",
-  tarikhMulaPerkhidmatan: "05-03-2024",
-  tempohPerkhidmatan: "6 bulan",
-  jumlahSuratAmaran: "1",
-  statusTerakhir: "Dalam Pemerhatian"
-},{
-  id: "KP013",
-  noRujukan: "KP-2024-013",
-  nama: "Muhammad Faiz bin Razak",
-  idPengenalan: "900221086711",
-  kategori: "Penolong Amil Kariah",
-  sesi: "2025-2030",
-  daerah: "Petaling",
-  institusi: "Masjid Al-Amin",
-  status: "aktif",
-  jantina: "Lelaki",
-  statusPerkahwinan: "Berkahwin",
-  bangsa: "Melayu",
-  agama: "Islam",
-  alamat: "No. 5, Jalan Flora, 40100 Shah Alam, Selangor",
-  negeri: "Selangor",
-  bandar: "Shah Alam",
-  poskod: "40100",
-  noTelefon: "03-5523 2210",
-  noTelefonBimbit: "017-222 7788",
-  emel: "faiz.razak@email.com",
-  pekerjaan: "Pegawai IT",
-  namaMajikan: "Syarikat Teknologi Shah Alam",
-  tahapPendidikan: "Ijazah Sarjana Muda",
-  institusiPendidikan: "UiTM Shah Alam",
-  tarikhMulaPerkhidmatan: "10-01-2024",
-  tempohPerkhidmatan: "8 bulan",
-  jumlahSuratAmaran: "0",
-  statusTerakhir: "Aktif"
-},{
-  id: "KP014",
-  noRujukan: "KP-2024-014",
-  nama: "Zulaikha binti Salleh",
-  idPengenalan: "970904106532",
-  kategori: "Penolong Amil Padi",
-  sesi: "2025-2030",
-  daerah: "Hulu Langat",
-  institusi: "Masjid Al-Hidayah",
-  status: "terminated",
-  jantina: "Perempuan",
-  statusPerkahwinan: "Bujang",
-  bangsa: "Melayu",
-  agama: "Islam",
-  alamat: "No. 33, Jalan Bukit, 43000 Kajang, Selangor",
-  negeri: "Selangor",
-  bandar: "Kajang",
-  poskod: "43000",
-  noTelefon: "03-8734 9900",
-  noTelefonBimbit: "016-444 9911",
-  emel: "zulaikha.salleh@email.com",
-  pekerjaan: "Pegawai Pertanian",
-  namaMajikan: "LPP",
-  tahapPendidikan: "Diploma",
-  institusiPendidikan: "Politeknik Sultan Salahuddin Abdul Aziz Shah",
-  tarikhMulaPerkhidmatan: "22-05-2023",
-  tempohPerkhidmatan: "1 tahun 3 bulan",
-  jumlahSuratAmaran: "2",
-  statusTerakhir: "Telah Ditamatkan"
-}
-,{
-  id: "KP015",
-  noRujukan: "KP-2024-015",
-  nama: "Ali bin Bahri",
-  idPengenalan: "820304105432",
-  kategori: "Penolong Amil Kariah",
-  sesi: "2025-2030",
-  daerah: "Hulu Langat",
-  institusi: "Masjid Al-Amin",
-  status: "aktif",
-  jantina: "Lelaki",
-  statusPerkahwinan: "Berkahwin",
-  bangsa: "Melayu",
-  agama: "Islam",
-  alamat: "No. 14, Jalan Impian, 43000 Kajang, Selangor",
-  negeri: "Selangor",
-  bandar: "Kajang",
-  poskod: "43000",
-  noTelefon: "03-8737 2200",
-  noTelefonBimbit: "012-668 5522",
-  emel: "ali.bahri@email.com",
-  pekerjaan: "Pegawai Pentadbiran",
-  namaMajikan: "Majlis Agama Islam Selangor",
-  tahapPendidikan: "Ijazah Sarjana Muda",
-  institusiPendidikan: "Universiti Kebangsaan Malaysia",
-  tarikhMulaPerkhidmatan: "18-07-2023",
-  tempohPerkhidmatan: "2 tahun 1 bulan",
-  jumlahSuratAmaran: "0",
-  statusTerakhir: "Aktif"
-}
-
 ]);
 
 /* =========================================================
@@ -1439,13 +1186,13 @@ const paginatedRequests = computed(() => {
 
 // VALIDATION — Warning Letter Modal
 const isFormValid = computed(() => {
+  const hasDoc = Array.isArray(warningLetterData.value.supportingDocuments) && warningLetterData.value.supportingDocuments.length > 0;
   const base =
     warningLetterData.value.reason &&               // NEW
-    warningLetterData.value.file &&
+    hasDoc &&
     warningLetterData.value.notes &&
     warningLetterData.value.notes.length >= 10 &&
-    warningLetterData.value.notes.length <= 500 &&
-    !fileError.value;
+    warningLetterData.value.notes.length <= 500;
 
   if (!base) return false;
 
@@ -1461,16 +1208,20 @@ const isTerminateFormValid = computed(() => {
   // require category + reason
   if (!terminateData.value.category || !terminateData.value.reason) return false;
 
+  if (terminateData.value.category === 'tamatkan_lantikan' && !terminateData.value.paCategory) return false;
+
   // custom reason length when reason === 'lain-lain'
   if (terminateData.value.reason === 'lain-lain') {
     const l = terminateData.value.customReason?.length || 0;
     if (l < 10 || l > 500) return false;
   }
 
-  // require file + confirmation
-  if (!terminateData.value.supportingDocuments || !terminateData.value.confirmation) return false;
+  const hasSupportingDocuments =
+    Array.isArray(terminateData.value.supportingDocuments) &&
+    terminateData.value.supportingDocuments.length > 0;
 
-  if (terminateFileError.value) return false;
+  // require file + confirmation
+  if (!hasSupportingDocuments || !terminateData.value.confirmation) return false;
 
   return true;
 });
@@ -1510,53 +1261,12 @@ const getStatusCount = (status) => {
 };
 
 const getTabRequests = (status) => {
-  let result = [...requests.value];
-  if (status) result = result.filter(request => request.status === status);
-
-  // === Hadkan paparan jika role = PIC (untuk setiap tab) ===
-  if (currentRole.value === 'pic') {
-    result = result.filter((r) =>
-      inList(r.institusi || r.newInstitusi, picScope.value.institusi) &&
-      inList(r.daerah || r.newDaerah, picScope.value.daerah)
-    );
-  }
-  
-  // Only apply search filter if search button was clicked
-  if (isSearchTriggered.value && filters.value.searchQuery) {
-    const query = filters.value.searchQuery.toLowerCase();
-    result = result.filter(request => 
-      (request.noRujukan || request.rujukan)?.toLowerCase().includes(query) ||
-      (request.nama || request.penolongAmil?.nama)?.toLowerCase().includes(query) ||
-      (request.idPengenalan || request.penolongAmil?.noKP)?.includes(query) ||
-      (request.kategori || request.newKategori)?.toLowerCase().includes(query) ||
-      (request.sesi || request.newSesi)?.toLowerCase().includes(query) ||
-      (request.daerah || request.newDaerah)?.toLowerCase().includes(query) ||
-      (request.institusi || request.newInstitusi)?.toLowerCase().includes(query)
-    );
-  }
-  
-  if (filters.value.status) result = result.filter(request => request.status === filters.value.status);
-  if (filters.value.kategori) {
-    result = result.filter(request => 
-      (request.kategori || request.newKategori)?.toLowerCase().includes(filters.value.kategori.toLowerCase())
-    );
-  }
-  if (filters.value.institusi) {
-    result = result.filter(request => 
-      (request.institusi || request.newInstitusi)?.toLowerCase().includes(filters.value.institusi.toLowerCase())
-    );
-  }
-  if (filters.value.sesi) {
-    result = result.filter(request => 
-      (request.sesi || request.newSesi)?.toLowerCase().includes(filters.value.sesi.toLowerCase())
-    );
-  }
-  if (filters.value.daerah) {
-    result = result.filter(request => 
-      (request.daerah || request.newDaerah)?.toLowerCase().includes(filters.value.daerah.toLowerCase())
-    );
-  }
-  return result;
+  return filteredRequests.value.filter((r) => {
+    if (status === "aktif") return r.status === "aktif";
+    if (status === "suspended") return r.status === "suspended";
+    if (status === "terminated") return r.status === "terminated";
+    return false;
+  });
 };
 
 const viewRequest = (request) => {
@@ -1591,11 +1301,11 @@ const terminateService = (request) => {
     category: "",
     reason: "",
     customReason: "",
-    supportingDocuments: null,
+    paCategory: "",
+    supportingDocuments: [],
     additionalNotes: "",
     confirmation: false,
   };
-  terminateFileError.value = "";
   showTerminateModal.value = true;
 };
 
@@ -1676,7 +1386,7 @@ const sendWarningLetter = (request) => {
   };
   
   warningLetterData.value = {
-    file: null,
+    supportingDocuments: [],
     notes: "",
     reason: "",
     customReason: "",
@@ -1704,7 +1414,7 @@ const submitWarningLetter = async () => {
 };
 
 const closeWarningModal = () => {
-  if ((warningLetterData.value.file || warningLetterData.value.notes || warningLetterData.value.reason || warningLetterData.value.customReason) && !isSubmitting.value) {
+  if (((Array.isArray(warningLetterData.value.supportingDocuments) && warningLetterData.value.supportingDocuments.length > 0) || warningLetterData.value.notes || warningLetterData.value.reason || warningLetterData.value.customReason) && !isSubmitting.value) {
     if (confirm('Anda pasti mahu menutup modal ini? Data yang telah dimasukkan akan hilang.')) {
       resetWarningModal();
     }
@@ -1716,7 +1426,7 @@ const closeWarningModal = () => {
 const resetWarningModal = () => {
   showWarningModal.value = false;
   warningLetterData.value = {
-    file: null,
+    supportingDocuments: [],
     notes: "",
     reason: "",
     customReason: "",
@@ -1740,28 +1450,6 @@ const hideNotification = () => {
 };
 
 // Termination methods
-const handleTerminateFileChange = (event) => {
-  const file = event.target.files[0];
-  terminateFileError.value = "";
-  if (file) {
-    const maxSize = 5 * 1024 * 1024;
-    if (file.size > maxSize) {
-      terminateFileError.value = "Saiz fail terlalu besar. Maksimum 5MB dibenarkan.";
-      terminateData.value.supportingDocuments = null;
-      event.target.value = "";
-      return;
-    }
-    const allowedTypes = ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'];
-    const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
-    if (!allowedTypes.includes(fileExtension)) {
-      terminateFileError.value = "Format fail tidak dibenarkan. Hanya PDF, DOC, DOCX, JPG, JPEG, PNG dibenarkan.";
-      terminateData.value.supportingDocuments = null;
-      event.target.value = "";
-      return;
-    }
-    terminateData.value.supportingDocuments = file;
-  }
-};
 
 const submitTermination = async () => {
   if (isTerminateFormValid.value) {
@@ -1770,7 +1458,7 @@ const submitTermination = async () => {
       await new Promise(resolve => setTimeout(resolve, 2000));
       showNotificationMessage(
         "Perkhidmatan Ditamatkan", 
-        `Perkhidmatan ${currentTerminateRequest.value?.noRujukan || currentTerminateRequest.value?.rujukan} untuk ${currentTerminateRequest.value?.nama || currentTerminateRequest.value?.penolongAmil?.nama} telah ditamatkan.`
+        `Perkhidmatan ${currentTerminateRequest.value?.noRujukan || currentTerminateRequest.value?.rujukan} untuk ${currentTerminateRequest.value?.nama || currentTerminateRequest.value?.penolongAmil?.nama} telah berjaya ditamatkan.`
       );
       closeTerminateModal();
     } catch (error) {
@@ -1782,7 +1470,19 @@ const submitTermination = async () => {
 };
 
 const closeTerminateModal = () => {
-  if ((terminateData.value.category || terminateData.value.reason || terminateData.value.customReason || terminateData.value.supportingDocuments || terminateData.value.additionalNotes || terminateData.value.confirmation) && !isTerminateSubmitting.value) {
+  const hasSupportingDocs =
+    Array.isArray(terminateData.value.supportingDocuments) &&
+    terminateData.value.supportingDocuments.length > 0;
+
+  if (
+    (terminateData.value.category ||
+      terminateData.value.reason ||
+      terminateData.value.customReason ||
+      hasSupportingDocs ||
+      terminateData.value.additionalNotes ||
+      terminateData.value.confirmation) &&
+    !isTerminateSubmitting.value
+  ) {
     if (confirm('Anda pasti mahu menutup modal ini? Data yang telah dimasukkan akan hilang.')) {
       resetTerminateModal();
     }
@@ -1797,12 +1497,12 @@ const resetTerminateModal = () => {
     category: "",
     reason: "",
     customReason: "",
-    supportingDocuments: null,
+    paCategory: "",
+    supportingDocuments: [],
     additionalNotes: "",
     confirmation: false,
   };
   currentTerminateRequest.value = null;
-  terminateFileError.value = "";
   isTerminateSubmitting.value = false;
 };
 
@@ -1907,6 +1607,12 @@ watch(filters, () => {
 </script>
 
 <style scoped>
+:deep(.small-dropzone .cursor-pointer > div) {
+  height: 7rem;
+  min-height: 7rem;
+  padding: 1.25rem;
+}
+
 /* Enhanced styling */
 .slide-enter-active,
 .slide-leave-active {
@@ -1919,3 +1625,5 @@ watch(filters, () => {
   transform: translateY(-10px);
 }
 </style>
+
+

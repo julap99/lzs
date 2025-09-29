@@ -143,6 +143,15 @@
             v-model="formData.penamaAkaunBank"
           />
 
+          <FormKit
+            type="text"
+            name="swiftCode"
+            label="Swift Code"
+            v-model="formData.swiftCode"
+            readonly
+            help="Swift code akan dipaparkan secara automatik berdasarkan bank yang dipilih"
+          />
+
           <div class="flex justify-between mt-6">
             <rs-button variant="primary-outline" @click="prevStep">
               Kembali
@@ -308,6 +317,10 @@
               <p class="text-gray-900">{{ formData.penamaAkaunBank || '-' }}</p>
             </div>
             <div>
+              <label class="block text-gray-600 font-medium">Swift Code</label>
+              <p class="text-gray-900">{{ getSwiftCode(formData.namaBank) || '-' }}</p>
+            </div>
+            <div>
               <label class="block text-gray-600 font-medium">Dokumen Pengenalan</label>
               <rs-badge :variant="hasDokumenPengenalan ? 'success' : 'danger'">{{ hasDokumenPengenalan ? 'Dilampirkan' : 'Tiada' }}</rs-badge>
             </div>
@@ -381,6 +394,7 @@ const formData = ref({
   namaBank: "",
   noAkaunBank: "",
   penamaAkaunBank: "",
+  swiftCode: "",
 
   // Step 3: Dokumen Sokongan
   dokumenPengenalan: null,
@@ -420,12 +434,35 @@ const bankOptions = [
   'UOB Bank'
 ];
 
+// Swift code mapping for Malaysian banks
+const swiftCodeMapping = {
+  'Maybank': 'MBBEMYKL',
+  'CIMB Bank': 'CIBBMYKL',
+  'Public Bank': 'PBBEMYKL',
+  'RHB Bank': 'RHBBMYKL',
+  'Hong Leong Bank': 'HLBBMYKL',
+  'AmBank': 'ARBKMYKL',
+  'Bank Islam': 'BIMBMYKL',
+  'Bank Rakyat': 'RABBMYKL',
+  'Bank Muamalat': 'BMMBMYKL',
+  'OCBC Bank': 'OCBCMYKL',
+  'HSBC Bank': 'HBMBMYKL',
+  'Standard Chartered Bank': 'SCBLMYKX',
+  'Citibank': 'CITIMYKL',
+  'UOB Bank': 'UOVBMYKL'
+};
+
 const getIdPlaceholder = () => {
   switch (formData.value.jenisPengenalan) {
     case "mykad": return "Contoh: 880101123456";
     case "passport_no": return "Contoh: A12345678 (A untuk Selangor)";
     default: return "Sila pilih jenis pengenalan dahulu";
   }
+};
+
+// Function to get Swift code based on selected bank
+const getSwiftCode = (bankName) => {
+  return swiftCodeMapping[bankName] || '';
 };
 
 // Helper function to get the label for jenis pengenalan
@@ -523,6 +560,14 @@ watch(
   () => { 
     formData.value.idPengenalan = "";
     formData.value.idSyarikat = "";
+  }
+);
+
+// Watch for changes in bank selection to update Swift code
+watch(
+  () => formData.value.namaBank,
+  (newBank) => {
+    formData.value.swiftCode = getSwiftCode(newBank);
   }
 );
 </script>

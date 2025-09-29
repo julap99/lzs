@@ -139,7 +139,7 @@
               <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-process`"
-                  :data="getTableDataByStatus(['Dihantar', 'Dalam Semakan', 'Telah Disaring', 'Telah Disemak', 'Telah Disokong', 'Telah Disahkan'])"
+                  :data="getTableDataByStatus(['Dihantar', 'Belum Disaring', 'Menunggu Semakan', 'Menunggu Sokongan', 'Menunggu Pengesahan', 'Menunggu Kelulusan'])"
                   :columns="eksekutifColumnsWithoutStatusLantikan"
                   :pageSize="10"
                   :show-search="false"
@@ -286,90 +286,180 @@
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Menunggu Saringan">
               <div class="pt-2">
-                <rs-table
-                  :key="`table-${tableKey}-pending-screening`"
-                  :data="getTableDataByStatus(['Dihantar'])"
-                  :columns="eksekutifColumnsWithoutStatusLantikan"
-                  :pageSize="10"
-                  :show-search="false"
-                  :show-filter="false"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: false,
-                  }"
-                  advanced
-                >
-                  <template v-slot:statusPendaftaran="{ text }">
-                    <rs-badge :variant="getStatusPendaftaranVariant(text)">
-                      {{ text }}
-                    </rs-badge>
-                  </template>
-
-                  <template v-slot:tindakan="{ text }">
+                <!-- Bulk Operations Buttons - Right Aligned -->
+                <div class="flex justify-end mb-4">
+                  <div v-if="hasPendingScreening" class="flex space-x-3">
+                    <rs-button
+                      variant="warning"
+                      @click="openBulkScreeningModal"
+                      class="flex items-center"
+                    >
+                      Saring Bulk
+                    </rs-button>
+                  </div>
+                </div>
+                
+                
+                <!-- Simple table for screening -->
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Pengenalan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jawatan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institusi</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr v-for="item in getTableDataByStatus(['Belum Disaring'])" :key="item.rujukan" class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {{ item.rujukan }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {{ item.nama }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {{ item.noKP }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {{ item.kategoriPenolongAmil }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {{ item.jawatan }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {{ item.institusiKariah }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <rs-badge :variant="getStatusPendaftaranVariant(item.statusPendaftaran)">
+                            {{ item.statusPendaftaran }}
+                          </rs-badge>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div class="flex justify-center items-center gap-3">
                       <button
-                        @click="handleView(text)"
+                              @click="handleView(item.tindakan)"
                         title="Lihat"
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
                         <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
                       </button>
                       <button
-                        @click="handleRiskAnalysis(text)"
+                              @click="handleRiskAnalysis(item.tindakan)"
                         title="Saringan"
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
                         <Icon name="iconamoon:arrow-right-2" class="w-5 h-5 text-info" />
                       </button>
                     </div>
-                  </template>
-                </rs-table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </rs-tab-item>
 
             <rs-tab-item title="Telah Disaring">
               <div class="pt-2">
-                <rs-table
-                  :key="`table-${tableKey}-screened`"
-                  :data="getTableDataByStatus(['Telah Disaring'])"
-                  :columns="eksekutifColumnsWithoutStatusLantikan"
-                  :pageSize="10"
-                  :show-search="false"
-                  :show-filter="false"
-                  :options="{
-                    variant: 'default',
-                    hover: true,
-                    striped: true,
-                  }"
-                  :options-advanced="{
-                    sortable: true,
-                    filterable: false,
-                  }"
-                  advanced
-                >
-                  <template v-slot:statusPendaftaran="{ text }">
-                    <rs-badge :variant="getStatusPendaftaranVariant(text)">
-                      {{ text }}
-                    </rs-badge>
-                  </template>
-
-                  <template v-slot:tindakan="{ text }">
+                <!-- Export Button for Screened Applications -->
+                <div class="flex justify-end mb-4">
+                  <div v-if="getTableDataByStatus(['Telah Disaring']).length > 0" class="flex space-x-3">
+                    <rs-button
+                      variant="info"
+                      @click="openBulkExportModal"
+                      class="flex items-center"
+                      :disabled="selectedRows.length === 0"
+                    >
+                      <Icon name="ic:baseline-download" class="w-4 h-4 mr-2" />
+                      Export ({{ selectedRows.length }})
+                    </rs-button>
+                  </div>
+                </div>
+                
+                <!-- Simple table for screened applications -->
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <input 
+                            type="checkbox" 
+                            :checked="selectedRows.length === getTableDataByStatus(['Telah Disaring']).length && getTableDataByStatus(['Telah Disaring']).length > 0"
+                            @change="toggleSelectAll"
+                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                          />
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Pengenalan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jawatan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institusi</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr v-for="item in getTableDataByStatus(['Telah Disaring'])" :key="item.rujukan" class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <input 
+                            type="checkbox" 
+                            v-model="selectedRows" 
+                            :value="item.rujukan"
+                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                          />
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {{ item.rujukan }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {{ item.nama }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {{ item.noKP }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {{ item.kategoriPenolongAmil }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {{ item.jawatan }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {{ item.institusiKariah }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <rs-badge :variant="getStatusPendaftaranVariant(item.statusPendaftaran)">
+                            {{ item.statusPendaftaran }}
+                          </rs-badge>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div class="flex justify-center items-center gap-3">
                       <button
-                        @click="handleView(text)"
+                              @click="handleView(item.tindakan)"
                         title="Lihat"
                         class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
                         <Icon name="ic:baseline-visibility" class="w-5 h-5 text-primary" />
                       </button>
+                            <button
+                              @click="exportApplication(item.tindakan)"
+                              title="Export Borang"
+                              class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                              <Icon name="ic:baseline-download" class="w-5 h-5 text-success" />
+                      </button>
                     </div>
-                  </template>
-                </rs-table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </rs-tab-item>
           </rs-tab>
@@ -382,7 +472,7 @@
               <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-pending-pt-review`"
-                  :data="getTableDataByStatus(['Telah Disaring'])"
+                  :data="getTableDataByStatus(['Menunggu Semakan'])"
                   :columns="eksekutifColumnsWithoutStatusLantikan"
                   :pageSize="10"
                   :show-search="false"
@@ -476,7 +566,7 @@
               <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-pending-support`"
-                  :data="getTableDataByStatus(['Telah Disemak'])"
+                  :data="getTableDataByStatus(['Menunggu Sokongan'])"
                   :columns="eksekutifColumnsWithoutStatusLantikan"
                   :pageSize="10"
                   :show-search="false"
@@ -570,7 +660,7 @@
               <div class="pt-2">
                 <rs-table
                   :key="`table-${tableKey}-pending-confirmation`"
-                  :data="getTableDataByStatus(['Telah Disokong'])"
+                  :data="getTableDataByStatus(['Menunggu Pengesahan'])"
                   :columns="eksekutifColumnsWithoutStatusLantikan"
                   :pageSize="10"
                   :show-search="false"
@@ -662,9 +752,22 @@
           <rs-tab v-model="activeTab" class="mt-4">
             <rs-tab-item title="Menunggu Kelulusan">
               <div class="pt-2">
+                <!-- Bulk Approval Button - Right Aligned -->
+                <div class="flex justify-end mb-4">
+                  <div v-if="getTableDataByStatus(['Menunggu Kelulusan']).length > 0" class="flex space-x-3">
+                    <rs-button
+                      variant="success"
+                      @click="openBulkApprovalModal"
+                      class="flex items-center"
+                    >
+                      Kelulusan Bulk
+                    </rs-button>
+                  </div>
+                </div>
+                
                 <rs-table
                   :key="`table-${tableKey}-pending-approval`"
-                  :data="getTableDataByStatus(['Telah Disahkan'])"
+                  :data="getTableDataByStatus(['Menunggu Kelulusan'])"
                   :columns="eksekutifColumnsWithoutStatusLantikan"
                   :pageSize="10"
                   :show-search="false"
@@ -753,7 +856,256 @@
       </template>
     </rs-card>
 
+    <!-- Bulk Screening Modal -->
+    <div v-if="showBulkScreeningModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+            <Icon name="ic:baseline-security" class="w-6 h-6 mr-3 text-warning" />
+            Saring Bulk Permohonan
+          </h3>
+          <button
+            @click="closeBulkScreeningModal"
+            class="text-gray-400 hover:text-gray-600"
+          >
+            <Icon name="ic:baseline-close" class="w-6 h-6" />
+          </button>
+        </div>
+        
+        <div class="mb-4">
+          <p class="text-gray-600 mb-2">
+            Anda akan menyaring <strong> permohonan</strong> untuk analisis risiko.
+          </p>
+          
+          <!-- Selected Items Table -->
+          <div class="border rounded-lg overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-4 py-3"></th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr v-for="item in selectedScreeningItems" :key="item.rujukan" class="hover:bg-gray-50">
+                  <td class="px-4 py-3">
+                    <input type="checkbox" v-model="selectedScreeningMap[item.rujukan]" class="w-4 h-4" />
+                  </td>
+                  <td class="px-4 py-3 text-sm text-gray-900">{{ item.rujukan }}</td>
+                  <td class="px-4 py-3 text-sm text-gray-900">{{ item.nama }}</td>
+                  <td class="px-4 py-3 text-sm text-gray-900">{{ item.kategoriPenolongAmil }}</td>
+                  <td class="px-4 py-3">
+                    <rs-badge variant="warning" size="sm">{{ item.statusPendaftaran }}</rs-badge>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- Risk Assessment Notes -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Ulasan Saringan Risiko <span class="text-red-500">*</span>
+          </label>
+          <textarea
+            v-model="bulkScreeningNotes"
+            rows="3"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            placeholder="Masukkan ulasan saringan risiko untuk permohonan ini..."
+          ></textarea>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="flex justify-end space-x-3">
+          <rs-button
+            variant="secondary-outline"
+            @click="closeBulkScreeningModal"
+          >
+            Batal
+          </rs-button>
+          <rs-button
+            variant="warning"
+            @click="performBulkScreening"
+            :loading="false"
+          >
+            <Icon name="ic:baseline-security" class="w-4 h-4 mr-2" />
+            Saring Terpilih ({{ selectedScreeningCount }})
+          </rs-button>
+        </div>
+      </div>
+    </div>
 
+    <!-- Bulk Export Modal -->
+    <div v-if="showBulkExportModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+            <Icon name="ic:baseline-download" class="w-6 h-6 mr-3 text-info" />
+            Export Borang Permohonan Terpilih
+          </h3>
+          <button
+            @click="closeBulkExportModal"
+            class="text-gray-400 hover:text-gray-600"
+          >
+            <Icon name="ic:baseline-close" class="w-6 h-6" />
+          </button>
+        </div>
+        
+        <div class="mb-4">
+          <p class="text-gray-600 mb-2">
+            Anda akan mengeksport <strong>{{ selectedExportItems.length }} borang permohonan</strong>.
+          </p>
+          
+          <!-- Export Format Selection -->
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Format Export <span class="text-red-500">*</span>
+            </label>
+            <select
+              v-model="bulkExportFormat"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            >
+              <option value="PDF">PDF (Portable Document Format)</option>
+              <option value="EXCEL">Excel (Microsoft Excel)</option>
+              <option value="ZIP">ZIP (Multiple Files)</option>
+            </select>
+          </div>
+          
+          <!-- Selected Items Table -->
+          <div class="border rounded-lg overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-4 py-3"></th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr v-for="item in selectedExportItems" :key="item.rujukan" class="hover:bg-gray-50">
+                  <td class="px-4 py-3">
+                    <input type="checkbox" v-model="selectedExportMap[item.rujukan]" class="w-4 h-4" />
+                  </td>
+                  <td class="px-4 py-3 text-sm text-gray-900">{{ item.rujukan }}</td>
+                  <td class="px-4 py-3 text-sm text-gray-900">{{ item.nama }}</td>
+                  <td class="px-4 py-3 text-sm text-gray-900">{{ item.kategoriPenolongAmil }}</td>
+                  <td class="px-4 py-3">
+                    <rs-badge variant="info" size="sm">{{ item.statusPendaftaran }}</rs-badge>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="flex justify-end space-x-3">
+          <rs-button
+            variant="secondary-outline"
+            @click="closeBulkExportModal"
+          >
+            Batal
+          </rs-button>
+          <rs-button
+            variant="info"
+            @click="performBulkExport"
+            :loading="false"
+          >
+            <Icon name="ic:baseline-download" class="w-4 h-4 mr-2" />
+            Export Terpilih ({{ selectedExportCount }})
+          </rs-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bulk Approval Modal -->
+    <div v-if="showBulkApprovalModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+            <Icon name="ic:baseline-check-circle" class="w-6 h-6 mr-3 text-success" />
+            Kelulusan Semua Permohonan Terpilih
+          </h3>
+          <button
+            @click="closeBulkApprovalModal"
+            class="text-gray-400 hover:text-gray-600"
+          >
+            <Icon name="ic:baseline-close" class="w-6 h-6" />
+          </button>
+        </div>
+        
+        <div class="mb-4">
+          <p class="text-gray-600 mb-2">
+            Anda akan meluluskan <strong>{{ selectedScreeningItems.length }} permohonan</strong> untuk kelulusan.
+          </p>
+          
+          <!-- Selected Items Table -->
+          <div class="border rounded-lg overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-4 py-3"></th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rujukan</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr v-for="item in selectedScreeningItems" :key="item.rujukan" class="hover:bg-gray-50">
+                  <td class="px-4 py-3">
+                    <input type="checkbox" v-model="selectedScreeningMap[item.rujukan]" class="w-4 h-4" />
+                  </td>
+                  <td class="px-4 py-3 text-sm text-gray-900">{{ item.rujukan }}</td>
+                  <td class="px-4 py-3 text-sm text-gray-900">{{ item.nama }}</td>
+                  <td class="px-4 py-3 text-sm text-gray-900">{{ item.kategoriPenolongAmil }}</td>
+                  <td class="px-4 py-3">
+                    <rs-badge variant="info" size="sm">{{ item.statusPendaftaran }}</rs-badge>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- Approval Notes -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Ulasan Kelulusan <span class="text-red-500">*</span>
+          </label>
+          <textarea
+            v-model="bulkScreeningNotes"
+            rows="3"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            placeholder="Masukkan ulasan kelulusan untuk permohonan ini..."
+          ></textarea>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="flex justify-end space-x-3">
+          <rs-button
+            variant="secondary-outline"
+            @click="closeBulkApprovalModal"
+          >
+            Batal
+          </rs-button>
+          <rs-button
+            variant="success"
+            @click="performBulkApproval"
+            :loading="false"
+          >
+            <Icon name="ic:baseline-check-circle" class="w-4 h-4 mr-2" />
+            Lulus Terpilih ({{ selectedScreeningCount }})
+          </rs-button>
+        </div>
+      </div>
+    </div>
 
     <!-- Pagination -->
     <div class="flex items-center justify-between px-5 mt-4">
@@ -807,6 +1159,18 @@ definePageMeta({
   description: "Senarai permohonan penolong amil untuk semakan dan kelulusan",
 });
 const selectedRows = ref([]);
+
+// Bulk operations state for eksekutif-pengurusan-risiko
+const showBulkScreeningModal = ref(false);
+const showBulkExportModal = ref(false);
+const showBulkApprovalModal = ref(false);
+const selectedScreeningItems = ref([]);
+const selectedExportItems = ref([]);
+const selectedScreeningMap = ref({});
+const selectedExportMap = ref({});
+const bulkScreeningNotes = ref("");
+const bulkExportFormat = ref("PDF");
+
 const breadcrumb = ref([
   {
     name: "Penolong Amil",
@@ -875,12 +1239,6 @@ const eksekutifColumns = columns;
 
 // Create specific columns for Eksekutif role (without Status Lantikan) - UPDATED LABELS
 const eksekutifColumnsWithoutStatusLantikan = [
-{
-    key: "select",
-    label: "",
-    sortable: false,
-    width: "40px",
-  },
   {
     key: "rujukan",
     label: "Rujukan",
@@ -1102,28 +1460,28 @@ const getCurrentTabDataCount = () => {
   const tabStatusMap = {
     pyb: {
       "Draf": ["Draf", "Draft"],
-      "Sedang Proses": ["Dihantar", "Dalam Semakan", "Telah Disaring", "Telah Disemak", "Telah Disokong", "Telah Disahkan"],
+      "Sedang Proses": ["Dihantar", "Belum Disaring", "Menunggu Semakan", "Menunggu Sokongan", "Menunggu Pengesahan", "Menunggu Kelulusan"],
       "Lulus": ["Diluluskan", "Approved"],
       "Ditolak": ["Ditolak", "Rejected"],
     },
     "eksekutif-pengurusan-risiko": {
-      "Menunggu Saringan": ["Dihantar"],
+      "Menunggu Saringan": ["Belum Disaring"],
       "Telah Disaring": ["Telah Disaring"],
     },
     pt: {
-      "Menunggu Semakan": ["Telah Disaring"],
+      "Menunggu Semakan": ["Menunggu Semakan"],
       "Telah Disemak": ["Telah Disemak"],
     },
     eksekutif: {
-      "Menunggu Sokongan": ["Telah Disemak"],
+      "Menunggu Sokongan": ["Menunggu Sokongan"],
       "Telah Disokong": ["Telah Disokong"],
     },
     "ketua-jabatan": {
-      "Menunggu Pengesahan": ["Telah Disokong"],
+      "Menunggu Pengesahan": ["Menunggu Pengesahan"],
       "Telah Disahkan": ["Telah Disahkan"],
     },
     "ketua-divisyen": {
-      "Menunggu Kelulusan": ["Telah Disahkan"],
+      "Menunggu Kelulusan": ["Menunggu Kelulusan"],
       "Lulus": ["Diluluskan", "Approved"],
     },
   };
@@ -1133,6 +1491,23 @@ const getCurrentTabDataCount = () => {
   
   return getTableDataByStatus(statuses).length;
 };
+
+// Computed properties for eksekutif-pengurusan-risiko bulk operations
+const hasPendingScreening = computed(() => {
+  return getTableDataByStatus(['Belum Disaring']).length > 0;
+});
+
+const pendingScreeningCount = computed(() => {
+  return getTableDataByStatus(['Belum Disaring']).length;
+});
+
+const selectedScreeningCount = computed(() => {
+  return selectedScreeningItems.value.filter(item => selectedScreeningMap.value[item.rujukan]).length;
+});
+
+const selectedExportCount = computed(() => {
+  return selectedExportItems.value.filter(item => selectedExportMap.value[item.rujukan]).length;
+});
 
 const handleSearch = () => {
   isSearchTriggered.value = true;
@@ -1158,7 +1533,7 @@ const applications = ref([
     jawatan: "Penolong Amil Kariah",
     institusiKariah: "Masjid Al-Amin",
     institusiId: "MASJID_NEGERI_SELANGOR_001",
-    statusPendaftaran: "Dihantar",
+    statusPendaftaran: "Belum Disaring",
     statusLantikan: "Menunggu",
     tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Dihantar" },
   },
@@ -1171,9 +1546,9 @@ const applications = ref([
     jawatan: "Penolong Amil Kariah",
     institusiKariah: "Masjid Al-Amin",
     institusiId: "MASJID_NEGERI_SELANGOR_001",
-    statusPendaftaran: "Dalam Semakan",
+    statusPendaftaran: "Menunggu Kelulusan",
     statusLantikan: "Menunggu",
-    tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Dalam Semakan" },
+    tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Menunggu Kelulusan" },
   },
   {
     no: 3,
@@ -1338,9 +1713,9 @@ const roleSpecificData = {
       jawatan: "Penolong Amil Fitrah",
       institusiKariah: "Masjid Al-Amin",
       institusiId: "MASJID_NEGERI_SELANGOR_001",
-      statusPendaftaran: "Dihantar",
+      statusPendaftaran: "Belum Disaring",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Dihantar" },
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Belum Disaring" },
     },
     {
       no: 2,
@@ -1350,10 +1725,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Dalam Semakan",
+      statusPendaftaran: "Menunggu Kelulusan",
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Dalam Semakan" },
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Menunggu Kelulusan" },
     },
     {
       no: 3,
@@ -1363,9 +1738,9 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Komuniti",
       jawatan: "Penolong Amil Komuniti",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disaring",
+      statusPendaftaran: "Menunggu Semakan",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Telah Disaring" },
+      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Menunggu Semakan" },
     },
     {
       no: 4,
@@ -1375,10 +1750,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Padi",
       jawatan: "Penolong Amil Padi",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disemak",
+      statusPendaftaran: "Menunggu Sokongan",
       sesiPerkhidmatan: "Sesi 4",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Disemak" },
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Menunggu Sokongan" },
     },
     {
       no: 5,
@@ -1388,10 +1763,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Fitrah",
       jawatan: "Penolong Amil Fitrah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disokong",
+      statusPendaftaran: "Menunggu Pengesahan",
       sesiPerkhidmatan: "Sesi 1",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Telah Disokong" },
+      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Menunggu Pengesahan" },
     },
     {
       no: 6,
@@ -1401,10 +1776,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disahkan",
+      statusPendaftaran: "Menunggu Kelulusan",
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-006", statusPendaftaran: "Telah Disahkan" },
+      tindakan: { rujukan: "PA-2024-006", statusPendaftaran: "Menunggu Kelulusan" },
     },
     {
       no: 7,
@@ -1448,15 +1823,54 @@ const roleSpecificData = {
     {
       no: 10,
       rujukan: "PA-2024-010",
+      nama: "Ahmad bin Abdullah",
+      noKP: "900315071234",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Al-Hidayah",
+      statusPendaftaran: "Draf",
+      sesiPerkhidmatan: "Sesi 2",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-010", statusPendaftaran: "Draf" },
+    },
+    {
+      no: 11,
+      rujukan: "PA-2024-011",
+      nama: "Siti Aminah binti Omar",
+      noKP: "880420082345",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Al-Nur",
+      statusPendaftaran: "Diluluskan",
+      sesiPerkhidmatan: "Sesi 3",
+      statusLantikan: "Aktif",
+      tindakan: { rujukan: "PA-2024-011", statusPendaftaran: "Diluluskan" },
+    },
+    {
+      no: 12,
+      rujukan: "PA-2024-012",
+      nama: "Mohd Zain bin Ahmad",
+      noKP: "850315071234",
+      kategoriPenolongAmil: "Padi",
+      jawatan: "Penolong Amil Padi",
+      institusiKariah: "Masjid Al-Amin",
+      statusPendaftaran: "Diluluskan",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Aktif",
+      tindakan: { rujukan: "PA-2024-012", statusPendaftaran: "Diluluskan" },
+    },
+    {
+      no: 10,
+      rujukan: "PA-2024-010",
       nama: "Aminah binti Mohamed",
       noKP: "920810034567",
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Dalam Semakan",
+      statusPendaftaran: "Menunggu Kelulusan",
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-010", statusPendaftaran: "Dalam Semakan" },
+      tindakan: { rujukan: "PA-2024-010", statusPendaftaran: "Menunggu Kelulusan" },
     },
     // NEW: PYB "Lulus" data
     {
@@ -1495,10 +1909,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
-              statusPendaftaran: "Dihantar",
+              statusPendaftaran: "Belum Disaring",
         sesiPerkhidmatan: "Sesi 1",
         statusLantikan: "Menunggu",
-        tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Dihantar" },
+        tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Belum Disaring" },
     },
     {
       no: 2,
@@ -1508,10 +1922,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Khairiyah",
-              statusPendaftaran: "Dihantar",
+              statusPendaftaran: "Belum Disaring",
         sesiPerkhidmatan: "Sesi 2",
         statusLantikan: "Menunggu",
-        tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Dihantar" },
+        tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Belum Disaring" },
     },
     {
       no: 3,
@@ -1521,10 +1935,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Komuniti",
       jawatan: "Penolong Amil Komuniti",
       institusiKariah: "Masjid Kg Delek",
-              statusPendaftaran: "Dihantar",
+              statusPendaftaran: "Belum Disaring",
         sesiPerkhidmatan: "Sesi 3",
         statusLantikan: "Menunggu",
-        tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Dihantar" },
+        tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Belum Disaring" },
     },
     // NEW: Eksekutif Pengurusan Risiko "Telah Disaring" data
     {
@@ -1552,6 +1966,19 @@ const roleSpecificData = {
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Menunggu",
       tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Telah Disaring" },
+    },
+    {
+      no: 6,
+      rujukan: "PA-2024-006",
+      nama: "Fatimah binti Omar",
+      noKP: "880420082345",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Al-Nur",
+      statusPendaftaran: "Telah Disaring",
+      sesiPerkhidmatan: "Sesi 3",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-006", statusPendaftaran: "Telah Disaring" },
     }
   ],
   pt: [
@@ -1563,10 +1990,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disaring",
+      statusPendaftaran: "Menunggu Semakan",
       sesiPerkhidmatan: "Sesi 1",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Telah Disaring" },
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Menunggu Semakan" },
     },
     {
       no: 2,
@@ -1576,10 +2003,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Khairiyah",
-      statusPendaftaran: "Telah Disaring",
+      statusPendaftaran: "Menunggu Semakan",
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disaring" },
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Menunggu Semakan" },
     },
     // Additional PT data for both tabs
     {
@@ -1590,10 +2017,36 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Komuniti",
       jawatan: "Penolong Amil Komuniti",
       institusiKariah: "Masjid Kg Delek",
-      statusPendaftaran: "Telah Disaring",
+      statusPendaftaran: "Menunggu Semakan",
       sesiPerkhidmatan: "Sesi 3",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Telah Disaring" },
+      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Menunggu Semakan" },
+    },
+    {
+      no: 4,
+      rujukan: "PA-2024-004",
+      nama: "Ahmad bin Abdullah",
+      noKP: "900315071234",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Al-Hidayah",
+      statusPendaftaran: "Menunggu Semakan",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Menunggu Semakan" },
+    },
+    {
+      no: 5,
+      rujukan: "PA-2024-005",
+      nama: "Fatimah binti Omar",
+      noKP: "880420082345",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Al-Nur",
+      statusPendaftaran: "Menunggu Semakan",
+      sesiPerkhidmatan: "Sesi 2",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Menunggu Semakan" },
     },
     {
       no: 4,
@@ -1620,6 +2073,19 @@ const roleSpecificData = {
       sesiPerkhidmatan: "Sesi 1",
       statusLantikan: "Menunggu",
       tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Telah Disemak" },
+    },
+    {
+      no: 6,
+      rujukan: "PA-2024-006",
+      nama: "Siti Aminah binti Omar",
+      noKP: "880420082345",
+      kategoriPenolongAmil: "Kariah",
+      jawatan: "Penolong Amil Kariah",
+      institusiKariah: "Masjid Al-Nur",
+      statusPendaftaran: "Telah Disemak",
+      sesiPerkhidmatan: "Sesi 2",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-006", statusPendaftaran: "Telah Disemak" },
     }
   ],
   eksekutif: [
@@ -1631,9 +2097,9 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disemak",
+      statusPendaftaran: "Menunggu Sokongan",
       sesiPerkhidmatan: "Sesi 1",
-      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Telah Disemak" },
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Menunggu Sokongan" },
     },
     {
       no: 2,
@@ -1643,9 +2109,45 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Khairiyah",
-      statusPendaftaran: "Telah Disemak",
+      statusPendaftaran: "Menunggu Sokongan",
       sesiPerkhidmatan: "Sesi 2",
-      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disemak" },
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Menunggu Sokongan" },
+    },
+    {
+      no: 3,
+      rujukan: "PA-2024-003",
+      nama: "Abdul Rahman bin Hassan",
+      noKP: "870625098765",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Al-Hidayah",
+      statusPendaftaran: "Menunggu Sokongan",
+      sesiPerkhidmatan: "Sesi 1",
+      tindakan: { rujukan: "PA-2024-003", statusPendaftaran: "Menunggu Sokongan" },
+    },
+    {
+      no: 4,
+      rujukan: "PA-2024-004",
+      nama: "Noraini binti Abdullah",
+      noKP: "900525093456",
+      kategoriPenolongAmil: "Padi",
+      jawatan: "Penolong Amil Padi",
+      institusiKariah: "Masjid Al-Nur",
+      statusPendaftaran: "Menunggu Sokongan",
+      sesiPerkhidmatan: "Sesi 3",
+      tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Menunggu Sokongan" },
+    },
+    {
+      no: 5,
+      rujukan: "PA-2024-005",
+      nama: "Zulkifli bin Ahmad",
+      noKP: "850315071234",
+      kategoriPenolongAmil: "Komuniti",
+      jawatan: "Penolong Amil Komuniti",
+      institusiKariah: "Masjid Al-Amin",
+      statusPendaftaran: "Menunggu Sokongan",
+      sesiPerkhidmatan: "Sesi 2",
+      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Menunggu Sokongan" },
     },
     // NEW: Eksekutif "Telah Disokong" data
     {
@@ -1671,6 +2173,18 @@ const roleSpecificData = {
       statusPendaftaran: "Telah Disokong",
       sesiPerkhidmatan: "Sesi 4",
       tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Disokong" },
+    },
+    {
+      no: 5,
+      rujukan: "PA-2024-005",
+      nama: "Ahmad bin Abdullah",
+      noKP: "900315071234",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Al-Hidayah",
+      statusPendaftaran: "Telah Disokong",
+      sesiPerkhidmatan: "Sesi 1",
+      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Telah Disokong" },
     }
   ],
   "ketua-jabatan": [
@@ -1682,10 +2196,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disokong",
+      statusPendaftaran: "Menunggu Pengesahan",
       sesiPerkhidmatan: "Sesi 1",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Telah Disokong" },
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Menunggu Pengesahan" },
     },
     {
       no: 2,
@@ -1695,10 +2209,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Khairiyah",
-      statusPendaftaran: "Telah Disokong",
+      statusPendaftaran: "Menunggu Pengesahan",
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disokong" },
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Menunggu Pengesahan" },
     },
     // NEW: Ketua Jabatan "Telah Disahkan" data
     {
@@ -1726,6 +2240,19 @@ const roleSpecificData = {
       sesiPerkhidmatan: "Sesi 4",
       statusLantikan: "Menunggu",
       tindakan: { rujukan: "PA-2024-004", statusPendaftaran: "Telah Disahkan" },
+    },
+    {
+      no: 5,
+      rujukan: "PA-2024-005",
+      nama: "Ahmad bin Abdullah",
+      noKP: "900315071234",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Al-Hidayah",
+      statusPendaftaran: "Telah Disahkan",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Menunggu",
+      tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Telah Disahkan" },
     }
   ],
   "ketua-divisyen": [
@@ -1737,10 +2264,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Amin",
-      statusPendaftaran: "Telah Disahkan",
+      statusPendaftaran: "Menunggu Kelulusan",
       sesiPerkhidmatan: "Sesi 1",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Telah Disahkan" },
+      tindakan: { rujukan: "PA-2024-001", statusPendaftaran: "Menunggu Kelulusan" },
     },
     {
       no: 2,
@@ -1750,10 +2277,10 @@ const roleSpecificData = {
       kategoriPenolongAmil: "Kariah",
       jawatan: "Penolong Amil Kariah",
       institusiKariah: "Masjid Al-Khairiyah",
-      statusPendaftaran: "Telah Disahkan",
+      statusPendaftaran: "Menunggu Kelulusan",
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Menunggu",
-      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Telah Disahkan" },
+      tindakan: { rujukan: "PA-2024-002", statusPendaftaran: "Menunggu Kelulusan" },
     },
     // NEW: Ketua Divisyen "Telah Diluluskan" data
     {
@@ -1794,6 +2321,19 @@ const roleSpecificData = {
       sesiPerkhidmatan: "Sesi 2",
       statusLantikan: "Dilantik",
       tindakan: { rujukan: "PA-2024-005", statusPendaftaran: "Diluluskan" },
+    },
+    {
+      no: 6,
+      rujukan: "PA-2024-006",
+      nama: "Siti Aminah binti Omar",
+      noKP: "880420082345",
+      kategoriPenolongAmil: "Fitrah",
+      jawatan: "Penolong Amil Fitrah",
+      institusiKariah: "Masjid Al-Nur",
+      statusPendaftaran: "Diluluskan",
+      sesiPerkhidmatan: "Sesi 1",
+      statusLantikan: "Dilantik",
+      tindakan: { rujukan: "PA-2024-006", statusPendaftaran: "Diluluskan" },
     }
   ],
 };
@@ -1949,36 +2489,36 @@ const getStatusPendaftaranVariant = (status) => {
     Submitted: "warning",
     Dihantar: "warning",
     "Under Review": "info",
-    "Dalam Semakan": "info",
     
-    // Screening stages
-    Screened: "info",
-    Disaring: "info",
-    "Telah Disaring": "info",
+    // Pending/Waiting stages (uniform warning)
+    "Belum Disaring": "warning",
+    "Menunggu Semakan": "warning",
+    "Menunggu Sokongan": "warning",
+    "Menunggu Pengesahan": "warning",
+    "Menunggu Kelulusan": "warning",
     
-    // Review stages
-    "PT Reviewed": "info",
-    "Disemak PT": "info",
-    "Telah Disemak": "info",
+    // Completed by current role (Telah ... → secondary)
+    Screened: "secondary",
+    Disaring: "secondary",
+    "Telah Disaring": "secondary",
+    "PT Reviewed": "secondary",
+    "Disemak PT": "secondary",
+    "Telah Disemak": "secondary",
+    "Executive Supported": "secondary",
+    "Disokong Eksekutif": "secondary",
+    "Telah Disokong": "secondary",
+    "Department Confirmed": "secondary",
+    "Disahkan Jabatan": "secondary",
+    "Telah Disahkan": "secondary",
     
-    // Support stages
-    "Executive Supported": "success",
-    "Disokong Eksekutif": "success",
-    "Telah Disokong": "success",
+    // Final approvals (primary)
+    "Division Approved": "primary",
+    "Diluluskan Divisyen": "primary",
+    "Telah Diluluskan": "primary",
+    Approved: "primary",
+    Diluluskan: "primary",
     
-    // Confirmation stages
-    "Department Confirmed": "success",
-    "Disahkan Jabatan": "success",
-    "Telah Disahkan": "success",
-    
-    // Approval stages
-    "Division Approved": "success",
-    "Diluluskan Divisyen": "success",
-    "Telah Diluluskan": "success",
-    Approved: "success",
-    Diluluskan: "success",
-    
-    // Rejection
+    // Rejection (danger)
     Rejected: "danger",
     Ditolak: "danger",
   };
@@ -2092,6 +2632,164 @@ onMounted(() => {
     activeTab.value = validTabs[0];
   }
 });
+
+// Bulk operations functions for eksekutif-pengurusan-risiko
+const openBulkScreeningModal = () => {
+  selectedScreeningItems.value = getTableDataByStatus(['Belum Disaring']);
+  selectedScreeningMap.value = {};
+  selectedScreeningItems.value.forEach(item => {
+    selectedScreeningMap.value[item.rujukan] = true;
+  });
+  showBulkScreeningModal.value = true;
+};
+
+const closeBulkScreeningModal = () => {
+  showBulkScreeningModal.value = false;
+  selectedScreeningItems.value = [];
+  selectedScreeningMap.value = {};
+  bulkScreeningNotes.value = "";
+};
+
+const performBulkScreening = async () => {
+  if (!bulkScreeningNotes.value.trim()) {
+    return;
+  }
+  
+  try {
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Update only checked items
+    const toScreen = selectedScreeningItems.value.filter(item => selectedScreeningMap.value[item.rujukan]);
+    if (toScreen.length === 0) {
+      return;
+    }
+    
+    // Update status to "Telah Disaring" for selected items
+    toScreen.forEach(item => {
+      // Find and update the item in the role-specific data
+      const roleData = roleSpecificData[currentRole.value] || [];
+      const index = roleData.findIndex(app => app.rujukan === item.rujukan);
+      if (index !== -1) {
+        roleData[index].statusPendaftaran = "Telah Disaring";
+      }
+    });
+    
+    closeBulkScreeningModal();
+    refreshTable();
+  } catch (error) {
+    // Handle error silently
+  }
+};
+
+const openBulkExportModal = () => {
+  selectedExportItems.value = getTableDataByStatus(['Telah Disaring']).filter(item => 
+    selectedRows.value.includes(item.rujukan)
+  );
+  selectedExportMap.value = {};
+  selectedExportItems.value.forEach(item => {
+    selectedExportMap.value[item.rujukan] = true;
+  });
+  showBulkExportModal.value = true;
+};
+
+const closeBulkExportModal = () => {
+  showBulkExportModal.value = false;
+  selectedExportItems.value = [];
+  selectedExportMap.value = {};
+  bulkExportFormat.value = "PDF";
+};
+
+const performBulkExport = async () => {
+  try {
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Get selected items for export
+    const toExport = selectedExportItems.value.filter(item => selectedExportMap.value[item.rujukan]);
+    if (toExport.length === 0) {
+      return;
+    }
+    
+    // Generate export URLs based on Rujukan ID
+    toExport.forEach(item => {
+      const exportUrl = `/export/application-form/${item.rujukan}?format=${bulkExportFormat.value}`;
+      // Open export URL in new tab
+      window.open(exportUrl, '_blank');
+    });
+    
+    closeBulkExportModal();
+  } catch (error) {
+    // Handle error silently
+  }
+};
+
+// Single export function
+const exportApplication = (rujukanId) => {
+  const exportUrl = `/export/application-form/${rujukanId}?format=PDF`;
+  window.open(exportUrl, '_blank');
+};
+
+// Bulk approval functions for ketua-divisyen
+const openBulkApprovalModal = () => {
+  selectedScreeningItems.value = getTableDataByStatus(['Menunggu Kelulusan']);
+  selectedScreeningMap.value = {};
+  selectedScreeningItems.value.forEach(item => {
+    selectedScreeningMap.value[item.rujukan] = true;
+  });
+  showBulkApprovalModal.value = true;
+};
+
+const closeBulkApprovalModal = () => {
+  showBulkApprovalModal.value = false;
+  selectedScreeningItems.value = [];
+  selectedScreeningMap.value = {};
+  bulkScreeningNotes.value = "";
+};
+
+const performBulkApproval = async () => {
+  if (!bulkScreeningNotes.value.trim()) {
+    return;
+  }
+  
+  try {
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Update only checked items
+    const toApprove = selectedScreeningItems.value.filter(item => selectedScreeningMap.value[item.rujukan]);
+    if (toApprove.length === 0) {
+      return;
+    }
+    
+    // Update status to "Lulus" for selected items
+    toApprove.forEach(item => {
+      // Find and update the item in the role-specific data
+      const roleData = roleSpecificData[currentRole.value] || [];
+      const index = roleData.findIndex(app => app.rujukan === item.rujukan);
+      if (index !== -1) {
+        roleData[index].statusPendaftaran = "Lulus";
+      }
+    });
+    
+    closeBulkApprovalModal();
+    refreshTable();
+  } catch (error) {
+    // Handle error silently
+  }
+};
+
+// Toggle select all function
+const toggleSelectAll = () => {
+  const allItems = getTableDataByStatus(['Belum Disaring']);
+  if (selectedRows.value.length === allItems.length) {
+    // If all are selected, deselect all
+    selectedRows.value = [];
+  } else {
+    // If not all are selected, select all
+    selectedRows.value = allItems.map(item => item.rujukan);
+  }
+};
 
 </script>
 

@@ -26,7 +26,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- 3.6.2 Nama Pendaftaran -->
             <FormKit
-              type="select"
+              type="text"
               name="namaPendaftaran"
               label="Nama Pendaftaran"
               validation="required"
@@ -38,9 +38,8 @@
               type="text"
               name="kodProses"
               label="Kod Proses"
-              placeholder="cth: PP001"
-              validation="required|matches:/^[A-Za-z0-9_-]+$/"
-              :validation-messages="{ matches: 'Hanya huruf/nombor/penghubung/garis bawah dibenarkan.' }"
+              placeholder="cth: KP001"
+              validation="required"
             />
 
             <!-- 3.6.4 ID Menu -->
@@ -103,14 +102,23 @@
             />
           </div>
 
-          <div class="flex justify-between items-center pt-4">
+          <div class="flex items-center pt-4">
+            
             <rs-button btnType="button" variant="secondary" @click="onCancel">
               <Icon name="mdi:arrow-left" class="mr-1" /> Kembali
             </rs-button>
-            <rs-button btnType="submit" variant="primary">
-              <Icon name="mdi:content-save" class="mr-1" /> Kemaskini
-            </rs-button>
+
+            
+            <div class="ml-auto flex gap-2">
+              <rs-button btnType="submit" variant="primary">
+                <Icon name="mdi:content-save" class="mr-1" /> Simpan
+              </rs-button>
+              <rs-button btnType="submit" variant="primary">
+                <Icon name="mdi:content-save" class="mr-1" /> Kemaskini
+              </rs-button>
+            </div>
           </div>
+
         </FormKit>
       </template>
     </rs-card>

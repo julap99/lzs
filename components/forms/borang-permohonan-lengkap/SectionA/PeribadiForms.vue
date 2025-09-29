@@ -10,7 +10,7 @@
 
     <!-- Personal Information Section -->
     <div class="mb-6">
-      <h4 class="text-md font-medium mb-3">Maklumat Peribadi</h4>
+      <!-- <h4 class="text-md font-medium mb-3">Maklumat Peribadi</h4> -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormKit
           type="select"
@@ -83,6 +83,21 @@
           v-model="formData.lain_warganegara"
         />
 
+        <FormKit
+          v-if="
+            formData.warganegara === 'Lain-lain' &&
+            formData.jenis_id === 'foreign_id'
+          "
+          type="select"
+          name="negara_lain"
+          label="Negara Lain"
+          :options="getCountries"
+          placeholder="Pilih Negara Lain"
+          :disabled="readOnly"
+          validation="required"
+          v-model="formData.negara_lain"
+        />
+
         <div
           class="grid grid-cols-1 md:grid-cols-2 gap-4"
           v-if="formData.warganegara === 'Lain-lain'"
@@ -104,14 +119,7 @@
             />
           </div>
         </div>
-        <FormKit
-          v-if="formData.warganegara === 'Lain-lain'"
-          type="text"
-          name="nopassportlama"
-          label="No Passport Lama"
-          :disabled="readOnly"
-          v-model="formData.nopassportlama"
-        />
+        
 
         <FormKit
           v-if="
@@ -135,20 +143,13 @@
           :disabled="readOnly"
           v-model="formData.passportEndDate"
         />
-
         <FormKit
-          v-if="
-            formData.warganegara === 'Lain-lain' &&
-            formData.jenis_id === 'foreign_id'
-          "
-          type="select"
-          name="negara_lain"
-          label="Negara Lain"
-          :options="getCountries"
-          placeholder="Pilih Negara Lain"
+          v-if="formData.warganegara === 'Lain-lain'"
+          type="text"
+          name="nopassportlama"
+          label="No Passport Lama"
           :disabled="readOnly"
-          validation="required"
-          v-model="formData.negara_lain"
+          v-model="formData.nopassportlama"
         />
       </div>
     </div>
@@ -177,14 +178,16 @@
           help="Auto dikira daripada Tarikh Lahir"
         />
 
-        <FormKit
-          type="text"
-          name="tempat_lahir"
-          label="Tempat Lahir"
-          :disabled="readOnly"
-          validation="required"
-          v-model="formData.tempat_lahir"
-        />
+        <div :class="getFieldClasses('tempat_lahir')" class="p-2 rounded">
+          <FormKit
+            type="text"
+            name="tempat_lahir"
+            label="Tempat Lahir"
+            :disabled="readOnly"
+            validation="required"
+            v-model="formData.tempat_lahir"
+          />
+        </div>
 
         <FormKit
           type="select"
@@ -242,29 +245,33 @@
           v-model="formData.bangsa_lain"
         />
 
-        <FormKit
-          type="number"
-          name="no_telefon_bimbit"
-          label="No Telefon Bimbit"
-          placeholder="Contoh: 0123456789"
-          validation="required"
-          :validation-messages="{
-            required: 'No Telefon Bimbit adalah wajib',
-            matches:
-              'Format nombor telefon tidak sah. Contoh: 0123456789',
-          }"
-          :disabled="readOnly"
-          v-model="formData.no_telefon_bimbit"
-        />
+        <div :class="getFieldClasses('no_telefon_bimbit')" class="p-2 rounded">
+          <FormKit
+            type="number"
+            name="no_telefon_bimbit"
+            label="No Telefon Bimbit"
+            placeholder="Contoh: 0123456789"
+            validation="required"
+            :validation-messages="{
+              required: 'No Telefon Bimbit adalah wajib',
+              matches:
+                'Format nombor telefon tidak sah. Contoh: 0123456789',
+            }"
+            :disabled="readOnly"
+            v-model="formData.no_telefon_bimbit"
+          />
+        </div>
 
-        <FormKit
-          type="email"
-          name="emel"
-          label="Emel"
-          validation="required|email"
-          :disabled="readOnly"
-          v-model="formData.emel"
-        />
+        <div :class="getFieldClasses('emel')" class="p-2 rounded">
+          <FormKit
+            type="email"
+            name="emel"
+            label="Emel"
+            validation="required|email"
+            :disabled="readOnly"
+            v-model="formData.emel"
+          />
+        </div>
       </div>
     </div>
 
@@ -272,24 +279,26 @@
     <div class="mb-6" v-if="formData.jantina === 'Lelaki'">
       <h4 class="text-md font-medium mb-3">Status Perkahwinan</h4>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormKit
-          type="select"
-          name="status_perkahwinan"
-          placeholder="Pilih Status Perkahwinan"
-          label="Status Perkahwinan"
-          :options="[
-            'Berkahwin',
-            'Bujang',
-            'Janda',
-            'Ibu Tinggal',
-            'Bapa Tinggal',
-            'Duda',
-            'Balu',
-          ]"
-          :disabled="readOnly"
-          validation="required"
-          v-model="formData.status_perkahwinan"
-        />
+        <div :class="getFieldClasses('status_perkahwinan')" class="p-2 rounded">
+          <FormKit
+            type="select"
+            name="status_perkahwinan"
+            placeholder="Pilih Status Perkahwinan"
+            label="Status Perkahwinan"
+            :options="[
+              'Berkahwin',
+              'Bujang',
+              'Janda',
+              'Ibu Tinggal',
+              'Bapa Tinggal',
+              'Duda',
+              'Balu',
+            ]"
+            :disabled="readOnly"
+            validation="required"
+            v-model="formData.status_perkahwinan"
+          />
+        </div>
 
         <FormKit
           type="select"
@@ -350,6 +359,50 @@
       </div>
     </div>
 
+    <!-- Marital Status Section (Perempuan) -->
+    <div class="mb-6" v-if="formData.jantina === 'Perempuan'">
+      <h4 class="text-md font-medium mb-3">Status Perkahwinan</h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div :class="getFieldClasses('status_perkahwinan')" class="p-2 rounded">
+          <FormKit
+            type="select"
+            name="status_perkahwinan"
+            placeholder="Pilih Status Perkahwinan"
+            label="Status Perkahwinan"
+            :options="[
+              'Berkahwin',
+              'Bujang',
+              'Janda',
+              'Ibu Tinggal',
+              'Balu',
+            ]"
+            :disabled="readOnly"
+            validation="required"
+            v-model="formData.status_perkahwinan"
+          />
+        </div>
+
+        <template v-if="formData.status_perkahwinan === 'Berkahwin'">
+          <FormKit
+            type="text"
+            name="pasangan_nama"
+            label="Nama Pasangan"
+            validation="required"
+            :disabled="readOnly"
+            v-model="formData.pasangan_nama"
+          />
+          <FormKit
+            type="text"
+            name="pasangan_no_kp"
+            label="No. Pengenalan Pasangan"
+            validation="required"
+            :disabled="readOnly"
+            v-model="formData.pasangan_no_kp"
+          />
+        </template>
+      </div>
+    </div>
+
     <div class="flex justify-end gap-3 mt-6" v-if="showFooterButtons">
       <rs-button
         type="button"
@@ -365,19 +418,13 @@
 </template>
 
 <script setup>
+import { ref, watch } from 'vue';
+
 // Props
 const props = defineProps({
   formData: {
     type: Object,
     required: true
-  },
-  isteriList: {
-    type: Array,
-    default: () => []
-  },
-  getCountries: {
-    type: Object,
-    default: () => ({})
   },
   showFooterButtons: {
     type: Boolean,
@@ -386,8 +433,69 @@ const props = defineProps({
   readOnly: {
     type: Boolean,
     default: false
+  },
+  comparisonData: {
+    type: Object,
+    default: null
+  },
+  isComparison: {
+    type: Boolean,
+    default: false
+  },
+  isBefore: {
+    type: Boolean,
+    default: false
   }
 })
+
+// Countries options - moved from parent component
+const getCountries = [
+  "Malaysia",
+  "Indonesia", 
+  "Singapura",
+  "Brunei",
+  "Thailand",
+]
+
+// Isteri list management - moved from parent component
+const isteriList = ref([]);
+
+// Keep isteriList in sync with bilangan_isteri like in AS/FR/02
+watch(
+  () => props.formData.bilangan_isteri,
+  (newVal) => {
+    const count = parseInt(newVal) || 0;
+    isteriList.value = Array(count).fill({});
+    props.formData.isteri_list = Array(count).fill({ no_kp: "", nama: "" });
+  }
+);
+
+// Comparison logic
+const isFieldDifferent = (fieldPath) => {
+  if (!props.isComparison || !props.comparisonData) return false;
+  
+  const currentValue = getNestedValue(props.formData, fieldPath);
+  const comparisonValue = getNestedValue(props.comparisonData, fieldPath);
+  
+  return currentValue !== comparisonValue;
+};
+
+const getNestedValue = (obj, path) => {
+  return path.split('.').reduce((current, key) => current?.[key], obj);
+};
+
+const getFieldClasses = (fieldPath) => {
+  if (!props.isComparison) return '';
+  
+  const isDifferent = isFieldDifferent(fieldPath);
+  if (!isDifferent) return '';
+  
+  if (props.isBefore) {
+    return 'border-l-4 border-red-500 bg-red-50';
+  } else {
+    return 'border-l-4 border-green-500 bg-green-50';
+  }
+};
 
 // Emits
 const emit = defineEmits(['next-step', 'save-step'])

@@ -37,6 +37,7 @@
           @submit="nextStep"
           #default="{ value }"
         >
+          <!-- BA Requirement 14: Nama dan nombor pendaftaran tidak dibenarkan tukar jika telah hantar -->
           <FormKit
             type="text"
             name="organizationName"
@@ -44,6 +45,8 @@
             validation="required"
             placeholder="Masukkan nama organisasi"
             v-model="formData.organizationName"
+            :disabled="isFieldLocked('organizationName')"
+            :help="isFieldLocked('organizationName') ? 'Nama organisasi tidak boleh diubah selepas permohonan dihantar. Hanya staf zakat boleh mengubah.' : ''"
           />
 
           <FormKit
@@ -54,6 +57,8 @@
             placeholder="Contoh: 201901000005 (SSM) atau PPM-001-10-14032020 (ROS)"
             help="SSM: 12 digit angka | ROS: PPM-###-##-DDMMYYYY"
             v-model="formData.registrationNumber"
+            :disabled="isFieldLocked('registrationNumber')"
+            :help="isFieldLocked('registrationNumber') ? 'Nombor pendaftaran tidak boleh diubah selepas permohonan dihantar. Hanya staf zakat boleh mengubah.' : ''"
           />
 
           <FormKit
@@ -171,6 +176,16 @@
         >
           <!-- Address Layout: Grid 2 columns as per BA requirements -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Negara (Country) -->
+            <FormKit
+              type="select"
+              name="country"
+              label="Negara"
+              validation="required"
+              placeholder="Pilih negara"
+              :options="countryOptions"
+              v-model="formData.country"
+            />
             <FormKit
               type="text"
               name="addressLine1"
@@ -180,15 +195,24 @@
               v-model="formData.addressLine1"
             />
 
+            <!-- Negeri (Malaysia) or State/Province (others) -->
             <FormKit
+              v-if="isMalaysia"
               type="select"
               name="state"
               label="Negeri"
               validation="required"
               placeholder="Pilih negeri"
-              :options="[
-                'Selangor',
-              ]"
+              :options="malaysiaStates"
+              v-model="formData.state"
+            />
+            <FormKit
+              v-else
+              type="text"
+              name="state"
+              label="State / Province"
+              validation="required"
+              placeholder="Masukkan negeri / wilayah"
               v-model="formData.state"
             />
 
@@ -200,23 +224,24 @@
               v-model="formData.addressLine2"
             />
 
+            <!-- Daerah (Malaysia/Selangor only) else free-text -->
             <FormKit
+              v-if="isMalaysia && formData.state === 'Selangor'"
               type="select"
               name="district"
               label="Daerah"
               validation="required"
               placeholder="Pilih daerah"
-              :options="[
-                'Petaling',
-                'Klang',
-                'Hulu Langat',
-                'Sepang',
-                'Hulu Selangor',
-                'Kuala Selangor',
-                'Sabak Bernam',
-                'Gombak',
-                'Kuala Langat',
-              ]"
+              :options="selangorDistricts"
+              v-model="formData.district"
+            />
+            <FormKit
+              v-else
+              type="text"
+              name="district"
+              label="Daerah / Region"
+              validation="required"
+              placeholder="Masukkan daerah / region"
               v-model="formData.district"
             />
 
@@ -228,55 +253,44 @@
               v-model="formData.addressLine3"
             />
 
+            <!-- Bandar (Malaysia/Selangor only) else free-text -->
             <FormKit
+              v-if="isMalaysia && formData.state === 'Selangor'"
               type="select"
               name="city"
               label="Pilih Bandar"
               validation="required"
               placeholder="Pilih bandar"
-              :options="[
-                'Shah Alam',
-                'Petaling Jaya',
-                'Subang Jaya',
-                'Klang',
-                'Ampang',
-                'Cheras',
-                'Kajang',
-                'Bangi',
-                'Puchong',
-                'Selayang',
-                'Gombak',
-                'Rawang',
-                'Sungai Buloh',
-                'Batu Caves',
-                'Kuala Selangor',
-                'Bestari Jaya',
-                'Ijok',
-                'Tanjong Karang',
-                'Sabak Bernam',
-                'Sungai Besar',
-                'Kuala Kubu Bharu',
-                'Batang Kali',
-                'Serendah',
-                'Hulu Bernam',
-                'Semenyih',
-                'Beranang',
-                'Sepang',
-                'Cyberjaya',
-                'Dengkil',
-                'Banting',
-                'Teluk Panglima Garang',
-                'Port Klang'
-              ]"
+              :options="selangorCities"
+              v-model="formData.city"
+            />
+            <FormKit
+              v-else
+              type="text"
+              name="city"
+              label="Bandar / City"
+              validation="required"
+              placeholder="Masukkan bandar / city"
               v-model="formData.city"
             />
 
+            <!-- Poskod (Malaysia) or Postal Code (others) -->
             <FormKit
+              v-if="isMalaysia"
               type="text"
               name="postcode"
               label="Poskod"
               validation="required|number|length:5"
               placeholder="Contoh: 43650"
+              v-model="formData.postcode"
+            />
+            <FormKit
+              v-else
+              type="text"
+              name="postcode"
+              label="Postal Code"
+              validation="required"
+              placeholder="Masukkan postal/zip code"
               v-model="formData.postcode"
             />
           </div>
@@ -342,6 +356,16 @@
               validation="email"
               placeholder="Contoh: nama@domain.com"
               v-model="representative.email"
+            />
+            <!-- Dokumen Sokongan untuk Setiap Wakil-->
+            <FormKit
+              type="file"
+              :name="`supportingLetter${index}`"
+              label="Surat Lantikan / Sokongan"
+              validation="required"
+              accept=".pdf,.jpg,.jpeg,.png"
+              help="Muat naik surat lantikan/sokongan bagi wakil ini"
+              v-model="representative.supportingLetter"
             />
 
             <div class="flex justify-end">
@@ -412,8 +436,19 @@
               </div>
             </div>
 
-            <!-- Editable Bank Fields - Show when bankSameAsHQ is 'tidak' or structure is not Cawangan -->
+            <!-- BA Requirement 11: Bank updates require manual approval -->
             <div v-if="formData.structure !== 'cawangan' || formData.bankSameAsHQ === 'tidak'">
+              <!-- Warning for bank updates -->
+              <div v-if="isFieldLocked('bankName')" class="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
+                <div class="flex items-center">
+                  <Icon name="mdi:alert-circle" class="text-yellow-600 mr-2" size="1.25rem" />
+                  <div class="text-sm text-yellow-800">
+                    <p class="font-medium">Kemaskini Maklumat Bank</p>
+                    <p>Kemaskini maklumat bank memerlukan pengesahan manual. Sila hubungi staf zakat untuk bantuan.</p>
+                  </div>
+                </div>
+              </div>
+
               <FormKit
                 type="select"
                 name="bankName"
@@ -437,6 +472,8 @@
                   'UOB Bank'
                 ]"
                 v-model="formData.bankName"
+                :disabled="isFieldLocked('bankName')"
+                :help="isFieldLocked('bankName') ? 'Kemaskini maklumat bank memerlukan pengesahan manual' : ''"
               />
 
               <FormKit
@@ -446,6 +483,8 @@
                 validation="required"
                 placeholder="Masukkan nombor akaun bank"
                 v-model="formData.bankAccountNumber"
+                :disabled="isFieldLocked('bankAccountNumber')"
+                :help="isFieldLocked('bankAccountNumber') ? 'Kemaskini maklumat bank memerlukan pengesahan manual' : ''"
               />
 
               <FormKit
@@ -454,7 +493,28 @@
                 label="Penama Akaun Bank"
                 placeholder="Masukkan penama akaun bank"
                 v-model="formData.penamaBank"
+                :disabled="isFieldLocked('penamaBank')"
+                :help="isFieldLocked('penamaBank') ? 'Kemaskini maklumat bank memerlukan pengesahan manual' : ''"
               />
+
+              <FormKit
+                type="text"
+                name="swiftCode"
+                label="SWIFT Code"
+                v-model="currentSwiftCode"
+                readonly              
+                placeholder="SWIFT Code akan dipaparkan berdasarkan bank yang dipilih"
+              />
+              <!-- BA Requirement 13: Single account policy -->
+              <div v-if="hasExistingAccount" class="mt-3 p-3 bg-red-50 border border-red-200 rounded">
+                <div class="flex items-center">
+                  <Icon name="mdi:alert-circle" class="text-red-600 mr-2" size="1.25rem" />
+                  <div class="text-sm text-red-800">
+                    <p class="font-medium">Polisi Akaun Tunggal</p>
+                    <p>Organisasi hanya dibenarkan 1 akaun sahaja pada 1 masa. Sila padam akaun sedia ada sebelum menambah yang baru.</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -480,7 +540,6 @@
             <p class="font-medium">Sila muat naik dokumen berikut:</p>
             <ul class="list-disc ml-5 mt-2">
               <li>Sijil Pendaftaran SSM / ROS</li>
-              <li>Surat Lantikan / Sokongan</li>
               <li>Bukti pemilikan akaun bank</li>
             </ul>
             <p class="mt-2">Format yang dibenarkan: PDF / JPG / PNG</p>
@@ -499,18 +558,7 @@
             <rs-badge :variant="hasRegistrationCert ? 'success' : 'danger'">{{ hasRegistrationCert ? 'Telah dilampirkan' : 'Tiada lampiran' }}</rs-badge>
           </div>
 
-          <FormKit
-            type="file"
-            name="appointmentLetter"
-            label="Surat Lantikan / Sokongan"
-            validation="required"
-            accept=".pdf,.jpg,.jpeg,.png"
-            help="Muat naik surat lantikan rasmi"
-            v-model="formData.appointmentLetter"
-          />
-          <div class="text-sm mt-1">
-            <rs-badge :variant="hasAppointmentLetter ? 'success' : 'danger'">{{ hasAppointmentLetter ? 'Telah dilampirkan' : 'Tiada lampiran' }}</rs-badge>
-          </div>
+          
 
           <FormKit
             type="file"
@@ -732,6 +780,10 @@
                     <label class="block text-gray-600 font-medium">Emel</label>
                     <p class="text-gray-900">{{ rep.email || '-' }}</p>
                   </div>
+                  <div>
+                    <label class="block text-gray-600 font-medium">Surat Lantikan/Sokongan</label>
+                    <rs-badge :variant="rep.supportingLetter ? 'success' : 'danger'">{{ rep.supportingLetter ? 'Dilampirkan' : 'Tiada' }}</rs-badge>
+                  </div>
                 </div>
               </div>
             </div>
@@ -798,7 +850,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
@@ -831,21 +883,52 @@ const referenceNumber = ref(
       .padStart(6, "0")
 );
 
-// Mock HQ data for realistic dropdown options
-const hqOptions = [
-  { label: 'UITM Jengka', value: 'uitm_jengka' },
-  { label: 'UITM Shah Alam', value: 'uitm_shah_alam' },
-  { label: 'UITM Kuala Lumpur', value: 'uitm_kuala_lumpur' },
-  { label: 'Universiti Malaya', value: 'universiti_malaya' },
-  { label: 'Universiti Putra Malaysia', value: 'universiti_putra_malaysia' },
-  { label: 'Universiti Teknologi Malaysia', value: 'universiti_teknologi_malaysia' },
-  { label: 'Yayasan Insan Malaysia', value: 'yayasan_insan_malaysia' },
-  { label: 'Pertubuhan Amal Jariah', value: 'pertubuhan_amal_jariah' },
-  { label: 'Yayasan Pendidikan Islami Malaysia', value: 'yayasan_pendidikan_islami_malaysia' },
-  { label: 'Institut Dakwah Malaysia', value: 'institut_dakwah_malaysia' },
-  { label: 'Pertubuhan Kebajikan Islam', value: 'pertubuhan_kebajikan_islam' },
-  { label: 'Yayasan Tahfiz Al-Quran', value: 'yayasan_tahfiz_al_quran' },
+// Country/state datasets
+const countryOptions = [
+  'Malaysia', 'Singapore', 'Indonesia', 'Thailand', 'Brunei', 'Philippines',
+  'Vietnam', 'Cambodia', 'Laos', 'Myanmar', 'India', 'China', 'Japan', 'South Korea',
+  'Australia', 'New Zealand', 'United States', 'United Kingdom', 'Canada', 'Germany',
+  'France', 'Netherlands', 'Saudi Arabia', 'United Arab Emirates', 'Qatar'
 ];
+const malaysiaStates = [
+  'Selangor', 'Johor', 'Kedah', 'Kelantan', 'Melaka', 'Negeri Sembilan', 'Pahang',
+  'Perak', 'Perlis', 'Pulau Pinang', 'Sabah', 'Sarawak', 'Terengganu', 'Kuala Lumpur',
+  'Labuan', 'Putrajaya'
+];
+const selangorDistricts = [
+  'Petaling', 'Klang', 'Hulu Langat', 'Sepang', 'Hulu Selangor', 'Kuala Selangor',
+  'Sabak Bernam', 'Gombak', 'Kuala Langat'
+];
+const selangorCities = [
+  'Shah Alam','Petaling Jaya','Subang Jaya','Klang','Ampang','Cheras','Kajang','Bangi','Puchong','Selayang','Gombak','Rawang','Sungai Buloh','Batu Caves','Kuala Selangor','Bestari Jaya','Ijok','Tanjong Karang','Sabak Bernam','Sungai Besar','Kuala Kubu Bharu','Batang Kali','Serendah','Hulu Bernam','Semenyih','Beranang','Sepang','Cyberjaya','Dengkil','Banting','Teluk Panglima Garang','Port Klang'
+];
+const isMalaysia = computed(() => formData.value.country === 'Malaysia');
+
+// Bank to SWIFT Code mapping
+const bankSwiftCodes = {
+  'Maybank': 'MAYBMYKL',
+  'CIMB Bank': 'CIBBMYKL',
+  'Public Bank': 'PBBEMYKL',
+  'RHB Bank': 'RHBBMYKL',
+  'Hong Leong Bank': 'HLBBMYKL',
+  'AmBank': 'ARBKMYKL',
+  'Bank Islam': 'BIMBMYKL',
+  'Bank Rakyat': 'BKRMMYKL',
+  'Bank Muamalat': 'BMMBMYKL',
+  'OCBC Bank': 'OCBCMYKL',
+  'HSBC Bank': 'HBMBMYKL',
+  'Standard Chartered Bank': 'SCBLMYKL',
+  'Citibank': 'CITIMYKL',
+  'UOB Bank': 'UOVBMYKL'
+};
+
+// Function to get SWIFT code based on selected bank
+const getSwiftCodeForBank = (bankName) => {
+  return bankSwiftCodes[bankName] || '';
+};
+
+// Reactive SWIFT code that updates when bank changes
+const currentSwiftCode = ref('');
 
 // Computed properties for conditional field visibility
 const showKariah = computed(() => {
@@ -874,6 +957,42 @@ const showHQDropdown = computed(() => {
 const showConfirmationModal = ref(false);
 const showDraftModal = ref(false);
 
+// BA Requirements: Update restrictions and role-based permissions
+const currentUserRole = ref('Pemohon'); // Pemohon, Staf Zakat, Eksekutif, etc.
+const organizationStatus = ref('Disahkan'); // Status of the organization
+const isSubmitted = ref(true); // Whether the organization has been submitted
+
+// BA Requirement 14: Field locking logic
+const isFieldLocked = (fieldName) => {
+  // Nama dan nombor pendaftaran tidak dibenarkan tukar jika telah hantar
+  // Lock for external users (PenggunaLuar), allow Staf Zakat (admin/developer) to edit
+  if (['organizationName', 'registrationNumber'].includes(fieldName)) {
+    return isSubmitted.value && currentUserRole.value === 'PenggunaLuar';
+  }
+  
+  // Bank updates require manual approval (BA Requirement 11)
+  // Lock for external users, allow Staf Zakat to edit
+  if (['bankName', 'bankAccountNumber', 'penamaBank'].includes(fieldName)) {
+    return organizationStatus.value === 'Disahkan' && currentUserRole.value === 'PenggunaLuar';
+  }
+  
+  return false;
+};
+
+// BA Requirement 10: Address can be updated directly
+const canUpdateAddress = computed(() => {
+  return true; // Address updates are always allowed
+});
+
+// BA Requirement 12: Contact changes require supporting letter
+const canUpdateContact = computed(() => {
+  // Allow Staf Zakat (admin/developer) to update, restrict external users
+  return currentUserRole.value === 'Staf Zakat' || !isSubmitted.value;
+});
+
+// BA Requirement 13: Only one account allowed at a time
+const hasExistingAccount = ref(false);
+
 const formData = ref({
   // Step 1: Maklumat Pendaftaran Organisasi
   organizationName: "",
@@ -889,6 +1008,7 @@ const formData = ref({
   hq: "", // New field for HQ selection when structure is Cawangan
 
   // Step 2: Maklumat Alamat
+  country: 'Malaysia',
   addressLine1: "",
   addressLine2: "",
   addressLine3: "",
@@ -899,7 +1019,7 @@ const formData = ref({
 
   // Step 3: Maklumat Perhubungan (renumbered from Step 4)
   representatives: [
-    { name: "", ic: "", phoneNumber: "", email: "" },
+    { name: "", ic: "", phoneNumber: "", email: "", supportingLetter: null },
   ],
 
   // Step 4: Maklumat Bank (renumbered from Step 5)
@@ -910,7 +1030,6 @@ const formData = ref({
 
   // Step 5: Muat Naik Dokumen Sokongan (renumbered from Step 6)
   registrationCertificate: null,
-  appointmentLetter: null,
   bankProof: null,
   additionalDocuments: [],
 });
@@ -1013,6 +1132,7 @@ const loadExistingData = async () => {
         organizationType: "masjid",
         registrationStatus: "berdaftar",
         structure: "hq",
+        country: 'Malaysia',
         addressLine1: "No. 1, Jalan Masjid",
         addressLine2: "Seksyen 14",
         addressLine3: "",
@@ -1020,13 +1140,13 @@ const loadExistingData = async () => {
         city: "Shah Alam",
         district: "Petaling",
         state: "Selangor",
-        kariah: "MASJID SULTAN SALAHUDDIN ABDUL AZIZ SHAH",
+        kariah: "",
         branch: "",
         zone: "Zon A",
         hq: "",
         representatives: [
-          { name: "Ustaz Ahmad bin Hassan", ic: "750101014567", phoneNumber: "03-55123456", email: "ahmad.hassan@masjid-selangor.gov.my" },
-          { name: "Siti Zainab binti Omar", ic: "820515023456", phoneNumber: "019-2345678", email: "zainab.omar@masjid-selangor.gov.my" }
+          { name: "Ustaz Ahmad bin Hassan", ic: "750101014567", phoneNumber: "03-55123456", email: "ahmad.hassan@masjid-selangor.gov.my", supportingLetter: { name: 'surat_lantikan_ahmad.pdf', size: 123456, type: 'application/pdf' } },
+          { name: "Siti Zainab binti Omar", ic: "820515023456", phoneNumber: "019-2345678", email: "zainab.omar@masjid-selangor.gov.my", supportingLetter: { name: 'surat_lantikan_zainab.pdf', size: 223344, type: 'application/pdf' } }
         ],
         bankName: "Bank Islam",
         bankAccountNumber: "1234567890123456",
@@ -1034,11 +1154,12 @@ const loadExistingData = async () => {
         bankSameAsHQ: "",
       },
       'ORG-202506-0002': {
-        organizationName: "Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Petaling Jaya",
+        organizationName: "Masjid Sultan Salahuddin Abdul Aziz Shah",
         registrationNumber: "PPM-2021-002",
         organizationType: "masjid",
         registrationStatus: "berdaftar",
-        structure: "cawangan",
+        structure: "hq",
+        country: 'Malaysia',
         addressLine1: "No. 88, Jalan Masjid PJ",
         addressLine2: "Taman Masjid Jaya",
         addressLine3: "",
@@ -1046,12 +1167,12 @@ const loadExistingData = async () => {
         city: "Petaling Jaya",
         district: "Petaling",
         state: "Selangor",
-        kariah: "MASJID SULTAN SALAHUDDIN ABDUL AZIZ SHAH - CAWANGAN PJ",
-        branch: "Cawangan Petaling Jaya",
+        kariah: "",
+        branch: "",
         zone: "Zon B",
-        hq: "masjid_sultan_salahuddin_hq",
+        hq: "",
         representatives: [
-          { name: "Ustaz Ibrahim bin Yusof", ic: "730505045678", phoneNumber: "03-22345678", email: "ibrahim@masjid-pj-selangor.gov.my" }
+          { name: "Ustaz Ibrahim bin Yusof", ic: "730505045678", phoneNumber: "03-22345678", email: "ibrahim@masjid-pj-selangor.gov.my", supportingLetter: { name: 'surat_lantikan_ibrahim.pdf', size: 198765, type: 'application/pdf' } }
         ],
         bankName: "Maybank",
         bankAccountNumber: "5123456789012",
@@ -1059,11 +1180,12 @@ const loadExistingData = async () => {
         bankSameAsHQ: "tidak",
       },
       'ORG-202505-0003': {
-        organizationName: "Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Klang",
+        organizationName: "Masjid Al-Amin",
         registrationNumber: "PPM-2021-003",
         organizationType: "masjid",
         registrationStatus: "berdaftar",
-        structure: "cawangan",
+        structure: "hq",
+        country: 'Malaysia',
         addressLine1: "No. 15, Jalan Masjid Klang",
         addressLine2: "Taman Masjid Klang",
         addressLine3: "Seksyen 5",
@@ -1071,12 +1193,12 @@ const loadExistingData = async () => {
         city: "Klang",
         district: "Klang",
         state: "Selangor",
-        kariah: "MASJID SULTAN SALAHUDDIN ABDUL AZIZ SHAH - CAWANGAN KLANG",
-        branch: "Cawangan Klang",
+        kariah: "",
+        branch: "",
         zone: "Zon C",
-        hq: "masjid_sultan_salahuddin_hq",
+        hq: "",
         representatives: [
-          { name: "Dr. Ahmad Fauzi bin Abdul Rahman", ic: "650815056789", phoneNumber: "03-33456789", email: "fauzi@masjid-klang-selangor.gov.my" }
+          { name: "Dr. Ahmad Fauzi bin Abdul Rahman", ic: "650815056789", phoneNumber: "03-33456789", email: "fauzi@masjid-klang-selangor.gov.my", supportingLetter: { name: 'surat_lantikan_fauzi.pdf', size: 156789, type: 'application/pdf' } }
         ],
         bankName: "Bank Islam",
         bankAccountNumber: "2098765432109",
@@ -1084,11 +1206,12 @@ const loadExistingData = async () => {
         bankSameAsHQ: "tidak",
       },
       'ORG-202507-0004': {
-        organizationName: "Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Shah Alam",
+        organizationName: "Masjid Al-Hidayah",
         registrationNumber: "PPM-2021-004",
         organizationType: "masjid",
         registrationStatus: "berdaftar",
-        structure: "cawangan",
+        structure: "hq",
+        country: 'Malaysia',
         addressLine1: "No. 200, Jalan Masjid Shah Alam",
         addressLine2: "Taman Masjid Shah Alam",
         addressLine3: "Seksyen 3",
@@ -1096,12 +1219,12 @@ const loadExistingData = async () => {
         city: "Shah Alam",
         district: "Petaling",
         state: "Selangor",
-        kariah: "MASJID SULTAN SALAHUDDIN ABDUL AZIZ SHAH - CAWANGAN SHAH ALAM",
-        branch: "Cawangan Shah Alam",
+        kariah: "",
+        branch: "",
         zone: "Zon A",
-        hq: "masjid_sultan_salahuddin_hq",
+        hq: "",
         representatives: [
-          { name: "Encik Mohd Rashid bin Hassan", ic: "700301067890", phoneNumber: "03-55567890", email: "rashid@masjid-sa-selangor.gov.my" }
+          { name: "Encik Mohd Rashid bin Hassan", ic: "700301067890", phoneNumber: "03-55567890", email: "rashid@masjid-sa-selangor.gov.my", supportingLetter: { name: 'surat_lantikan_rashid.pdf', size: 167890, type: 'application/pdf' } }
         ],
         bankName: "RHB Bank",
         bankAccountNumber: "3456789012345",
@@ -1114,6 +1237,7 @@ const loadExistingData = async () => {
         organizationType: "ngo",
         registrationStatus: "berdaftar",
         structure: "hq",
+        country: 'Malaysia',
         addressLine1: "No. 77, Jalan Kebajikan 2/4",
         addressLine2: "Pusat Kebajikan Islam",
         addressLine3: "Tingkat 15",
@@ -1121,12 +1245,12 @@ const loadExistingData = async () => {
         city: "Puchong",
         district: "Petaling",
         state: "Selangor",
-        kariah: "MASJID PUCHONG",
+        kariah: "",
         branch: "Ibu Pejabat",
         zone: "Zon Puchong",
         hq: "",
         representatives: [
-          { name: "Azman bin Abdullah", ic: "680220078901", phoneNumber: "03-21234567", email: "azman@pki-selangor.org.my" }
+          { name: "Azman bin Abdullah", ic: "680220078901", phoneNumber: "03-21234567", email: "azman@pki-selangor.org.my", supportingLetter: { name: 'surat_lantikan_azman.pdf', size: 145678, type: 'application/pdf' } }
         ],
         bankName: "Public Bank",
         bankAccountNumber: "4567890123456",
@@ -1139,6 +1263,7 @@ const loadExistingData = async () => {
         organizationType: "ngo",
         registrationStatus: "berdaftar",
         structure: "hq",
+        country: 'Malaysia',
         addressLine1: "No. 33, Jalan Anak Yatim 4/2",
         addressLine2: "Taman Anak Yatim Cemerlang",
         addressLine3: "",
@@ -1146,13 +1271,13 @@ const loadExistingData = async () => {
         city: "Puchong",
         district: "Petaling",
         state: "Selangor",
-        kariah: "MASJID PUCHONG",
+        kariah: "",
         branch: "Ibu Pejabat",
         zone: "Zon Puchong",
         hq: "",
         representatives: [
-          { name: "Saudara Fikri bin Omar", ic: "850610089012", phoneNumber: "03-80123456", email: "fikri@ray-selangor.org.my" },
-          { name: "Saudari Nurul Ain binti Zaki", ic: "870315091234", phoneNumber: "019-7654321", email: "nurul@ray-selangor.org.my" }
+          { name: "Saudara Fikri bin Omar", ic: "850610089012", phoneNumber: "03-80123456", email: "fikri@ray-selangor.org.my", supportingLetter: { name: 'surat_lantikan_fikri.pdf', size: 134567, type: 'application/pdf' } },
+          { name: "Saudari Nurul Ain binti Zaki", ic: "870315091234", phoneNumber: "019-7654321", email: "nurul@ray-selangor.org.my", supportingLetter: { name: 'surat_lantikan_nurul.pdf', size: 178901, type: 'application/pdf' } }
         ],
         bankName: "AmBank",
         bankAccountNumber: "6789012345678",
@@ -1165,6 +1290,7 @@ const loadExistingData = async () => {
         organizationType: "institusi",
         registrationStatus: "berdaftar",
         structure: "hq",
+        country: 'Malaysia',
         addressLine1: "No. 15, Jalan Tahfiz 5/1",
         addressLine2: "Taman Ilmu Tahfiz",
         addressLine3: "Seksyen 5",
@@ -1172,12 +1298,12 @@ const loadExistingData = async () => {
         city: "Kajang",
         district: "Hulu Langat",
         state: "Selangor",
-        kariah: "MASJID KAJANG",
+        kariah: "",
         branch: "Sekolah Utama",
         zone: "Zon Kajang",
         hq: "",
         representatives: [
-          { name: "Prof. Dr. Ahmad Fauzi bin Ismail", ic: "601205012345", phoneNumber: "03-33456789", email: "fauzi@maahad-tahfiz-selangor.edu.my" }
+          { name: "Prof. Dr. Ahmad Fauzi bin Ismail", ic: "601205012345", phoneNumber: "03-33456789", email: "fauzi@maahad-tahfiz-selangor.edu.my", supportingLetter: { name: 'surat_lantikan_fauzi_maahad.pdf', size: 212345, type: 'application/pdf' } }
         ],
         bankName: "HSBC Bank",
         bankAccountNumber: "7890123456789",
@@ -1190,6 +1316,7 @@ const loadExistingData = async () => {
         organizationType: "kesihatan",
         registrationStatus: "berdaftar",
         structure: "cawangan",
+        country: 'Malaysia',
         addressLine1: "No. 88, Jalan Kesihatan 2/1",
         addressLine2: "Taman Kesihatan Jaya",
         addressLine3: "Seksyen 2",
@@ -1197,12 +1324,12 @@ const loadExistingData = async () => {
         city: "Shah Alam",
         district: "Petaling",
         state: "Selangor",
-        kariah: "MASJID SHAH ALAM",
+        kariah: "",
         branch: "Cawangan Shah Alam",
         zone: "Zon Selangor",
         hq: "pusat_dialisis_as_salam_hq",
         representatives: [
-          { name: "Dato Dr. Siti Aisyah binti Hassan", ic: "720315123456", phoneNumber: "03-55123456", email: "aisyah@dialisis-as-salam-selangor.gov.my" }
+          { name: "Dato Dr. Siti Aisyah binti Hassan", ic: "720315123456", phoneNumber: "03-55123456", email: "aisyah@dialisis-as-salam-selangor.gov.my", supportingLetter: { name: 'surat_lantikan_siti_aisyah.pdf', size: 198765, type: 'application/pdf' } }
         ],
         bankName: "Bank Islam",
         bankAccountNumber: "1234567890123",
@@ -1215,6 +1342,7 @@ const loadExistingData = async () => {
         organizationType: "",
         registrationStatus: "",
         structure: "",
+        country: 'Malaysia',
         addressLine1: "",
         addressLine2: "",
         addressLine3: "",
@@ -1226,7 +1354,7 @@ const loadExistingData = async () => {
         branch: "",
         zone: "",
         representatives: [
-          { name: "", ic: "", phoneNumber: "", email: "" }
+          { name: "", ic: "", phoneNumber: "", email: "", supportingLetter: null }
         ],
         bankName: "",
         bankAccountNumber: "",
@@ -1240,7 +1368,6 @@ const loadExistingData = async () => {
       // Attach presentation-only mock attachments so UI shows uploaded state
       const incoming = { ...mockData[id] };
       if (!incoming.registrationCertificate) incoming.registrationCertificate = { name: 'ssm.pdf', size: 123456, type: 'application/pdf' };
-      if (!incoming.appointmentLetter) incoming.appointmentLetter = { name: 'surat_lantikan.pdf', size: 223344, type: 'application/pdf' };
       if (!incoming.bankProof) incoming.bankProof = { name: 'penyata_bank.pdf', size: 334455, type: 'application/pdf' };
       if (!incoming.additionalDocuments) incoming.additionalDocuments = [ { name: 'dokumen_tambahan_1.pdf', size: 445566, type: 'application/pdf' } ];
       formData.value = { ...formData.value, ...incoming };
@@ -1253,10 +1380,6 @@ const hasRegistrationCert = computed(() => {
   const f = formData.value.registrationCertificate;
   return !!(f && ((Array.isArray(f) && f.length > 0) || (!Array.isArray(f) && f.name)));
 });
-const hasAppointmentLetter = computed(() => {
-  const f = formData.value.appointmentLetter;
-  return !!(f && ((Array.isArray(f) && f.length > 0) || (!Array.isArray(f) && f.name)));
-});
 const hasBankProof = computed(() => {
   const f = formData.value.bankProof;
   return !!(f && ((Array.isArray(f) && f.length > 0) || (!Array.isArray(f) && f.name)));
@@ -1265,6 +1388,19 @@ const additionalDocsCount = computed(() => {
   const f = formData.value.additionalDocuments;
   return Array.isArray(f) ? f.length : (f ? 1 : 0);
 });
+
+// Watch for changes in bank selection to update SWIFT code
+watch(
+  () => formData.value.bankName,
+  (newBank) => {
+    if (newBank) {
+      currentSwiftCode.value = getSwiftCodeForBank(newBank);
+    } else {
+      currentSwiftCode.value = '';
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <style lang="scss" scoped>

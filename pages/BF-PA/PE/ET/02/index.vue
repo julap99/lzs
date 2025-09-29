@@ -23,6 +23,53 @@
       </template>
 
       <template #body>
+        <header class="flex flex-wrap items-center justify-between gap-4 mb-4">
+          <div class="space-y-1">
+            <h1 class="text-2xl font-semibold text-slate-900">Elaun Tahunan — Senarai Nama PA</h1>
+            <p class="text-sm text-slate-500">{{ typeLabel || 'Jenis Elaun' }}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <rs-badge :variant="statusBadgeVariant">{{ status }}</rs-badge>
+            <rs-button variant="ghost" class="flex items-center gap-2" @click="goBack">
+              <Icon name="ph:arrow-left" class="h-4 w-4" />
+              Kembali
+            </rs-button>
+          </div>
+        </header>
+        <!-- Dokumen Sokongan (Wajib) - Dropzone di atas -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Dokumen Sokongan (Wajib)</label>
+          <div
+            class="relative border border-dashed rounded-md px-3 py-3 text-center cursor-pointer select-none"
+            :class="isDragging ? 'border-primary bg-primary/5' : 'border-gray-300'"
+            @dragover.prevent="onDragOver"
+            @dragleave.prevent="onDragLeave"
+            @drop.prevent="onDrop"
+            @click="triggerDocInput"
+            aria-label="Muat naik dokumen"
+          >
+            <input ref="docInput" type="file" class="hidden" multiple @change="onDocsSelected" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" />
+            <div class="flex flex-col items-center justify-center gap-1">
+              <Icon name="ic:baseline-cloud-upload" class="text-gray-400" size="20" />
+              <p class="text-xs text-gray-700">Muat naik dokumen</p>
+              <p class="text-[11px] text-gray-500">PDF, JPG, PNG, DOC, DOCX</p>
+            </div>
+          </div>
+          <div class="mt-1">
+            <span class="text-xs text-gray-500" v-if="uploadedDocs.length">{{ uploadedDocs.length }} fail dipilih</span>
+          </div>
+          <ul class="mt-1 text-xs text-gray-700" v-if="uploadedDocs.length">
+            <li v-for="(f, idx) in uploadedDocs" :key="idx" class="flex items-center justify-between gap-2 py-0.5 border-b last:border-b-0">
+              <span class="truncate max-w-[70%]">{{ f.name }}</span>
+              <div class="flex items-center gap-2">
+                <span class="text-gray-400">{{ (f.size/1024/1024).toFixed(2) }} MB</span>
+                <button class="text-red-600 hover:text-red-700" @click.stop="removeDoc(idx)">Buang</button>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+
         <!-- 3.1.1 Maklumat Penerima (Jadual Baca Sahaja + Checkbox Pilih untuk calon baharu sahaja) -->
         <div class="space-y-3 mb-6">
           <div class="flex items-center justify-between">
@@ -62,9 +109,9 @@
                   <th class="px-4 py-3 font-medium text-gray-900">ID Pengenalan</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Kategori</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Kariah</th>
-                  <th class="px-4 py-3 font-medium text-gray-900">Senarai Aktiviti Dihadiri</th>
-                  <th class="px-4 py-3 font-medium text-gray-900">Hadir Aktiviti (kali)</th>
-                  <th class="px-4 py-3 font-medium text-gray-900">Total Hadir Kali</th>
+                  <th v-if="!isAwardType" class="px-4 py-3 font-medium text-gray-900">Senarai Aktiviti Dihadiri</th>
+                  <th v-if="!isAwardType" class="px-4 py-3 font-medium text-gray-900">Hadir Aktiviti (kali)</th>
+                  <th v-if="!isAwardType" class="px-4 py-3 font-medium text-gray-900">Total Hadir Kali</th>
                 </tr>
               </thead>
               <tbody class="divide-y bg-white">
@@ -87,11 +134,11 @@
                   <td class="px-4 py-3 text-gray-900">{{ row.ic }}</td>
                   <td class="px-4 py-3 text-gray-900">{{ row.category }}</td>
                   <td class="px-4 py-3 text-gray-900">{{ row.parish }}</td>
-                  <td class="px-4 py-3">
+                  <td v-if="!isAwardType" class="px-4 py-3">
                     <ul class="list-disc pl-5 space-y-0.5 text-xs leading-tight">
                       <li v-for="a in aggregateActivities(row.activities)" :key="a.name">
                         <button 
-                          @click="openAllowanceModal(a.name)"
+                          @click="openActivityDetail(row, a.name)"
                           class="font-medium text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-left"
                         >
                           {{ a.name }}
@@ -102,22 +149,22 @@
                       </li>
                     </ul>
                   </td>
-                  <td class="px-4 py-3">
+                  <td v-if="!isAwardType" class="px-4 py-3">
                     <div>
                       <div v-for="a in aggregateActivities(row.activities)" :key="a.name" class="text-sm">
                         <span class="font-medium">{{ a.count }}</span>
                       </div>
                       <div v-if="!row.activities || !row.activities.length" class="text-gray-500">
-                        —
+                        -
                       </div>
                     </div>
                   </td>
-                  <td class="px-4 py-3 text-gray-900">
+                  <td v-if="!isAwardType" class="px-4 py-3 text-gray-900">
                     {{ totalActivityCount(row.activities) }}
                   </td>
                 </tr>
                 <tr v-if="!filteredRows.length" class="hover:bg-gray-50">
-                  <td class="px-4 py-6 text-center text-gray-500" colspan="8">
+                  <td class="px-4 py-6 text-center text-gray-500" :colspan="isAwardType ? 5 : 8">
                     Tiada data {{ getCategoryFilterText() }} untuk kombinasi Tahun & Jenis Elaun ini.
                   </td>
                 </tr>
@@ -185,7 +232,7 @@
                       Elaun (RM)
                     </div>
                   </th>
-                  <th class="px-4 py-3 font-medium text-gray-900">Catatan</th>
+                  <th v-if="!isAwardType" class="px-4 py-3 font-medium text-gray-900">Catatan</th>
                   <th class="px-4 py-3 font-medium text-gray-900">Tindakan</th>
                 </tr>
               </thead>
@@ -230,11 +277,11 @@
                       </div>
                     </template>
                   </td>
-                  <td class="px-4 py-3">
+                  <td v-if="!isAwardType" class="px-4 py-3">
                     <div v-if="r._allowanceNotes" class="text-xs text-gray-600 max-w-xs truncate" :title="r._allowanceNotes">
                       {{ r._allowanceNotes }}
                     </div>
-                    <span v-else class="text-xs text-gray-400">—</span>
+                    <span v-else class="text-xs text-gray-400">-</span>
                   </td>
                   <td class="px-4 py-3 text-left">
                     <div class="flex items-center justify-start gap-2">
@@ -278,7 +325,7 @@
                   </td>
                 </tr>
                 <tr v-if="recipients.length === 0" class="hover:bg-gray-50">
-                  <td class="px-4 py-6 text-center text-gray-500" colspan="6">
+                  <td class="px-4 py-6 text-center text-gray-500" :colspan="isAwardType ? 5 : 6">
                     Tiada penerima dipilih lagi. Tandakan dan klik 'Pilih'.
                   </td>
                 </tr>
@@ -299,6 +346,8 @@
               <span class="font-semibold text-lg">{{ totalAllowance.toFixed(2) }}</span>
             </div>
           </div>
+
+          
 
           <!-- Tindakan -->
           <div class="flex items-center justify-end gap-2">
@@ -377,10 +426,51 @@
 
     <!-- Note: Form-based activities modal removed - moved to AB2 module -->
 
+    <!-- Activity Details Modal -->
+    <div v-if="showActivityDetailModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] flex flex-col">
+        <div class="p-6 overflow-y-auto">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold">Butiran Aktiviti: {{ activityDetail.activityName }}</h3>
+            <button @click="closeActivityDetail" class="text-gray-400 hover:text-gray-600">
+              <Icon name="ic:baseline-close" size="24" />
+            </button>
+          </div>
+          <div class="text-sm text-gray-600 mb-4">PA: <b>{{ activityDetail.paName }}</b> 
+            <span class="ml-3">Jumlah kutipan: <b>{{ activityDetail.total }}</b> kali</span>
+          </div>
+          <div class="overflow-x-auto rounded-lg border">
+            <table class="min-w-full text-sm divide-y">
+              <thead class="bg-gray-50 text-left">
+                <tr>
+                  <th class="px-4 py-3 font-medium text-gray-900">ID</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Nama Asnaf</th>
+                  <th class="px-4 py-3 font-medium text-gray-900">Kutipan (kali)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y bg-white">
+                <tr v-for="(d, idx) in activityDetail.details" :key="idx" class="hover:bg-gray-50">
+                  <td class="px-4 py-2">{{ d.id }}</td>
+                  <td class="px-4 py-2">{{ d.name }}</td>
+                  <td class="px-4 py-2">{{ d.collected }}</td>
+                </tr>
+                <tr v-if="!activityDetail.details.length">
+                  <td class="px-4 py-6 text-center text-gray-500" colspan="3">Tiada butiran tersedia.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="flex items-center justify-end mt-4">
+            <rs-button variant="secondary-outline" size="sm" @click="closeActivityDetail">Tutup</rs-button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Special Activity Modal -->
     <div v-if="showSpecialModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg shadow-xl w-full max-w-6xl mx-4 max-h-[90vh] overflow-hidden">
-        <div class="p-6">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-6xl mx-4 max-h-[90vh] flex flex-col">
+        <div class="p-6 overflow-y-auto">
           <div class="flex items-center justify-between mb-6">
             <h3 class="text-lg font-semibold">Pembatalan Pembayaran Elaun Khas</h3>
             <button 
@@ -462,8 +552,8 @@
 
     <!-- Award Activities Modal -->
     <div v-if="showAwardModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg shadow-xl w-full max-w-6xl mx-4 max-h-[90vh] overflow-hidden">
-        <div class="p-6">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-6xl mx-4 max-h-[90vh] flex flex-col">
+        <div class="p-6 overflow-y-auto">
           <div class="flex items-center justify-between mb-6">
             <h3 class="text-lg font-semibold">Pembatalan Maklumat Anugerah Penolong Amil</h3>
             <button 
@@ -624,22 +714,26 @@ const typeOptions = {
 
 const typeLabel = computed(() => typeOptions[query.type] || '');
 
+// Award type flag (hide attendance columns, fix allowances)
+const isAwardType = computed(() => String(query.type || '').startsWith('ANUG-'));
+
 /* ====== Kadar elaun tetap ikut jenis elaun ====== */
 // Fixed allowances that cannot be edited
 const fixedAllowanceByType = { 
   'ET-KPAK': 500, 
   'ET-KPAF': 300, 
-  'ET-KHAS': 400
+  'ET-KHAS': 400,
+  // Award types (terbaik)
+  'ANUG-KPAK': 750,
+  'ANUG-PAK': 600,
+  'ANUG-KPAF': 500,
+  'ANUG-PAF': 400,
+  'ANUG-PAP': 400,
+  'ANUG-PAKPLUS': 400
 };
 
-// Editable allowances with range validation
+// Editable allowances with range validation (none for award types now)
 const editableAllowanceByType = {
-  'ANUG-KPAK': { min: 400, max: 750, default: 400 },
-  'ANUG-PAK': { min: 400, max: 750, default: 400 },
-  'ANUG-KPAF': { min: 400, max: 750, default: 400 },
-  'ANUG-PAF': { min: 400, max: 750, default: 400 },
-  'ANUG-PAP': { min: 400, max: 750, default: 400 },
-  'ANUG-PAKPLUS': { min: 400, max: 750, default: 400 }
 };
 
 const isFixedAllowance = computed(() => fixedAllowanceByType[query.type] != null);
@@ -709,6 +803,57 @@ const selectedActivity = ref('');
 const specialModalData = ref([]);
 const awardModalData = ref([]);
 
+// Mandatory document upload state with Dropzone
+const uploadedDocs = ref([]);
+const docInput = ref(null);
+const isDragging = ref(false);
+
+function triggerDocInput() {
+  if (docInput.value) docInput.value.click();
+}
+
+function filterFiles(files) {
+  const allowed = ['pdf','jpg','jpeg','png','doc','docx'];
+  return files.filter(f => {
+    const ext = String(f.name || '').split('.').pop().toLowerCase();
+    return allowed.includes(ext);
+  });
+}
+
+function addFiles(files) {
+  const list = filterFiles(files);
+  const existing = new Set(uploadedDocs.value.map(f => `${f.name}|${f.size}`));
+  for (const f of list) {
+    const key = `${f.name}|${f.size}`;
+    if (!existing.has(key)) uploadedDocs.value.push(f);
+  }
+}
+
+function onDocsSelected(e) {
+  const files = Array.from(e?.target?.files || []);
+  addFiles(files);
+  // reset input to allow selecting same file again
+  if (docInput.value) docInput.value.value = '';
+}
+
+function onDragOver() { isDragging.value = true; }
+function onDragLeave() { isDragging.value = false; }
+function onDrop(e) {
+  isDragging.value = false;
+  const files = Array.from(e?.dataTransfer?.files || []);
+  addFiles(files);
+}
+
+function removeDoc(idx) {
+  uploadedDocs.value.splice(idx, 1);
+}
+
+// Activity details state
+const showActivityDetailModal = ref(false);
+const activityDetail = ref({ activityName: '', paName: '', total: 0, details: [] });
+
+// (Removed) ELAUN KHAS helpers for info panel
+
 // Bulk selection state for Maklumat Penerima section
 const selectAllCandidates = ref(false);
 
@@ -771,6 +916,8 @@ function totalActivityCount(acts = []) {
 function seedData() {
   // Load candidates based on allowance type
   candidates.value = getMockCandidates(query.year, query.type);
+  // Drop placeholder candidates named "Nama PA ..." for all types
+  candidates.value = candidates.value.filter(c => c && typeof c.name === 'string' && !/^Nama PA\b/i.test(c.name));
   
   // Load draft recipients from localStorage
   loadDraftRecipients();
@@ -883,10 +1030,23 @@ const activityCategories = {
 
 // Enhanced activity generation for ET module (Yearly/Special Allowances only)
 function generateSimpleActivities() {
-  const activityPool = [
-    // Special activity
+  const isKhas = (query?.type === 'ET-KHAS') || (route?.query?.type === 'ET-KHAS');
+  const khasActivities = (() => {
+    // Ensure total between 48 and 65
+    const total = 48 + Math.floor(Math.random() * 18); // 48..65
+    const c1 = Math.max(10, Math.floor(Math.random() * 25));
+    const c2 = Math.max(10, Math.floor(Math.random() * 25));
+    const c3 = Math.max(0, total - c1 - c2);
+    return [
+      { name: 'BANCIAN BARU', count: c1, category: 'SPECIAL' },
+      { name: 'KEMASKINI', count: c2, category: 'SPECIAL' },
+      { name: 'PERMOHONAN BANTUAN', count: c3, category: 'SPECIAL' },
+    ];
+  })();
+
+  const defaultPool = [
+    // Special activity (generic)
     { name: 'KHAS - 48 AKTIVITI/TAHUN', count: 1, category: 'SPECIAL' },
-    
     // Award activities
     { name: 'Ketua Penolong Amil Kariah (KPAK) terbaik', count: 1, category: 'AWARD' },
     { name: 'Penolong Amil Kariah (PAK) terbaik', count: 1, category: 'AWARD' },
@@ -895,10 +1055,12 @@ function generateSimpleActivities() {
     { name: 'Penolong Amil Padi (PAP) terbaik', count: 1, category: 'AWARD' },
     { name: 'Penolong Amil Komuniti (PAK+) terbaik', count: 1, category: 'AWARD' }
   ];
-  
-  // Randomly select 2-4 activities (reduced since we have fewer activity types)
-  const selectedCount = Math.floor(Math.random() * 3) + 2; // 2-4 activities
-  const shuffled = [...activityPool].sort(() => 0.5 - Math.random());
+
+  const activityPool = isKhas ? khasActivities : defaultPool;
+
+  // Randomly select 2-4 activities
+  const selectedCount = isKhas ? activityPool.length : Math.floor(Math.random() * 3) + 2; // 2-4 by default
+  const shuffled = isKhas ? activityPool : [...activityPool].sort(() => 0.5 - Math.random());
   
   return shuffled.slice(0, selectedCount).map((activity, index) => ({
     id: `A${index + 1}`,
@@ -952,6 +1114,17 @@ function loadDraftRecipients() {
           _checked: false,
           _allowanceNotes: r._allowanceNotes || ''
         }));
+
+        // Remove any placeholder rows named "Nama PA ..." for all types
+        recipients.value = recipients.value.filter(r => r && typeof r.name === 'string' && !/^Nama PA\b/i.test(r.name));
+
+        // For award types (ANUG-*), enforce fixed allowance and keep only positive allowances
+        if (isAwardType.value) {
+          const fixed = fixedAllowanceValue.value;
+          recipients.value = recipients.value
+            .filter(r => (Number(r.allowance) || 0) > 0)
+            .map(r => ({ ...r, allowance: fixed }));
+        }
       }
     }
   } catch (error) {
@@ -976,7 +1149,12 @@ const baseRows = computed(() => {
   };
   
   const allowedCategories = categoryMapping[query.type] || ['KPAK'];
-  return candidates.value.filter(r => allowedCategories.includes(r.category));
+  let rows = candidates.value.filter(r => allowedCategories.includes(r.category));
+  // For ELAUN KHAS, only show PAs with >=48 activities in the year
+  if (query.type === 'ET-KHAS') {
+    rows = rows.filter(r => totalActivityCount(r.activities) >= 48);
+  }
+  return rows;
 });
 
 /* baris yang boleh dipilih (tidak berada dalam recipients sedia ada) */
@@ -1078,7 +1256,11 @@ watch(() => query.type, () => {
 });
 
 const totalAllowance = computed(() => recipients.value.reduce((sum, r) => sum + (Number(r.allowance) || 0), 0));
-const canSubmit = computed(() => recipients.value.length > 0 && recipients.value.every(r => isFinite(r.allowance) && Number(r.allowance) >= 0));
+const canSubmit = computed(() =>
+  recipients.value.length > 0 &&
+  uploadedDocs.value.length > 0 &&
+  recipients.value.every(r => isFinite(r.allowance) && Number(r.allowance) >= 0)
+);
 const status = ref('DRAF');
 const statusLabel = computed(() => status.value === 'MENUNGGU KELULUSAN' ? 'menunggu kelulusan' : status.value.toLowerCase());
 
@@ -1093,6 +1275,17 @@ const allowanceTypeInfo = computed(() => {
     return `Elaun Boleh Diubah: RM${min.toFixed(2)} - RM${max.toFixed(2)} (default: RM${defaultValue.toFixed(2)})`;
   }
   return 'Elaun: Boleh diubah';
+});
+
+// Badge variant for PD-style header
+const statusBadgeVariant = computed(() => {
+  switch (status.value) {
+    case 'DRAF': return 'secondary';
+    case 'MENUNGGU KELULUSAN': return 'warning';
+    case 'LULUS': return 'success';
+    case 'DITOLAK': return 'danger';
+    default: return 'secondary';
+  }
 });
 
 /* Simpan draf → persist penerima & status, count, balik ke skrin 1 */
@@ -1357,6 +1550,57 @@ function openAllowanceModal(activityName) {
     awardModalData.value = generateAwardModalData();
     showAwardModal.value = true;
   }
+}
+
+// Activity details modal logic
+function openActivityDetail(row, activityName) {
+  // Find the count for this activity
+  const agg = aggregateActivities(row.activities).find(a => a.name === activityName);
+  const total = agg ? Number(agg.count) || 0 : 0;
+  activityDetail.value.activityName = activityName;
+  activityDetail.value.paName = row.name;
+  activityDetail.value.total = total;
+  activityDetail.value.details = generateAsnafDetails(row.paId, activityName, total);
+  showActivityDetailModal.value = true;
+}
+
+function closeActivityDetail() {
+  showActivityDetailModal.value = false;
+  activityDetail.value = { activityName: '', paName: '', total: 0, details: [] };
+}
+
+// Deterministic mock generator for asnaf names + collected counts
+function generateAsnafDetails(paId, activityName, total) {
+  const rows = [];
+  const rng = mulberry32(hashCode(`${paId}:${activityName}`));
+  for (let i = 0; i < total; i++) {
+    const idx = i + 1;
+    const first = sampleArray(['Ahmad','Muhammad','Siti','Nur','Azlan','Hafiz','Aisyah','Farah','Khairul','Nadia'], rng);
+    const last = sampleArray(['Bin Ali','Binti Ahmad','Bin Hassan','Binti Ismail','Bin Rahman','Binti Omar','Bin Zainal','Binti Ibrahim'], rng);
+    rows.push({ id: String(idx).padStart(2,'0'), name: `${first} ${last}`, collected: 1 });
+  }
+  return rows;
+}
+
+// Tiny helpers for deterministic RNG
+function hashCode(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = Math.imul(31, h) + str.charCodeAt(i) | 0;
+  }
+  return h >>> 0;
+}
+function mulberry32(a) {
+  return function() {
+    let t = a += 0x6D2B79F5;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function sampleArray(arr, rng) {
+  const i = Math.floor(rng() * arr.length);
+  return arr[i];
 }
 
 function closeSpecialModal() {

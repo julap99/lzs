@@ -6,7 +6,17 @@
       <!-- Maklumat Umum Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Maklumat Umum</h2>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:info" class="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Maklumat Umum</h2>
+              <p class="text-sm text-gray-500">Maklumat asas bantuan</p>
+            </div>
+          </div>
         </template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -53,14 +63,14 @@
             </div>
 
             <!-- Jumlah Amaun -->
-            <FormKit
+            <!-- <FormKit
               type="text"
               name="jumlahAmaun"
               label="Jumlah Amaun (RM)"
               v-model="formData.jumlahAmaun"
               disabled
               help="Auto-calculate selepas import Data"
-            />
+            /> -->
 
             <!-- Catatan -->
             <FormKit
@@ -72,27 +82,8 @@
               v-model="formData.catatan"
               :classes="{
                 input: 'h-24',
+                outer: 'md:col-span-2',
               }"
-            />
-
-            <!-- Nama Pegawai -->
-            <FormKit
-              type="text"
-              name="namaPegawai"
-              label="Nama Pegawai"
-              v-model="formData.namaPegawai"
-              disabled
-              help="Auto-fill selepas simpan"
-            />
-
-            <!-- Tarikh Mohon -->
-            <FormKit
-              type="text"
-              name="tarikhMohon"
-              label="Tarikh Mohon"
-              v-model="formData.tarikhMohon"
-              disabled
-              help="Auto-fill selepas simpan"
             />
           </div>
         </template>
@@ -101,7 +92,17 @@
       <!-- Maklumat Bantuan Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Maklumat Bantuan</h2>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:handshake" class="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Maklumat Bantuan</h2>
+              <p class="text-sm text-gray-500">Konfigurasi bantuan dan produk</p>
+            </div>
+          </div>
         </template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -158,15 +159,28 @@
                 :disabled="!formData.productPackage"
             />
 
-            <!-- Penyiasat -->
             <FormKit
-              type="select"
-              name="penyiasat"
-              label="Penyiasat"
-              :options="penyiasatOptions"
-              placeholder="Pilih penyiasat"
+              type="date"
+              name="tarikhJangkaanBayaran"
+              label="Tarikh Jangkaan Bayaran"
+              placeholder="Pilih tarikh jangkaan bayaran"
               validation="required"
-              v-model="formData.penyiasat"
+              :validation-messages="{
+                required: 'Sila pilih tarikh jangkaan bayaran',
+              }"
+              v-model="formData.tarikhJangkaanBayaran"
+            />
+
+            <FormKit
+              type="radio"
+              name="modeOfPayment"
+              label="Mode Of Payment"
+              v-model="formData.modeOfPayment"
+              :options="[
+                { label: 'Tunai', value: 'Tunai' },
+                { label: 'Profile', value: 'Profile' },
+              ]"
+              validation="required"
             />
 
             <!-- Cawangan (CustomSelect) -->
@@ -176,6 +190,9 @@
               label="Cawangan"
               search-placeholder="Cari cawangan..."
               :disabled="false"
+              :classes="{
+                outer: 'md:col-span-2',
+              }"
             />
           </div>
         </template>
@@ -184,7 +201,17 @@
       <!-- Import Data Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Import Data</h2>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:upload" class="w-6 h-6 text-purple-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Import Data</h2>
+              <p class="text-sm text-gray-500">Muat naik data dari fail Excel</p>
+            </div>
+          </div>
         </template>
         <template #body>
           <div class="space-y-4" :class="{ loading: isLoading }">
@@ -209,7 +236,7 @@
               <Icon name="material-symbols:upload" class="mr-1" />
               {{ isLoading ? "Sedang Import..." : "Import" }}
             </rs-button>
-            
+
             <!-- Download Payable To CSV Template -->
             <rs-button
               variant="secondary"
@@ -220,7 +247,7 @@
               Template Format Excel
             </rs-button>
             </div>
-            
+
           </div>
         </template>
       </rs-card>
@@ -229,12 +256,22 @@
       <rs-card>
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Bayaran Kepada (Payable To)</h2>
+            <div class="flex items-center space-x-3">
+              <div class="flex-shrink-0">
+                <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <Icon name="material-symbols:payments" class="w-6 h-6 text-orange-600" />
+                </div>
+              </div>
+              <div>
+                <h2 class="text-xl font-semibold text-gray-900">Bayaran Kepada (Payable To)</h2>
+                <p class="text-sm text-gray-500">Maklumat pembayaran dan penerima</p>
+              </div>
+            </div>
 
-            <div v-if="paymentList.length >= 1" class="flex items-center gap-2">
+            <div class="flex items-center gap-2">
 
               <rs-button
-                
+
                 variant="primary"
                 @click="handleAddPayment"
               >
@@ -264,38 +301,99 @@
           </div>
 
           <div v-else class="space-y-3">
-            <rs-table
-              :data="cleanPaymentList"
-              :columns="paymentColumns"
-              :pageSize="5"
-              :showNoColumn="true"
-              :options="{ variant: 'default', hover: true, striped: true }"
-              :options-advanced="{ sortable: true, filterable: false }"
-              advanced
-            >
-              <template v-slot:amaun="{ text }">
-                {{ formatCurrency(text) }}
-              </template>
-              <template v-slot:checkbox="{ value }">
-                <div class="flex justify-center">
-                  <input
-                    type="checkbox"
-                    :value="value.kod"
-                    v-model="selectedPayments"
-                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                  />
-                </div>
-              </template>
-            </rs-table>
+            <!-- Custom Table -->
+            <div class="overflow-x-auto">
+              <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
+                <!-- Table Header -->
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No.</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kod</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bayaran Kepada</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori Asnaf</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contributor</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recipient</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Organization</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amaun</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mode Of Payment</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bank</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Akaun</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Tindakan
+                    </th>
+                  </tr>
+                </thead>
+                <!-- Table Body -->
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr v-for="(payment, index) in cleanPaymentList" :key="payment.kod" 
+                      class="hover:bg-gray-50 transition-colors duration-150">
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                      {{ index + 1 }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.kod }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.bayaranKepada }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.asnaf }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.contributor }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.recipient }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.organization }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                      {{ formatCurrency(payment.amaun) }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.modeOfPayment || '-' }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.bankName }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {{ payment.accountNumber || '-' }}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                      <div class="flex justify-center">
+                        <input
+                          type="checkbox"
+                          :value="payment.kod"
+                          v-model="selectedPayments"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </template>
       </rs-card>
 
+
       <!-- Maklumat Data Rosak Section -->
-      <rs-card>
+      <rs-card v-if="showImportCards">
         <template #header>
           <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Maklumat Data Rosak</h2>
+            <div class="flex items-center space-x-3">
+              <div class="flex-shrink-0">
+                <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                  <Icon name="material-symbols:warning" class="w-6 h-6 text-red-600" />
+                </div>
+              </div>
+              <div>
+                <h2 class="text-xl font-semibold text-gray-900">Data Rosak</h2>
+                <p class="text-sm text-gray-500">Data yang memerlukan pembetulan</p>
+              </div>
+            </div>
           </div>
         </template>
         <template #body>
@@ -365,14 +463,23 @@
         </template>
       </rs-card>
 
+
+
       <!-- Maklumat Senarai Penerima Section -->
-      <rs-card>
+      <rs-card v-if="showImportCards">
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Senarai Penerima (Beneficiary List)</h2>
-            <rs-button variant="primary" @click="handleAddRecipient">
-              <Icon name="material-symbols:add" class="mr-1" /> Tambah
-            </rs-button>
+            <div class="flex items-center space-x-3">
+              <div class="flex-shrink-0">
+                <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+                  <Icon name="material-symbols:people" class="w-6 h-6 text-teal-600" />
+                </div>
+              </div>
+              <div>
+                <h2 class="text-xl font-semibold text-gray-900">Senarai Penerima (Beneficiary List)</h2>
+                <p class="text-sm text-gray-500">Senarai penerima bantuan</p>
+              </div>
+            </div>
           </div>
         </template>
         <template #body>
@@ -398,7 +505,7 @@
               <template v-slot:amaun="{ text }">
                 {{ formatCurrency(text) }}
               </template>
-            
+
               <template v-slot:actions="{ row }">
                 <div class="flex space-x-2 justify-center">
                   <rs-button variant="info" size="sm" @click="handleEditRecipientModal(row)">
@@ -417,7 +524,17 @@
       <!-- Maklumat Dokumen Sokongan Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Maklumat Dokumen Sokongan</h2>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:description" class="w-6 h-6 text-gray-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Maklumat Dokumen Sokongan</h2>
+              <p class="text-sm text-gray-500">Fail dan dokumen berkaitan</p>
+            </div>
+          </div>
         </template>
         <template #body>
           <div class="space-y-4" :class="{ loading: isLoading }">
@@ -430,7 +547,7 @@
               multiple
               @change="handleDocumentUpload"
             />
-            
+
             <!-- Display selected files -->
             <div v-if="selectedDocuments.length > 0" class="mt-4">
               <h4 class="text-sm font-medium text-gray-700 mb-2">Fail yang dipilih:</h4>
@@ -444,7 +561,7 @@
                     <Icon name="material-symbols:description" class="mr-2 text-blue-500" />
                     <span class="text-sm text-gray-700">{{ file.name }}</span>
                     <span class="text-xs text-gray-500 ml-2">({{ formatFileSize(file.size) }})</span>
-          </div>
+                  </div>
                   <rs-button
                     variant="danger-text"
                     size="sm"
@@ -455,7 +572,7 @@
                 </div>
               </div>
             </div>
-            
+
             <rs-button
               variant="primary"
               :disabled="!selectedDocuments.length || isLoading"
@@ -468,6 +585,7 @@
             <!-- Existing uploaded documents -->
             <div v-if="documentList.length > 0" class="mt-6 space-y-3">
               <h4 class="text-sm font-medium text-gray-700">Dokumen sedia ada:</h4>
+              <h4 class="text-sm font-medium text-gray-700">Dokumen yang telah dimuat naik:</h4>
             <div
               v-for="(document, index) in documentList"
                 :key="document.id || index"
@@ -486,6 +604,26 @@
               </rs-button>
                 </div>
               </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormKit
+                  type="text"
+                  name="namaPegawai"
+                  label="Nama Pegawai"
+                  v-model="formData.namaPegawai"
+                  disabled
+                  help="Auto-fill selepas simpan"
+                />
+
+                <!-- Tarikh Mohon -->
+                <FormKit
+                  type="text"
+                  name="tarikhMohon"
+                  label="Tarikh Mohon"
+                  v-model="formData.tarikhMohon"
+                  disabled
+                  help="Auto-fill selepas simpan"
+                />
             </div>
           </div>
         </template>
@@ -601,10 +739,14 @@
 
         <!-- Tarikh Bayaran -->
         <FormKit
-          type="date"
-          name="tarikhBayaran"
-          label="Tarikh Bayaran"
-          v-model="paymentForm.tarikhBayaran"
+          type="radio"
+          name="modeOfPayment"
+          label="Mode Of Payment"
+          v-model="paymentForm.modeOfPayment"
+          :options="[
+            { label: 'Tunai', value: 'Tunai' },
+            { label: 'Akaun', value: 'Akaun' },
+          ]"
           validation="required"
         />
 
@@ -636,21 +778,6 @@
           label="No. Akaun"
           v-model="paymentForm.bankAccount"
           placeholder="1234-56-789012"
-          validation="required"
-        />
-
-        <!-- Status -->
-        <FormKit
-          type="select"
-          name="status"
-          label="Status"
-          v-model="paymentForm.status"
-          :options="[
-            { label: 'Baru', value: 'Baru' },
-            { label: 'Dalam Proses', value: 'Dalam Proses' },
-            { label: 'Selesai', value: 'Selesai' },
-            { label: 'Batal', value: 'Batal' }
-          ]"
           validation="required"
         />
       </div>
@@ -807,7 +934,7 @@
               disabled
             />
           </div>
-          
+
           <!-- Notes Section -->
           <FormKit
             type="textarea"
@@ -819,7 +946,7 @@
               input: 'min-h-[60px]',
             }"
           />
-          
+
           <!-- Issue Details -->
           <FormKit
             type="text"
@@ -828,10 +955,10 @@
             :value="selectedDamagedData.jenisMasalah || 'Tiada maklumat'"
             disabled
           />
-          
+
         </div>
       </template>
-     
+
      <template #footer>
        <div class="flex justify-end space-x-2">
          <rs-button variant="secondary" @click="showViewDetailsModal = false">
@@ -861,7 +988,7 @@
                input: '!py-2',
              }"
            />
-           
+
            <FormKit
              type="text"
              name="idPermohonan"
@@ -873,7 +1000,7 @@
              }"
            />
          </div>
-         
+
          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
            <FormKit
              type="text"
@@ -885,7 +1012,7 @@
                input: '!py-2',
              }"
            />
-           
+
            <FormKit
              type="text"
              name="asnaf"
@@ -897,7 +1024,7 @@
              }"
            />
          </div>
-         
+
          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
            <FormKit
              type="text"
@@ -909,7 +1036,7 @@
                input: '!py-2',
              }"
            />
-           
+
            <FormKit
              type="text"
              name="recipient"
@@ -921,7 +1048,7 @@
              }"
            />
          </div>
-         
+
          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
            <FormKit
              type="text"
@@ -933,7 +1060,7 @@
                input: '!py-2',
              }"
            />
-           
+
            <FormKit
              type="text"
              name="tarikhBayaran"
@@ -945,7 +1072,7 @@
              }"
            />
          </div>
-         
+
          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
            <FormKit
              type="select"
@@ -958,7 +1085,7 @@
                input: '!py-2',
              }"
            />
-           
+
            <FormKit
              type="text"
              name="bankAccount"
@@ -970,7 +1097,7 @@
              }"
            />
          </div>
-         
+
          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
            <FormKit
              type="text"
@@ -985,7 +1112,7 @@
          </div>
        </div>
      </template>
-     
+
      <template #footer>
        <div class="flex justify-end space-x-2">
          <rs-button variant="secondary" @click="() => { showKemaskiniModal = false; editingPaymentForDefect = null; }">
@@ -997,7 +1124,7 @@
        </div>
      </template>
    </rs-modal>
-   
+
    <!-- Duplicate List Modal (Inlined) -->
    <rs-modal
      v-model="showDuplicateModal"
@@ -1110,7 +1237,7 @@ const breadcrumb = ref([
     path: "/BF-BTN/bantuan-bulk",
   },
   {
-    name: "Bantuan Bulk",
+    name: "Bulk Processing",
     type: "link",
     path: "/BF-BTN/bantuan-bulk/cipta-bantuan-bulk",
   },
@@ -1138,7 +1265,8 @@ const getBantuanData = (id) => {
       productPackage: 'KPIPT (Fakir)',
       productEntitlement: 'Bantuan Wang Saku',
       penyiasat: 'ahmad_hassan',
-      cawangan: 'hq'
+      cawangan: 'hq',
+      tarikhJangkaanBayaran: '2025-05-04'
     },
     'BP-2025-00002': {
       kodBP: 'BP-2025-00002',
@@ -1154,7 +1282,8 @@ const getBantuanData = (id) => {
       productPackage: 'KPIPT (Fakir)',
       productEntitlement: 'Bantuan Wang Saku',
       penyiasat: 'ahmad_hassan',
-      cawangan: 'hq'
+      cawangan: 'hq',
+      tarikhJangkaanBayaran: '2025-05-04'
     },
     'BP-2025-00003': {
       kodBP: 'BP-2025-00003',
@@ -1170,7 +1299,8 @@ const getBantuanData = (id) => {
       productPackage: 'KPIPT (Miskin)',
       productEntitlement: 'Bantuan Wang Saku',
       penyiasat: 'ahmad_hassan',
-      cawangan: 'hq'
+      cawangan: 'hq',
+      tarikhJangkaanBayaran: '2025-05-04'
     },
     'BP-2025-00004': {
       kodBP: 'BP-2025-00004',
@@ -1186,7 +1316,8 @@ const getBantuanData = (id) => {
       productPackage: 'BANTUAN BANJIR (FAKIR)',
       productEntitlement: 'Bantuan Banjir',
       penyiasat: 'ahmad_hassan',
-      cawangan: 'hq'
+      cawangan: 'hq',
+      tarikhJangkaanBayaran: '2025-05-04'
     },
     'BP-2025-00005': {
       kodBP: 'BP-2025-00005',
@@ -1202,7 +1333,8 @@ const getBantuanData = (id) => {
       productPackage: 'KPIPT (Miskin)',
       productEntitlement: 'Bantuan Wang Saku',
       penyiasat: 'ahmad_hassan',
-      cawangan: 'hq'
+      cawangan: 'hq',
+      tarikhJangkaanBayaran: '2025-05-04'
     },
     'BP-2025-00006': {
       kodBP: 'BP-2025-00006',
@@ -1234,7 +1366,8 @@ const getBantuanData = (id) => {
       productPackage: 'BANTUAN RUMAH',
       productEntitlement: 'Bantuan Rumah',
       penyiasat: 'ahmad_hassan',
-      cawangan: 'hq'
+      cawangan: 'hq',
+      tarikhJangkaanBayaran: '2025-05-04'
     },
     'BP-2025-00008': {
       kodBP: 'BP-2025-00008',
@@ -1250,7 +1383,8 @@ const getBantuanData = (id) => {
       productPackage: 'BANTUAN MAKANAN',
       productEntitlement: 'Bantuan Makanan',
       penyiasat: 'ahmad_hassan',
-      cawangan: 'hq'
+      cawangan: 'hq',
+      tarikhJangkaanBayaran: '2025-05-04'
     }
   };
   
@@ -1385,6 +1519,7 @@ const selectedPayments = ref([]);
 const confirmedPayments = ref([]);
 const isLoading = ref(false);
 const isSubmitting = ref(false);
+const showImportCards = ref(false);
 
 // State for editing
 const editingPayment = ref(null);
@@ -1406,10 +1541,9 @@ const paymentForm = ref({
   recipient: "",
   organization: "",
   amaun: 0,
-  tarikhBayaran: new Date().toLocaleDateString("ms-MY"),
+  modeOfPayment: "",
   bankName: "",
   bankAccount: "",
-  status: "Dalam Proses",
 });
 
 const recipientForm = ref({
@@ -1635,9 +1769,15 @@ const generateUniqueId = (prefix) => {
     .slice(-4)}`;
 };
 
+// Function to hide import cards
+const hideImportCards = () => {
+  showImportCards.value = false;
+};
+
 const handleImport = async () => {
   try {
     isLoading.value = true;
+    showImportCards.value = false; // Reset cards visibility before import
 
     // Dummy data import (simulasi data dari Excel)
     recipientList.value = [
@@ -1691,12 +1831,12 @@ const handleImport = async () => {
       {
         kod: "PT-2025-30371",
         idPermohonan: "PRM-2025-00001",
-        bayaranKepada: "Nur Hazimah Binti Mohd Hafiz",
+        bayaranKepada: "recipient",
         asnaf: "Muallaf",
-        recipient: "",
+        recipient: "Nur Hazimah Binti Mohd Hafiz",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
-        tarikhBayaran: "2025-04-17",
+        modeOfPayment: "Tunai",
         bankName: "Maybank",
         bankAccount: "1623-44-889901",
         checkbox: '',
@@ -1704,12 +1844,12 @@ const handleImport = async () => {
       {
         kod: "PT-2025-30372",
         idPermohonan: "PRM-2025-00002",           // ← duplicate key
-        bayaranKepada: "Nur safiyya Binti Rosly",
+        bayaranKepada: "recipient",
         asnaf: "Fakir",
-        recipient: "",
+        recipient: "Nur safiyya Binti Rosly",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
-        tarikhBayaran: "2025-04-17",
+        tarikhBayaran: "Akaun",
         bankName: "Maybank",
         bankAccount: "16A3-44-889901",            // ← WRONG (letter)
         checkbox: '',
@@ -1717,12 +1857,12 @@ const handleImport = async () => {
       {
         kod: "PT-2025-30373",
         idPermohonan: "PRM-2025-00003",
-        bayaranKepada: "Mohd Nazrin Bin Mokhtar",
+        bayaranKepada: "recipient",
         asnaf: "Non-FM",
-        recipient: "",
+        recipient: "Mohd Nazrin Bin Mokhtar",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 240,                               // ← WRONG amount
-        tarikhBayaran: "2025-04-17",
+        modeOfPayment: "Akaun",
         bankName: "CIMB",
         bankAccount: "7600-11-222222",
         checkbox: '',
@@ -1730,12 +1870,12 @@ const handleImport = async () => {
       {
         kod: "PT-2025-30374",
         idPermohonan: "PRM-2025-00004",
-        bayaranKepada: "Intan Nadia Binti Mohd Zamri",
+        bayaranKepada: "recipient",
         asnaf: "Miskin", 
-        recipient: "",
+        recipient: "Intan Nadia Binti Mohd Zamri",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
-        tarikhBayaran: "2025-04-17",
+        modeOfPayment: "Tunai",
         bankName: "maybnk",                       // ← WRONG spelling
         bankAccount: "7600-11-333333",
         checkbox: '',
@@ -1743,12 +1883,12 @@ const handleImport = async () => {
       {
         kod: "PT-2025-30375",
         idPermohonan: "PRM-2025-00002",           // ← duplicate of …30372
-        bayaranKepada: "Nur safiyya Binti Rosly",
+        bayaranKepada: "recipient",
         asnaf: "Fakir",
-        recipient: "",
+        recipient: "Nur safiyya Binti Rosly",
         organization: "AZMIDA TECHNICAL COLLEGE",
         amaun: 2400,
-        tarikhBayaran: "2025-04-17",
+        modeOfPayment: "Akaun",
         bankName: "Maybank",
         bankAccount: "1623-44-889901",
         checkbox: '',
@@ -1763,6 +1903,7 @@ const handleImport = async () => {
     formData.value.jumlahAmaun = formatNumber(jumlah);
 
     alert("success", "Fail berjaya diimport dan data dimasukkan.");
+    showImportCards.value = true;
   } catch (error) {
     console.error("Error importing file:", error);
     alert("error", "Gagal mengimport fail");
@@ -1823,10 +1964,10 @@ const handleAddPayment = () => {
     recipient: "",
     organization: "",
     amaun: 0,
-    tarikhBayaran: new Date().toLocaleDateString("ms-MY"),
+    modeOfPayment: "",
     bankName: "",
     bankAccount: "",
-    status: "Dalam Proses",
+    checkbox: "",
   };
 
   paymentModalMode.value = "add";
@@ -1840,9 +1981,44 @@ const handleEditPaymentModal = (payment) => {
 };
 
 const handleSavePaymentModal = () => {
+  console.log("handleSavePaymentModal called");
+  console.log("paymentForm.value:", paymentForm.value);
+  console.log("paymentModalMode.value:", paymentModalMode.value);
+  
+  // Validate required fields
+  if (!paymentForm.value.bayaranKepada) {
+    alert("error", "Sila isi bayaran kepada");
+    return;
+  }
+  if (!paymentForm.value.asnaf) {
+    alert("error", "Sila pilih asnaf");
+    return;
+  }
+  if (!paymentForm.value.amaun || paymentForm.value.amaun <= 0) {
+    alert("error", "Sila isi amaun yang sah");
+    return;
+  }
+  if (!paymentForm.value.modeOfPayment) {
+    alert("error", "Sila pilih mode of payment");
+    return;
+  }
+  if (!paymentForm.value.idPermohonan) {
+    alert("error", "Sila isi ID permohonan");
+    return;
+  }
+  if (!paymentForm.value.bankName) {
+    alert("error", "Sila pilih bank");
+    return;
+  }
+  if (!paymentForm.value.bankAccount) {
+    alert("error", "Sila isi no. akaun");
+    return;
+  }
+
   if (paymentModalMode.value === "add") {
     // Add new payment
     paymentList.value.push({ ...paymentForm.value });
+    console.log("Payment added to list:", paymentList.value);
     alert("success", "Maklumat bayaran baru ditambah");
   } else {
     // Update existing payment
@@ -1856,6 +2032,22 @@ const handleSavePaymentModal = () => {
   }
 
   showPaymentModal.value = false;
+  
+  // Reset form for next use
+  paymentForm.value = {
+    kod: "",
+    idPermohonan: "",
+    bayaranKepada: "",
+    asnaf: "",
+    contributor: "",
+    recipient: "",
+    organization: "",
+    amaun: 0,
+    modeOfPayment: "",
+    bankName: "",
+    bankAccount: "",
+    checkbox: "",
+  };
 };
 
 const handleDeletePayment = async (payment) => {
@@ -2032,7 +2224,7 @@ const damagedDataList = computed(() => {
     out.push({
       no: defectCounter++,
       id: `DEF-${String(defectCounter - 1).padStart(3, "0")}`, // Hidden but needed for logic
-      namaPenerima: p.bayaranKepada,
+      namaPenerima: p.recipient,
       catatan: parts.join(" · "),
       jenisMasalah: reasons.join(", "), // Hidden but needed for logic
       idPermohonan: p.idPermohonan, // Hidden but needed for logic
@@ -2094,7 +2286,7 @@ const handleKemaskiniDamagedData = (defectRow) => {
   // Populate the editingPaymentForDefect with payment data
   editingPaymentForDefect.value = {
     pointer: payment.kod,
-    bayaranKepada: payment.bayaranKepada,
+    bayaranKepada: payment.recipient,
     idPermohonan: payment.idPermohonan,
     bankAccount: payment.bankAccount,
     bankName: payment.bankName,
@@ -2250,10 +2442,10 @@ const onOpenApplication = (idPermohonan) => {
 const getStatusVariant = (status) => {
   switch (status) {
     case 'Draf':
-      return 'warning';
+      return 'disabled';
     case 'Sedang Diproses':
     case 'Dalam Proses':
-      return 'info';
+      return 'warning';
     case 'Ditolak':
       return 'danger';
     case 'Baru':
@@ -2362,7 +2554,7 @@ const handleSahkanSelected = () => {
   pointer-events: none;
 }
 
-  .form-actions {
+.form-actions {
   position: sticky;
   bottom: 0;
   background-color: white;

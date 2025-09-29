@@ -14,7 +14,7 @@
         <div class="mb-6">
           <h3 class="text-lg font-medium mb-4">Maklumat Carian</h3>
           <FormKit type="form" :actions="false" @submit="handleSubmit">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormKit
                 type="select"
                 name="jenisRecipient"
@@ -25,6 +25,19 @@
                 v-model="formData.jenisRecipient"
                 :validation-messages="{ required: 'Jenis Recipient adalah wajib' }"
               />
+              <FormKit
+                type="text"
+                name="namaSyarikatIndividu"
+                :label="formData.jenisRecipient === 'individu' ? 'Nama Individu' : 'Nama Syarikat'"
+                validation="required"
+                v-model="formData.namaSyarikatIndividu"
+                :placeholder="formData.jenisRecipient === 'individu' ? 'Masukkan nama individu' : 'Masukkan nama syarikat'"
+                :validation-messages="{ required: formData.jenisRecipient === 'individu' ? 'Nama Individu adalah wajib' : 'Nama Syarikat adalah wajib' }"
+                :disabled="!formData.jenisRecipient"
+              />  
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
               <FormKit
                 type="select"
                 name="jenisPengenalan"
@@ -178,6 +191,7 @@ const jenisRecipientOptions = [
 const formData = ref({ 
   jenisRecipient: "", 
   jenisPengenalan: "", 
+  namaSyarikatIndividu: "",
   noPengenalan: "" 
 });
 
@@ -244,7 +258,7 @@ const mockSyarikatData = [
     namaSyarikat: 'Pusat Dialisis As-Salam Shah Alam',
     jenisPengenalan: 'ID Syarikat',
     idSyarikat: 'PPM-2021-015',
-    status: 'Verified',
+    status: 'Telah Disahkan',
     tindakan: { id: 'RE-202506-0012' }
   },
   {
@@ -252,7 +266,7 @@ const mockSyarikatData = [
     namaSyarikat: 'Klinik Kesihatan Al-Ikhlas',
     jenisPengenalan: 'ID Syarikat',
     idSyarikat: 'PPM-2022-008',
-    status: 'Tidak Verified',
+    status: 'Belum Disahkan',
     tindakan: { id: 'RE-202507-0014' }
   },
   {
@@ -260,7 +274,7 @@ const mockSyarikatData = [
     namaSyarikat: 'Pembekal Makanan Halal Al-Amin Sdn Bhd',
     jenisPengenalan: 'ID Syarikat',
     idSyarikat: 'PPM-2022-008',
-    status: 'Verified',
+    status: 'Telah Disahkan',
     tindakan: { id: 'RE-202505-0016' }
   }
 ];
@@ -278,8 +292,8 @@ const getPlaceholder = () => {
 
 const getNPSStatusVariant = (status) => {
   const variants = {
-    'Verified': 'success',
-    'Tidak Verified': 'warning',
+    'Telah Disahkan': 'success',
+    'Belum Disahkan': 'warning',
   };
   return variants[status] || 'default';
 };
@@ -287,13 +301,14 @@ const getNPSStatusVariant = (status) => {
 const resetForm = () => {
   formData.value.jenisRecipient = "";
   formData.value.jenisPengenalan = "";
+  formData.value.namaSyarikatIndividu = "";
   formData.value.noPengenalan = "";
   searchCompleted.value = false;
   searchResults.value = [];
 };
 
 const validateAndSearch = () => {
-  if (!formData.value.jenisRecipient || !formData.value.jenisPengenalan || !formData.value.noPengenalan) return;
+  if (!formData.value.jenisRecipient || !formData.value.jenisPengenalan || !formData.value.namaSyarikatIndividu || !formData.value.noPengenalan) return;
   performSearch();
 };
 
@@ -347,6 +362,7 @@ watch(
   () => formData.value.jenisRecipient,
   () => { 
     formData.value.jenisPengenalan = "";
+    formData.value.namaSyarikatIndividu = "";
     formData.value.noPengenalan = "";
     searchCompleted.value = false;
     searchResults.value = [];

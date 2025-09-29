@@ -113,9 +113,10 @@
 
               <div class="space-y-1">
                 <label class="text-sm font-medium text-gray-700">Entitlement Product</label>
-                <!-- Checkbox for B300, B112 and B307 -->
-                <div v-if="isB300OrB307OrB112" class="mt-2 space-y-2">
-                  <div class="text-xs text-gray-500 mb-2">Debug: isB300OrB307OrB112 = {{ isB300OrB307OrB112 }}, route.id = {{ route.params.id }}</div>
+                <!-- Checkbox for B300, B307, B112, B103, and B400 -->
+                <div v-if="hasCheckboxEntitlements" class="mt-2 space-y-2">
+                  
+                  
                   <div v-for="option in currentEntitlementOptions" :key="option.value" class="flex items-center">
                     <input
                       :id="option.value"
@@ -561,7 +562,7 @@
          </rs-card>
 
            <!-- NEW: Senarai Entitlement Product Cards -->
-           <rs-card v-if="isB300OrB307OrB112" class="shadow-sm border-0 bg-white">
+           <rs-card v-if="hasCheckboxEntitlements" class="shadow-sm border-0 bg-white">
              <template #header>
                <div class="flex items-center space-x-3">
                  <div class="flex-shrink-0">
@@ -613,7 +614,8 @@
                         v-if="
                           product.status === 'sedang_edit' && !(
                             (isB112 && (product.code === 'Sewaan_Rumah' || product.code === 'Belian_Rumah')) ||
-                            (isB103 && (product.code === 'HEMODIALISIS' || product.code === 'SUNTIKAN_EPO'))
+                            (isB103 && (product.code === 'HEMODIALISIS' || product.code === 'SUNTIKAN_EPO')) ||
+                            (isB400 && ['DIRECT_INSTITUSI_AGAMA','GL_INSTITUSI_AGAMA','DIRECT_SEKOLAH_AGAMA','GL_SEKOLAH_AGAMA','DIRECT_SURAU_SEKOLAH','GL_SURAU_SEKOLAH'].includes(product.code))
                           )
                         "
                         class="mt-4 space-y-4"
@@ -721,13 +723,12 @@
                              >
                                <option value="">-- Sila Pilih --</option>
                                <option value="asnaf">Asnaf</option>
-                               <option value="organisasi">Organisasi</option>
-                               <option value="third_party">Recipient</option>
+                               <option value="lain_lain">Lain-lain</option>
                              </select>
                            </div>
                            
-                           <!-- No Pendaftaran Dropdown (for Organisasi/Third Party) -->
-                           <div v-if="product.penerimaBayaran.kategoriPenerima === 'organisasi' || product.penerimaBayaran.kategoriPenerima === 'third_party'">
+                           <!-- No Pendaftaran Dropdown (for Lain-lain) -->
+                           <div v-if="product.penerimaBayaran.kategoriPenerima === 'lain_lain'">
                              <label class="text-xs font-medium text-gray-600">No Pendaftaran <span class="text-red-500">*</span></label>
                              <select 
                                v-model="product.penerimaBayaran.noPendaftaran"
@@ -869,7 +870,19 @@
           <!-- Modal: Tambah Penerima Baharu -->
           <rs-modal v-model="showAddRegistration" title="Tambah Penerima Baharu">
             <div class="space-y-3">
+              <!-- Hide existing fields and show only Kategori Penerima -->
               <div>
+                <label class="text-xs font-medium text-gray-600">Kategori Penerima <span class="text-red-500">*</span></label>
+                <select v-model="newRegistration.kategoriPenerima" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <option value="">-- Sila Pilih --</option>
+                  <option value="organisasi">Organisasi</option>
+                  <option value="syarikat">Syarikat</option>
+                  <option value="recipient">Recipient</option>
+                </select>
+              </div>
+              
+              <!-- Hidden fields (commented out but kept for reference) -->
+              <!-- <div>
                 <label class="text-xs font-medium text-gray-600">Nama Penuh</label>
                 <input v-model="newRegistration.namaPenuh" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md" />
               </div>
@@ -900,19 +913,19 @@
               <div>
                 <label class="text-xs font-medium text-gray-600">No Akaun Bank</label>
                 <input v-model="newRegistration.noAkaun" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md" />
-              </div>
+              </div> -->
             </div>
             <template #footer>
               <div class="flex justify-end gap-2">
                 <rs-button variant="secondary" @click="showAddRegistration = false">Batal</rs-button>
-                <rs-button variant="success" @click="saveNewRegistration">Simpan</rs-button>
+                <rs-button variant="primary" @click="proceedToNextStep">Seterusnya</rs-button>
               </div>
             </template>
           </rs-modal>
 
       <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
         <div class="col-span-1 space-y-6">
-          <div v-if="isB112Editing || isB103Editing">
+          <div v-if="isB112Editing || isB103Editing || isB400Editing">
             <!-- B112 Edit panel shown first when editing -->
             <div ref="externalEditorEl">
             <rs-card
@@ -922,7 +935,10 @@
                 ['Sewaan_Rumah','Belian_Rumah'].includes(selectedEntitlementProducts[editingProductIndex]?.code)) ||
                 (String(route.params.id || '').toUpperCase() === 'B103' &&
                 editingProductIndex >= 0 &&
-                ['HEMODIALISIS','SUNTIKAN_EPO'].includes(selectedEntitlementProducts[editingProductIndex]?.code))
+                ['HEMODIALISIS','SUNTIKAN_EPO'].includes(selectedEntitlementProducts[editingProductIndex]?.code)) ||
+                (String(route.params.id || '').toUpperCase() === 'B400' &&
+                editingProductIndex >= 0 &&
+                ['DIRECT_INSTITUSI_AGAMA','GL_INSTITUSI_AGAMA','DIRECT_SEKOLAH_AGAMA','GL_SEKOLAH_AGAMA','DIRECT_SURAU_SEKOLAH','GL_SURAU_SEKOLAH'].includes(selectedEntitlementProducts[editingProductIndex]?.code))
               "
               class="shadow-sm border-0 bg-white"
             >
@@ -946,7 +962,8 @@
                     </div>
                   </div>
 
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <!-- Hide input fields for B400, only show for other bantuan types -->
+                  <div v-if="!isB400" class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
                       <label class="text-xs font-medium text-gray-600">Kadar Bantuan</label>
                       <input
@@ -967,7 +984,7 @@
                     </div>
                   </div>
 
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                  <div v-if="!isB400" class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
                     <div>
                       <label class="text-xs font-medium text-gray-600">Tarikh Mula</label>
                       <input
@@ -986,7 +1003,7 @@
                     </div>
                   </div>
 
-                  <div class="mt-3">
+                  <div :class="isB400 ? '' : 'mt-3'">
                     <label class="text-xs font-medium text-gray-600">Jumlah Keseluruhan Bantuan akan Diterima</label>
                     <div class="mt-1 p-3 bg-white border rounded-md text-sm">
                       {{ currentEditingProductData?.kadarBantuan.jumlahKeseluruhan || 'RM 0.00' }}
@@ -1007,13 +1024,12 @@
                       >
                         <option value="">-- Sila Pilih --</option>
                         <option value="asnaf">Asnaf</option>
-                        <option value="organisasi">Organisasi</option>
-                        <option value="third_party">Recipient</option>
+                        <option value="lain_lain">Lain-lain</option>
                       </select>
                     </div>
 
-                    <!-- No Pendaftaran dropdown for Organisasi/Recipient -->
-                    <div class="md:col-span-2" v-if="editingPBKategori === 'organisasi' || editingPBKategori === 'third_party'">
+                    <!-- No Pendaftaran dropdown for Lain-lain -->
+                    <div class="md:col-span-2" v-if="editingPBKategori === 'lain_lain'">
                       <div class="flex items-end gap-2">
                         <div class="flex-1">
                           <label class="text-xs font-medium text-gray-600">No Pengenalan/No Pendaftaran <span class="text-red-500">*</span></label>
@@ -1259,7 +1275,7 @@
             <div class="tab-content">
               <!-- BQ Tab -->
               <!-- <div v-if="activeTab === 'bq' && isB1"> -->
-              <div v-if="activeTab === 'bq' && isB1 && route.params.id.toUpperCase() !== 'B112' && route.params.id.toUpperCase() !== 'B103'">
+              <div v-if="activeTab === 'bq' && (isB1 || isB400) && route.params.id.toUpperCase() !== 'B112' && route.params.id.toUpperCase() !== 'B103'">
 
               <rs-card class="shadow-sm border-0 bg-white">
                 <template #header>
@@ -1276,9 +1292,9 @@
                         </div>
                       </div>
                       <div>
-                        <h2 class="text-lg font-semibold text-gray-900">BQ</h2>
+                        <h2 class="text-lg font-semibold text-gray-900">{{ isB400 ? 'Keterangan Kerja' : 'BQ' }}</h2>
                         <p class="text-sm text-gray-500">
-                          Bill of Quantity untuk kerja-kerja cadangan
+                          {{ isB400 ? 'Senarai keterangan kerja untuk projek bantuan institusi agama' : 'Bill of Quantity untuk kerja-kerja cadangan' }}
                         </p>
                       </div>
                     </div>
@@ -1293,12 +1309,12 @@
                           <th
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            No BQ
+                            {{ isB400 ? 'No Keterangan Kerja' : 'No BQ' }}
                           </th>
                           <th
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Nama BQ
+                            {{ isB400 ? 'Nama' : 'Nama BQ' }}
                           </th>
                           <th
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -1580,7 +1596,7 @@
           </rs-card> -->
 
           <!-- NEW: Maklumat Penerima Bayaran -->
-          <rs-card v-if="!isB102 && !isB300 && !isB307 && !isB112 && !isB103" class="shadow-sm border-0 bg-white">
+          <rs-card v-if="!isB102 && !isB300 && !isB307 && !isB112 && !isB103 && !isB400" class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
                 <div class="flex-shrink-0">
@@ -1640,7 +1656,7 @@
 
           
 
-          <rs-card v-if="!isB300 && !isB307 && !isB112 && !isB103" class="shadow-sm border-0 bg-white">
+          <rs-card v-if="!isB300 && !isB307 && !isB112 && !isB103 && !isB400" class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center space-x-3">
                 <div class="flex-shrink-0">
@@ -1860,10 +1876,10 @@
                 </div>
                 <div>
                   <h2 class="text-lg font-semibold text-gray-900">
-                    Laluan Proses
+                    Prosedur agihan
                   </h2>
                   <p class="text-sm text-gray-500">
-                    Laluan Proses Permohonan
+                    Prosedur agihan Permohonan
                   </p>
                 </div>
               </div>
@@ -1874,7 +1890,7 @@
             <template #body>
               
               <div class="space-y-4">
-                <!-- Accordion: Laluan Proses Details -->
+                <!-- Accordion: Prosedur agihan Details -->
                 <div class="space-y-3">
                   <!-- Permohonan Accordion Item -->
                   <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
@@ -2062,7 +2078,7 @@
     <rs-modal v-model="showBQModal" size="xl" :closable="false">
       <template #header>
         <h3 class="text-lg font-semibold">
-          {{ editingBQ ? "Edit" : "Tambah" }} BQ
+          {{ editingBQ ? "Edit" : "Tambah" }} {{ isB400 ? 'Keterangan Kerja' : 'BQ' }}
         </h3>
       </template>
       <template #body>
@@ -2124,12 +2140,12 @@ const breadcrumb = ref([
   },
 ]);
 
-// Tab configuration
-const tabs = [
-  { id: 'bq', title: 'BQ' },
+// Tab configuration - dynamic title based on bantuan type
+const tabs = computed(() => [
+  { id: 'bq', title: isB400.value ? 'Keterangan Kerja' : 'BQ' },
   { id: 'gambar', title: 'Laporan Gambar' },
   { id: 'teknikal', title: 'Laporan Teknikal' }
-];
+]);
 
 const activeTab = ref('bq');
 
@@ -2140,10 +2156,11 @@ const isB300 = computed(() => String(route.params.id || '').toUpperCase() === 'B
 const isB307 = computed(() => String(route.params.id || '').toUpperCase() === 'B307');
 const isB112 = computed(() => String(route.params.id || '').toUpperCase() === 'B112');
 const isB103 = computed(() => String(route.params.id || '').toUpperCase() === 'B103');
+const isB400 = computed(() => String(route.params.id || '').toUpperCase() === 'B400');
 const visibleTabs = computed(() => {
-  if (!isB1.value) return []
-  if (isB112.value || isB103.value) return tabs.filter(t => t.id === 'bq')
-  return tabs
+  if (!isB1.value && !isB400.value) return []
+  if (isB112.value || isB103.value) return tabs.value.filter(t => t.id === 'bq')
+  return tabs.value
 });
 
 // Ensure active tab is valid when rules change
@@ -2190,6 +2207,13 @@ const productPackageOptions = computed(() => {
       { label: '(PTJ) (GL) (HQ) HEMODIALISIS DAN SUNTIKAN EPO (FAKIR)', value: 'PTJ_HEMODIALISIS_DAN_EPO' },
       { label: '(PTJ) (GL) (HQ) HEMODIALISIS SAHAJA (FAKIR)', value: 'PTJ_HEMODIALISIS_SAHAJA' },
       { label: '(PTJ) (GL) (HQ) SUNTIKAN EPO SAHAJA (FAKIR)', value: 'PTJ_SUNTIKAN_EPO_SAHAJA' },
+    ];
+  } else if (id === 'B400') {
+    return [
+      { label: '-- Sila Pilih --', value: '' },
+      { label: 'SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA', value: 'INSTITUSI_AGAMA' },
+      { label: 'SUMBANGAN BINA/BAIKPULIH SEKOLAH AGAMA', value: 'SEKOLAH_AGAMA' },
+      { label: 'SUMBANGAN BINA/BAIKPULIH SURAU SEKOLAH', value: 'SURAU_SEKOLAH' },
     ];
   } else {
     // Default options for B102 and others
@@ -2268,13 +2292,38 @@ const b103EntitlementOptions = ref([
   { label: '(GL) (HQ) SUNTIKAN EPO (FAKIR)', value: 'SUNTIKAN_EPO' },
 ]);
 
+// B400 Entitlement Product options for checkboxes - now computed based on product package
+const b400EntitlementOptions = computed(() => {
+  const productPackage = formData.value.productpackage;
+  
+  if (productPackage === 'INSTITUSI_AGAMA') {
+    return [
+      { label: '(DIRECT) SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA', value: 'DIRECT_INSTITUSI_AGAMA' },
+      { label: '(GL) SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA', value: 'GL_INSTITUSI_AGAMA' },
+    ];
+  } else if (productPackage === 'SEKOLAH_AGAMA') {
+    return [
+      { label: '(DIRECT) SUMBANGAN BINA/BAIKPULIH SEKOLAH AGAMA', value: 'DIRECT_SEKOLAH_AGAMA' },
+      { label: '(GL) SUMBANGAN BINA/BAIKPULIH SEKOLAH AGAMA', value: 'GL_SEKOLAH_AGAMA' },
+    ];
+  } else if (productPackage === 'SURAU_SEKOLAH') {
+    return [
+      { label: '(DIRECT) SUMBANGAN BINA/BAIKPULIH SURAU SEKOLAH', value: 'DIRECT_SURAU_SEKOLAH' },
+      { label: '(GL) SUMBANGAN BINA/BAIKPULIH SURAU SEKOLAH', value: 'GL_SURAU_SEKOLAH' },
+    ];
+  }
+  
+  // No options when no package is selected
+  return [];
+});
+
 // Editing state
 const editingProductIndex = ref(-1);
 
-// Check if current ID is B300 or B307 or B112 or B103
-const isB300OrB307OrB112= computed(() => {
+// Check if current ID uses checkbox-based entitlement products
+const hasCheckboxEntitlements = computed(() => {
   const id = String(route.params.id || '').toUpperCase();
-  return id === 'B300' || id === 'B307' || id === 'B112' || id === 'B103';
+  return id === 'B300' || id === 'B307' || id === 'B112' || id === 'B103' || id === 'B400';
 });
 
 // Get the appropriate entitlement options based on route ID
@@ -2288,6 +2337,8 @@ const currentEntitlementOptions = computed(() => {
     return b112EntitlementOptions.value;
   } else if (id === 'B103'){
     return b103EntitlementOptions.value;
+  } else if (id === 'B400'){
+    return b400EntitlementOptions.value;
   }
   return [];
 });
@@ -2297,7 +2348,7 @@ const entitlementProductsData = ref([]);
 
 // Selected Entitlement Products (computed from checkbox selections)
 const selectedEntitlementProducts = computed(() => {
-  if (!isB300OrB307OrB112.value) return [];
+  if (!hasCheckboxEntitlements.value) return [];
   
   return formData.value.entitlementProducts.map((value, index) => {
     const option = currentEntitlementOptions.value.find(opt => opt.value === value);
@@ -2384,6 +2435,14 @@ const mockAssistanceData = {
     productpackage: "",
     entitlementproduct: "",
     jumlahBantuan: 1800,
+  },
+  "B400": {
+    id: "B400",
+    aid: "B400 - BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA",
+    aidproduct: "BANTUAN SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA",
+    productpackage: "SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA, SUMBANGAN BINA/BAIKPULIH SEKOLAH AGAMA, SUMBANGAN BINA/BAIKPULIH SURAU SEKOLAH",
+    entitlementproduct: "(DIRECT) SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA, (GL) SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA",
+    jumlahBantuan: 5000,
   }
 };
 
@@ -2570,6 +2629,57 @@ const initializeDokumenSokongan = () => {
         status: "lengkap",
       },
     ];
+  } else if (id === 'B400') {
+    dokumenSokongan.value = [
+      {
+        jenis: "Mengemukakan surat permohonan.",
+        filename: "surat_permohonan.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Kertas kerja lengkap yang disahkan oleh pengerusi/ setiausaha masjid/Pengerusi Surau/Pengerusi PIBG/Pengetua/Guru Besar/Penolong Pendaftar. (Masjid: perlu dinyatakan perincian/pecahan kewangan masjid seperti dana pembangunan, dana anak yatim, dana khairat dan sebagainya).",
+        filename: "kertas_kerja_lengkap.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Penyata bank terkini institusi/ PIBG.",
+        filename: "penyata_bank_institusi.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Surat/minit Sokongan Pejabat Agama Islam Daerah/ Jabatan Agama Islam Selangor/MAIS/Guru Besar/ Pengetua/ PPD/JPN/ pihak berkaitan.",
+        filename: "surat_sokongan_pejabat_agama.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Minit mesyuarat daripada jawatankuasa surau/ masjid/ PIBG/ jabatan yang menyatakan:\n• Keperluan bantuan\n• Anggaran kos baik pulih\n• Kontraktor yang dilantik",
+        filename: "minit_mesyuarat_jawatankuasa.pdf",
+        url: "https://www.scribd.com/document/657010846/Bq-Baikpulih-Tabika-Sri-Kandi",
+        status: "lengkap",
+      },
+      {
+        jenis: "Sebutharga baik pulih daripada kontraktor.",
+        filename: "sebutharga_kontraktor.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Gambar berkaitan permohonan.",
+        filename: "gambar_permohonan.pdf",
+        url: "#",
+        status: "lengkap",
+      },
+      {
+        jenis: "Laporan Polis/ pihak berkuasa (musibah/ bencana alam)",
+        filename: "laporan_polis_musibah.pdf",
+        url: "#",
+        status: "tidak_lengkap",
+      },
+    ];
   } else {
     // Default B102 documents
     dokumenSokongan.value = [
@@ -2609,27 +2719,52 @@ const siasatanDetails = ref({
   sla: '3 hari bekerja'
 })
 
-// Section 3: Draf BQ
-const bqList = ref([
-  {
-    noBQ: "BQ202508647",
-    namaBQ: "BQ MOHD ROSLI BIN SAAD",
-    jumlahBQ: "RM43,000",
-    status: "Dalam Proses",
-  },
-  // {
-  //   noBQ: "BQ202508648",
-  //   namaBQ: "BQ SITI BINTI HASSAN - DERMASISWA SEKOLAH",
-  //   jumlahBQ: "RM2,400",
-  //   status: "Dalam Proses",
-  // },
-  // {
-  //   noBQ: "BQ202508649",
-  //   namaBQ: "BQ SITI BINTI HASSAN - DERMASISWA IPT",
-  //   jumlahBQ: "RM3,000",
-  //   status: "Dalam Proses",
-  // },
-]);
+// Section 3: BQ/Keterangan Kerja - dynamic data based on bantuan type
+const bqList = computed(() => {
+  if (isB400.value) {
+    return [
+      {
+        noBQ: "KK202508001",
+        namaBQ: "Masjid At-Taqwa",
+        jumlahBQ: "RM43,000",
+        status: "Dalam Proses",
+      },
+      // {
+      //   noBQ: "KK202508002",
+      //   namaBQ: "Masjid Al-Falah",
+      //   jumlahBQ: "RM25,000",
+      //   status: "Dalam Proses",
+      // },
+      // {
+      //   noBQ: "KK202508003",
+      //   namaBQ: "Surau Ar-Rahman",
+      //   jumlahBQ: "RM18,000",
+      //   status: "Dalam Proses",
+      // },
+    ];
+  } else {
+    return [
+      {
+        noBQ: "BQ202508647",
+        namaBQ: "BQ MOHD ROSLI BIN SAAD",
+        jumlahBQ: "RM43,000",
+        status: "Dalam Proses",
+      },
+      // {
+      //   noBQ: "BQ202508648",
+      //   namaBQ: "BQ SITI BINTI HASSAN - DERMASISWA SEKOLAH",
+      //   jumlahBQ: "RM2,400",
+      //   status: "Dalam Proses",
+      // },
+      // {
+      //   noBQ: "BQ202508649",
+      //   namaBQ: "BQ SITI BINTI HASSAN - DERMASISWA IPT",
+      //   jumlahBQ: "RM3,000",
+      //   status: "Dalam Proses",
+      // },
+    ];
+  }
+});
 
 const showBQModal = ref(false);
 const editingBQ = ref(null);
@@ -2832,6 +2967,16 @@ watch(() => formData.value.healthInfo.namaPenerima, (newName) => {
   updateBeneficiaryInfo(newName);
 });
 
+// Watch for B400 product package changes and clear entitlement selections
+watch(() => formData.value.productpackage, (newPackage, oldPackage) => {
+  const id = String(route.params.id || '').toUpperCase();
+  if (id === 'B400' && newPackage !== oldPackage) {
+    // Clear existing entitlement product selections when package changes
+    formData.value.entitlementProducts = [];
+    console.log('Product package changed, cleared entitlement selections');
+  }
+});
+
 // NEW: Education info (read-only) for B300/B307
 const educationByAid = {
 B300: {
@@ -2987,8 +3132,10 @@ const editProduct = (index) => {
   toast.info(`Mengedit product: ${selectedEntitlementProducts.value[index].name}`);
   const id = String(route.params.id || '').toUpperCase()
   const code = selectedEntitlementProducts.value[index]?.code
+  const b400Codes = ['DIRECT_INSTITUSI_AGAMA', 'GL_INSTITUSI_AGAMA', 'DIRECT_SEKOLAH_AGAMA', 'GL_SEKOLAH_AGAMA', 'DIRECT_SURAU_SEKOLAH', 'GL_SURAU_SEKOLAH'];
   if ((id === 'B112' && (code === 'Sewaan_Rumah' || code === 'Belian_Rumah')) ||
-      (id === 'B103' && (code === 'HEMODIALISIS' || code === 'SUNTIKAN_EPO'))) {
+      (id === 'B103' && (code === 'HEMODIALISIS' || code === 'SUNTIKAN_EPO')) ||
+      (id === 'B400' && b400Codes.includes(code))) {
     nextTick(() => {
       externalEditorEl.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     })
@@ -3104,7 +3251,12 @@ const editingPBStatus = computed({
 })
 
 // Registration dropdown for B112 edit panel (mimic B300/B307)
-const registrationOptions = ref(['800101101234 -Ahmad bin Saif','202201012345(1234567-W) -Syarikat Maju Jaya','550303109999 -Noraini bt Yusuf'])
+const registrationOptions = ref([
+  '800101101234 -Ahmad bin Saif',
+  '202201012345(1234567-W) -Syarikat Maju Jaya',
+  '550303109999 -Noraini bt Yusuf',
+  '990101019999 -Siti Aminah binti Hassan'
+])
 const editingPBNoPendaftaran = computed({
   get: () => currentEditingProductData.value?.penerimaBayaran.noPendaftaran ?? '',
   set: (val) => { const d = currentEditingProductData.value; if (d) d.penerimaBayaran.noPendaftaran = val }
@@ -3115,9 +3267,10 @@ const loadEditingPenerimaByRegistration = () => {
   if (!d) return
   const no = d.penerimaBayaran.noPendaftaran
   const registrationData = {
-    '800101101234 -Ahmad bin Saif': { namaPenerima: 'Ahmad bin Ali', namaPemegangAkaun: 'Ahmad bin Ali', bank: 'MAYBANK', noAkaunBank: '162345678901' },
-    '202201012345(1234567-W) -Syarikat Maju Jaya': { namaPenerima: 'Syarikat Maju Jaya', namaPemegangAkaun: 'Syarikat Maju Jaya', bank: 'CIMB', noAkaunBank: '8000123456' },
-    '550303109999 -Noraini bt Yusuf': { namaPenerima: 'Noraini bt Yusuf', namaPemegangAkaun: 'Noraini bt Yusuf', bank: 'RHB', noAkaunBank: '123456789012' },
+    '800101101234 -Ahmad bin Saif': { namaPenerima: 'Ahmad bin Ali', namaPemegangAkaun: 'Ahmad bin Ali', bank: 'MAYBANK', noAkaunBank: '162345678901', status: 'verified' },
+    '202201012345(1234567-W) -Syarikat Maju Jaya': { namaPenerima: 'Syarikat Maju Jaya', namaPemegangAkaun: 'Syarikat Maju Jaya', bank: 'CIMB', noAkaunBank: '8000123456', status: 'verified' },
+    '550303109999 -Noraini bt Yusuf': { namaPenerima: 'Noraini bt Yusuf', namaPemegangAkaun: 'Noraini bt Yusuf', bank: 'RHB', noAkaunBank: '123456789012', status: 'verified' },
+    '990101019999 -Siti Aminah binti Hassan': { namaPenerima: 'Siti Aminah binti Hassan', namaPemegangAkaun: 'Siti Aminah binti Hassan', bank: 'BANK ISLAM', noAkaunBank: '140123456789', status: 'unverified' },
   }
   if (registrationData[no]) {
     d.penerimaBayaran.namaPenerima = registrationData[no].namaPenerima
@@ -3125,6 +3278,7 @@ const loadEditingPenerimaByRegistration = () => {
     d.penerimaBayaran.noKadPengenalan = no
     d.penerimaBayaran.bank = registrationData[no].bank
     d.penerimaBayaran.noAkaunBank = registrationData[no].noAkaunBank
+    d.penerimaBayaran.status = registrationData[no].status
   }
 }
 
@@ -3162,7 +3316,47 @@ const loadEditingAsnafByName = () => {
 
 // Add new registration modal state and handler
 const showAddRegistration = ref(false)
-const newRegistration = ref({ namaPenuh:'', jenisPengenalan:'IC', noPengenalan:'', namaPemegangAkaun:'', bank:'', noAkaun:'' })
+const newRegistration = ref({ 
+  kategoriPenerima: '',
+  namaPenuh:'', 
+  jenisPengenalan:'IC', 
+  noPengenalan:'', 
+  namaPemegangAkaun:'', 
+  bank:'', 
+  noAkaun:'' 
+})
+
+const proceedToNextStep = () => {
+  // Validate that kategori penerima is selected
+  if (!newRegistration.value.kategoriPenerima) {
+    // You can add a toast notification here if needed
+    return;
+  }
+  
+  // Close the current modal
+  showAddRegistration.value = false;
+  
+  // Navigate based on selected category (open in new tab)
+  if (newRegistration.value.kategoriPenerima === 'organisasi') {
+    // Navigate to organisation page in new tab
+    window.open('/BF-PRF/OR/PP/kemaskini/ORG-240501', '_blank');
+  } else {
+    // For syarikat and recipient, navigate to third party page in new tab
+    window.open('/BF-PRF/TP/PP/02', '_blank');
+  }
+  
+  // Reset the form
+  newRegistration.value = { 
+    kategoriPenerima: '',
+    namaPenuh:'', 
+    jenisPengenalan:'IC', 
+    noPengenalan:'', 
+    namaPemegangAkaun:'', 
+    bank:'', 
+    noAkaun:'' 
+  };
+}
+
 const saveNewRegistration = () => {
   const label = `${newRegistration.value.noPengenalan} -${newRegistration.value.namaPenuh}`
   if (!registrationOptions.value.includes(label)) registrationOptions.value.push(label)
@@ -3177,7 +3371,15 @@ const saveNewRegistration = () => {
     d.penerimaBayaran.status = 'unverified'
   }
   showAddRegistration.value = false
-  newRegistration.value = { namaPenuh:'', jenisPengenalan:'IC', noPengenalan:'', namaPemegangAkaun:'', bank:'', noAkaun:'' }
+  newRegistration.value = { 
+    kategoriPenerima: '',
+    namaPenuh:'', 
+    jenisPengenalan:'IC', 
+    noPengenalan:'', 
+    namaPemegangAkaun:'', 
+    bank:'', 
+    noAkaun:'' 
+  }
 }
 
 // Load penerima data based on category selection
@@ -3197,13 +3399,15 @@ const loadPenerimaData = (productIndex) => {
       productData.penerimaBayaran.noPendaftaran = '';
       productData.penerimaBayaran.bank = 'MAYBANK';
       productData.penerimaBayaran.noAkaunBank = '1234567890';
-    } else if (kategori === 'organisasi' || kategori === 'third_party') {
-      // Reset for organisasi/third party
+    } else if (kategori === 'lain_lain') {
+      // Reset for lain-lain (user will select from dropdown)
       productData.penerimaBayaran.kaedahPembayaran = 'EFT';
       productData.penerimaBayaran.noKadPengenalan = '';
       productData.penerimaBayaran.namaPenerima = '';
       productData.penerimaBayaran.namaPemegangAkaun = '';
       productData.penerimaBayaran.noPendaftaran = '';
+      productData.penerimaBayaran.bank = '';
+      productData.penerimaBayaran.noAkaunBank = '';
     }
   }
 }
@@ -3509,6 +3713,19 @@ const isB103Editing = computed(() => {
   const idx = editingProductIndex.value;
   const code = selectedEntitlementProducts.value[idx]?.code;
   return id === 'B103' && idx >= 0 && ['HEMODIALISIS', 'SUNTIKAN_EPO'].includes(code);
+});
+
+// Helper: whether B400 edit panel is active
+const isB400Editing = computed(() => {
+  const id = String(route.params.id || '').toUpperCase();
+  const idx = editingProductIndex.value;
+  const code = selectedEntitlementProducts.value[idx]?.code;
+  const b400Codes = [
+    'DIRECT_INSTITUSI_AGAMA', 'GL_INSTITUSI_AGAMA',
+    'DIRECT_SEKOLAH_AGAMA', 'GL_SEKOLAH_AGAMA', 
+    'DIRECT_SURAU_SEKOLAH', 'GL_SURAU_SEKOLAH'
+  ];
+  return id === 'B400' && idx >= 0 && b400Codes.includes(code);
 });
 
 // Fetch application data on mount

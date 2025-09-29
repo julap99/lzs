@@ -21,9 +21,10 @@
                 name="adakah_muallaf_tanggungan"
                 :options="[
                   { label: 'Ya', value: 'Y' },
-                  { label: 'Tidak', value: 'N' },
+                  { label: 'Tidak', value: 'T' },
                 ]"
                 validation="required"
+                :disabled="readOnly"
                 v-model="getCurrentTanggungan().adakah_muallaf_tanggungan"
               />
             </div>
@@ -42,6 +43,7 @@
               name="tarikh_masuk_islam_tanggungan"
               label="Tarikh Masuk Islam (DD/MM/YYYY) "
               validation="required"
+              :disabled="readOnly"
               v-model="
                 getCurrentTanggungan().tarikh_masuk_islam_tanggungan
               "
@@ -52,6 +54,7 @@
               type="date"
               name="tarikh_masuk_kfam_tanggungan"
               label="Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM) (DD/MM/YYYY) "
+              :disabled="readOnly"
               v-model="
                 getCurrentTanggungan().tarikh_masuk_kfam_tanggungan
               "
@@ -63,6 +66,7 @@
               label="Nama Lain (Jika ada) "
               placeholder="Masukkan nama lain"
               validation="required"
+              :disabled="readOnly"
               v-model="getCurrentTanggungan().nama_lain_tanggungan"
             />
 
@@ -74,6 +78,7 @@
               help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
               accept=".pdf,.jpg,.jpeg,.png"
               validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+              :disabled="readOnly"
               v-model="getCurrentTanggungan().dokumen_pengislaman_tanggungan"
             />
           </div>
@@ -81,7 +86,7 @@
       </div>
     </div>
 
-    <div class="flex justify-between gap-3 mt-6">
+    <div v-if="showFooterButtons" class="flex justify-between gap-3 mt-6">
       <rs-button
         type="button"
         variant="primary-outline"
@@ -109,6 +114,14 @@ const props = defineProps({
   getCurrentTanggungan: {
     type: Function,
     required: true
+  },
+  readOnly: {
+    type: Boolean,
+    default: false
+  },
+  showFooterButtons: {
+    type: Boolean,
+    default: true
   }
 })
 

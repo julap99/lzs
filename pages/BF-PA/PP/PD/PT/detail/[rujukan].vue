@@ -5,475 +5,278 @@
   ROUTE: /BF-PA/PP/PD/PT/detail/[rujukan]
 -->
 <template>
-  <div>
+  <div class="space-y-6">
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    
-    <rs-card class="mt-4">
-      <template #header>
-        <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">
-            Semakan PT - Maklumat Terperinci
-          </h2>
-          <rs-button
-            variant="secondary-outline"
-            @click="handleBack"
+    <section class="mt-4 space-y-6">
+      <!-- Header (seragam dengan page ketua divisyen) -->
+      <header class="flex flex-wrap items-center justify-between gap-4">
+        <div class="space-y-1">
+          <h1 class="text-2xl font-semibold text-slate-900">Semakan Pegawai Tadbir</h1>
+          <p class="text-sm text-slate-500">Maklumat terperinci semakan dokumen dan kelayakan.</p>
+        </div>
+        <rs-button variant="ghost" class="flex items-center gap-2" @click="handleBack">
+          <Icon name="ph:arrow-left" class="h-4 w-4" />
+          Kembali
+        </rs-button>
+      </header>
+
+      <!-- Status Ringkas (seragam) -->
+      <div class="rounded-lg border border-slate-200 bg-white p-4">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div class="space-y-1">
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Status Permohonan</p>
+            <h2 class="text-base font-semibold text-slate-900">Rujukan: {{ application.rujukan }}</h2>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <rs-badge :variant="getStatusPendaftaranVariant(application.statusPendaftaran)">
+              {{ getLocalizedStatus(application.statusPendaftaran) }}
+            </rs-badge>
+            <!-- kekalkan guna reviewData.statusSemakan seperti kod asal -->
+            <rs-badge :variant="getReviewStatusVariant(reviewData.statusSemakan)">
+              {{ reviewData.statusSemakan }}
+            </rs-badge>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid dua kolum (kiri kandungan, kanan sejarah sticky) -->
+      <div class="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(260px,1fr)]">
+        <!-- Kolum kiri -->
+        <div class="space-y-5">
+          <!-- Info sections (v-for seragam) -->
+          <article
+            v-for="section in infoSections"
+            :key="section.title"
+            class="space-y-4 rounded-lg border border-slate-200 bg-white p-4"
           >
-            <Icon name="ph:arrow-left" class="w-4 h-4 mr-1" />
-            Kembali
-          </rs-button>
-        </div>
-      </template>
-
-      <template #body>
-        <div class="p-4">
-          <!-- Application Status -->
-          <div class="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-            <div class="flex justify-between items-center">
-              <div>
-                <h3 class="text-lg font-semibold text-gray-900">
-                  Status Semakan PT
-                </h3>
-                <p class="text-sm text-gray-600">
-                  Rujukan: {{ application.rujukan }}
-                </p>
-              </div>
-              <div class="flex gap-2">
-                <rs-badge :variant="getStatusPendaftaranVariant(application.statusPendaftaran)">
-                  {{ getLocalizedStatus(application.statusPendaftaran) }}
-                </rs-badge>
-                <rs-badge :variant="getReviewStatusVariant(reviewData.statusSemakan)">
-                  {{ reviewData.statusSemakan }}
-                </rs-badge>
+            <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-600">{{ section.title }}</h3>
+            <div class="space-y-2">
+              <div
+                v-for="field in section.fields"
+                :key="field.label"
+                class="grid grid-cols-[160px_minmax(0,1fr)] items-baseline gap-2 text-sm"
+              >
+                <span class="text-slate-500">{{ field.label }}</span>
+                <span class="font-medium text-slate-900">{{ field.value || "-" }}</span>
               </div>
             </div>
-          </div>
+          </article>
 
-          <!-- Personal Information -->
-          <div class="mb-6 p-6 border border-gray-200 rounded-lg">
-            <h3 class="text-lg font-semibold mb-4 text-gray-900">
-              Maklumat Peribadi
-            </h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Nombor Kad Pengenalan
-                </label>
-                <p class="text-gray-900">{{ application.noKP }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Nama Penuh
-                </label>
-                <p class="text-gray-900">{{ application.nama }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Jantina
-                </label>
-                <p class="text-gray-900">{{ application.jantina }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Bangsa
-                </label>
-                <p class="text-gray-900">{{ application.bangsa }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Agama
-                </label>
-                <p class="text-gray-900">{{ application.agama }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Alamat Emel
-                </label>
-                <p class="text-gray-900">{{ application.emel }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Nombor Telefon
-                </label>
-                <p class="text-gray-900">{{ application.telefon }}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Address Information -->
-          <div class="mb-6 p-6 border border-gray-200 rounded-lg">
-            <h3 class="text-lg font-semibold mb-4 text-gray-900">
-              Maklumat Alamat
-            </h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Alamat Rumah
-                </label>
-                <p class="text-gray-900">{{ application.alamatRumah }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Poskod
-                </label>
-                <p class="text-gray-900">{{ application.poskod }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Bandar
-                </label>
-                <p class="text-gray-900">{{ application.bandar }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Negeri
-                </label>
-                <p class="text-gray-900">{{ application.negeri }}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Service Information -->
-          <div class="mb-6 p-6 border border-gray-200 rounded-lg">
-            <h3 class="text-lg font-semibold mb-4 text-gray-900">
-              Maklumat Perkhidmatan
-            </h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Kategori Penolong Amil
-                </label>
-                <p class="text-gray-900">{{ application.kategoriPenolongAmil }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Jawatan
-                </label>
-                <p class="text-gray-900">{{ application.jawatan }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Institusi/Kariah
-                </label>
-                <p class="text-gray-900">{{ application.institusiKariah }}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Sesi Perkhidmatan
-                </label>
-                <p class="text-gray-900">{{ application.sesiPerkhidmatan }}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Documents Section -->
-          <div class="mb-6 p-6 border border-gray-200 rounded-lg">
-            <h3 class="text-lg font-semibold mb-4 text-gray-900">
-              Dokumen Sokongan
-            </h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- Salinan Kad Pengenalan -->
-              <div>
-                <h4 class="font-medium mb-3">Salinan Kad Pengenalan</h4>
-                <div class="border border-gray-200 rounded-md">
-                  <div class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center">
-                    <div class="flex items-center">
-                      <Icon name="heroicons:document-text" class="text-blue-600 mr-2" size="20" />
-                      <span>{{ application.salinanKadPengenalan }}</span>
-                    </div>
-                    <rs-button size="sm" variant="primary-outline" @click="previewDocument('salinanKadPengenalan')">
-                      <Icon name="heroicons:eye" class="mr-1" size="16" />
-                      Lihat Dokumen
-                    </rs-button>
+          <!-- Dokumen Sokongan (seragam) -->
+          <article
+            v-if="documentList.length"
+            class="space-y-3 rounded-lg border border-slate-200 bg-white p-4"
+          >
+            <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-600">Dokumen Sokongan</h3>
+            <ul class="space-y-3">
+              <li
+                v-for="doc in documentList"
+                :key="doc.key"
+                class="rounded-md border border-slate-200/70 p-3"
+              >
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                  <div class="min-w-0">
+                    <p class="truncate text-sm font-medium text-slate-900">{{ doc.title }}</p>
+                    <p class="truncate text-xs text-slate-500">{{ doc.filename }}</p>
                   </div>
-                  <div class="p-3 bg-gray-50 text-sm text-gray-500">
-                    Dimuat naik oleh {{ application.nama }} pada {{ application.uploadDate }}
-                  </div>
+                  <rs-button
+                    size="sm"
+                    variant="ghost"
+                    class="flex items-center gap-2"
+                    @click="previewDocument(doc.key)"
+                  >
+                    <Icon name="ph:eye" class="h-4 w-4" />
+                    Lihat
+                  </rs-button>
                 </div>
+                <p class="mt-2 text-xs text-slate-400">{{ doc.meta }}</p>
+              </li>
+            </ul>
+          </article>
+
+          <!-- Borang Keputusan (seragam sepenuhnya) -->
+          <article class="rounded-lg border border-slate-200 bg-white p-4 space-y-6">
+            <header class="flex flex-wrap items-start justify-between gap-3">
+              <div class="space-y-1">
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Keputusan Semakan</p>
+                <h3 class="text-base font-semibold text-slate-900">Semakan Pegawai Tadbir</h3>
               </div>
-
-              <!-- Surat Sokongan (if exists) -->
-              <div v-if="application.suratSokongan">
-                <h4 class="font-medium mb-3">Surat Sokongan</h4>
-                <div class="border border-gray-200 rounded-md">
-                  <div class="bg-gray-50 p-3 border-b border-gray-200 flex justify-between items-center">
-                    <div class="flex items-center">
-                      <Icon name="heroicons:document-text" class="text-blue-600 mr-2" size="20" />
-                      <span>{{ application.suratSokongan }}</span>
-                    </div>
-                    <rs-button size="sm" variant="primary-outline" @click="previewDocument('suratSokongan')">
-                      <Icon name="heroicons:eye" class="mr-1" size="16" />
-                      Lihat Dokumen
-                    </rs-button>
-                  </div>
-                  <div class="p-3 bg-gray-50 text-sm text-gray-500">
-                    Dimuat naik oleh {{ application.nama }} pada {{ application.uploadDate }}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Review History -->
-          <div class="mb-6 p-6 border border-gray-200 rounded-lg">
-            <h3 class="text-lg font-semibold mb-4 text-gray-900">
-              Sejarah Semakan
-            </h3>
-            
-            <div class="space-y-4">
-              <!-- PIC Review -->
-              <div class="flex items-start justify-between p-4">
-                <div class="flex items-start">
-                  <Icon name="ph:user-plus" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
-                  <div class="flex-1">
-                    <div class="flex items-center justify-between mb-2">
-                      <h4 class="font-semibold text-gray-900">PIC</h4>
-                      <rs-badge variant="success">Selesai</rs-badge>
-                    </div>
-                    <p class="text-sm text-gray-700 mb-2">Mendaftar calon penolong amil</p>
-                    <div class="text-xs text-gray-600 space-y-1">
-                      <p><strong>Disemak oleh:</strong> Ahmad Abdullah (PIC)</p>
-                      <p><strong>Tarikh:</strong> 15-01-2024 10:30</p>
-                      <p><strong>Catatan:</strong> Calon berjaya didaftarkan dengan maklumat lengkap</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Jabatan Pengurusan Risiko Review -->
-              <div class="flex items-start justify-between p-4">
-                <div class="flex items-start">
-                  <Icon name="ph:shield-check" class="w-5 h-5 mr-3 text-gray-500 mt-1" />
-                  <div class="flex-1">
-                    <div class="flex items-center justify-between mb-2">
-                      <h4 class="font-semibold text-gray-900">Jabatan Pengurusan Risiko</h4>
-                      <rs-badge variant="success">Selesai</rs-badge>
-                    </div>
-                    <p class="text-sm text-gray-700 mb-2">Saringan risiko calon</p>
-                    <div class="text-xs text-gray-600 space-y-1">
-                      <p><strong>Disemak oleh:</strong> Siti Fatimah binti Omar (Eksekutif Risiko)</p>
-                      <p><strong>Tarikh:</strong> 20-01-2024 14:15</p>
-                      <p><strong>Catatan:</strong> Calon lulus saringan risiko. Tiada rekod jenayah atau masalah kewangan</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- PT Review (Current) -->
-              <div class="flex items-start justify-between p-4 bg-orange-50 rounded-lg border border-orange-200">
-                <div class="flex items-start">
-                  <Icon name="ph:clipboard-text" class="w-5 h-5 mr-3 text-orange-500 mt-1" />
-                  <div class="flex-1">
-                    <div class="flex items-center justify-between mb-2">
-                      <h4 class="font-semibold text-orange-900">Pegawai Tadbir</h4>
-                      <rs-badge variant="warning">Dalam Proses</rs-badge>
-                    </div>
-                    <p class="text-sm text-orange-700 mb-2">Semakan dokumen dan kelayakan</p>
-                    <div class="text-xs text-orange-600 space-y-1">
-                      <p><strong>Disemak oleh:</strong> {{ currentUser.name }} ({{ currentUser.role }})</p>
-                      <p><strong>Tarikh:</strong> {{ currentDate }}</p>
-                      <p><strong>Status:</strong> Menunggu keputusan semakan</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- PT Review Form -->
-          <div class="mb-6 p-6 border border-gray-200 rounded-lg bg-gray-50">
-            <h3 class="text-lg font-semibold mb-4 text-gray-900">
-              Keputusan Semakan Pegawai Tadbir
-            </h3>
-            
-            <div class="space-y-6">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Review Decision -->
-                <div class="md:col-span-2">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Keputusan Semakan <span class="text-red-500">*</span>
-                  </label>
-                  <div class="flex space-x-4">
-                    <label class="flex items-center">
-                      <input
-                        v-model="reviewForm.statusReview"
-                        type="radio"
-                        value="Lengkap"
-                        class="mr-2 text-green-600 focus:ring-green-500"
-                        required
-                      />
-                      <span class="text-sm font-medium text-gray-900">Lengkap</span>
-                    </label>
-                    <label class="flex items-center">
-                      <input
-                        v-model="reviewForm.statusReview"
-                        type="radio"
-                        value="Tidak Lengkap"
-                        class="mr-2 text-red-600 focus:ring-red-500"
-                        required
-                      />
-                      <span class="text-sm font-medium text-gray-900">Tidak Lengkap</span>
-                    </label>
-                  </div>
-                  <div v-if="!reviewForm.statusReview" class="mt-1 text-sm text-red-600">
-                    Keputusan semakan diperlukan
-                  </div>
-                </div>
-
-                <!-- Review Date (Auto-filled, cannot edit) -->
-                <div>
-                  <FormKit
-                    type="date"
-                    name="tarikhReview"
-                    label="Tarikh Semakan *"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Tarikh semakan diperlukan',
-                    }"
-                    v-model="reviewForm.tarikhReview"
-                    :classes="{
-                      input: '!py-2 bg-gray-100',
-                    }"
-                    :disabled="true"
-                  />
-                </div>
-
-                <!-- Reviewer Name (Auto-filled, cannot edit) -->
-                <div>
-                  <FormKit
-                    type="text"
-                    name="disemakOleh"
-                    label="Disemak Oleh *"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Nama penyemak diperlukan',
-                    }"
-                    v-model="reviewForm.disemakOleh"
-                    :classes="{
-                      input: '!py-2 bg-gray-100',
-                    }"
-                    :disabled="true"
-                  />
-                </div>
-
-                <!-- Review Comments -->
-                <div class="md:col-span-2">
-                  <FormKit
-                    type="textarea"
-                    name="catatanReview"
-                    label="Catatan Semakan *"
-                    placeholder="Sila berikan catatan semakan anda..."
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Catatan semakan diperlukan',
-                    }"
-                    v-model="reviewForm.catatanReview"
-                    :classes="{
-                      input: 'min-h-[120px] !py-2',
-                    }"
-                  />
-                </div>
-
-                <!-- Additional Documents (Optional) -->
-                <div class="md:col-span-2">
-                  <FormKit
-                    type="file"
-                    name="additionalDocuments"
-                    label="Dokumen Tambahan (Jika Ada)"
-                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                    multiple
-                    :classes="{
-                      input: '!py-2',
-                    }"
-                    v-model="reviewForm.additionalDocuments"
-                    help="Format: PDF, DOC, DOCX, JPG, JPEG, PNG. Saiz maksimum 10MB"
-                  />
-                </div>
-              </div>
-
-              <!-- Submit Buttons -->
-              <div class="flex justify-end gap-4 mt-6">
-                <rs-button
-                  type="button"
-                  variant="secondary-outline"
-                  @click="handleBack"
-                  :disabled="isSubmitting"
+              <div class="flex items-center gap-3">
+                <rs-badge
+                  v-if="reviewForm.statusReview"
+                  :variant="getReviewStatusVariant(reviewForm.statusReview)"
+                  class="text-xs"
                 >
-                  Batal
-                </rs-button>
-                <rs-button
-                  type="button"
-                  variant="primary"
-                  :disabled="isSubmitting"
-                  @click="showConfirmationModal = true"
-                >
-                  <Icon
-                    v-if="isSubmitting"
-                    name="ph:spinner"
-                    class="w-4 h-4 mr-2 animate-spin"
-                  />
-                  {{ isSubmitting ? 'Menghantar...' : 'Hantar Keputusan' }}
-                </rs-button>
+                  {{ reviewForm.statusReview }}
+                </rs-badge>
+                <div class="text-right text-xs text-slate-400">
+                  <p class="text-[10px] uppercase tracking-wider">Tarikh</p>
+                  <p class="font-medium text-slate-600">{{ currentDate }}</p>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </template>
-    </rs-card>
+            </header>
 
-    <!-- Confirmation Modal -->
-    <rs-modal
-      v-model="showConfirmationModal"
-      title="Sahkan Keputusan"
-      size="md"
-    >
+            <div class="grid gap-6 lg:grid-cols-[minmax(0,220px)_minmax(0,1fr)]">
+              <!-- Pilihan Keputusan (butang pilihan gaya kad) -->
+              <section class="space-y-3">
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Pilihan Keputusan</p>
+                <div class="grid gap-3">
+                  <!-- Lengkap -->
+                  <button
+                    type="button"
+                    class="group flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-200"
+                    :class="reviewForm.statusReview === 'Lengkap'
+                      ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm'
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'"
+                    @click="reviewForm.statusReview = 'Lengkap'"
+                  >
+                    <span class="flex min-w-0 items-center gap-3">
+                      <span
+                        class="flex h-9 w-9 items-center justify-center rounded-full border transition"
+                        :class="reviewForm.statusReview === 'Lengkap'
+                          ? 'border-emerald-500 bg-emerald-100 text-emerald-600'
+                          : 'border-slate-200 bg-white text-slate-400'"
+                      >
+                        <Icon name="ph:check-circle" class="h-4 w-4" />
+                      </span>
+                      <span class="min-w-0">
+                        <span class="block font-semibold text-slate-900 group-hover:text-slate-900">Lengkap</span>
+                      </span>
+                    </span>
+                    <Icon v-if="reviewForm.statusReview === 'Lengkap'" name="ph:check" class="h-4 w-4 text-emerald-500" />
+                  </button>
+
+                  <!-- Tidak Lengkap -->
+                  <button
+                    type="button"
+                    class="group flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-200"
+                    :class="reviewForm.statusReview === 'Tidak Lengkap'
+                      ? 'border-rose-500 bg-rose-50 text-rose-600 shadow-sm'
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'"
+                    @click="reviewForm.statusReview = 'Tidak Lengkap'"
+                  >
+                    <span class="flex min-w-0 items-center gap-3">
+                      <span
+                        class="flex h-9 w-9 items-center justify-center rounded-full border transition"
+                        :class="reviewForm.statusReview === 'Tidak Lengkap'
+                          ? 'border-rose-500 bg-rose-100 text-rose-600'
+                          : 'border-slate-200 bg-white text-slate-400'"
+                      >
+                        <Icon name="ph:x-circle" class="h-4 w-4" />
+                      </span>
+                      <span class="min-w-0">
+                        <span class="block font-semibold text-slate-900 group-hover:text-slate-900">Tidak Lengkap</span>
+                      </span>
+                    </span>
+                    <Icon v-if="reviewForm.statusReview === 'Tidak Lengkap'" name="ph:check" class="h-4 w-4 text-rose-500" />
+                  </button>
+                </div>
+              </section>
+
+              <!-- Catatan (seragam) -->
+              <section class="space-y-3 rounded-xl border border-slate-200 bg-slate-50/60 p-4">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="space-y-1">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Catatan Semakan</p>
+                  </div>
+                </div>
+                <FormKit
+                  type="textarea"
+                  name="catatanReview"
+                  rows="4"
+                  placeholder="Sila berikan catatan semakan anda..."
+                  validation="required"
+                  :validation-messages="{ required: 'Catatan semakan diperlukan' }"
+                  v-model="reviewForm.catatanReview"
+                  :classes="{
+                    input: 'w-full resize-none rounded-lg border border-transparent bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 placeholder:text-slate-400'
+                  }"
+                />
+              </section>
+            </div>
+
+            <!-- Dokumen Tambahan (seragam) -->
+            <section class="rounded-xl border border-dashed border-slate-300 bg-slate-50/50 p-4 text-xs text-slate-500">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <div class="space-y-1">
+                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    Dokumen Tambahan <span class="font-normal text-slate-400">(Opsyenal)</span>
+                  </p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <button
+                    type="button"
+                    class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition hover:border-emerald-400 hover:text-emerald-600"
+                    @click="openFilePicker"
+                  >
+                    <Icon name="ph:paperclip" class="h-4 w-4" />
+                    <span>Muat naik</span>
+                  </button>
+                  <span v-if="reviewForm.additionalDocuments && reviewForm.additionalDocuments.length" class="text-[11px] text-slate-400">
+                    {{ reviewForm.additionalDocuments.length }} fail dipilih
+                  </span>
+                </div>
+              </div>
+              <input
+                ref="supportingInput"
+                type="file"
+                multiple
+                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                class="hidden"
+                @change="handleSupportingFiles"
+              />
+            </section>
+
+            <!-- Actions (seragam) -->
+            <footer class="flex flex-wrap items-center justify-end gap-3 border-t border-slate-200 pt-4">
+              <rs-button type="button" variant="ghost" @click="handleBack" :disabled="isSubmitting">Batal</rs-button>
+              <rs-button
+                type="button"
+                variant="primary"
+                :disabled="isSubmitting"
+                @click="showConfirmationModal = true"
+                class="flex items-center gap-2"
+              >
+                <Icon v-if="isSubmitting" name="ph:spinner" class="h-4 w-4 animate-spin" />
+                <span>{{ isSubmitting ? 'Menghantar...' : 'Hantar Keputusan' }}</span>
+              </rs-button>
+            </footer>
+          </article>
+        </div>
+
+        <!-- Kolum kanan: card sejarah sticky (PDSejarahSemakan) -->
+        <div class="space-y-5">
+          <PDSejarahSemakan
+            class="lg:sticky lg:top-24 rounded-lg border border-slate-200 bg-white p-4"
+            :items="sejarahSemakan"
+            @preview="previewDocument"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- Confirmation Modal (seragam) -->
+    <rs-modal v-model="showConfirmationModal" title="Sahkan Keputusan" size="md">
       <template #body>
-        <div class="text-center">
-          <Icon name="ph:warning-circle" class="w-16 h-16 text-yellow-500 mx-auto mb-4" />
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">
-            Adakah anda pasti?
-          </h3>
-          <p class="text-gray-600 mb-4">
-            Anda akan menghantar keputusan semakan PT untuk permohonan ini. 
-            Tindakan ini tidak boleh dibatalkan.
-          </p>
-          <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-            <p class="text-sm text-blue-800">
-              <strong>Keputusan:</strong> {{ reviewForm.statusReview || 'Belum dipilih' }}
+        <div class="space-y-4 text-center">
+          <Icon name="ph:warning-circle" class="mx-auto h-12 w-12 text-amber-500" />
+          <div class="space-y-2">
+            <h3 class="text-lg font-semibold text-slate-900">Adakah anda pasti?</h3>
+            <p class="text-sm text-slate-500">
+              Anda akan menghantar keputusan semakan PT untuk permohonan ini. Tindakan ini tidak boleh dibatalkan.
             </p>
+          </div>
+          <div class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700">
+            Keputusan: {{ reviewForm.statusReview || 'Belum dipilih' }}
           </div>
         </div>
       </template>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <rs-button
-            variant="secondary-outline"
-            @click="showConfirmationModal = false"
-          >
-            Batal
-          </rs-button>
-          <rs-button
-            variant="primary"
-            @click="confirmSubmit"
-            :loading="isSubmitting"
-          >
-            <Icon name="ph:check" class="w-4 h-4 mr-2" />
+          <rs-button variant="ghost" @click="showConfirmationModal = false">Batal</rs-button>
+          <rs-button variant="primary" @click="confirmSubmit" :loading="isSubmitting" class="flex items-center gap-2">
+            <Icon name="ph:check" class="h-4 w-4" />
             Ya, Hantar Keputusan
           </rs-button>
         </div>
@@ -484,6 +287,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
+import PDSejarahSemakan from "@/components/PDSejarahSemakan.vue";
 
 const route = useRoute();
 const { $swal } = useNuxtApp();
@@ -493,52 +297,16 @@ definePageMeta({
   description: "Paparan terperinci semakan PT",
 });
 
+/* Breadcrumb kekal */
 const breadcrumb = ref([
-  {
-    name: "Penolong Amil",
-    type: "link",
-    path: "/BF-PA/PP/PM/01",
-  },
-  {
-    name: "Pendaftaran",
-    type: "link",
-    path: "/BF-PA/PP/PM/01",
-  },
-  {
-    name: "Pra Daftar",
-    type: "link",
-    path: "/BF-PA/PP/PD",
-  },
-  {
-    name: "PT",
-    type: "link",
-    path: "/BF-PA/PP/PD",
-  },
-  {
-    name: "Maklumat Terperinci",
-    type: "current",
-    path: `/BF-PA/PP/PD/PT/detail/${route.params.rujukan}`,
-  },
+  { name: "Penolong Amil", type: "link", path: "/BF-PA/PP/PM/01" },
+  { name: "Pendaftaran", type: "link", path: "/BF-PA/PP/PM/01" },
+  { name: "Pra Daftar", type: "link", path: "/BF-PA/PP/PD" },
+  { name: "PT", type: "link", path: "/BF-PA/PP/PD" },
+  { name: "Maklumat Terperinci", type: "current", path: `/BF-PA/PP/PD/PT/detail/${route.params.rujukan}` },
 ]);
 
-// Workflow steps for PT role
-const workflowSteps = computed(() => {
-  return [
-    { key: 'registration', label: 'Pendaftaran', icon: 'ph:user-plus' },
-    { key: 'screening', label: 'Saringan', icon: 'ph:shield-check' },
-    { key: 'review', label: 'Semakan PT', icon: 'ph:clipboard-text' }
-  ];
-});
-
-// Review Decision Options (No longer used - replaced with radio buttons)
-// const reviewDecisionOptions = [
-//   { label: "Sila Pilih Keputusan", value: "" },
-//   { label: "Lulus", value: "Lulus" },
-//   { label: "Tidak Lulus", value: "Tidak Lulus" },
-//   { label: "Telah Disemak dan Perlu Maklumat Tambahan", value: "Perlu Maklumat Tambahan" },
-// ];
-
-// Form Data
+/* ====== STATE / LOGIK ASAL – TIADA PERUBAHAN ====== */
 const reviewForm = ref({
   statusReview: "",
   tarikhReview: "",
@@ -546,12 +314,9 @@ const reviewForm = ref({
   catatanReview: "",
   additionalDocuments: null,
 });
-
-// State management
 const isSubmitting = ref(false);
 const showConfirmationModal = ref(false);
 
-// Current user data (mock session token)
 const currentUser = ref({
   name: "Mohd Ali bin Hassan",
   role: "Pegawai Tadbir",
@@ -559,19 +324,12 @@ const currentUser = ref({
   department: "Bahagian Pentadbiran"
 });
 
-// Current date
 const currentDate = ref(new Date().toLocaleDateString('ms-MY'));
 
-// Form validation
-const isFormValid = computed(() => {
-  return true; // Temporarily disable validation for presentation
-  // return (
-  //   reviewForm.value.statusReview &&
-  //   reviewForm.value.catatanReview
-  // );
-});
+/* Validation asal dibiar longgar mengikut fail input */
+const isFormValid = computed(() => true);
 
-// Mock application data based on RTMF requirements
+/* Mock application data asal */
 const application = ref({
   rujukan: route.params.rujukan,
   noKP: "901231012345",
@@ -594,40 +352,98 @@ const application = ref({
   salinanKadPengenalan: "salinan_kp_ahmad.pdf",
   suratSokongan: "surat_sokongan_ahmad.pdf",
   dokumenLain: null,
-      uploadDate: "15-03-2024",
+  uploadDate: "15-03-2024",
   timeline: [
-    {
-      action: "Permohonan Dihantar",
-              date: "15-03-2024 10:30",
-      notes: "Permohonan berjaya dihantar untuk semakan"
-    },
-    {
-      action: "Dokumen Disemak",
-              date: "16-03-2024 14:15",
-      notes: "Semua dokumen lengkap dan sah"
-    },
-    {
-      action: "Saringan Selesai",
-              date: "17-03-2024 09:00",
-      notes: "Saringan telah diselesaikan oleh Jabatan Pengurusan Risiko"
-    },
-    {
-      action: "Menunggu Semakan PT",
-              date: "18-03-2024 11:30",
-      notes: "Permohonan dalam proses semakan PT"
-    }
+    { action: "Permohonan Dihantar", date: "15-03-2024 10:30", notes: "Permohonan berjaya dihantar untuk semakan" },
+    { action: "Dokumen Disemak",  date: "16-03-2024 14:15", notes: "Semua dokumen lengkap dan sah" },
+    { action: "Saringan Selesai", date: "17-03-2024 09:00", notes: "Saringan telah diselesaikan oleh Jabatan Pengurusan Risiko" },
+    { action: "Menunggu Semakan PT", date: "18-03-2024 11:30", notes: "Permohonan dalam proses semakan PT" }
   ]
 });
 
-// Mock review data
+/* Mock review data asal */
 const reviewData = ref({
-  statusReview: "Dalam Proses",
+  statusSemakan: "Dalam Proses", // kekal guna 'statusSemakan' untuk badge atas
   tarikhReview: "",
   disemakOleh: "",
   catatanReview: "",
 });
 
-// Helper functions
+/* ====== SUSUN ATUR / DATA PAPARAN (REKA LETAK SAHAJA) ====== */
+const infoSections = computed(() => [
+  {
+    title: "Maklumat Peribadi",
+    fields: [
+      { label: "Nombor Kad Pengenalan", value: application.value.noKP },
+      { label: "Nama Penuh", value: application.value.nama },
+      { label: "Jantina", value: application.value.jantina },
+      { label: "Bangsa", value: application.value.bangsa },
+      { label: "Agama", value: application.value.agama },
+      { label: "Alamat Emel", value: application.value.emel },
+      { label: "Nombor Telefon", value: application.value.telefon },
+    ],
+  },
+  {
+    title: "Maklumat Alamat",
+    fields: [
+      { label: "Alamat Rumah", value: application.value.alamatRumah },
+      { label: "Poskod", value: application.value.poskod },
+      { label: "Bandar", value: application.value.bandar },
+      { label: "Negeri", value: application.value.negeri },
+    ],
+  },
+  {
+    title: "Maklumat Perkhidmatan",
+    fields: [
+      { label: "Kategori Penolong Amil", value: application.value.kategoriPenolongAmil },
+      { label: "Jawatan", value: application.value.jawatan },
+      { label: "Institusi/Kariah", value: application.value.institusiKariah },
+      { label: "Sesi Perkhidmatan", value: application.value.sesiPerkhidmatan },
+    ],
+  },
+]);
+
+const documentList = computed(() => {
+  const baseMeta = `Dimuat naik oleh ${application.value.nama} | Kemaskini: ${application.value.uploadDate}`;
+  return [
+    { key: "salinanKadPengenalan", title: "Salinan Kad Pengenalan", filename: application.value.salinanKadPengenalan, meta: baseMeta, show: !!application.value.salinanKadPengenalan },
+    { key: "suratSokongan", title: "Surat Sokongan", filename: application.value.suratSokongan, meta: baseMeta, show: !!application.value.suratSokongan },
+    { key: "dokumenLain", title: "Dokumen Lain", filename: application.value.dokumenLain, meta: baseMeta, show: !!application.value.dokumenLain },
+  ].filter(d => d.show);
+});
+
+/* Sidebar sejarah (untuk PDSejarahSemakan – sama corak seperti page ketua divisyen) */
+const sejarahSemakan = computed(() => [
+  {
+    role: "PIC",
+    nama: "Ahmad Abdullah",
+    tarikh: "15-01-2024 10:30",
+    tindakan: "Pendaftaran",
+    status: "Selesai",
+    catatan: "Calon berjaya didaftarkan dengan maklumat lengkap",
+    dokumen: [],
+  },
+  {
+    role: "Jabatan Pengurusan Risiko",
+    nama: "Siti Fatimah binti Omar",
+    tarikh: "20-01-2024 14:15",
+    tindakan: "Saringan Risiko",
+    status: "Selesai",
+    catatan: "Calon lulus saringan risiko. Tiada rekod jenayah atau masalah kewangan",
+    dokumen: [],
+  },
+  {
+    role: "Pegawai Tadbir",
+    nama: currentUser.value.name,
+    tarikh: currentDate.value,
+    tindakan: "Semakan Dokumen",
+    status: "Dalam Proses",
+    catatan: "Menunggu keputusan semakan",
+    dokumen: [],
+  },
+]);
+
+/* ====== HELPERS (KEKAL) ====== */
 const getStepVariant = (step) => {
   const stepStatus = {
     'registration': 'bg-green-100 text-green-800 border-2 border-green-300',
@@ -648,22 +464,33 @@ const getStepLineVariant = (step) => {
 
 const getStatusPendaftaranVariant = (status) => {
   const statusVariants = {
-    Draft: "disabled",        // Use disabled for proper grey color
-    Dihantar: "warning",
-    "Dalam Semakan": "info",
-    Disaring: "info",
-    "Disemak PT": "info",
-    "Disokong Eksekutif": "success",
-    "Disahkan Jabatan": "success",
-    "Diluluskan Divisyen": "success",
-    Diluluskan: "success",
-    Ditolak: "danger",
+    Draft: "disabled",
+    Draf: "disabled",
     Submitted: "warning",
-    Pending: "info",
-    Approved: "success",
+    Dihantar: "warning",
+    // Pending uniform
+    "Belum Disaring": "warning",
+    "Menunggu Semakan": "warning",
+    "Menunggu Sokongan": "warning",
+    "Menunggu Pengesahan": "warning",
+    "Menunggu Kelulusan": "warning",
+    // Completed (Telah ...)
+    Disaring: "secondary",
+    "Disemak PT": "secondary",
+    "Disokong Eksekutif": "secondary",
+    "Disahkan Jabatan": "secondary",
+    "Telah Disaring": "secondary",
+    "Telah Disemak": "secondary",
+    "Telah Disokong": "secondary",
+    "Telah Disahkan": "secondary",
+    // Final approvals
+    "Telah Diluluskan": "primary",
+    Diluluskan: "primary",
+    // Rejected
+    Ditolak: "danger",
     Rejected: "danger",
   };
-  return statusVariants[status] || "secondary"; // Use secondary instead of default
+  return statusVariants[status] || "secondary";
 };
 
 const getReviewStatusVariant = (status) => {
@@ -672,31 +499,31 @@ const getReviewStatusVariant = (status) => {
     Lulus: "success",
     "Tidak Lulus": "danger",
   };
-  return statusVariants[status] || "secondary"; // Use secondary instead of default
+  return statusVariants[status] || "secondary";
 };
 
-// Localize status text
 const getLocalizedStatus = (status) => {
   const statusMap = {
-    'Submitted': 'Dihantar',
-    'Pending': 'Menunggu',
-    'Approved': 'Diluluskan',
-    'Rejected': 'Ditolak',
-    'Draft': 'Draf',
-    'Dihantar': 'Dihantar',
-    'Dalam Semakan': 'Dalam Semakan',
-    'Disaring': 'Disaring',
-    'Disemak PT': 'Disemak PT',
-    'Disokong Eksekutif': 'Disokong Eksekutif',
-    'Disahkan Jabatan': 'Disahkan Jabatan',
-    'Diluluskan Divisyen': 'Diluluskan Divisyen',
-    'Diluluskan': 'Diluluskan',
-    'Ditolak': 'Ditolak',
+    Submitted: 'Dihantar',
+    Draft: 'Draf',
+    Dihantar: 'Dihantar',
+    'Belum Disaring': 'Belum Disaring',
+    'Menunggu Semakan': 'Menunggu Semakan',
+    'Menunggu Sokongan': 'Menunggu Sokongan',
+    'Menunggu Pengesahan': 'Menunggu Pengesahan',
+    'Menunggu Kelulusan': 'Menunggu Kelulusan',
+    'Telah Disaring': 'Telah Disaring',
+    'Telah Disemak': 'Telah Disemak',
+    'Telah Disokong': 'Telah Disokong',
+    'Telah Disahkan': 'Telah Disahkan',
+    'Telah Diluluskan': 'Telah Diluluskan',
+    Diluluskan: 'Diluluskan',
+    Ditolak: 'Ditolak',
   };
   return statusMap[status] || status;
 };
 
-// Action handlers
+/* ====== ACTIONS (KEKAL TANPA UBAH LOGIK) ====== */
 const handleBack = () => {
   navigateTo("/BF-PA/PP/PD");
 };
@@ -709,7 +536,7 @@ const confirmSubmit = async () => {
 const handleSubmit = async () => {
   try {
     isSubmitting.value = true;
-    
+
     // Update review data
     reviewData.value = {
       ...reviewData.value,
@@ -718,13 +545,9 @@ const handleSubmit = async () => {
       tarikhReview: reviewForm.value.tarikhReview,
       disemakOleh: reviewForm.value.disemakOleh,
     };
-    
-    // Show success notification
+
     alert(`Berjaya! Keputusan semakan PT berjaya dihantar. Status: ${reviewForm.value.statusReview}`);
-    
-    // Navigate back to dashboard immediately
     navigateTo("/BF-PA/PP/PD");
-    
   } catch (error) {
     alert("Ralat! Ralat berlaku semasa menghantar semakan PT");
   } finally {
@@ -732,21 +555,34 @@ const handleSubmit = async () => {
   }
 };
 
+const openFilePicker = () => {
+  if (supportingInput.value) supportingInput.value.click();
+};
+
+const supportingInput = ref(null);
+
+const handleSupportingFiles = (e) => {
+  const files = Array.from(e?.target?.files || []);
+  reviewForm.value.additionalDocuments = files;
+  if (e?.target) e.target.value = '';
+};
+
 const previewDocument = (documentType) => {
-  // Simulate document preview
   alert(`Melihat dokumen: ${documentType}`);
 };
 
+/* Init (kekal) */
 onMounted(() => {
-  // Auto-fill the form with current user and date
   reviewForm.value.tarikhReview = new Date().toISOString().split('T')[0];
   reviewForm.value.disemakOleh = currentUser.value.name;
-  
-  // In real implementation, fetch application and review data based on rujukan
   console.log("Loading PT review details for:", route.params.rujukan);
 });
 </script>
 
 <style scoped>
-/* Custom styles for RTMF compliance */
-</style> 
+/* Fokus input seragam seperti halaman ketua divisyen */
+.formkit-input:focus {
+  border-color: #10b981; /* emerald-500 */
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12);
+}
+</style>

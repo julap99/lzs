@@ -422,7 +422,7 @@ const loadOrganisasiData = (id) => {
     },
     'ORG-202506-0002': {
       noRujukan: 'ORG-202506-0002',
-      organizationName: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Petaling Jaya',
+      organizationName: 'Masjid Al-Amin',
       organizationType: 'Masjid',
       registrationNumber: 'PPM-2020-001',
       registrationStatus: 'Berdaftar',
@@ -451,7 +451,7 @@ const loadOrganisasiData = (id) => {
         bankSameAsHQ: 'tidak',
         bankName: 'Maybank',
         bankAccountNumber: '5123456789012',
-        penamaBank: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan PJ',
+        penamaBank: 'Masjid Al-Amin',
         paymentMethod: 'Bank Transfer'
       },
       registrationCertificate: { name: 'Sijil Pendaftaran ROS', filename: 'sijil_ros_masjid_2020.pdf', size: '2.0 MB' },
@@ -463,7 +463,7 @@ const loadOrganisasiData = (id) => {
     },
     'ORG-202505-0003': {
       noRujukan: 'ORG-202505-0003',
-      organizationName: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Klang',
+      organizationName: 'Masjid Al-Hidayah',
       organizationType: 'Masjid',
       registrationNumber: 'PPM-2020-001',
       registrationStatus: 'Berdaftar',
@@ -492,7 +492,7 @@ const loadOrganisasiData = (id) => {
         bankSameAsHQ: 'tidak',
         bankName: 'Bank Islam',
         bankAccountNumber: '2098765432109',
-        penamaBank: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Klang',
+        penamaBank: 'Masjid Al-Hidayah',
         paymentMethod: 'Bank Transfer'
       },
       registrationCertificate: { name: 'Sijil Pendaftaran ROS', filename: 'sijil_ros_masjid_2020.pdf', size: '1.7 MB' },
@@ -504,7 +504,7 @@ const loadOrganisasiData = (id) => {
     },
     'ORG-202507-0004': {
       noRujukan: 'ORG-202507-0004',
-      organizationName: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Shah Alam',
+      organizationName: 'Masjid An-Nur',
       organizationType: 'Masjid',
       registrationNumber: 'PPM-2020-001',
       registrationStatus: 'Berdaftar',
@@ -533,7 +533,7 @@ const loadOrganisasiData = (id) => {
         bankSameAsHQ: 'tidak',
         bankName: 'RHB Bank',
         bankAccountNumber: '3456789012345',
-        penamaBank: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Shah Alam',
+        penamaBank: 'Masjid An-Nur',
         paymentMethod: 'Bank Transfer'
       },
       registrationCertificate: { name: 'Sijil Pendaftaran ROS', filename: 'sijil_ros_masjid_2020.pdf', size: '2.1 MB' },

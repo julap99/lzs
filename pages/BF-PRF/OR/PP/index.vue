@@ -8,6 +8,17 @@
           <div>
             <h2 class="text-xl font-semibold">Senarai Organisasi</h2>
           </div>
+          <!-- Simulasi Peranan -->
+          <div class="flex items-center gap-2">
+            <FormKit
+              type="select"
+              name="role"
+              label="Simulasi Peranan"
+              :options="rolesOptions"
+              v-model="currentUserRole"
+              :classes="{ outer: 'mb-0', wrapper: 'w-56' }"
+            />
+          </div>
         </div>
       </template>
 
@@ -32,7 +43,9 @@
           
         </div>
 
-        <!-- Tabbed Table Section -->
+        <!-- Eksekutif Tabs -->
+        <!-- Ketua Jabatan Tabs -->
+        <!-- Tabbed Table Section (Shared tabs; tindakan differs by role) -->
         <rs-tab v-model="activeTab" class="mt-4">
           <rs-tab-item title="Menunggu Pengesahan">
             <div class="p-4">
@@ -64,32 +77,23 @@
 
                 <template v-slot:tindakan="{ text }">
                   <div class="flex space-x-3">
-                    <!-- View Button - Always available -->
+                    <!-- View Button - Role-based navigation -->
                     <button
                       @click="viewItem(text.id)"
-                      title="Lihat"
+                      title="Papar"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                      <Icon name="mdi:file-document-outline" size="20" class="text-primary" />
                     </button>
                     
-                    <!-- Edit Button - Available for all statuses -->
+                    <!-- Edit Button per role rules -->
                     <button
+                      v-if="showEditAction(text.status)"
                       @click="editItem(text.id)"
                       title="Kemaskini"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
                       <Icon name="ic:outline-edit" size="20" class="text-warning" />
-                    </button>
-                    
-                    <!-- Semak Button - Only for pending items -->
-                    <button
-                      v-if="canPerformAction(text.status)"
-                      @click="handleSemakPengesahan(text.id)"
-                      title="Semak"
-                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                    >
-                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
                     </button>
                   </div>
                 </template>
@@ -127,17 +131,17 @@
 
                 <template v-slot:tindakan="{ text }">
                   <div class="flex space-x-3">
-                    <!-- View Button - Always available -->
+                    <!-- View Button - Role-based navigation -->
                     <button
                       @click="viewItem(text.id)"
-                      title="Lihat"
+                      title="Papar"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                      <Icon name="mdi:file-document-outline" size="20" class="text-primary" />
                     </button>
-                    
-                    <!-- Edit Button - User can update during correction -->
+                    <!-- Edit Button - per role rules -->
                     <button
+                      v-if="showEditAction(text.status)"
                       @click="editItem(text.id)"
                       title="Kemaskini"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
@@ -180,13 +184,13 @@
 
                 <template v-slot:tindakan="{ text }">
                   <div class="flex space-x-3">
-                    <!-- View Button - Always available -->
+                    <!-- View Button - Role-based navigation -->
                     <button
                       @click="viewItem(text.id)"
-                      title="Lihat"
+                      title="Papar"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                      <Icon name="mdi:file-document-outline" size="20" class="text-primary" />
                     </button>
                   </div>
                 </template>
@@ -224,32 +228,23 @@
 
                 <template v-slot:tindakan="{ text }">
                   <div class="flex space-x-3">
-                    <!-- View Button - Always available -->
+                    <!-- View Button - Role-based navigation -->
                     <button
                       @click="viewItem(text.id)"
-                      title="Lihat"
+                      title="Papar"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                      <Icon name="mdi:file-document-outline" size="20" class="text-primary" />
                     </button>
                     
-                    <!-- Edit Button - Available for all statuses -->
+                    <!-- Edit Button per role rules -->
                     <button
+                      v-if="showEditAction(text.status)"
                       @click="editItem(text.id)"
                       title="Kemaskini"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
                       <Icon name="ic:outline-edit" size="20" class="text-warning" />
-                    </button>
-                    
-                    <!-- Semak Button - Only for pending items -->
-                    <button
-                      v-if="canPerformAction(text.status)"
-                      @click="handleSemakPengesahan(text.id)"
-                      title="Semak"
-                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                    >
-                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
                     </button>
                     
                     <!-- Delete Button - Only for Eksekutif role -->
@@ -267,6 +262,8 @@
             </div>
           </rs-tab-item>
         </rs-tab>
+
+          
 
         <div class="flex items-center justify-between px-5 mt-4">
           <div class="flex items-center gap-2">
@@ -386,7 +383,7 @@ const columns = [
 const activeTab = ref(0);
 const tableKey = ref(0);
 
-// Mock data for Eksekutif role
+// Mock data for Eksekutif role with role information
 const organizationList = ref([
   {
     noRujukan: 'ORG-202507-0001',
@@ -399,28 +396,28 @@ const organizationList = ref([
   },
   {
     noRujukan: 'ORG-202506-0002',
-    namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Petaling Jaya',
+    namaOrganisasi: 'Masjid Al-Amin',
     tarikhPermohonan: '15/6/2025',
     jenisOrganisasi: 'Masjid',
-    jenisStruktur: 'Cawangan',
+    jenisStruktur: 'HQ',
     status: 'Disahkan',
     tindakan: { id: 'ORG-202506-0002', status: 'Disahkan' },
   },
   {
     noRujukan: 'ORG-202505-0003',
-    namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Klang',
+    namaOrganisasi: 'Masjid Al-Hidayah',
     tarikhPermohonan: '8/5/2025',
     jenisOrganisasi: 'Masjid',
-    jenisStruktur: 'Cawangan',
+    jenisStruktur: 'HQ',
     status: 'Menunggu Pengesahan',
     tindakan: { id: 'ORG-202505-0003', status: 'Menunggu Pengesahan' },
   },
   {
     noRujukan: 'ORG-202507-0004',
-    namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Shah Alam',
+    namaOrganisasi: 'Masjid An-Nur',
     tarikhPermohonan: '30/7/2025',
     jenisOrganisasi: 'Masjid',
-    jenisStruktur: 'Cawangan',
+    jenisStruktur: 'HQ',
     status: 'Disahkan',
     tindakan: { id: 'ORG-202507-0004', status: 'Disahkan' },
   },
@@ -531,18 +528,40 @@ const deleteConfirmation = ref({
   text: ''
 });
 
+// Role switcher
+const rolesOptions = [
+  { label: 'Eksekutif', value: 'Eksekutif' },
+  { label: 'Ketua Jabatan', value: 'Ketua Jabatan' },
+];
+const selectedRole = ref('Eksekutif');
 // User role simulation - for demo purposes
-const currentUserRole = ref('Eksekutif'); // Eksekutif, Pengurus, etc.
+const currentUserRole = ref('Eksekutif'); // Eksekutif, Ketua Jabatan, Pengguna Luar
 
-// Action capabilities for Eksekutif role
-const canPerformAction = (status) => {
-  return ['Menunggu Pengesahan'].includes(status);
+const setRole = (role) => {
+  selectedRole.value = role;
+  currentUserRole.value = role;
+  tableKey.value++;
 };
 
-// Edit permissions - all statuses can be edited (will go back to approval)
-const canEdit = (status) => {
-  return true; // All items can be edited
+watch(
+  () => currentUserRole.value,
+  (val) => {
+    if (val !== selectedRole.value) {
+      setRole(val);
+    }
+  }
+);
+
+// Role-based tindakan visibility
+const showEditAction = (status) => {
+  // Only Eksekutif can perform Kemaskini (Update)
+  if (currentUserRole.value === 'Eksekutif') return true;
+  return false;
 };
+
+
+// Backward-compat leftover helpers (kept for reuse if referenced)
+const canEdit = (status) => showEditAction(status);
 
 // Delete permissions - only Eksekutif role can delete
 const canDelete = (status) => {
@@ -564,9 +583,19 @@ const performSearch = () => {
 };
 
 // CRUD Operations
-const viewItem = (id) => navigateTo(`/BF-PRF/OR/PP/view/${id}`);
+const viewItem = (id) => {
+  // Role-based navigation for view button
+  if (currentUserRole.value === 'Eksekutif') {
+    navigateTo(`/BF-PRF/OR/PP/view/eksekutif/${id}`);
+  } else if (currentUserRole.value === 'Ketua Jabatan') {
+    navigateTo(`/BF-PRF/OR/PP/view/ketua-jabatan/${id}`);
+  } else {
+    // Default view for other roles (PenggunaLuar, Staf Zakat, etc.)
+    navigateTo(`/BF-PRF/OR/PP/view/${id}`);
+  }
+};
 const editItem = (id) => navigateTo(`/BF-PRF/OR/PP/kemaskini/${id}`);
-const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/OR/PP/04/${id}`);
+
 
 // Delete operations
 const confirmDelete = (id, item) => {

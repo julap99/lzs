@@ -135,10 +135,6 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  jenisPinjamanOptions: {
-    type: Array,
-    default: () => [],
-  },
   showFooterButtons: {
     type: Boolean,
     default: true,
@@ -148,6 +144,18 @@ const props = defineProps({
     default: false,
   },
 });
+
+// Loan type options - moved from parent component
+const jenisPinjamanOptions = [
+  { label: "Pinjaman Peribadi", value: "pinjaman-peribadi" },
+  { label: "Pinjaman Kereta", value: "pinjaman-kereta" },
+  { label: "Pinjaman Rumah", value: "pinjaman-rumah" },
+  { label: "Pinjaman Pendidikan", value: "pinjaman-pendidikan" },
+  { label: "Pinjaman Perniagaan", value: "pinjaman-perniagaan" },
+  { label: "Pinjaman Pertanian", value: "pinjaman-pertanian" },
+  { label: "Pinjaman Koperasi", value: "pinjaman-koperasi" },
+  { label: "Pinjaman Islamik", value: "pinjaman-islamik" },
+];
 
 // Emits
 const emit = defineEmits(["next-step", "prev-step", "save-step"]);

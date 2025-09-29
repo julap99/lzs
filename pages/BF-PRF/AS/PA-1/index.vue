@@ -236,8 +236,9 @@
             <FormKit type="textarea" name="penyataan_masalah" label="Penyataan Masalah" />
 
             <!-- Conditional Documents Info + Dokumen Sokongan Table -->
+            <!-- HIDDEN: All Documents sections are temporarily hidden -->
+            <!-- 
             <div v-if="shouldShowDocInfo" class="mt-6 space-y-4">
-              <!-- Perubatan Kritikal Documents -->
               <div
                 v-if="isPerubatanKritikal"
                 class="rounded border border-gray-300 p-4 bg-gray-50"
@@ -265,7 +266,6 @@
                 </ol>
               </div>
 
-              <!-- Other Cases Documents -->
               <div v-else class="rounded border border-gray-300 p-4 bg-gray-50">
                 <h4 class="font-semibold mb-2">Wajib</h4>
                 <ol class="list-decimal ml-6 space-y-1 text-sm">
@@ -400,6 +400,7 @@
                 </div>
               </div>
             </div>
+            -->
             
             
 

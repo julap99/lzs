@@ -11,7 +11,8 @@
 
       <template #body>
         <FormKit type="form" :actions="false" id="carianForm" @submit="onJanaSurat">
-          <div class="grid gap-6 md:grid-cols-4">
+          <!-- 2 atas (KP), 2 bawah (Organisasi) -->
+          <div class="grid gap-6 md:grid-cols-2">
             <!-- No. K/P Asnaf -->
             <FormKit
               type="text"
@@ -28,6 +29,24 @@
               v-model="filters.noKpTanggungan"
               :classes="fkClasses"
               placeholder="Masukkan No. K/P Tanggungan"
+            />
+
+            <!-- Nama Organisasi -->
+            <FormKit
+              type="text"
+              label="Nama Organisasi"
+              v-model="filters.namaOrganisasi"
+              :classes="fkClasses"
+              placeholder="Contoh: Sekolah Menengah Kebangsaan SHAH ALAM"
+            />
+
+            <!-- Alamat Organisasi -->
+            <FormKit
+              type="textarea"
+              label="Alamat Organisasi"
+              v-model="filters.alamatOrganisasi"
+              :classes="fkClasses"
+              placeholder="Contoh: Jalan Pendidikan 1, 40000 Shah Alam, Selangor"
             />
           </div>
 
@@ -93,7 +112,7 @@
             </template>
           </rs-card>
 
-          <!-- Kepala Surat (auto ref no + dates) + Alamat LZS di kiri -->
+          <!-- Kepala Surat -->
           <rs-card class="mb-6">
             <template #body>
               <div class="text-left space-y-1">
@@ -190,7 +209,7 @@
 
                 <div>
                   Sekian,
-                  <span class="text-xl text-gray-700 arabic">اَلسَلامُ عَلَيْكُم وَرَحْمَةُ اَللهِ وَبَرَكاتُهُ‎</span>
+                  <span class="text-xl text-gray-700 arabic">اَلسَلامُ عَلَيْكُم وَرَحْمَةُ اَللهِ وَرَكاتُهُ‎</span>
                 </div>
 
                 <div class="text-center font-semibold">“MENERAJU PERUBAHAN”</div>
@@ -223,7 +242,9 @@ const breadcrumb = [
 
 const filters = ref({
   noKpAsnaf: '',
-  noKpTanggungan: ''
+  noKpTanggungan: '',
+  namaOrganisasi: '',
+  alamatOrganisasi: ''
 })
 
 const showSurat = ref(false)
@@ -233,22 +254,22 @@ const onJanaSurat = () => {
   showSurat.value = true
 }
 
+const orgHeader = {
+  name: "Sekolah Menengah Kebangsaan Seksyen 18",
+  address: [
+    "Jalan Kelapa Bali 18/43, Seksyen 18",
+    "40200 Shah Alam, Selangor",
+  ],
+  tel: "+603-5542 1403",
+  fax: "+603-5542 2233/2244"
+}
+
 const suratView = computed(() => ({
   daerah: "Hulu Selangor",
 }))
 
-const orgHeader = {
-  name: "Lembaga Zakat Selangor (MAIS)",
-  address: [
-    "Menara Zakat Sultan Idris Shah,",
-    "No. 1, Persiaran Bandar Raya, Seksyen 14,",
-    "40000 Shah Alam, Selangor Darul Ehsan."
-  ],
-  tel: "+603 8314 2222",
-  fax: "+603 8314 2233/2244"
-}
-
 const today = new Date()
+const generatedAt = today
 const noRujukan = `RP0003/${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}/1234`
 
 function formatDate(date) {
@@ -271,7 +292,19 @@ function downloadSuratTawaran () {
 const onReset = () => {
   filters.value.noKpAsnaf = ''
   filters.value.noKpTanggungan = ''
+  filters.value.namaOrganisasi = ''
+  filters.value.alamatOrganisasi = ''
   showSurat.value = false
+}
+
+/* FormKit classes */
+const fkClasses = {
+  outer: 'space-y-1',
+  label: 'text-sm font-medium text-gray-900',
+  inner: 'mt-1 rounded-xl border bg-white focus-within:ring-2 focus-within:ring-blue-500',
+  input: 'w-full rounded-xl border-0 px-3 py-2 text-sm placeholder-gray-400 focus:outline-none',
+  help: 'text-xs text-gray-500 mt-1',
+  messages: 'text-xs text-red-600 mt-1',
 }
 </script>
 

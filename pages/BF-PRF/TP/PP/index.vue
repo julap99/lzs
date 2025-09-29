@@ -70,7 +70,7 @@
                       title="Lihat"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                      <Icon name="mdi:file-document-outline" size="20" class="text-primary" />
                     </button>
                     
                     <!-- Edit Button - Available for all statuses -->
@@ -146,7 +146,7 @@
                       title="Lihat"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                      <Icon name="mdi:file-document-outline" size="20" class="text-primary" />
                     </button>
                     
                     <!-- Edit Button - Available for all statuses -->
@@ -222,7 +222,7 @@
                       title="Lihat"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                      <Icon name="mdi:file-document-outline" size="20" class="text-primary" />
                     </button>
                     
                     <!-- Edit Button - Available for all statuses -->
@@ -298,7 +298,7 @@
                       title="Lihat"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                      <Icon name="mdi:file-document-outline" size="20" class="text-primary" />
                     </button>
                     
                     <!-- Edit Button - Available for all statuses -->

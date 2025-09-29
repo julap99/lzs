@@ -1,0 +1,1487 @@
+<template>
+  <div>
+    <LayoutsBreadcrumb :items="breadcrumb" />
+
+    <div class="space-y-4 mt-4">
+      <!-- Maklumat Umum Section -->
+      <rs-card>
+        <template #header>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:info" class="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Maklumat Umum</h2>
+              <p class="text-sm text-gray-500">Maklumat asas bantuan</p>
+            </div>
+          </div>
+        </template>
+        <template #body>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Kod BP -->
+            <FormKit
+              type="text"
+              name="kodBP"
+              label="Kod BP"
+              v-model="bantuanDetail.kodBP"
+              disabled
+            />
+
+            <!-- Tajuk -->
+            <FormKit
+              type="text"
+              name="tajuk"
+              label="Tajuk"
+              v-model="bantuanDetail.tajuk"
+              disabled
+            />
+
+            <!-- Kategori Asnaf -->
+            <FormKit
+              type="text"
+              name="kategoriAsnaf"
+              label="Kategori Asnaf"
+              v-model="bantuanDetail.kategoriAsnaf"
+              disabled
+            />
+
+            <!-- Status -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Status</label
+              >
+              <rs-badge :variant="getStatusVariant(bantuanDetail.status)">
+                {{ bantuanDetail.status }}
+              </rs-badge>
+            </div>
+
+            <!-- Jumlah Amaun -->
+            <FormKit
+              type="text"
+              name="jumlahAmaun"
+              label="Jumlah Amaun (RM)"
+              v-model="bantuanDetail.jumlahAmaun"
+              disabled
+            />
+
+            <!-- Tarikh Mohon -->
+            <FormKit
+              type="text"
+              name="tarikhMohon"
+              label="Tarikh Mohon"
+              v-model="bantuanDetail.tarikhMohon"
+              disabled
+            />
+
+            <!-- Dicipta Oleh -->
+            <FormKit
+              type="text"
+              name="diciptaOleh"
+              label="Dicipta Oleh"
+              v-model="bantuanDetail.diciptaOleh"
+              disabled
+            />
+
+            <!-- Dicipta Pada -->
+            <FormKit
+              type="text"
+              name="diciptaPada"
+              label="Dicipta Pada"
+              v-model="bantuanDetail.diciptaPada"
+              disabled
+            />
+
+            <!-- Catatan -->
+            <FormKit
+              type="textarea"
+              name="catatan"
+              label="Catatan"
+              v-model="bantuanDetail.catatan"
+              disabled
+              :classes="{
+                input: 'h-24',
+                outer: 'md:col-span-2',
+              }"
+            />
+          </div>
+        </template>
+      </rs-card>
+
+       <!-- Maklumat Bantuan Section -->
+       <rs-card>
+        <template #header>
+          <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:handshake" class="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Maklumat Bantuan</h2>
+              <p class="text-sm text-gray-500">Konfigurasi bantuan dan produk</p>
+            </div>
+          </div>
+            <div class="flex gap-2">
+              <rs-button
+                v-if="!isEditing"
+                variant="primary"
+                size="sm"
+                @click="handleEdit"
+              >
+                <Icon name="mdi:pen" size="1.5rem" class="mr-1" />
+                Edit
+              </rs-button>
+              <template v-else>
+                <rs-button
+                  variant="success"
+                  size="sm"
+                  @click="handleSave"
+                >
+                  <Icon name="mdi:check" size="1.5rem" class="mr-1" />
+                  Save
+                </rs-button>
+                <rs-button
+                  variant="secondary"
+                  size="sm"
+                  @click="handleCancel"
+                >
+                  <Icon name="mdi:close" size="1.5rem" class="mr-1" />
+                  Cancel
+                </rs-button>
+              </template>
+            </div>
+          </div>
+        </template>
+        <template #body>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <CustomSelect
+                v-model="bantuanDetail.aid"
+                :options="aid"
+                label="Aid"
+                search-placeholder="Cari aid..."
+                :disabled="!isEditing"
+              />
+            <FormKit
+                type="select"
+                name="aidProduct"
+                label="Aid Product"
+                v-model="bantuanDetail.aidProduct"
+                :options="aidProductOptions"
+                searchable
+                :search-attributes="['label']"
+                :search-filter="(option, search) => option.label.toLowerCase().includes(search.toLowerCase())"
+                validation="required"
+                :validation-messages="{
+                  required: 'Sila pilih aid product',
+                }"
+                :disabled="!isEditing || !bantuanDetail.aid"
+              />
+            <FormKit
+                type="select"
+                name="productPackage"
+                label="Product Package"
+                v-model="bantuanDetail.productPackage"
+                :options="productPackageOptions"
+                searchable
+                :search-attributes="['label']"
+                :search-filter="(option, search) => option.label.toLowerCase().includes(search.toLowerCase())"
+                validation="required"
+                :validation-messages="{
+                  required: 'Sila pilih product package',
+                }"
+                :disabled="!isEditing || !bantuanDetail.aidProduct"
+              />
+            <FormKit
+                type="select"
+                name="productEntitlement"
+                label="Product Entitlement"
+                v-model="bantuanDetail.productEntitlement"
+                :options="productEntitlementOptions"
+                searchable
+                :search-attributes="['label']"
+                :search-filter="(option, search) => option.label.toLowerCase().includes(search.toLowerCase())"
+                validation="required"
+                :validation-messages="{
+                  required: 'Sila pilih product Entitlement',
+                }"
+                :disabled="!isEditing || !bantuanDetail.productPackage"
+            />
+
+            <FormKit
+              type="date"
+              name="tarikhJangkaanBayaran"
+              label="Tarikh Jangkaan Bayaran"
+              placeholder="Pilih tarikh jangkaan bayaran"
+              validation="required"
+              :validation-messages="{
+                required: 'Sila pilih tarikh jangkaan bayaran',
+              }"
+              v-model="bantuanDetail.tarikhJangkaanBayaran"
+              :disabled="!isEditing"
+            />
+
+            <FormKit
+              type="radio"
+              name="modeOfPayment"
+              label="Mode Of Payment"
+              v-model="bantuanDetail.modeOfPayment"
+              :options="[
+                { label: 'Tunai', value: 'Tunai' },
+                { label: 'Profile', value: 'Profile' },
+              ]"
+              validation="required"
+              :disabled="!isEditing"
+            />
+
+            <!-- Cawangan (CustomSelect) -->
+            <CustomSelect
+              v-model="bantuanDetail.cawangan"
+              :options="cawanganOptions"
+              label="Cawangan"
+              search-placeholder="Cari cawangan..."
+              :disabled="!isEditing"
+              :classes="{
+                outer: 'md:col-span-2',
+              }"
+            />
+          </div>
+        </template>
+      </rs-card>
+
+      <!-- Maklumat Bayaran Kepada Section -->
+      <rs-card>
+        <template #header>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:payments" class="w-6 h-6 text-yellow-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Bayaran Kepada (Payable To)</h2>
+              <p class="text-sm text-gray-500">Daftar pembayaran dan maklumat penerima</p>
+            </div>
+          </div>
+        </template>
+        <template #body>
+          <div
+            v-if="paymentList.length === 0"
+            class="text-center py-8 text-gray-500"
+          >
+            Tiada maklumat bayaran.
+          </div>
+
+          <div v-else class="space-y-3">
+            <rs-table
+              :data="paymentList"
+              :columns="paymentColumns"
+              :pageSize="5"
+              :showNoColumn="true"
+              :options="{ variant: 'default', hover: true, striped: true }"
+              :options-advanced="{ sortable: true, filterable: false }"
+              advanced
+            >
+              <template v-slot:amaun="{ text }">
+                {{ formatCurrency(text) }}
+              </template>
+              <template v-slot:actions="{ row }">
+                <div class="flex space-x-2 justify-center">
+                  <rs-button
+                    variant="info"
+                    size="sm"
+                    class="flex gap-2"
+                    @click="handleLihatBayaran(row)"
+                  >
+                    <Icon name="ph:eye" class="h-4 w-4" />
+                    Lihat
+                  </rs-button>
+                </div>
+              </template>
+            </rs-table>
+            <div class="flex justify-end text-sm text-gray-700 mt-2">
+              <div class="font-medium">Jumlah Amaun (Bayaran):&nbsp;</div>
+              <div>{{ formatCurrency(paymentTotal) }}</div>
+            </div>
+          </div>
+        </template>
+      </rs-card>
+
+      <!-- Senarai Penerima Section -->
+      <rs-card>
+        <template #header>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:person" class="w-6 h-6 text-red-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Senarai Penerima (Beneficiary List)</h2>
+              <p class="text-sm text-gray-500">Senarai penerima bantuan dan maklumatnya</p>
+            </div>
+          </div>
+        </template>
+        <template #body>
+          <div
+            v-if="recipientList.length === 0"
+            class="text-center py-8 text-gray-500"
+          >
+            Tiada maklumat penerima.
+          </div>
+
+          <div v-else class="space-y-3">
+            <rs-table
+              :data="recipientList"
+              :columns="recipientColumns"
+              :pageSize="5"
+              :showNoColumn="true"
+              :options="{ variant: 'default', hover: true, striped: true }"
+              :options-advanced="{ sortable: true, filterable: false }"
+              advanced
+            >
+              <template v-slot:amaun="{ text }">
+                {{ formatCurrency(text) }}
+              </template>
+              <template v-slot:actions="{ row }">
+                <div class="flex space-x-2 justify-center">
+                  <rs-button
+                    variant="info"
+                    size="sm"
+                    class="flex gap-2"
+                    @click="handleLihatPenerima(row)"
+                  >
+                    <Icon name="ph:eye" class="h-4 w-4" />
+                    Lihat
+                  </rs-button>
+                </div>
+              </template>
+            </rs-table>
+            <div class="flex justify-end text-sm text-gray-700 mt-2">
+              <div class="font-medium">Jumlah Amaun (Penerima):&nbsp;</div>
+              <div>{{ formatCurrency(totalAmount) }}</div>
+            </div>
+          </div>
+        </template>
+      </rs-card>
+
+      <!-- Dokumen Section -->
+      <rs-card>
+        <template #header>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:description" class="w-6 h-6 text-purple-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Dokumen Sokongan</h2>
+              <p class="text-sm text-gray-500">Fail dan dokumen berkaitan</p>
+            </div>
+          </div>
+        </template>
+        <template #body>
+          <div
+            v-if="documentList.length === 0"
+            class="text-center py-8 text-gray-500"
+          >
+            Tiada dokumen dimuat naik.
+          </div>
+          <div v-else class="space-y-3">
+            <div
+              v-for="(document, index) in documentList"
+              :key="index"
+              class="flex items-center justify-between p-3 border rounded-lg bg-gray-50"
+            >
+              <div class="flex items-center space-x-3">
+                <Icon
+                  name="material-symbols:description"
+                  class="w-8 h-8 text-blue-500"
+                />
+                <div>
+                  <p class="font-medium text-gray-900">{{ document.name }}</p>
+                  <p class="text-sm text-gray-500">
+                    {{ document.size }} • {{ document.uploadDate }}
+                  </p>
+                </div>
+              </div>
+              <rs-button variant="primary-outline" size="sm">
+                <Icon name="material-symbols:download" class="w-4 h-4 mr-1" />
+                Muat Turun
+              </rs-button>
+            </div>
+          </div>
+        </template>
+      </rs-card>
+
+      <!-- Maklumat Sokongan Section -->
+      <rs-card>
+        <template #header>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:handshake" class="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Maklumat Sokongan</h2>
+              <p class="text-sm text-gray-500">Maklumat sokongan dan dokumen</p>
+            </div>
+          </div>
+        </template>
+        <template #body>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Status Semakan -->
+            <FormKit
+              v-model="sokonganForm.statusSemakan"
+              type="select"
+              label="Status Semakan *"
+              :options="statusSemakanOptions"
+              required
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+
+            <!-- Nama Pegawai -->
+            <FormKit
+              type="text"
+              name="namaPegawai"
+              label="Nama Pegawai"
+              v-model="sokonganForm.namaPegawai"
+              disabled
+            />
+
+            <!-- Catatan -->
+            <FormKit
+              v-model="sokonganForm.catatan"
+              type="textarea"
+              label="Catatan"
+              placeholder="Masukkan catatan sokongan..."
+              :classes="{
+                input: '!py-2 min-h-[100px]',
+                outer: 'md:col-span-2'
+              }"
+            />
+
+            <!-- Tarikh -->
+            <FormKit
+              type="text"
+              name="tarikh"
+              label="Tarikh"
+              v-model="sokonganForm.tarikh"
+              disabled
+            />
+          </div>
+        </template>
+      </rs-card>
+
+      <!-- Action Buttons -->
+      <div class="">
+        <div class="flex justify-between space-x-4">
+          <rs-button variant="secondary" @click="handleKembali">
+            <Icon name="ph:arrow-left" class="w-4 h-4 mr-1" />
+            Kembali
+          </rs-button>
+          <div class="flex space-x-2">
+            <rs-button
+              variant="info"
+              @click="handleSimpan"
+              :disabled="!sokonganForm.statusSemakan"
+            >
+              <Icon name="ph:floppy-disk" class="w-4 h-4 mr-1" />
+              Simpan
+            </rs-button>
+            <rs-button
+              variant="primary"
+              @click="handleHantar"
+              :disabled="!sokonganForm.statusSemakan"
+            >
+              <Icon name="ph:paper-plane-tilt" class="w-4 h-4 mr-1" />
+              Hantar
+            </rs-button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Detail Modal -->
+    <rs-modal
+      v-model="showPaymentModal"
+      title="Maklumat Bayaran Kepada"
+      size="lg"
+      position="center"
+    >
+      <div v-if="selectedPayment" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Kod</label>
+            <p class="text-gray-900">{{ selectedPayment.kod }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Bayaran Kepada</label>
+            <p class="text-gray-900">{{ selectedPayment.bayaranKepada }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Asnaf</label>
+            <p class="text-gray-900">{{ selectedPayment.asnaf }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Amaun</label>
+            <p class="text-gray-900 font-semibold">{{ selectedPayment.amaun }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Tarikh Bayaran</label>
+            <p class="text-gray-900">{{ selectedPayment.tarikhBayaran }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Contributor</label>
+            <p class="text-gray-900">{{ selectedPayment.contributor || '-' }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Recipient</label>
+            <p class="text-gray-900">{{ selectedPayment.recipient || '-' }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Organization</label>
+            <p class="text-gray-900">{{ selectedPayment.organization || '-' }}</p>
+          </div>
+        </div>
+      </div>
+      <template #footer>
+        <div class="flex justify-end">
+          <rs-button variant="secondary" @click="showPaymentModal = false">
+            Tutup
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+
+    <!-- Recipient Detail Modal -->
+    <rs-modal
+      v-model="showRecipientModal"
+      title="Maklumat Penerima (Beneficiary List)"
+      size="lg"
+      position="center"
+    >
+      <div v-if="selectedRecipient" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Penuh</label>
+            <p class="text-gray-900 font-semibold">{{ selectedRecipient.namaPenuh }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Amaun</label>
+            <p class="text-gray-900 font-semibold">{{ selectedRecipient.amaun }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Kategori Asnaf</label>
+            <p class="text-gray-900">{{ selectedRecipient.kategoriAsnaf }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Bayaran Kepada</label>
+            <p class="text-gray-900">{{ selectedRecipient.bayaranKepada }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Agihan Semula</label>
+            <p class="text-gray-900">{{ selectedRecipient.agihanSemula || '-' }}</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Bulk Processing</label>
+            <p class="text-gray-900">{{ selectedRecipient.bulkProcessing }}</p>
+          </div>
+        </div>
+      </div>
+      <template #footer>
+        <div class="flex justify-end">
+          <rs-button variant="secondary" @click="showRecipientModal = false">
+            Tutup
+          </rs-button>
+        </div>
+      </template>
+    </rs-modal>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+
+const route = useRoute();
+const { navigateTo } = useRouter();
+
+// Simple alert function
+const alert = (type, message) => {
+  if (type === "error") {
+    console.error(message);
+  } else if (type === "success") {
+    console.log("✅", message);
+  } else {
+    console.log(message);
+  }
+};
+
+const bantuanData = ref({});
+
+import bantuanJson from "./aid-options.json";
+
+// Set the bantuan data on component mount
+onMounted(() => {
+  try {
+    bantuanData.value = bantuanJson;
+    console.log("Loaded bantuan data:", bantuanData.value);
+    console.log("Available aids:", Object.keys(bantuanData.value.bantuan || {}));
+  } catch (error) {
+    console.error("Error loading bantuan data:", error);
+  }
+});
+
+// Compute jenis bantuan options from the JSON data
+const aid = computed(() => {
+  if (!bantuanData.value.bantuan) return [];
+  
+  const options = Object.entries(bantuanData.value.bantuan).map(([categoryName]) => ({
+    label: categoryName,
+    value: categoryName,
+  }));
+
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
+});
+
+// Compute aid product options based on selected jenis bantuan
+const aidProductOptions = computed(() => {
+  if (!bantuanDetail.value.aid || !bantuanData.value.bantuan) {
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+
+  const aidNode = bantuanData.value.bantuan[bantuanDetail.value.aid];
+  if (!aidNode) return [{ label: "-- Pilih --", value: "", disabled: true }];
+
+  const options = Object.keys(aidNode).map((productName) => ({
+    label: productName,
+    value: productName,
+  }));
+
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
+});
+
+
+// Compute product package options based on selected aid product
+const productPackageOptions = computed(() => {
+  console.log('=== Product Package Debug ===');
+  console.log('bantuanDetail.aid:', bantuanDetail.value.aid);
+  console.log('bantuanDetail.aidProduct:', bantuanDetail.value.aidProduct);
+  console.log('bantuanData.bantuan:', bantuanData.value.bantuan);
+  
+  if (!bantuanDetail.value.aid || !bantuanDetail.value.aidProduct || !bantuanData.value.bantuan) {
+    console.log('Early return: missing required data');
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+  
+  const aidNode = bantuanData.value.bantuan[bantuanDetail.value.aid];
+  console.log('aidNode:', aidNode);
+  if (!aidNode || !aidNode[bantuanDetail.value.aidProduct]) {
+    console.log('No aidNode or product found');
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+  
+  const productNode = aidNode[bantuanDetail.value.aidProduct];
+  console.log('productNode:', productNode);
+  const options = Object.keys(productNode).map((pkg) => ({ 
+    label: pkg, 
+    value: pkg 
+  }));
+  console.log('Final package options:', options);
+  
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
+});
+ 
+const productEntitlementOptions = computed(() => {
+  console.log('=== Product Entitlement Debug ===');
+  console.log('bantuanDetail.aid:', bantuanDetail.value.aid);
+  console.log('bantuanDetail.aidProduct:', bantuanDetail.value.aidProduct);
+  console.log('bantuanDetail.productPackage:', bantuanDetail.value.productPackage);
+  console.log('bantuanData.bantuan:', bantuanData.value.bantuan);
+  
+  if (!bantuanDetail.value.aid || !bantuanDetail.value.aidProduct || !bantuanDetail.value.productPackage || !bantuanData.value.bantuan) {
+    console.log('Early return: missing required data');
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+  
+  const aidNode = bantuanData.value.bantuan[bantuanDetail.value.aid];
+  console.log('aidNode:', aidNode);
+  if (!aidNode) {
+    console.log('No aidNode found');
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+  
+  const productNode = aidNode[bantuanDetail.value.aidProduct];
+  console.log('productNode:', productNode);
+  if (!productNode) {
+    console.log('No productNode found');
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
+  }
+  
+  const entitlements = productNode[bantuanDetail.value.productPackage] || [];
+  console.log('entitlements:', entitlements);
+  if (!Array.isArray(entitlements) || entitlements.length === 0) {
+    console.log('No valid entitlements found');
+    return [{ label: "Tiada entitlements", value: "", disabled: true }];
+  }
+  
+  const options = entitlements.map((e) => ({ 
+    label: e, 
+    value: e 
+  }));
+  console.log('Final options:', options);
+  
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
+});
+
+const cawanganOptions = ref([
+  // Gombak
+  { label: "Taman Melawati (Gombak)", value: "Taman Melawati" },
+  { label: "Bandar Baru Selayang (Gombak)", value: "Bandar Baru Selayang" },
+  { label: "UNIVERSITI ISLAM ANTARABANGSA MALAYSIA (UIAM)", value: "UNIVERSITI ISLAM ANTARABANGSA MALAYSIA (UIAM)" },
+  // Hulu Langat
+  { label: "Kajang (Hulu Langat)", value: "Kajang" },
+  { label: "Bandar Baru Bangi (Hulu Langat)", value: "Bandar Baru Bangi" },
+  { label: "Bandar Baru Ampang (Hulu Langat)", value: "Bandar Baru Ampang" },
+  { label: "UNIVERSITI KEBANGSAAN MALAYSIA (UKM)", value: "UNIVERSITI KEBANGSAAN MALAYSIA (UKM)" },
+  { label: "UNIVERSITI TENAGA NASIONAL (UNITEN)", value: "UNIVERSITI TENAGA NASIONAL (UNITEN)" },
+  { label: "KOLEJ UNIVERSITI ISLAM ANTARABANGSA SELANGOR (KUIS)", value: "KOLEJ UNIVERSITI ISLAM ANTARABANGSA SELANGOR (KUIS)" },
+  { label: "INFRASTRUCTURE UNIVERSITY KUALA LUMPUR (IUKL)", value: "INFRASTRUCTURE UNIVERSITY KUALA LUMPUR (IUKL)" },
+  // Kuala Selangor
+  { label: "UNIVERSITI SELANGOR (UNISEL)", value: "UNIVERSITI SELANGOR (UNISEL)" },
+  { label: "Cawangan Zakat LZS, Kuala Selangor", value: "Cawangan Zakat LZS, Kuala Selangor" },
+  // Sabak Bernam
+  { label: "Cawangan Zakat LZS, Sungai Besar", value: "Cawangan Zakat LZS, Sungai Besar" },
+  // Petaling
+  { label: "UNIVERSITI TEKNOLOGI MARA (UiTM)", value: "UNIVERSITI TEKNOLOGI MARA (UiTM)" },
+  { label: "UNITAR INTERNATIONAL UNIVERSITY (UNITAR)", value: "UNITAR INTERNATIONAL UNIVERSITY (UNITAR)" },
+  { label: "UNIVERSITI PUTRA MALAYSIA (UPM)", value: "UNIVERSITI PUTRA MALAYSIA (UPM)" },
+  { label: "MANAGEMENT AND SCIENCE UNIVERSITY (MSU)", value: "MANAGEMENT AND SCIENCE UNIVERSITY (MSU)" },
+  { label: "Damansara (Petaling)", value: "Damansara" },
+  { label: "Cawangan Ibu Pejabat LZS", value: "Cawangan Ibu Pejabat LZS" },
+  // Sepang
+  { label: "UNIVERSITI MULTIMEDIA (MMU)", value: "UNIVERSITI MULTIMEDIA (MMU)" },
+  { label: "Saujana KLIA", value: "Saujana KLIA" },
+  // Kuala Langat
+  { label: "Banting", value: "Banting" },
+  // Hulu Selangor
+  { label: "Kuala Kubu Bharu", value: "Kuala Kubu Bharu" },
+  // Klang
+  { label: "Kompleks MAIS Klang", value: "Kompleks MAIS Klang" },
+]);
+
+const statusSemakanOptions = ref([
+  { label: "Sokong", value: "Sokong" },
+  { label: "Tidak Sokong", value: "Tidak Sokong" },
+  { label: "Perlu Semakan Lanjut", value: "Perlu Semakan Lanjut" }
+]);
+
+definePageMeta({
+  title: "Maklumat Bulk Processing",
+});
+
+const breadcrumb = ref([
+  {
+    name: "Bantuan",
+    type: "link",
+    path: "/BF-BTN",
+  },
+  {
+    name: "Bulk Processing",
+    type: "link",
+    path: "/BF-BTN/bantuan-bulk",
+  },
+  {
+    name: "Semakan Bulk Processing",
+    type: "link",
+    path: "/BF-BTN/bantuan-bulk/senarai-bulk-processing-semakan",
+  },
+  {
+    name: `Maklumat ${route.params.id}`,
+    type: "current",
+    path: `/BF-BTN/bantuan-bulk/senarai-bulk-processing-semakan/${route.params.id}`,
+  },
+]);
+
+// Mock data based on bantuan ID
+const getBantuanData = (id) => {
+  const data = {
+    'BP-2025-00001': {
+      kodBP: 'BP-2025-00001',
+      tajuk: 'Wang Saku Fakir Mac 2025',
+      kategoriAsnaf: 'Fakir',
+      status: 'Dalam Proses',
+      jumlahAmaun: 'RM20,000.00',
+      catatan: 'Tuntutan wang saku pelajar untuk bulan Mac 2025. Program ini bertujuan membantu pelajar fakir dalam memenuhi keperluan asas mereka.',
+      tarikhMohon: '01/03/2025',
+      diciptaOleh: 'Ahmad bin Ali',
+      diciptaPada: '17/02/2025 3:17pm',
+      kategoriBantuan: 'Bantuan Pendidikan',
+      subKategori: 'Wang Saku',
+      bantuan: 'Bantuan Pendidikan',
+      kodBantuan: 'B314 - Bantuan Keperluan Pendidikan IPT (Fakir)',
+      produkBantuan: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS',
+      tarikhJangkaanBayaran: '2025-05-04',
+      // Maklumat Bantuan fields
+      aid: 'Bantuan Pendidikan',
+      aidProduct: 'Wang Saku',
+      productPackage: 'Standard Package',
+      productEntitlement: 'Full Entitlement',
+      modeOfPayment: 'Tunai'
+    },
+    'BP-2025-00002': {
+      kodBP: 'BP-2025-00002',
+      tajuk: 'Wang Saku Fakir Feb 2025',
+      kategoriAsnaf: 'Fakir',
+      status: 'Dalam Proses',
+      jumlahAmaun: 'RM23,000.00',
+      catatan: 'Tuntutan wang saku pelajar untuk bulan Feb 2025. Program ini bertujuan membantu pelajar fakir dalam memenuhi keperluan asas mereka.',
+      tarikhMohon: '01/02/2025',
+      diciptaOleh: 'Ahmad bin Ali',
+      diciptaPada: '17/02/2025 3:17pm',
+      kategoriBantuan: 'Bantuan Pendidikan',
+      subKategori: 'Wang Saku',
+      bantuan: 'Bantuan Pendidikan',
+      kodBantuan: 'B314 - Bantuan Keperluan Pendidikan IPT (Fakir)',
+      produkBantuan: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS',
+      tarikhJangkaanBayaran: '2025-05-04',
+      // Maklumat Bantuan fields
+      aid: 'Bantuan Pendidikan',
+      aidProduct: 'Wang Saku',
+      productPackage: 'Standard Package',
+      productEntitlement: 'Full Entitlement',
+      modeOfPayment: 'Profile'
+    },
+    'BP-2025-00003': {
+      kodBP: 'BP-2025-00003',
+      tajuk: 'Wang Saku Miskin Feb 2025',
+      kategoriAsnaf: 'Miskin',
+      status: 'Dalam Proses',
+      jumlahAmaun: 'RM28,000.00',
+      catatan: 'Tuntutan wang saku pelajar untuk bulan Feb 2025. Program ini bertujuan membantu pelajar miskin dalam memenuhi keperluan asas mereka.',
+      tarikhMohon: '02/02/2025',
+      diciptaOleh: 'Ahmad bin Ali',
+      diciptaPada: '17/02/2025 3:17pm',
+      kategoriBantuan: 'Bantuan Pendidikan',
+      subKategori: 'Wang Saku',
+      bantuan: 'Bantuan Pendidikan',
+      kodBantuan: 'B314 - Bantuan Keperluan Pendidikan IPT (Fakir)',
+      produkBantuan: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS',
+      tarikhJangkaanBayaran: '2025-05-04',
+      // Maklumat Bantuan fields
+      aid: 'Bantuan Pendidikan',
+      aidProduct: 'Wang Saku',
+      productPackage: 'Premium Package',
+      productEntitlement: 'Full Entitlement',
+      modeOfPayment: 'Tunai'
+    },
+    'BP-2025-00004': {
+      kodBP: 'BP-2025-00004',
+      tajuk: 'Bantuan bencana Feb 2025',
+      kategoriAsnaf: 'Fakir',
+      status: 'Dalam Proses',
+      jumlahAmaun: 'RM35,000.00',
+      catatan: 'Tuntutan bantuan bencana untuk bulan Feb 2025. Program ini bertujuan membantu mangsa bencana fakir dalam memenuhi keperluan asas mereka.',
+      tarikhMohon: '25/02/2025',
+      diciptaOleh: 'Ahmad bin Ali',
+      diciptaPada: '17/02/2025 3:17pm',
+      kategoriBantuan: 'Bantuan Bencana',
+      subKategori: 'Bantuan Banjir',
+      bantuan: 'Bantuan Bencana',
+      kodBantuan: 'B146 - (HQ) BANTUAN BENCANA (FAKIR)',
+      produkBantuan: '(HQ) BANTUAN BANJIR (FAKIR)',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS',
+      tarikhJangkaanBayaran: '2025-05-04',
+      // Maklumat Bantuan fields
+      aid: 'Bantuan Bencana',
+      aidProduct: 'Bantuan Banjir',
+      productPackage: 'Emergency Package',
+      productEntitlement: 'Full Entitlement',
+      modeOfPayment: 'Profile'
+    },
+    'BP-2025-01617': {
+      kodBP: 'BP-2025-01617',
+      tajuk: 'TUNTUTAN KFAM APRIL 2025 - PELAJAR',
+      kategoriAsnaf: 'Muallaf',
+      status: 'Dalam Proses',
+      jumlahAmaun: 'RM44,390.00',
+      catatan: '',
+      tarikhMohon: '04/05/2025',
+      diciptaOleh: 'Ahmad bin Ali',
+      diciptaPada: '17/02/2025 3:17pm',
+      kategoriBantuan: 'Pendidikan (Muallaf)',
+      subKategori: 'Elaun/Imbuhan (Muallaf - Pendidikan)',
+      bantuan: '(HQ) ELAUN KEHADIRAN KELAS AGAM ASAS (MUALLAF)',
+      kodBantuan: 'B309',
+      produkBantuan: '(HQ) ELAUN KEHADIRAN KELAS AGAM ASAS (MUALLAF)',
+      penyiasat: 'Muhammad Yazid Bin Abdullah',
+      cawangan: 'Cawangan Ibu Pejabat LZS',
+      tarikhJangkaanBayaran: '2025-05-04',
+      // Maklumat Bantuan fields
+      aid: '(HQ) ELAUN KEHADIRAN KELAS AGAMA ASAS (MUALLAF)',
+      aidProduct: '(HQ) ELAUN KEHADIRAN KELAS AGAMA ASAS (MUALLAF)',
+      productPackage: 'Standard Package',
+      productEntitlement: 'Full Entitlement',
+      modeOfPayment: 'Tunai'
+    },
+    'BP-2025-01589': {
+      kodBP: 'BP-2025-01589',
+      tajuk: 'TUNTUTAN KFAM APRIL 2025 - GURU',
+      kategoriAsnaf: 'Muallaf',
+      status: 'Dalam Proses',
+      jumlahAmaun: 'RM54,710.00',
+      catatan: '',
+      tarikhMohon: '30/04/2025',
+      diciptaOleh: 'Ahmad bin Ali',
+      diciptaPada: '17/02/2025 3:17pm',
+      kategoriBantuan: 'Sosial (Muallaf)',
+      subKategori: 'Elaun/Imbuhan (Muallaf - Sosial)',
+      bantuan: '(HQ) ELAUN GURU PEMBIMBING ASNAF (MUALLAF)',
+      kodBantuan: 'B117',
+      produkBantuan: '(HQ) ELAUN GURU PEMBIMBING ASNAF (MUALLAF)',
+      penyiasat: 'Muhammad Yazid Bin Abdullah',
+      cawangan: 'Cawangan Ibu Pejabat LZS',
+      tarikhJangkaanBayaran: '2025-05-04',
+      // Maklumat Bantuan fields
+      aid: 'Sosial (Muallaf)',
+      aidProduct: 'Elaun Guru',
+      productPackage: 'Premium Package',
+      productEntitlement: 'Full Entitlement',
+      modeOfPayment: 'Profile'
+    },
+    'BP-2025-00007': {
+      kodBP: 'BP-2025-00007',
+      tajuk: 'Bantuan Rumah Jan 2025',
+      kategoriAsnaf: 'Fakir',
+      status: 'Ditolak',
+      jumlahAmaun: 'RM50,000.00',
+      catatan: 'Tuntutan bantuan rumah untuk bulan Jan 2025. Program ini bertujuan membantu keluarga fakir dalam memenuhi keperluan asas mereka.',
+      tarikhMohon: '05/01/2025',
+      diciptaOleh: 'Ahmad bin Ali',
+      diciptaPada: '17/02/2025 3:17pm',
+      kategoriBantuan: 'Bantuan Rumah',
+      subKategori: 'Bantuan Rumah',
+      bantuan: 'Bantuan Rumah',
+      kodBantuan: 'B100 - Bantuan Rumah',
+      produkBantuan: '(HQ) BANTUAN RUMAH',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS',
+      tarikhJangkaanBayaran: '2025-05-04',
+      // Maklumat Bantuan fields
+      aid: 'Bantuan Rumah',
+      aidProduct: 'Bantuan Rumah',
+      productPackage: 'Standard Package',
+      productEntitlement: 'Full Entitlement',
+      modeOfPayment: 'Tunai'
+    },
+    'BP-2025-00008': {
+      kodBP: 'BP-2025-00008',
+      tajuk: 'Bantuan Makanan Feb 2025',
+      kategoriAsnaf: 'Fakir',
+      status: 'Ditolak',
+      jumlahAmaun: 'RM15,000.00',
+      catatan: 'Tuntutan bantuan makanan untuk bulan Feb 2025. Program ini bertujuan membantu keluarga fakir dalam memenuhi keperluan asas mereka.',
+      tarikhMohon: '20/02/2025',
+      diciptaOleh: 'Ahmad bin Ali',
+      diciptaPada: '17/02/2025 3:17pm',
+      kategoriBantuan: 'Bantuan Makanan',
+      subKategori: 'Bantuan Makanan',
+      bantuan: 'Bantuan Makanan',
+      kodBantuan: 'B150 - Bantuan Makanan',
+      produkBantuan: '(HQ) BANTUAN MAKANAN',
+      penyiasat: 'Ahmad bin Hassan',
+      cawangan: 'Cawangan Ibu Pejabat LZS',
+      tarikhJangkaanBayaran: '2025-05-04',
+      // Maklumat Bantuan fields
+      aid: 'Bantuan Makanan',
+      aidProduct: 'Bantuan Makanan',
+      productPackage: 'Standard Package',
+      productEntitlement: 'Full Entitlement',
+      modeOfPayment: 'Profile'
+    }
+  };
+  
+  return data[id] || data['BP-2025-00001']; // Default to first record if ID not found
+};
+
+// Form data state (populated with data based on ID)
+const bantuanDetail = ref(getBantuanData(route.params.id));
+
+// Edit mode state
+const isEditing = ref(false);
+const originalData = ref({});
+
+// Save/Update functionality
+const handleSave = () => {
+  try {
+    // Validate required fields
+    if (!bantuanDetail.value.aid) {
+      alert("error", "Sila pilih aid");
+      return;
+    }
+    if (!bantuanDetail.value.aidProduct) {
+      alert("error", "Sila pilih aid product");
+      return;
+    }
+    if (!bantuanDetail.value.productPackage) {
+      alert("error", "Sila pilih product package");
+      return;
+    }
+    if (!bantuanDetail.value.productEntitlement) {
+      alert("error", "Sila pilih product entitlement");
+      return;
+    }
+    if (!bantuanDetail.value.tarikhJangkaanBayaran) {
+      alert("error", "Sila pilih tarikh jangkaan bayaran");
+      return;
+    }
+    if (!bantuanDetail.value.modeOfPayment) {
+      alert("error", "Sila pilih mode of payment");
+      return;
+    }
+    if (!bantuanDetail.value.cawangan) {
+      alert("error", "Sila pilih cawangan");
+      return;
+    }
+
+    // Save the changes (in a real app, this would be an API call)
+    console.log("Saving bantuan detail:", bantuanDetail.value);
+    
+    // Update the original data
+    originalData.value = { ...bantuanDetail.value };
+    
+    // Exit edit mode
+    isEditing.value = false;
+    
+    alert("success", "Maklumat bantuan berjaya dikemaskini");
+  } catch (error) {
+    console.error("Error saving bantuan detail:", error);
+    alert("error", "Gagal menyimpan maklumat bantuan");
+  }
+};
+
+const handleEdit = () => {
+  // Store original data for potential cancel
+  originalData.value = { ...bantuanDetail.value };
+  isEditing.value = true;
+};
+
+const handleCancel = () => {
+  // Restore original data
+  bantuanDetail.value = { ...originalData.value };
+  isEditing.value = false;
+};
+
+// Removed bayaran columns as we're using card layout now
+
+// Mock bayaran kepada data
+const paymentDataByBp = {
+  "BP-2025-01617": [
+    {
+      kod: "PT-2025-36330",
+      idPermohonan: "",
+      bayaranKepada: "asnaf",
+      asnaf: "WOO MENG LEONG",
+      recipient: "",
+      organization: "",
+      amaun: 250.0,
+      tarikhBayaran: "2025-05-04",
+      bankName: "",
+      bankAccount: "",
+      checkbox: ""
+    },
+    {
+      kod: "PT-2025-36331",
+      idPermohonan: "",
+      bayaranKepada: "asnaf",
+      asnaf: "EUNIKE VALBORG BOLDVIK",
+      recipient: "",
+      organization: "",
+      amaun: 250.0,
+      tarikhBayaran: "2025-05-04",
+      bankName: "",
+      bankAccount: "",
+      checkbox: ""
+    },
+    {
+      kod: "PT-2025-36332",
+      idPermohonan: "",
+      bayaranKepada: "asnaf",
+      asnaf: "JULIE ANN BACLAS EBIO",
+      recipient: "",
+      organization: "",
+      amaun: 550.0,
+      tarikhBayaran: "2025-05-04",
+      bankName: "",
+      bankAccount: "",
+      checkbox: ""
+    },
+    {
+      kod: "PT-2025-36333",
+      idPermohonan: "",
+      bayaranKepada: "asnaf",
+      asnaf: "CHU KEAN HENG",
+      recipient: "",
+      organization: "",
+      amaun: 650.0,
+      tarikhBayaran: "2025-05-04",
+      bankName: "",
+      bankAccount: "",
+      checkbox: ""
+    }
+  ],
+  "BP-2025-01589": [
+    {
+      kod: "PT-2025-34488",
+      idPermohonan: "",
+      bayaranKepada: "recipient",
+      asnaf: "",
+      recipient: "AHMAD FIRDAUS BIN MUHAM...",
+      organization: "",
+      amaun: 1950.0,
+      tarikhBayaran: "2025-04-30",
+      bankName: "",
+      bankAccount: "",
+      checkbox: ""
+    },
+    {
+      kod: "PT-2025-34489",
+      idPermohonan: "",
+      bayaranKepada: "recipient",
+      asnaf: "",
+      recipient: "CHE NORHAYATI BINTI CHE MA...",
+      organization: "",
+      amaun: 1950.0,
+      tarikhBayaran: "2025-04-30",
+      bankName: "",
+      bankAccount: "",
+      checkbox: ""
+    },
+    {
+      kod: "PT-2025-34490",
+      idPermohonan: "",
+      bayaranKepada: "recipient",
+      asnaf: "",
+      recipient: "FIRDAUZ BIN NOH",
+      organization: "",
+      amaun: 1950.0,
+      tarikhBayaran: "2025-04-30",
+      bankName: "",
+      bankAccount: "",
+      checkbox: ""
+    },
+    {
+      kod: "PT-2025-34491",
+      idPermohonan: "",
+      bayaranKepada: "recipient",
+      asnaf: "",
+      recipient: "I.JANNAH BINTI ALI",
+      organization: "",
+      amaun: 1950.0,
+      tarikhBayaran: "2025-04-30",
+      bankName: "",
+      bankAccount: "",
+      checkbox: ""
+    }
+  ]
+};
+
+const paymentList = ref([...(paymentDataByBp[route.params.id] || [])]);
+
+// Removed penerima columns as we're using card layout now
+
+const paymentColumns = [
+  { key: "kod", label: "Kod" },
+  { key: "idPermohonan", label: "ID Permohonan" },
+  { key: "bayaranKepada", label: "Bayaran Kepada" },
+  { key: "asnaf", label: "Kategori Asnaf" },
+  { key: "contributor", label: "Contributor" },
+  { key: "recipient", label: "Recipient" },
+  { key: "organization", label: "Organization" },
+  { key: "amaun", label: "Amaun" },
+  { key: "tarikhBayaran", label: "Tarikh Bayaran" },
+  { key: "bankName", label: "Bank" },
+  { key: "bankAccount", label: "No. Akaun" },
+];
+
+const recipientColumns = [
+  { key: "namaPenuh", label: "Nama Penuh" },
+  { key: "amaun", label: "Amaun" },
+  { key: "agihanSemula", label: "Agihan Semula" },
+  { key: "bulkProcessing", label: "Bulk Processing" },
+  { key: "kategoriAsnaf", label: "Kategori Asnaf" },
+  { key: "bayaranKepada", label: "Bayaran Kepada" },
+  { key: "state", label: "Negeri" },
+  { key: "country", label: "Negara" },
+];
+
+// Recipient data by BP id (mock)
+const recipientsByBP = {
+  "BP-2025-01617": [
+    {
+      id: "RCP-BP-2025-01617-001",
+      namaPenuh: "AARON ALEXANDRE R.JOHN",
+      amaun: 360.0,
+      agihanSemula: "",
+      bulkProcessing: "BP-2025-01617",
+      kategoriAsnaf: "Muallaf",
+      bayaranKepada: "Asnaf",
+      state: "Selangor",
+      country: "Malaysia"
+    },
+    {
+      id: "RCP-BP-2025-01617-002",
+      namaPenuh: "AISYAH LINY BINTI TEGEK",
+      amaun: 650.0,
+      agihanSemula: "",
+      bulkProcessing: "BP-2025-01617",
+      kategoriAsnaf: "Muallaf",
+      bayaranKepada: "Asnaf",
+      state: "Selangor",
+      country: "Malaysia"
+    },
+    {
+      id: "RCP-BP-2025-01617-003",
+      namaPenuh: "AJANANI A/P ARUMUGAM",
+      amaun: 650.0,
+      agihanSemula: "",
+      bulkProcessing: "BP-2025-01617",
+      kategoriAsnaf: "Muallaf",
+      bayaranKepada: "Asnaf",
+      state: "Selangor",
+      country: "Malaysia"
+    },
+    {
+      id: "RCP-BP-2025-01617-004",
+      namaPenuh: "ALYSSA LEONG JIYAN",
+      amaun: 300.0,
+      agihanSemula: "",
+      bulkProcessing: "BP-2025-01617",
+      kategoriAsnaf: "Muallaf",
+      bayaranKepada: "Asnaf",
+      state: "Selangor",
+      country: "Malaysia"
+    }
+  ],
+  "BP-2025-01589": [
+    {
+      id: "RCP-BP-2025-01589-001",
+      namaPenuh: "ABDUL RAHIM BIN MOHD ALI",
+      amaun: 1950.0,
+      agihanSemula: "",
+      bulkProcessing: "BP-2025-01589",
+      kategoriAsnaf: "Muallaf",
+      bayaranKepada: "Recipient",
+      state: "Selangor",
+      country: "Malaysia"
+    },
+    {
+      id: "RCP-BP-2025-01589-002",
+      namaPenuh: "ABDUL RAHIM BIN MOHD ALI",
+      amaun: 1950.0,
+      agihanSemula: "",
+      bulkProcessing: "BP-2025-01589",
+      kategoriAsnaf: "Muallaf",
+      bayaranKepada: "Recipient",
+      state: "Selangor",
+      country: "Malaysia"
+    },
+    {
+      id: "RCP-BP-2025-01589-003",
+      namaPenuh: "AHMAD FIRDAUS BIN MUHAMMAD",
+      amaun: 1950.0,
+      agihanSemula: "",
+      bulkProcessing: "BP-2025-01589",
+      kategoriAsnaf: "Muallaf",
+      bayaranKepada: "Recipient",
+      state: "Selangor",
+      country: "Malaysia"
+    },
+    {
+      id: "RCP-BP-2025-01589-004",
+      namaPenuh: "CHE NORHAYATI BINTI CHE MAHMOOD",
+      amaun: 1950.0,
+      agihanSemula: "",
+      bulkProcessing: "BP-2025-01589",
+      kategoriAsnaf: "Muallaf",
+      bayaranKepada: "Recipient",
+      state: "Selangor",
+      country: "Malaysia"
+    }
+  ]
+};
+
+const recipientList = ref([...(recipientsByBP[route.params.id] || [])]);
+
+// Dokumen columns
+const dokumenColumns = [
+  { key: "namaDokumen", label: "Nama Dokumen", sortable: false },
+  { key: "tindakan", label: "Tindakan", sortable: false },
+];
+
+const documentList = ref([
+  {
+    name: "Surat Permohonan Bantuan.pdf",
+    size: "2.5 MB",
+    uploadDate: "15/01/2025",
+  },
+  {
+    name: "Senarai Penerima.xlsx",
+    size: "1.2 MB",
+    uploadDate: "15/01/2025",
+  },
+]);
+
+// Sokongan form data
+const sokonganForm = ref({
+  statusSemakan: "",
+  catatan: "",
+  namaPegawai: "Siti Aisyah Binti Ahmad",
+  tarikh: "14/07/2025",
+});
+
+
+// Modal states
+const showPaymentModal = ref(false);
+const showRecipientModal = ref(false);
+const selectedPayment = ref(null);
+const selectedRecipient = ref(null);
+
+// Methods
+const handleKembali = () => {
+  navigateTo("/BF-BTN/bantuan-bulk/senarai-bulk-processing-semakan");
+};
+
+const handleSimpan = async () => {
+  if (!sokonganForm.value.statusSemakan) {
+    alert("Sila pilih Status Semakan");
+    return;
+  }
+
+  try {
+    // Here you would make API call to save the sokongan
+    console.log("Saving sokongan:", sokonganForm.value);
+    alert("Maklumat sokongan berjaya disimpan!");
+  } catch (error) {
+    console.error("Error saving sokongan:", error);
+    alert("Ralat semasa menyimpan maklumat sokongan. Sila cuba lagi.");
+  }
+};
+
+const handleHantar = async () => {
+  if (!sokonganForm.value.statusSemakan) {
+    alert("Sila pilih Status Semakan");
+    return;
+  }
+
+  try {
+    // Here you would make API call to submit the sokongan
+    console.log("Submitting sokongan:", sokonganForm.value);
+
+    // Show success message
+    alert("Sokongan berjaya dihantar!");
+
+    // Navigate back to listing
+    await navigateTo("/BF-BTN/bantuan-bulk/senarai-bulk-processing-semakan");
+  } catch (error) {
+    console.error("Error submitting sokongan:", error);
+    alert("Ralat semasa menghantar sokongan. Sila cuba lagi.");
+  }
+};
+
+const handleLihatDokumen = (filename) => {
+  // Here you would implement document viewing logic
+  console.log("Viewing document:", filename);
+  // For now, just show an alert
+  alert(`Membuka dokumen: ${filename}`);
+};
+
+const handleLihatBayaran = (payment) => {
+  // Set the selected payment and open modal
+  selectedPayment.value = payment;
+  showPaymentModal.value = true;
+};
+
+const handleLihatPenerima = (recipient) => {
+  // Set the selected recipient and open modal
+  selectedRecipient.value = recipient;
+  showRecipientModal.value = true;
+};
+
+const getStatusVariant = (status) => {
+  const variants = {
+    "Dalam Proses": "warning",
+    "Lulus": "success",
+    Selesai: "success",
+    Ditolak: "danger",
+  };
+  return variants[status] || "default";
+};
+
+// Computed properties
+const totalAmount = computed(() => {
+  return recipientList.value.reduce(
+    (sum, recipient) => sum + (parseFloat(recipient.amaun) || 0),
+    0
+  );
+});
+
+const paymentTotal = computed(() => {
+  return paymentList.value.reduce(
+    (sum, payment) => sum + (parseFloat(payment.amaun) || 0),
+    0
+  );
+});
+
+// Currency display helper
+const formatCurrency = (n) => {
+  const num = parseFloat(n);
+  if (isNaN(num) || num === null || num === undefined) return 'RM0.00';
+  return new Intl.NumberFormat("ms-MY", {
+    style: 'currency',
+    currency: 'MYR',
+    minimumFractionDigits: 2,
+  }).format(num);
+};
+</script>
+
+<style lang="scss" scoped>
+.form-actions {
+  @apply sticky bottom-0 bg-white shadow-lg p-4 z-10;
+}
+
+@media print {
+  .form-actions {
+    @apply hidden;
+  }
+
+  .rs-card {
+    @apply shadow-none border-gray-300;
+  }
+}
+</style>

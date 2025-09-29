@@ -99,6 +99,10 @@
                 <span class="text-gray-900 ml-2 font-semibold">{{ recipientData.bank?.penamaBank || '-' }}</span>
               </div>
               <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">Swift Code:</span>
+                <span class="text-gray-900 ml-2 font-semibold">{{ getSwiftCode(recipientData.bank?.bankName) || '-' }}</span>
+              </div>
+              <div class="py-2 border-b border-gray-100">
                 <span class="font-medium text-gray-600">Kaedah Pembayaran:</span>
                 <span class="text-gray-900 ml-2 font-semibold">{{ recipientData.bank?.paymentMethod || '-' }}</span>
               </div>
@@ -230,6 +234,29 @@ const getIDPengenalan = (data) => {
   } else {
     return data.idPengenalan
   }
+}
+
+// Swift code mapping for Malaysian banks
+const swiftCodeMapping = {
+  'Maybank': 'MBBEMYKL',
+  'CIMB Bank': 'CIBBMYKL',
+  'Public Bank': 'PBBEMYKL',
+  'RHB Bank': 'RHBBMYKL',
+  'Hong Leong Bank': 'HLBBMYKL',
+  'AmBank': 'ARBKMYKL',
+  'Bank Islam': 'BIMBMYKL',
+  'Bank Rakyat': 'RABBMYKL',
+  'Bank Muamalat': 'BMMBMYKL',
+  'OCBC Bank': 'OCBCMYKL',
+  'HSBC Bank': 'HBMBMYKL',
+  'Standard Chartered Bank': 'SCBLMYKX',
+  'Citibank': 'CITIMYKL',
+  'UOB Bank': 'UOVBMYKL'
+}
+
+// Function to get Swift code based on bank name
+const getSwiftCode = (bankName) => {
+  return swiftCodeMapping[bankName] || ''
 }
 
 const hasDocument = (document) => {

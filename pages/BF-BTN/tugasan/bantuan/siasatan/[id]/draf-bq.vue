@@ -53,10 +53,10 @@
                     class="text-lg font-semibold text-gray-900"
                     id="bq-header-title"
                   >
-                    Maklumat BQ
+                    {{ isB400 ? 'Maklumat Keterangan Kerja' : 'Maklumat BQ' }}
                   </h2>
                   <p class="text-sm text-gray-500">
-                    Maklumat asas untuk dokumen BQ
+                    {{ isB400 ? 'Maklumat asas untuk dokumen keterangan kerja' : 'Maklumat asas untuk dokumen BQ' }}
                   </p>
                 </div>
               </div>
@@ -67,7 +67,7 @@
                 <!-- Auto-generated fields (Read-only) -->
                 <div class="space-y-2">
                   <label class="block text-sm font-medium text-gray-700"
-                    >No BQ</label
+                    >{{ isB400 ? 'No Keterangan Kerja' : 'No BQ' }}</label
                   >
                   <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
                     <span class="text-sm font-mono text-gray-900 break-all">{{
@@ -111,7 +111,7 @@
 
                 <div class="space-y-2 lg:col-span-2">
                   <label class="block text-sm font-medium text-gray-700"
-                    >Alamat</label
+                    >Alamat Tapak</label
                   >
                   <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
                     <span
@@ -125,8 +125,236 @@
           </rs-card>
         </section>
 
-        <!-- Table Senarai Item Kerja -->
+        <!-- B400: Side by side layout for Dokumen Sokongan and Senarai Item Kerja -->
+        <div v-if="isB400" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Left: Dokumen Sokongan Section (B400 only) -->
+          <section aria-labelledby="dokumen-sokongan-title">
+            <rs-card class="shadow-sm border-0 bg-white h-full">
+              <template #header>
+                <div class="flex items-center space-x-3">
+                  <div class="flex-shrink-0">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                      <Icon name="ph:folder-open" class="w-6 h-6 text-green-600" />
+                    </div>
+                  </div>
+                  <div>
+                    <h2 class="text-lg font-semibold text-gray-900" id="dokumen-sokongan-title">
+                      Dokumen Sokongan
+                    </h2>
+                    <p class="text-sm text-gray-500">
+                      Dokumen yang dikemukakan oleh pemohon
+                    </p>
+                  </div>
+                </div>
+              </template>
+
+              <template #body>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokumen</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <template v-for="(dokumen, index) in b400DokumenSokongan" :key="index">
+                        <tr class="hover:bg-gray-50">
+                          <td class="px-6 py-4 text-sm text-gray-900 whitespace-normal break-words">{{ dokumen.jenis }}</td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <rs-button variant="primary" size="sm" @click="toggleDocumentPreview(index)">
+                              <Icon :name="expandedDocuments[index] ? 'ph:eye-slash' : 'ph:eye'" class="w-4 h-4 mr-1" />
+                              {{ expandedDocuments[index] ? 'Tutup' : 'Lihat' }}
+                            </rs-button>
+                          </td>
+                        </tr>
+                        <!-- Accordion Content Row -->
+                        <tr v-if="expandedDocuments[index]" class="bg-gray-50">
+                          <td colspan="2" class="px-6 py-4">
+                            <div class="border border-gray-300 rounded-lg bg-white">
+                              <!-- PDF Preview Container -->
+                              <div class="p-4">
+                                <div class="flex items-center justify-between mb-4">
+                                  <h5 class="text-sm font-medium text-gray-900">{{ dokumen.filename }}</h5>
+                                  <div class="flex items-center space-x-2">
+                                    <!-- Auto-loading message -->
+                                    <span v-if="loadingPdf[index]" class="text-xs text-gray-500 flex items-center">
+                                      <Icon name="ph:spinner" class="w-4 h-4 mr-1 animate-spin" />
+                                      Memuat dokumen...
+                                    </span>
+                                  </div>
+                                </div>
+                                
+                                <!-- PDF Preview -->
+                                <div class="bg-gray-100 rounded-lg border border-gray-300 h-96 flex items-center justify-center">
+                                  <div v-if="loadingPdf[index]" class="text-center">
+                                    <Icon name="ph:spinner" class="w-8 h-8 text-gray-400 animate-spin mx-auto mb-2" />
+                                    <p class="text-sm text-gray-500">Memuat dokumen...</p>
+                                  </div>
+                                  <div v-else-if="documentUrls[index]" class="w-full h-full relative">
+                                    <!-- Document preview - supports both HTML and PDF -->
+                                    <iframe 
+                                      :src="documentUrls[index]" 
+                                      class="w-full h-full rounded-lg border-0" 
+                                      frameborder="0"
+                                      allow="autoplay"
+                                      sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                                    ></iframe>
+                                    
+                                  </div>
+                                  <div v-else class="text-center">
+                                    <Icon name="ph:file-image" class="w-16 h-16 text-gray-400 mx-auto mb-2" />
+                                    <p class="text-sm text-gray-500 mb-2">Pratonton Dokumen</p>
+                                    <p class="text-xs text-gray-400">Dokumen akan dimuat secara automatik</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </template>
+                    </tbody>
+                  </table>
+                </div>
+              </template>
+            </rs-card>
+          </section>
+
+          <!-- Right: Senarai Item Kerja Section (Original) -->
         <section aria-labelledby="item-kerja-title">
+            <rs-card class="shadow-sm border-0 bg-white h-full">
+              <template #header>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-3">
+                    <div class="flex-shrink-0" aria-hidden="true">
+                      <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Icon name="ph:list" class="w-6 h-6 text-green-600" />
+                      </div>
+                    </div>
+                    <div>
+                      <h2 class="text-lg font-semibold text-gray-900" id="item-kerja-title">
+                        Senarai Item Kerja
+                      </h2>
+                      <p class="text-sm text-gray-500">
+                        Senarai kerja dan anggaran kos
+                      </p>
+                    </div>
+                  </div>
+                  <rs-button variant="primary" @click="addItem" aria-label="Tambah item kerja baru">
+                    <Icon name="ph:plus" class="w-4 h-4 mr-2" aria-hidden="true" />
+                    Tambah Item
+                  </rs-button>
+                </div>
+              </template>
+
+              <template #body>
+                <!-- Mobile Card Layout (sm and below) -->
+                <div class="block lg:hidden space-y-4">
+                  <div v-for="(item, index) in formData.itemKerja" :key="index" class="p-4 border border-gray-200 rounded-lg bg-gray-50">
+                    <div class="flex justify-between items-start mb-3">
+                      <span class="text-sm font-medium text-gray-600">Item {{ index + 1 }}</span>
+                      <rs-button variant="danger" size="sm" @click="removeItem(index)" class="!p-2">
+                        <Icon name="ph:trash" class="w-4 h-4" />
+                      </rs-button>
+                    </div>
+
+                    <div class="space-y-3">
+                      <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Keterangan Kerja</label>
+                        <FormKit type="textarea" v-model="item.keteranganKerja" :classes="{ input: 'text-sm !p-2 !border-gray-300' }" placeholder="Keterangan kerja..." />
+                      </div>
+
+                      <div class="grid grid-cols-2 gap-2">
+                        <div>
+                          <label class="block text-xs font-medium text-gray-700 mb-1">Unit</label>
+                          <FormKit type="text" v-model="item.unit" :classes="{ input: 'text-sm !p-2 !border-gray-300' }" placeholder="Unit" />
+                        </div>
+                        <div>
+                          <label class="block text-xs font-medium text-gray-700 mb-1">Qty</label>
+                          <FormKit type="number" v-model="item.kuantiti" :classes="{ input: 'text-sm !p-2 !border-gray-300' }" placeholder="0" />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Kadar (RM)</label>
+                        <FormKit type="number" v-model="item.kadar" :classes="{ input: 'text-sm !p-2 !border-gray-300' }" placeholder="0.00" step="0.01" />
+                      </div>
+
+                      <div class="pt-2 border-t border-gray-200">
+                        <div class="flex justify-between">
+                          <span class="text-sm font-medium text-gray-700">Jumlah:</span>
+                          <span class="text-sm font-bold text-green-600">RM {{ ((Number(item.kuantiti) || 0) * (Number(item.kadar) || 0)).toFixed(2) }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div v-if="formData.itemKerja.length === 0" class="p-8 text-center text-sm text-gray-500 border border-gray-200 rounded-lg">
+                    Tiada item kerja. Klik butang "Tambah Item" untuk menambah item pertama.
+                  </div>
+                </div>
+
+                <!-- Desktop Table Layout (lg and above) -->
+                <div class="hidden lg:block overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200" :aria-label="isB400 ? 'Senarai item kerja untuk Keterangan Kerja' : 'Senarai item kerja untuk BQ'" role="table">
+                    <thead class="bg-gray-50" role="rowgroup">
+                      <tr role="row">
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12" scope="col" role="columnheader">Bil</th>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-0" scope="col" role="columnheader">Keterangan Kerja</th>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20" scope="col" role="columnheader">Unit</th>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16" scope="col" role="columnheader">Qty</th>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28" scope="col" role="columnheader">Kadar (RM)</th>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28" scope="col" role="columnheader">Jumlah (RM)</th>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16" scope="col" role="columnheader">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" role="rowgroup">
+                      <tr v-for="(item, index) in formData.itemKerja" :key="index" class="hover:bg-gray-50 transition-colors" role="row">
+                        <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900" role="gridcell">{{ index + 1 }}</td>
+                        <td class="px-3 py-4" role="gridcell">
+                          <FormKit type="textarea" v-model="item.keteranganKerja" :classes="{ input: 'text-sm !p-2 !border-gray-300 focus:!border-blue-500 focus:!ring-blue-500' }" placeholder="Keterangan kerja..." :aria-label="`Keterangan kerja untuk item ${index + 1}`" />
+                        </td>
+                        <td class="px-3 py-4" role="gridcell">
+                          <FormKit type="text" v-model="item.unit" :classes="{ input: 'text-sm !p-2 !border-gray-300 focus:!border-blue-500 focus:!ring-blue-500' }" placeholder="Unit" :aria-label="`Unit untuk item ${index + 1}`" />
+                        </td>
+                        <td class="px-3 py-4" role="gridcell">
+                          <FormKit type="number" v-model="item.kuantiti" :classes="{ input: 'text-sm !p-2 !border-gray-300 focus:!border-blue-500 focus:!ring-blue-500' }" placeholder="0" :aria-label="`Qty untuk item ${index + 1}`" />
+                        </td>
+                        <td class="px-3 py-4" role="gridcell">
+                          <FormKit type="number" v-model="item.kadar" :classes="{ input: 'text-sm !p-2 !border-gray-300 focus:!border-blue-500 focus:!ring-blue-500' }" placeholder="0.00" step="0.01" :aria-label="`Kadar untuk item ${index + 1}`" />
+                        </td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900" role="gridcell">{{ ((Number(item.kuantiti) || 0) * (Number(item.kadar) || 0)).toFixed(2) }}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm font-medium" role="gridcell">
+                          <rs-button variant="danger" size="sm" @click="removeItem(index)" class="!p-2" :aria-label="`Padam item ${index + 1}: ${item.keteranganKerja || 'Item kosong'}`">
+                            <Icon name="ph:trash" class="w-4 h-4" />
+                          </rs-button>
+                        </td>
+                      </tr>
+                      <tr v-if="formData.itemKerja.length === 0">
+                        <td colspan="7" class="px-3 py-8 text-center text-sm text-gray-500">Tiada item kerja. Klik butang "Tambah Item" untuk menambah item pertama.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Summary section -->
+                <div class="border-t border-gray-200 pt-6 mt-6">
+                  <div class="flex justify-end">
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <div class="flex items-center justify-between max-w-md">
+                        <span class="text-sm font-bold text-gray-900 flex-shrink-0">Jumlah Keseluruhan:</span>
+                        <span class="text-lg font-bold font-mono text-blue-600 whitespace-nowrap ml-4">RM {{ formData.jumlahKeseluruhan.toLocaleString("ms-MY", { minimumFractionDigits: 2 }) }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </rs-card>
+          </section>
+        </div>
+
+        <!-- Non-B400: Original stacked layout for Table Senarai Item Kerja -->
+        <section v-if="!isB400" aria-labelledby="item-kerja-title">
           <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center justify-between">
@@ -187,11 +415,10 @@
                     </rs-button>
                   </div>
 
-                  <div class="grid grid-cols-2 gap-3">
-                    <div class="space-y-1">
-                      <label class="text-xs font-medium text-gray-700"
-                        >REF</label
-                      >
+                  <div class="space-y-3">
+                    <!-- REF Field -->
+                    <div>
+                      <label class="text-xs font-medium text-gray-700">Rujukan</label>
                       <FormKit
                         type="text"
                         v-model="item.ref"
@@ -199,10 +426,22 @@
                         placeholder="REF"
                       />
                     </div>
-                    <div class="space-y-1">
-                      <label class="text-xs font-medium text-gray-700"
-                        >Unit</label
-                      >
+
+                    <!-- Jenis Kerja Field -->
+                    <div>
+                      <label class="text-xs font-medium text-gray-700">Jenis Kerja</label>
+                      <FormKit
+                        type="select"
+                        v-model="item.jenisKerja"
+                        :options="jenisKerjaOptions"
+                        :classes="{ input: 'text-sm !p-2' }"
+                        @input="handleJenisKerjaChange(item, index)"
+                      />
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                      <div>
+                        <label class="text-xs font-medium text-gray-700">Unit</label>
                       <FormKit
                         type="text"
                         v-model="item.unit"
@@ -210,10 +449,9 @@
                         placeholder="Unit"
                       />
                     </div>
-                    <div class="space-y-1">
-                      <label class="text-xs font-medium text-gray-700"
-                        >Kuantiti</label
-                      >
+
+                      <div>
+                        <label class="text-xs font-medium text-gray-700">Kuantiti</label>
                       <FormKit
                         type="number"
                         v-model="item.kuantiti"
@@ -223,10 +461,11 @@
                         step="0.01"
                       />
                     </div>
-                    <div class="space-y-1">
-                      <label class="text-xs font-medium text-gray-700"
-                        >Kadar (RM)</label
-                      >
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                      <div>
+                        <label class="text-xs font-medium text-gray-700">Kadar (RM)</label>
                       <FormKit
                         type="number"
                         v-model="item.kadar"
@@ -236,36 +475,26 @@
                         step="0.01"
                       />
                     </div>
-                    <div class="space-y-1">
-                      <label class="text-xs font-medium text-gray-700"
-                        >Jumlah (RM)</label
-                      >
+
+                      <div>
+                        <label class="text-xs font-medium text-gray-700">Jumlah (RM)</label>
                       <div class="p-2 bg-gray-50 rounded-lg border border-gray-200">
                         <span class="text-sm font-medium text-gray-900">
                           {{ formatCurrency((Number(item.kuantiti) || 0) * (Number(item.kadar) || 0)) }}
                         </span>
+                        </div>
                       </div>
                     </div>
                   </div>
 
                   <div class="mt-3 space-y-2">
-                    <label class="text-xs font-medium text-gray-700"
-                      >Keterangan Kerja</label
-                    >
-                    <FormKit
-                      type="select"
-                      v-model="item.jenisKerja"
-                      :classes="{ input: 'text-sm !p-2' }"
-                      :options="jenisKerjaOptions"
-                      placeholder="Pilih jenis kerja..."
-                      @input="handleJenisKerjaChange(item, index)"
-                    />
+                    <label class="text-xs font-medium text-gray-700">Keterangan Kerja</label>
                     <FormKit
                       type="textarea"
                       v-model="item.keteranganKerja"
                       rows="4"
                       :classes="{ input: 'text-sm !p-2' }"
-                      placeholder="Masukkan keterangan kerja..."
+                      placeholder="Keterangan kerja..."
                     />
                   </div>
                 </div>
@@ -284,12 +513,12 @@
                 <table
                   class="min-w-full divide-y divide-gray-200"
                   role="table"
-                  aria-label="Senarai item kerja untuk BQ"
+                  :aria-label="isB400 ? 'Senarai item kerja untuk Keterangan Kerja' : 'Senarai item kerja untuk BQ'"
                 >
                   <thead class="bg-gray-50" role="rowgroup">
                     <tr role="row">
                       <th
-                        class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16"
+                        class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12"
                         scope="col"
                         role="columnheader"
                       >
@@ -379,24 +608,22 @@
                           <FormKit
                             type="select"
                             v-model="item.jenisKerja"
+                            :options="jenisKerjaOptions"
                             :classes="{
                               input:
                                 'text-sm !p-2 !border-gray-300 focus:!border-blue-500 focus:!ring-blue-500',
                             }"
-                            :options="jenisKerjaOptions"
-                            placeholder="Pilih jenis kerja..."
                             @input="handleJenisKerjaChange(item, index)"
                             :aria-label="`Jenis kerja untuk item ${index + 1}`"
                           />
                           <FormKit
                             type="textarea"
                             v-model="item.keteranganKerja"
-                            rows="4"
                             :classes="{
                               input:
                                 'text-sm !p-2 !border-gray-300 focus:!border-blue-500 focus:!ring-blue-500',
                             }"
-                            placeholder="Masukkan keterangan kerja..."
+                            placeholder="Keterangan kerja..."
                             :aria-label="`Keterangan kerja untuk item ${
                               index + 1
                             }`"
@@ -427,7 +654,7 @@
                           min="0"
                           step="0.01"
                           placeholder="0.00"
-                          :aria-label="`Kuantiti untuk item ${index + 1}`"
+                          :aria-label="`Qty untuk item ${index + 1}`"
                         />
                       </td>
                       <td class="px-3 py-4" role="gridcell">
@@ -472,7 +699,7 @@
                     </tr>
                     <tr v-if="formData.itemKerja.length === 0">
                       <td
-                        colspan="7"
+                        colspan="8"
                         class="px-3 py-8 text-center text-sm text-gray-500"
                       >
                         Tiada item kerja. Klik butang "Tambah Item" untuk
@@ -542,7 +769,7 @@
                     Ringkasan & Maklumat Tambahan
                   </h2>
                   <p class="text-sm text-gray-500">
-                    Ringkasan BQ dan maklumat pengesahan
+                    Ringkasan dan maklumat pengesahan
                   </p>
                 </div>
               </div>
@@ -579,7 +806,7 @@
                 <!-- Recommendation line mirroring the document -->
                 <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
                   <p class="text-sm text-green-800 font-medium">
-                    💡 Disyorkan kerja-kerja baik pulih dengan nilai RM
+                    💡 Disyorkan sumbangan dengan nilai RM
                     {{
                       formData.jumlahKeseluruhan.toLocaleString("ms-MY", {
                         minimumFractionDigits: 2,
@@ -602,6 +829,38 @@
                       <span class="font-medium">{{
                         getCurrentStageDisplay()
                       }}</span>
+                    </div>
+                  </div>
+
+                  <!-- PERINGATAN Section (B400 only) -->
+                  <div v-if="isB400" class="mb-4 p-4 bg-red-50 rounded border border-red-200">
+                    <div class="flex items-start space-x-2">
+                      <Icon name="ph:warning" class="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" />
+                      <div class="w-full">
+                        <h4 class="text-sm font-bold text-red-900 mb-3 uppercase tracking-wide">
+                          PERINGATAN
+                        </h4>
+                        <div class="space-y-2 text-xs text-red-800">
+                          <div class="flex items-start space-x-2">
+                            <span class="font-bold text-red-900 flex-shrink-0">I.</span>
+                            <p class="leading-snug">
+                              SEGALA PERUBAHAN ITEM KERJA HENDAKLAH DIMAKLUMKAN KEPADA EKSEKUTIF TEKNIKAL LEMBAGA ZAKAT SELANGOR (MAIS)
+                            </p>
+                          </div>
+                          <div class="flex items-start space-x-2">
+                            <span class="font-bold text-red-900 flex-shrink-0">II.</span>
+                            <p class="leading-snug">
+                              PIHAK LZS BERHAK UNTUK MEMBATALKAN / MEMOTONG JUMLAH SUMBANGAN SEKIRANYA SEBARANG PINDAAN KERJA DIBUAT TANPA KELULUSAN LZS
+                            </p>
+                          </div>
+                          <div class="flex items-start space-x-2">
+                            <span class="font-bold text-red-900 flex-shrink-0">III.</span>
+                            <p class="leading-snug">
+                              PIHAK LZS TIDAK AKAN BERTANGGUNGJAWAB UNTUK SEBARANG PINDAAN / PERUBAHAN / PENAMBAHAN YANG DIBUAT TANPA KELULUSAN LZS.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -875,7 +1134,7 @@
                 <span class="font-medium">No BR:</span> {{ formData.noBR }}
               </div>
               <div class="col-span-2">
-                <span class="font-medium">Alamat:</span> {{ formData.alamat }}
+                <span class="font-medium">Alamat Tapak:</span> {{ formData.alamat }}
               </div>
               <div>
                 <span class="font-medium">Tarikh Siasatan:</span> {{ new Date(formData.tarikhSiasatan).toLocaleDateString("ms-MY") }}
@@ -924,7 +1183,7 @@
             </div>
             <div class="text-left">
               <p class="text-sm text-gray-800">
-                Disyorkan kerja-kerja baik pulih dengan nilai RM{{ formData.jumlahKeseluruhan.toLocaleString("ms-MY") }}.
+                Disyorkan sumbangan dengan nilai RM{{ formData.jumlahKeseluruhan.toLocaleString("ms-MY") }}.
               </p>
             </div>
           </div>
@@ -984,8 +1243,191 @@ const toast = useToast();
 const processing = ref(false);
 const showPDFModal = ref(false);
 
+// Check if current bantuan is B400
+const isB400 = computed(() => String(route.params.id || '').toUpperCase() === 'B400');
+
+// B400 Dokumen Sokongan data
+const b400DokumenSokongan = ref([
+  {
+    jenis: "Mengemukakan surat permohonan.",
+    filename: "surat_permohonan.pdf",
+    url: "#",
+    status: "lengkap",
+  },
+  {
+    jenis: "Kertas kerja lengkap yang disahkan oleh pengerusi/ setiausaha masjid/Pengerusi Surau/Pengerusi PIBG/Pengetua/Guru Besar/Penolong Pendaftar. (Masjid: perlu dinyatakan perincian/pecahan kewangan masjid seperti dana pembangunan, dana anak yatim, dana khairat dan sebagainya).",
+    filename: "kertas_kerja_lengkap.pdf",
+    url: "#",
+    status: "lengkap",
+  },
+  {
+    jenis: "Penyata bank terkini institusi/ PIBG.",
+    filename: "penyata_bank_institusi.pdf",
+    url: "#",
+    status: "lengkap",
+  },
+  {
+    jenis: "Surat/minit Sokongan Pejabat Agama Islam Daerah/ Jabatan Agama Islam Selangor/MAIS/Guru Besar/ Pengetua/ PPD/JPN/ pihak berkaitan.",
+    filename: "surat_sokongan_pejabat_agama.pdf",
+    url: "#",
+    status: "lengkap",
+  },
+  {
+    jenis: "Minit mesyuarat daripada jawatankuasa surau/ masjid/ PIBG/ jabatan yang menyatakan: Keperluan bantuan, Anggaran kos baik pulih, Kontraktor yang dilantik",
+    filename: "minit_mesyuarat_jawatankuasa.pdf",
+    url: "https://www.scribd.com/document/657010846/Bq-Baikpulih-Tabika-Sri-Kandi",
+    status: "lengkap",
+  },
+  {
+    jenis: "Sebutharga baik pulih daripada kontraktor.",
+    filename: "sebutharga_kontraktor.pdf",
+    url: "#",
+    status: "lengkap",
+  },
+  {
+    jenis: "Gambar berkaitan permohonan.",
+    filename: "gambar_permohonan.pdf",
+    url: "#",
+    status: "lengkap",
+  },
+  {
+    jenis: "Laporan Polis/ pihak berkuasa (musibah/ bencana alam)",
+    filename: "laporan_polis_musibah.pdf",
+    url: "#",
+    status: "tidak_lengkap",
+  },
+]);
+
+// Status options for dokumen
+const statusDokumenOptions = ref([
+  { label: "Lengkap", value: "lengkap" },
+  { label: "Tidak Lengkap", value: "tidak_lengkap" },
+  { label: "Tiada Keperluan", value: "tiada_keperluan" },
+]);
+
+// Document preview state
+const expandedDocuments = ref({});
+const loadingPdf = ref({});
+const documentUrls = ref({});
+
+
+// Document actions
+
+
+// Toggle document preview accordion
+const toggleDocumentPreview = (index) => {
+  expandedDocuments.value[index] = !expandedDocuments.value[index];
+  
+  // Auto-load document when expanding
+  if (expandedDocuments.value[index] && !documentUrls.value[index]) {
+    loadDocumentPreview(b400DokumenSokongan.value[index], index);
+  }
+};
+
+// Load document for preview
+const loadDocumentPreview = async (dokumen, index) => {
+  loadingPdf.value[index] = true;
+  
+  try {
+    // Simulate loading delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // For document #1 (Surat permohonan), use the new Google Drive PDF
+    if (index === 0) { // Index 0 = Document #1 (0-based)
+      // Convert Google Drive sharing link to embeddable format
+      const driveFileId = "1bWb2RxjTABcabDi9ddyVye2l2n7P0ocM";
+      documentUrls.value[index] = `https://drive.google.com/file/d/${driveFileId}/preview`;
+      console.log(`Loading PDF for document ${index + 1}:`, documentUrls.value[index]);
+    } else {
+      // For all other documents, use the sample BQ document HTML file
+      const sampleBqDocumentUrl = "/sample-bq-document.html";
+      documentUrls.value[index] = sampleBqDocumentUrl;
+      console.log(`Loading HTML for document ${index + 1}:`, documentUrls.value[index]);
+    }
+    
+    toast.success(`Dokumen berjaya dimuat: ${dokumen.filename}`);
+  } catch (error) {
+    toast.error(`Ralat memuat dokumen: ${error.message}`);
+    console.error("Error loading document:", error);
+  } finally {
+    loadingPdf.value[index] = false;
+  }
+};
+
+
+// Accordion functions (no longer needed for table format)
+// const toggleAccordion = (index) => {
+//   accordionExpanded.value[index] = !accordionExpanded.value[index];
+// };
+
+// Document loading (no longer needed for table format)
+// const loadDocument = async (dokumen, index) => {
+//   loadingPdf.value[index] = true;
+//   
+//   try {
+//     // Simulate loading delay
+//     await new Promise(resolve => setTimeout(resolve, 1000));
+//     
+//     // For document #5 (Minit mesyuarat), use the Scribd link
+//     if (index === 4) { // Index 4 = Document #5 (0-based)
+//       documentUrls.value[index] = "https://www.scribd.com/document/657010846/Bq-Baikpulih-Tabika-Sri-Kandi";
+//     } else {
+//       // For other documents, use a placeholder PDF
+//       documentUrls.value[index] = `data:application/pdf;base64,JVBERi0xLjQKMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUgL1BhZ2VzCi9LaWRzIFszIDAgUl0KL0NvdW50IDEKPD4KZW5kb2JqCjMgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCAyIDAgUgovTWVkaWFCb3ggWzAgMCA2MTIgNzkyXQovUmVzb3VyY2VzIDw8Ci9Gb250IDw8Ci9GMSA0IDAgUgo+Pgo+Pgo+Pgo+Pgo+PgoKZW5kb2JqCjQgMCBvYmoKPDwKL1R5cGUgL0ZvbnQKL1N1YnR5cGUgL1R5cGUxCi9CYXNlRm9udCAvSGVsdmV0aWNhCj4+CmVuZG9iago+Pgo+PgoKZW5kb2JqCnhyZWYKMCA1CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKMDAwMDAwMDI0NSAwMDAwMCBuIAp0cmFpbGVyCjw8Ci9TaXplIDUKL1Jvb3QgMSAwIFIKPj4Kc3RhcnR4cmVmCjMyNQolJUVPRg==`;
+//     }
+//     
+//     toast.success(`Dokumen berjaya dimuat: ${dokumen.filename}`);
+//   } catch (error) {
+//     toast.error(`Ralat memuat dokumen: ${error.message}`);
+//     console.error("Error loading document:", error);
+//   } finally {
+//     loadingPdf.value[index] = false;
+//   }
+// };
+
+
+// Helper functions
+const getDocumentTitle = (jenis) => {
+  if (jenis.length > 50) {
+    return jenis.substring(0, 50) + "...";
+  }
+  return jenis;
+};
+
+const getStatusLabel = (status) => {
+  const statusMap = {
+    'lengkap': 'Lengkap',
+    'tidak_lengkap': 'Tidak Lengkap',
+    'tiada_keperluan': 'Tiada Keperluan'
+  };
+  return statusMap[status] || status;
+};
+
+const getStatusBadgeClass = (status) => {
+  const classMap = {
+    'lengkap': 'bg-green-100 text-green-800',
+    'tidak_lengkap': 'bg-red-100 text-red-800',
+    'tiada_keperluan': 'bg-gray-100 text-gray-800'
+  };
+  return classMap[status] || 'bg-gray-100 text-gray-800';
+};
+
+const copyExtractedText = async (index) => {
+  try {
+    await navigator.clipboard.writeText(extractedText.value[index]);
+    toast.success("Teks berjaya disalin ke clipboard!");
+  } catch (error) {
+    toast.error("Ralat menyalin teks");
+    console.error("Error copying text:", error);
+  }
+};
+
+const clearExtractedText = (index) => {
+  delete extractedText.value[index];
+};
+
 definePageMeta({
-  title: "Draf BQ - Siasatan Lapangan",
+  title: computed(() => isB400.value ? "Draf Keterangan Kerja - Siasatan Lapangan" : "Draf BQ - Siasatan Lapangan"),
 });
 
 const breadcrumb = ref([
@@ -1005,7 +1447,7 @@ const breadcrumb = ref([
     path: `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}`,
   },
   {
-    name: "BQ",
+    name: computed(() => isB400.value ? "Keterangan Kerja" : "BQ"),
     type: "current",
     path: `/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}/draf-bq`,
   },
@@ -1022,22 +1464,41 @@ const pegawaiOptions = ref([
 ]);
 
 const jenisKerjaOptions = ref([
-  { label: "Roboh Rumah Kayu", value: "roboh_rumah_kayu" },
+  { label: "-- Sila Pilih --", value: "" },
   { label: "Bina Semula Bangunan Bilik", value: "bina_semula_bangunan_bilik" },
+  { label: "Roboh Rumah Kayu", value: "roboh_rumah_kayu" },
+  { label: "Baik Pulih Struktur", value: "baik_pulih_struktur" },
+  { label: "Kerja Elektrik", value: "kerja_elektrik" },
+  { label: "Kerja Paip", value: "kerja_paip" },
 ]);
 
 // Predefined data for each jenis kerja
 const jenisKerjaData = {
-  roboh_rumah_kayu: {
-    keteranganKerja: "Membuka,memecah dan membawa keluar keseluruhan struktur binaan rumah kayu,membuka dan memindahkan meter elektrik TNB,papan agihan termasuk semua pendawaian yang berkaitan, membawa bahan-bahan buangan pembinaan ke lokasi yang ditentukan sehingga sempurna mengikut arahan Pegawai Penguasa.",
-    unit: "Pukal",
-    kadar: 3000
-  },
   bina_semula_bangunan_bilik: {
     keteranganKerja: "Membina tambahan bilik berukuran 20' x 15' termasuk kerja-kerja asas cerucuk bakau atau raft foundation, penapak konkrit bertetulang (pad footing), rasuk tanah konkrit bertetulang, tiang konkrit bertetulang, dinding bata berlepa, rasuk bumbung konkrit bertetulang, lantai konkrit bertetulang, kemasan siling, kemasan cat luar & dalam serta kelengkapan berikut :",
     unit: "Pukal",
-    kadar: 40000
-  }
+    kadar: 40000,
+  },
+  roboh_rumah_kayu: {
+    keteranganKerja: "Membuka, memecah dan membawa keluar keseluruhan struktur binaan rumah kayu, membuka dan memindahkan meter elektrik TNB, papan agihan termasuk semua pendawaian yang berkaitan, membawa bahan-bahan buangan pembinaan ke lokasi yang ditentukan sehingga sempurna mengikut arahan Pegawai Penguasa.",
+    unit: "Pukal",
+    kadar: 3000,
+  },
+  baik_pulih_struktur: {
+    keteranganKerja: "Baik pulih struktur bangunan termasuk kerja-kerja pembaikan dinding retak, penggantian bumbung rosak, pembaikan lantai, cat dalam dan luar, serta kerja-kerja berkaitan untuk memulihkan keadaan bangunan kepada kondisi yang selamat dan sesuai untuk didiami.",
+    unit: "Pukal",
+    kadar: 15000,
+  },
+  kerja_elektrik: {
+    keteranganKerja: "Kerja-kerja elektrik termasuk pemasangan wayar baru, suis dan soket, papan agihan elektrik, lampu, kipas siling, dan semua kerja elektrik yang berkaitan mengikut spesifikasi Suruhanjaya Tenaga dan piawaian keselamatan yang ditetapkan.",
+    unit: "Pukal",
+    kadar: 5000,
+  },
+  kerja_paip: {
+    keteranganKerja: "Kerja-kerja paip dan plumbing termasuk pemasangan paip air bersih dan kotor, singki, mangkuk tandas, shower, dan semua kerja paip yang berkaitan mengikut spesifikasi dan piawaian yang ditetapkan oleh pihak berkuasa tempatan.",
+    unit: "Pukal",
+    kadar: 4000,
+  },
 };
 
 // Form data with better structure
@@ -1198,8 +1659,8 @@ const handleJenisKerjaChange = (item, index) => {
 const addItem = () => {
   formData.value.itemKerja.push({
     ref: "CMP",
-    keteranganKerja: "",
     jenisKerja: "",
+    keteranganKerja: "",
     unit: "",
     kuantiti: 1,
     kadar: 0,
@@ -1307,7 +1768,8 @@ const generateBQNumber = () => {
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, "0");
   const random = String(Math.floor(Math.random() * 1000)).padStart(3, "0");
-  return `BQ${year}${month}${random}`;
+  const prefix = isB400.value ? 'KK' : 'BQ';
+  return `${prefix}${year}${month}${random}`;
 };
 
 const generateBRNumber = () => {
@@ -1325,8 +1787,8 @@ const initializeFormData = () => {
   const baseData = {
     noBQ: generateBQNumber(),
     noBR: generateBRNumber(),
-    namaPemohon: "Mohd Rosli Bin Saad",
-    alamat: "Jalan Rajawali, Kampung Bukit Kuching, 45800 Jeram",
+    namaPemohon: isB400.value ? "Masjid At-Taqwa" : "Mohd Rosli Bin Saad",
+    alamat: isB400.value ? "Jalan Masjid, Kampung Seri Melati, 45800 Kuala Selangor, Selangor" : "Jalan Rajawali, Kampung Bukit Kuching, 45800 Jeram",
     tarikhSiasatan: today.toISOString().split("T")[0],
     itemKerja: [],
     jumlahKeseluruhan: 0,
@@ -1346,27 +1808,27 @@ const initializeFormData = () => {
     baseData.itemKerja = [
       {
         ref: "CMP",
-        keteranganKerja: " Membuka,memecah dan membawa keluar keseluruhan struktur binaan rumah kayu,membuka dan memindahkan meter elektrik TNB,papan agihan termasuk semua pendawaian yang berkaitan, membawa bahan-bahan buangan pembinaan ke lokasi yang ditentukan sehingga sempurna mengikut arahan Pegawai Penguasa.",
         jenisKerja: "roboh_rumah_kayu",
+        keteranganKerja: "Membuka, memecah dan membawa keluar keseluruhan struktur binaan rumah kayu, membuka dan memindahkan meter elektrik TNB, papan agihan termasuk semua pendawaian yang berkaitan, membawa bahan-bahan buangan pembinaan ke lokasi yang ditentukan sehingga sempurna mengikut arahan Pegawai Penguasa.",
         unit: "Pukal",
         kuantiti: 1,
         kadar: 3000,
       },
       {
         ref: "CMP",
-        keteranganKerja: "Membina tambahan bilik berukuran 20' x 15' termasuk kerja-kerja asas cerucuk bakau atau raft foundation, penapak konkrit bertetulang (pad footing), rasuk tanah konkrit bertetulang, tiang konkrit bertetulang, dinding bata berlepa, rasuk bumbung konkrit bertetulang, lantai konkrit bertetulang, kemasan siling, kemasan cat luar & dalam serta kelengkapan berikut :",
         jenisKerja: "bina_semula_bangunan_bilik",
+        keteranganKerja: "Membina tambahan bilik berukuran 20' x 15' termasuk kerja-kerja asas cerucuk bakau atau raft foundation, penapak konkrit bertetulang (pad footing), rasuk tanah konkrit bertetulang, tiang konkrit bertetulang, dinding bata berlepa, rasuk bumbung konkrit bertetulang, lantai konkrit bertetulang, kemasan siling, kemasan cat luar & dalam serta kelengkapan berikut :",
         unit: "Pukal",
         kuantiti: 1,
         kadar: 40000,
       },
              {
          ref: "CMP",
-         keteranganKerja: "Bumbung metal deck termasuk struktur jenis sesikat",
-        //  jenisKerja: "bina_semula_bangunan_bilik",
-        //  unit: "Pukal",
-        //  kuantiti: 1,
-        //  kadar: 15000,
+        jenisKerja: "baik_pulih_struktur",
+        keteranganKerja: "Baik pulih struktur bangunan termasuk kerja-kerja pembaikan dinding retak, penggantian bumbung rosak, pembaikan lantai, cat dalam dan luar, serta kerja-kerja berkaitan untuk memulihkan keadaan bangunan kepada kondisi yang selamat dan sesuai untuk didiami.",
+        unit: "Pukal",
+        kuantiti: 1,
+        kadar: 15000,
        },
     ];
   }

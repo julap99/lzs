@@ -115,7 +115,7 @@
                   Aktiviti : Kehadiran (kali)
                 </th>
                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Elaun
+                  Elaun Aktiviti (Total)
                 </th>
                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Jumlah Elaun
@@ -165,7 +165,7 @@
                   <td class="px-6 py-4 text-center align-top">
                     <ul class="list-none space-y-1">
                       <li v-for="activity in filteredActivities(pa.activities)" :key="activity.id">
-                        RM {{ Number(activity.allowanceRate).toFixed(2) }}
+                        RM {{ (Number(activity.allowanceRate) * Number(activity.kehadiran || 0)).toFixed(2) }}
                       </li>
                     </ul>
                   </td>

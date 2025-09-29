@@ -6,7 +6,17 @@
       <!-- Maklumat Umum Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Maklumat Umum</h2>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:info" class="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Maklumat Umum</h2>
+              <p class="text-sm text-gray-500">Maklumat asas bantuan</p>
+            </div>
+          </div>
         </template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -94,7 +104,17 @@
       <!-- Maklumat Bantuan Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Maklumat Bantuan</h2>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:handshake" class="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Maklumat Bantuan</h2>
+              <p class="text-sm text-gray-500">Konfigurasi bantuan dan produk</p>
+            </div>
+          </div>
         </template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -168,7 +188,17 @@
       <rs-card>
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Bayaran Kepada</h2>
+            <div class="flex items-center space-x-3">
+              <div class="flex-shrink-0">
+                <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <Icon name="material-symbols:payments" class="w-6 h-6 text-orange-600" />
+                </div>
+              </div>
+              <div>
+                <h2 class="text-xl font-semibold text-gray-900">Bayaran Kepada</h2>
+                <p class="text-sm text-gray-500">Maklumat pembayaran dan penerima</p>
+              </div>
+            </div>
           </div>
         </template>
         <template #body>
@@ -219,7 +249,17 @@
       <rs-card>
         <template #header>
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold">Maklumat Senarai Penerima</h2>
+            <div class="flex items-center space-x-3">
+              <div class="flex-shrink-0">
+                <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+                  <Icon name="material-symbols:people" class="w-6 h-6 text-teal-600" />
+                </div>
+              </div>
+              <div>
+                <h2 class="text-xl font-semibold text-gray-900">Senarai Penerima (Beneficiary List)</h2>
+                <p class="text-sm text-gray-500">Senarai penerima bantuan</p>
+              </div>
+            </div>
           </div>
         </template>
         <template #body>
@@ -267,7 +307,17 @@
       <!-- Dokumen Section -->
       <rs-card>
         <template #header>
-          <h2 class="text-xl font-semibold">Maklumat Dokumen Sokongan</h2>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:description" class="w-6 h-6 text-gray-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Maklumat Dokumen Sokongan</h2>
+              <p class="text-sm text-gray-500">Fail dan dokumen berkaitan</p>
+            </div>
+          </div>
         </template>
         <template #body>
           <div v-if="documentList.length === 0" class="text-center py-8 text-gray-500">
@@ -561,12 +611,12 @@ const breadcrumb = ref([
     path: '/BF-BTN/bantuan-bulk',
   },
   {
-    name: 'Bantuan Bulk',
+    name: 'Bulk Processing',
     type: 'link',
     path: '/BF-BTN/bantuan-bulk',
   },
   {
-    name: 'Cipta Bantuan Bulk',
+    name: 'Cipta Bulk Processing',
     type: 'link',
     path: '/BF-BTN/bantuan-bulk/cipta-bantuan-bulk',
   },
@@ -659,9 +709,9 @@ const getBantuanData = (id) => {
       tarikhMohon: '04/05/2025',
       kategoriBantuan: 'Pendidikan (Muallaf)',
       subKategori: 'Elaun/Imbuhan (Muallaf - Pendidikan)',
-      bantuan: '(HQ) ELAUN KEHADIRAN KELAS AGAM ASAS (MUALLAF)',
+      bantuan: '(HQ) ELAUN KEHADIRAN KELAS AGAMA ASAS (MUALLAF)',
       kodBantuan: 'B309',
-      produkBantuan: '(HQ) ELAUN KEHADIRAN KELAS AGAM ASAS (MUALLAF)',
+      produkBantuan: '(HQ) ELAUN KEHADIRAN KELAS AGAMA ASAS (MUALLAF)',
       penyiasat: 'Muhammad Yazid Bin Abdullah',
       cawangan: 'Cawangan Ibu Pejabat LZS'
     },

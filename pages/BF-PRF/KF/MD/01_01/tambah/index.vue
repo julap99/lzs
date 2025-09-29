@@ -51,6 +51,28 @@
                     help="Keterangan atau nota tambahan untuk Had Kifayah ini"
                   />
                 </div>
+
+                <!-- Formula 19 -->
+                <div>
+                  <FormKit
+                    type="text"
+                    name="formula19"
+                    label="Formula 19"
+                    placeholder="Masukkan Formula 19"
+                    help="Formula 19 untuk Multidimensi"
+                  />
+                </div>
+
+                <!-- Formula 18 -->
+                <div>
+                  <FormKit
+                    type="text"
+                    name="formula18"
+                    label="Formula 18"
+                    placeholder="Masukkan Formula 18"
+                    help="Formula 18 untuk Multidimensi"
+                  />
+                </div>
               </div>
             </div>
 
@@ -76,6 +98,16 @@
                   />
                 </div>
 
+                <!-- Tarikh Tamat -->
+                <div>
+                  <FormKit
+                    type="date"
+                    name="tarikhTamat"
+                    label="Tarikh Tamat"
+                    help="Pilih tarikh tamat (jika ada)"
+                  />
+                </div>
+
                 <!-- Status Data -->
                 <div>
                   <FormKit
@@ -89,6 +121,23 @@
                       required: 'Status Data diperlukan'
                     }"
                     help="Pilih Status Data untuk Multidimensi"
+                  />
+                </div>
+
+                <!-- Status -->
+                <div>
+                  <FormKit
+                    type="radio"
+                    name="status"
+                    label="Status"
+                    :classes="{ label: 'block mb-2', inner: 'flex flex-col gap-2' }"
+                    :options="[
+                      { label: 'Aktif', value: 'Aktif' },
+                      { label: 'Tidak Aktif', value: 'Tidak Aktif' }
+                    ]"
+                    validation="required"
+                    :validation-messages="{ required: 'Status diperlukan' }"
+                    help="Pilih status Multidimensi"
                   />
                 </div>
               </div>
@@ -160,7 +209,11 @@ const breadcrumb = ref([
 const formData = reactive({
   namaMultidimensi: "",
   keterangan: "",
+  formula19: "",
+  formula18: "",
   tarikhMula: "",
+  tarikhTamat: "",
+  status: "",
   statusData: "",
 });
 
@@ -214,8 +267,12 @@ const handleSubmit = async (formData) => {
       idMultidimensi: generateNextId(),
       namaMultidimensi: formData.namaMultidimensi,
       tarikhMula: formData.tarikhMula,
+      tarikhTamat: formData.tarikhTamat,
+      status: formData.status || 'Aktif',
       statusData: formData.statusData,
       keterangan: formData.keterangan || "",
+      formula19: formData.formula19 || "",
+      formula18: formData.formula18 || "",
       tindakan: existingData.length + 1,
       // Assign a stable row number `no` when creating
       no: existingData.length > 0

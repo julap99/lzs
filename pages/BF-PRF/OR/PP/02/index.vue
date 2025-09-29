@@ -37,25 +37,8 @@
           @submit="nextStep"
           #default="{ value }"
         >
-          <FormKit
-            type="text"
-            name="organizationName"
-            label="Nama Organisasi"
-            validation="required"
-            placeholder="Masukkan nama organisasi"
-            v-model="formData.organizationName"
-          />
-
-          <FormKit
-            type="text"
-            name="registrationNumber"
-            label="Nombor Pendaftaran Organisasi (SSM/ROS)"
-            validation="required|matches:/^(\d{12}|PPM-\d{3}-\d{2}-\d{8})$/"
-            placeholder="Contoh: 201901000005 (SSM) atau PPM-001-10-14032020 (ROS)"
-            help="SSM: 12 digit angka | ROS: PPM-###-##-DDMMYYYY"
-            v-model="formData.registrationNumber"
-          />
-
+          <!-- BA Requirement 3: New field order -->
+          <!-- a) Jenis organisasi -->
           <FormKit
             type="select"
             name="organizationType"
@@ -74,20 +57,50 @@
             v-model="formData.organizationType"
           />
 
+          <!-- b) Nama organisasi -->
           <FormKit
-            v-if="!['masjid','surau'].includes(formData.organizationType)"
-            type="select"
-            name="registrationStatus"
-            label="Status Pendaftaran"
+            type="text"
+            name="organizationName"
+            label="Nama Organisasi"
             validation="required"
-            placeholder="Pilih status pendaftaran"
-            :options="[
-              { label: 'Berdaftar', value: 'berdaftar' },
-              { label: 'Tidak berdaftar', value: 'tidak_berdaftar' },
-            ]"
-            v-model="formData.registrationStatus"
+            placeholder="Masukkan nama organisasi"
+            v-model="formData.organizationName"
           />
 
+          <!-- c) No pendaftaran organisasi -->
+          <FormKit
+            type="text"
+            name="registrationNumber"
+            label="Nombor Pendaftaran Organisasi (SSM/ROS)"
+            validation="required|matches:/^(\d{12}|PPM-\d{3}-\d{2}-\d{8})$/"
+            placeholder="Contoh: 201901000005 (SSM) atau PPM-001-10-14032020 (ROS)"
+            help="SSM: 12 digit angka | ROS: PPM-###-##-DDMMYYYY"
+            v-model="formData.registrationNumber"
+          />
+
+          <!-- e) Kariah - dropdown (conditional) -->
+          <CustomSelect
+            v-if="showKariahField"
+            v-model="formData.kariah"
+            :options="kariahOptions"
+            label="Kariah"
+            placeholder="Cari kariah..."
+            search-placeholder="Taip untuk mencari kariah..."
+          />
+
+          <!-- f) Jenis masjid - dropdown (conditional for masjid type) -->
+          <FormKit
+            v-if="formData.organizationType === 'masjid'"
+            type="select"
+            name="jenisMasjid"
+            label="Jenis Masjid"
+            validation="required"
+            placeholder="Pilih jenis masjid"
+            :options="jenisMasjidOptions"
+            v-model="formData.jenisMasjid"
+          />
+
+          <!-- Structure field (conditional) -->
           <FormKit
             v-if="!['masjid','surau'].includes(formData.organizationType)"
             type="select"
@@ -116,16 +129,6 @@
             v-model="formData.hq"
           />
 
-          <!-- Kariah - Show when Organization Type is not 'Masjid' -->
-          <FormKit
-            v-if="showKariah"
-            type="text"
-            name="kariah"
-            label="Kariah"
-            validation="required"
-            placeholder="Contoh: MASJID PEKAN BANGI"
-            v-model="formData.kariah"
-          />
 
           <!-- Zone - Show when Organization Type is Masjid -->
           <FormKit
@@ -169,6 +172,17 @@
         >
           <!-- Address Layout: Grid 2 columns as per BA requirements -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Negara (Country) -->
+            <FormKit
+              type="select"
+              name="country"
+              label="Negara"
+              validation="required"
+              placeholder="Pilih negara"
+              :options="countryOptions"
+              v-model="formData.country"
+            />
+
             <FormKit
               type="text"
               name="addressLine1"
@@ -178,15 +192,24 @@
               v-model="formData.addressLine1"
             />
 
+            <!-- Negeri (Malaysia only) or State/Province (others) -->
             <FormKit
+              v-if="isMalaysia"
               type="select"
               name="state"
               label="Negeri"
               validation="required"
               placeholder="Pilih negeri"
-              :options="[
-                'Selangor',
-              ]"
+              :options="malaysiaStates"
+              v-model="formData.state"
+            />
+            <FormKit
+              v-else
+              type="text"
+              name="state"
+              label="State / Province"
+              validation="required"
+              placeholder="Masukkan negeri / wilayah"
               v-model="formData.state"
             />
 
@@ -198,23 +221,24 @@
               v-model="formData.addressLine2"
             />
 
+            <!-- Daerah (Malaysia/Selangor only) else free-text -->
             <FormKit
+              v-if="isMalaysia && formData.state === 'Selangor'"
               type="select"
               name="district"
               label="Daerah"
               validation="required"
               placeholder="Pilih daerah"
-              :options="[
-                'Petaling',
-                'Klang',
-                'Hulu Langat',
-                'Sepang',
-                'Hulu Selangor',
-                'Kuala Selangor',
-                'Sabak Bernam',
-                'Gombak',
-                'Kuala Langat',
-              ]"
+              :options="selangorDistricts"
+              v-model="formData.district"
+            />
+            <FormKit
+              v-else
+              type="text"
+              name="district"
+              label="Daerah / Region"
+              validation="required"
+              placeholder="Masukkan daerah / region"
               v-model="formData.district"
             />
 
@@ -226,55 +250,44 @@
               v-model="formData.addressLine3"
             />
 
+            <!-- Bandar (Malaysia/Selangor only) else free-text -->
             <FormKit
+              v-if="isMalaysia && formData.state === 'Selangor'"
               type="select"
               name="city"
               label="Pilih Bandar"
               validation="required"
               placeholder="Pilih bandar"
-              :options="[
-                'Shah Alam',
-                'Petaling Jaya',
-                'Subang Jaya',
-                'Klang',
-                'Ampang',
-                'Cheras',
-                'Kajang',
-                'Bangi',
-                'Puchong',
-                'Selayang',
-                'Gombak',
-                'Rawang',
-                'Sungai Buloh',
-                'Batu Caves',
-                'Kuala Selangor',
-                'Bestari Jaya',
-                'Ijok',
-                'Tanjong Karang',
-                'Sabak Bernam',
-                'Sungai Besar',
-                'Kuala Kubu Bharu',
-                'Batang Kali',
-                'Serendah',
-                'Hulu Bernam',
-                'Semenyih',
-                'Beranang',
-                'Sepang',
-                'Cyberjaya',
-                'Dengkil',
-                'Banting',
-                'Teluk Panglima Garang',
-                'Port Klang'
-              ]"
+              :options="selangorCities"
+              v-model="formData.city"
+            />
+            <FormKit
+              v-else
+              type="text"
+              name="city"
+              label="Bandar / City"
+              validation="required"
+              placeholder="Masukkan bandar / city"
               v-model="formData.city"
             />
 
+            <!-- Poskod (Malaysia) or Postal Code (others) -->
             <FormKit
+              v-if="isMalaysia"
               type="text"
               name="postcode"
               label="Poskod"
               validation="required|number|length:5"
               placeholder="Contoh: 43650"
+              v-model="formData.postcode"
+            />
+            <FormKit
+              v-else
+              type="text"
+              name="postcode"
+              label="Postal Code"
+              validation="required"
+              placeholder="Masukkan postal/zip code"
               v-model="formData.postcode"
             />
           </div>
@@ -335,6 +348,16 @@
               v-model="representative.ic"
             />
 
+            <!-- BA Requirement 7: Add jawatan field -->
+            <FormKit
+              type="text"
+              :name="`jawatan${index}`"
+              label="Jawatan"
+              validation="required"
+              placeholder="Masukkan jawatan"
+              v-model="representative.jawatan"
+            />
+
             <FormKit
               type="tel"
               :name="`phoneNumber${index}`"
@@ -351,6 +374,17 @@
               validation="email"
               placeholder="Contoh: nama@domain.com"
               v-model="representative.email"
+            />
+
+            <!-- Dokumen Sokongan untuk Setiap Wakil-->
+            <FormKit
+              type="file"
+              :name="`supportingLetter${index}`"
+              label="Surat Lantikan / Sokongan"
+              validation="required"
+              accept=".pdf,.jpg,.jpeg,.png"
+              help="Muat naik surat lantikan/sokongan bagi wakil ini"
+              v-model="representative.supportingLetter"
             />
 
             <div class="flex justify-end">
@@ -464,6 +498,16 @@
                 placeholder="Masukkan penama akaun bank"
                 v-model="formData.penamaBank"
               />
+
+              <FormKit
+                type="text"
+                name="swiftCode"
+                label="SWIFT Code"
+                v-model="currentSwiftCode"
+                readonly
+                disabled
+                placeholder="SWIFT Code akan dipaparkan berdasarkan bank yang dipilih"
+              />
             </div>
           </div>
 
@@ -485,14 +529,18 @@
           @submit="submitForm"
           #default="{ value }"
         >
-          <div class="bg-yellow-50 text-yellow-800 p-4 rounded-md mb-4">
-            <p class="font-medium">Sila muat naik dokumen berikut:</p>
-            <ul class="list-disc ml-5 mt-2">
+          <!-- BA Requirement 1: Mandatory documents warning -->
+          <div class="bg-red-50 text-red-800 p-4 rounded-md mb-4 border border-red-200">
+            <div class="flex items-center mb-2">
+              <Icon name="mdi:alert-circle" class="text-red-600 mr-2" size="1.25rem" />
+              <p class="font-medium">Dokumen Sokongan Wajib</p>
+            </div>
+            <p class="text-sm mb-2">Sila muat naik dokumen berikut (semua adalah wajib):</p>
+            <ul class="list-disc ml-5 mt-2 text-sm">
               <li>Sijil Pendaftaran SSM / ROS</li>
-              <li>Surat Lantikan / Sokongan</li>
               <li>Bukti pemilikan akaun bank</li>
             </ul>
-            <p class="mt-2">Format yang dibenarkan: PDF / JPG / PNG</p>
+            <p class="mt-2 text-sm">Format yang dibenarkan: PDF / JPG / PNG</p>
           </div>
 
           <FormKit
@@ -503,16 +551,6 @@
             accept=".pdf,.jpg,.jpeg,.png"
             help="Muat naik sijil pendaftaran organisasi anda"
             v-model="formData.registrationCertificate"
-          />
-
-          <FormKit
-            type="file"
-            name="appointmentLetter"
-            label="Surat Lantikan / Sokongan"
-            validation="required"
-            accept=".pdf,.jpg,.jpeg,.png"
-            help="Muat naik surat lantikan rasmi"
-            v-model="formData.appointmentLetter"
           />
 
           <FormKit
@@ -632,7 +670,7 @@
               <label class="block text-gray-600 font-medium">HQ</label>
               <p class="text-gray-900">{{ (hqOptions.find(h=>h.value===formData.hq)?.label) || '-' }}</p>
             </div>
-            <div v-if="showKariah">
+            <div v-if="showKariahField">
               <label class="block text-gray-600 font-medium">Kariah</label>
               <p class="text-gray-900">{{ formData.kariah || '-' }}</p>
             </div>
@@ -733,10 +771,6 @@
                 <rs-badge :variant="hasRegistrationCert ? 'success' : 'danger'">{{ hasRegistrationCert ? 'Dilampirkan' : 'Tiada' }}</rs-badge>
               </div>
               <div>
-                <label class="block text-gray-600 font-medium">Surat Lantikan / Sokongan</label>
-                <rs-badge :variant="hasAppointmentLetter ? 'success' : 'danger'">{{ hasAppointmentLetter ? 'Dilampirkan' : 'Tiada' }}</rs-badge>
-              </div>
-              <div>
                 <label class="block text-gray-600 font-medium">Bukti Pemilikan Akaun Bank</label>
                 <rs-badge :variant="hasBankProof ? 'success' : 'danger'">{{ hasBankProof ? 'Dilampirkan' : 'Tiada' }}</rs-badge>
               </div>
@@ -759,10 +793,61 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
+// Country options (common + Malaysia default)
+const countryOptions = [
+  'Malaysia', 'Singapore', 'Indonesia', 'Thailand', 'Brunei', 'Philippines',
+  'Vietnam', 'Cambodia', 'Laos', 'Myanmar', 'India', 'China', 'Japan', 'South Korea',
+  'Australia', 'New Zealand', 'United States', 'United Kingdom', 'Canada', 'Germany',
+  'France', 'Netherlands', 'Saudi Arabia', 'United Arab Emirates', 'Qatar'
+];
+
+// Malaysia states - LZS system only caters to Selangor
+const malaysiaStates = [
+  'Selangor'
+];
+
+// Selangor districts
+const selangorDistricts = [
+  'Petaling', 'Klang', 'Hulu Langat', 'Sepang', 'Hulu Selangor', 'Kuala Selangor',
+  'Sabak Bernam', 'Gombak', 'Kuala Langat'
+];
+
+// Selangor cities
+const selangorCities = [
+  'Shah Alam','Petaling Jaya','Subang Jaya','Klang','Ampang','Cheras','Kajang','Bangi','Puchong','Selayang','Gombak','Rawang','Sungai Buloh','Batu Caves','Kuala Selangor','Bestari Jaya','Ijok','Tanjong Karang','Sabak Bernam','Sungai Besar','Kuala Kubu Bharu','Batang Kali','Serendah','Hulu Bernam','Semenyih','Beranang','Sepang','Cyberjaya','Dengkil','Banting','Teluk Panglima Garang','Port Klang'
+];
+
+const isMalaysia = computed(() => formData.value.country === 'Malaysia');
+
+// Bank to SWIFT Code mapping
+const bankSwiftCodes = {
+  'Maybank': 'MAYBMYKL',
+  'CIMB Bank': 'CIBBMYKL',
+  'Public Bank': 'PBBEMYKL',
+  'RHB Bank': 'RHBBMYKL',
+  'Hong Leong Bank': 'HLBBMYKL',
+  'AmBank': 'ARBKMYKL',
+  'Bank Islam': 'BIMBMYKL',
+  'Bank Rakyat': 'BKRMMYKL',
+  'Bank Muamalat': 'BMMBMYKL',
+  'OCBC Bank': 'OCBCMYKL',
+  'HSBC Bank': 'HBMBMYKL',
+  'Standard Chartered Bank': 'SCBLMYKL',
+  'Citibank': 'CITIMYKL',
+  'UOB Bank': 'UOVBMYKL'
+};
+
+// Function to get SWIFT code based on selected bank
+const getSwiftCodeForBank = (bankName) => {
+  return bankSwiftCodes[bankName] || '';
+};
+
+// Reactive SWIFT code that updates when bank changes
+const currentSwiftCode = ref('');
 
 const breadcrumb = ref([
   {
@@ -789,25 +874,194 @@ const referenceNumber = ref(
 // Modal state
 const showDraftModal = ref(false);
 
-// Mock HQ data for realistic dropdown options
-const hqOptions = [
-  { label: 'UITM Jengka', value: 'uitm_jengka' },
-  { label: 'UITM Shah Alam', value: 'uitm_shah_alam' },
-  { label: 'UITM Kuala Lumpur', value: 'uitm_kuala_lumpur' },
-  { label: 'Universiti Malaya', value: 'universiti_malaya' },
-  { label: 'Universiti Putra Malaysia', value: 'universiti_putra_malaysia' },
-  { label: 'Universiti Teknologi Malaysia', value: 'universiti_teknologi_malaysia' },
-  { label: 'Yayasan Insan Malaysia', value: 'yayasan_insan_malaysia' },
-  { label: 'Pertubuhan Amal Jariah', value: 'pertubuhan_amal_jariah' },
-  { label: 'Yayasan Pendidikan Islami Malaysia', value: 'yayasan_pendidikan_islami_malaysia' },
-  { label: 'Institut Dakwah Malaysia', value: 'institut_dakwah_malaysia' },
-  { label: 'Pertubuhan Kebajikan Islam', value: 'pertubuhan_kebajikan_islam' },
-  { label: 'Yayasan Tahfiz Al-Quran', value: 'yayasan_tahfiz_al_quran' },
+// HQ options vary by organization type to reflect realistic parents used elsewhere
+const hqOptions = computed(() => {
+  const type = formData.value.organizationType;
+  if (type === 'masjid') {
+    return [
+      { label: 'Masjid Sultan Salahuddin Abdul Aziz Shah', value: 'masjid_sultan_salahuddin_hq' },
+      { label: 'Masjid Negeri', value: 'masjid_negeri_hq' },
+    ];
+  }
+  if (type === 'surau') {
+    return [
+      { label: 'Surau Induk Daerah', value: 'surau_induk_daerah' },
+    ];
+  }
+  if (type === 'kesihatan') {
+    return [
+      { label: 'Pusat Dialisis As-Salam HQ', value: 'pusat_dialisis_as_salam_hq' },
+    ];
+  }
+  if (type === 'ngo') {
+    return [
+      { label: 'Pertubuhan Kebajikan Islam HQ', value: 'pki_hq' },
+      { label: 'Rumah Anak Yatim Darul Ehsan HQ', value: 'rayde_hq' },
+    ];
+  }
+  if (type === 'institusi') {
+    return [
+      { label: 'Maahad Tahfiz Selangor (Sekolah Utama)', value: 'maahad_tahfiz_selangor_hq' },
+    ];
+  }
+  if (type === 'agensi' || type === 'badan_berkanun' || type === 'dalaman_lzs_baitul') {
+    return [
+      { label: 'Ibu Pejabat', value: 'ibu_pejabat' },
+    ];
+  }
+  return [
+    { label: 'Ibu Pejabat', value: 'ibu_pejabat' },
+  ];
+});
+
+// LZS Kariah Data - Clean list of all Kariah (no district grouping)
+const lzsKariahData = [
+  "LZS-KAUNTER BANGI",
+  "LZS-KAUNTER KUALA LANGAT",
+  "LZS-KAUNTER SABAK BERNAM",
+  "LZS-KAUNTER SUBANG JAYA",
+  "LZS-KAUNTER PUCHONG",
+  "LZS-KAUNTER SELAYANG",
+  "LZS-KAUNTER KAJANG",
+  "LZS-KAUNTER KOMPLEKS MAIS KLANG",
+  "LZS-KAUNTER MASJI NEGERI SHAH ALAM",
+  "LZS-KAUNTER SEPANG",
+  "MADRASATUL MUHAMMADIAH , PETALING JAYA",
+  "MADRASAH ISLAMIAH, KELANA JAYA",
+  "MADRASAH PERSAUDARAAN ISLAM, KELANA JAYA",
+  "MASJID ABU BAKAR ALI BASHAH , BUKIT BERUNTUNG",
+  "MASJID AHMADI RANTAU PANJANG",
+  "MASJID AL - AMAN LEMBAH JAYA",
+  "MASJID AL - AZIM PANDAN INDAH",
+  "MASJID AL - MUTTAQIN DUSUN TUA",
+  "MASJID AL - UBUDIAH TASIK TAMBAHAN",
+  "MASJID AL AMIN, BT 9 KEBUN BAHARU",
+  "MASJID AL MARDHIYAH TAMAN MELAWATI",
+  "MASJID AL- MUKMINUN USJ 2",
+  "MASJID AL-AMIN TAMAN TENAGA",
+  "MASJID AL-AMIRIAH, BLOK J SAWAH SEMPADAN",
+  "MASJID AL-ANSAR , TAMAN KERAMAT",
+  "MASJID AL-FAIZIN , DESA JAYA",
+  "MASJID AL-FALAH , ULU YAM BARU",
+  "MASJID AL-FALAH RAWANG",
+  "MASJID AL-FALAH, KAMPUNG JENJAROM",
+  "MASJID AL-FIRDAUS , BANDAR BARU SELAYANG",
+  "MASJID AL-HIDAYAH , TAMAN MELAWATI",
+  "MASJID AL-HIDAYAH DESA COALFIELDS",
+  "MASJID AL-HUDA KG. PAYA JARAS",
+  "MASJID AL-HUDA, PAYA JARAS",
+  "MASJID AL-IMAN",
+  "MASJID AL-ISLAHIAH, BATU 17 3/4",
+  "MASJID AL-ISLAMIAH KG LINDUNGAN",
+  "MASJID AL-ITTIFAQIYAH TAMAN SRI GOMBAK",
+  "MASJID AL-KHAIRIAH AU3, MEDAN SRI KERAMAT",
+  "MASJID AL-KHAIRIYAH , TAMAN SERI GOMBAK",
+  "MASJID AL-MAKMUR, KG. GHICHING",
+  "MASJID AL-MUHSININ, KG SUNGAI KANDIS",
+  "MASJID AL-MUJAHIDEEN, DAMANSARA UTAMA",
+  "MASJID AL-MUKARRAMAH, BANDAR SRI DAMANSARA",
+  "MASJID AL-MUTTAQIN , SELAYANG PANDANG",
+  "MASJID AL-RIDHUAN BATU 7 1/2, HULU KELANG",
+  "MASJID AL-SHARIF SIMPANG 3 GOMBAK",
+  "MASJID AL-SYAKIRIN , KAMPUNG BATU 5 3/4",
+  "MASJID AMINAH AL-MUHAIRI , SEAPARK",
+  "MASJID AN-NUR , KAMPUNG MELAYU WIRA DAMAI",
+  "MASJID AR RAHMAN PANDAMARAN JAYA",
+  "MASJID AR-RAHIMAH , TAMAN GREENWOOD",
+  "MASJID AR-RAHMAH , KG SUNGAI BUAYA",
+  "MASJID AR-RAHMAH, DAMANSARA BARU",
+  "MASJID AS-SAJIDIN, BATANG KALI",
+  "MASJID AS-SALAM BUKIT SENTOSA",
+  "MASJID AS-SOBIRIN , AU 5 LEMBAH KERAMAT",
+  "MASJID AT TAUFIQIAH, KAMPUNG PARIT EMPAT",
+  "MASJID AT-TAIYYIBIN, TAMAN BIDARA",
+  "MASJID AT-TAQWA , KALUMPANG",
+  "MASJID ATAUFIKIAH , KAMPUNG SERI SENTOSA",
+  "MASJID BANDAR BARU AMPANG",
+  "MASJID BANDAR BARU SG. BULOH",
+  "MASJID BANDAR BARU SUNGAI BULOH , SUNGAI BULOH",
+  "MASJID BANDAR TASIK PUTERI",
+  "MASJID BANDAR UTAMA BATANG KALI",
+  "MASJID BUKIT ANTARABANGSA",
+  "MASJID BUKIT INDAH , JALAN BUKIT INDAH",
+  "MASJID CAHAYA IMAN, BANDAR COUNTRY HOMES",
+  "MASJID DARUL EHSAN , TAMAN TUN ABDUL RAZAK",
+  "MASJID DARUL ULUM",
+  "MASJID EH-SANIAH , SUNGAI KAMPUNG MELAYU BATU 16",
+  "MASJID FELDA BUKIT CHERAKAH",
+  "MASJID GOMBAK UTARA",
+  "MASJID IBNU SINA, HOSPITAL SUNGAI BULUH",
+  "MASJID JAMEK AL-AMANIAH, BATU CAVES",
+  "MASJID JAMEK AL-HIKMAH BATU 20 , KUANG",
+  "MASJID JAMEK BATU 12 PUCHONG",
+  "MASJID JAMEK BATU ARANG , KUANG",
+  "MASJID JAMEK IPP ( FRIM )",
+  "MASJID JAMEK KAMPUNG SUNGAI PLONG, KAMPUNG SUNGAI PLONG",
+  "MASJID JAMEK KG NAKHODA , BATU CAVES",
+  "MASJID JAMEK KOMPLEKS PERTANIAN SERDANG",
+  "MASJID JAMEK PEKAN SUNGAI BULOH, BATU 12 1/2",
+  "MASJID JAMEK SULTAN ABDUL AZIZ , JALAN TEMPLER",
+  "MASJID JAMEK SULTAN IBRAHIM, PEKAN KUALA SELANGOR",
+  "MASJID JAMEK SUNGAI SERAI, SUNGAI SERAI",
+  "MASJID JAMI'UL HUDA KG MELAYU AMPANG",
+  "MASJID JAMIATUS SOLAHIAH , KAMPUNG SUNGAI TUA BARU",
+  "MASJID JAMIUL EHSAN, KAMPUNG KUBU GAJAH",
+  "MASJID KAMPUNG GOMBAK , BATU 19",
+  "MASJID KAMPUNG SUNGAI CHINCHIN , BATU 7",
+  "MASJID KEM PAYA JARAS",
+  "MASJID KG. TUNKU",
+  "MASJID KLANG GATE BHARU , HULU KLANG",
+  "MASJID LAMA BATU 6 GOMBAK",
+  "MASJID LAPANGAN TERBANG SULTAN ABDUL AZIZ",
+  "MASJID MARZUKIAH, LUBOK PUSING",
+  "MASJID NURUL AMIN MERBAU SEMPAK",
+  "MASJID NURUL EHSAN TAMAN MEDAN",
+  "MASJID NURUL HIDAYAH KAMPUNG PANDAN DALAM",
+  "MASJID NURUL HUDA BATU 13 PUCHONG",
+  "MASJID NURUL IMAN PEKAN RAWANG",
+  "MASJID NURUL ISLAMIAH , SUNGAI CHOH",
+  "MASJID NURUL YAQIN , KAMPUNG MELAYU SRI KUNDANG",
+  "MASJID PUTRA PERDANA",
+  "MASJID SAIDINA ALI, BUKIT SENTOSA",
+  "MASJID SAUJANA UTAMA",
+  "MASJID SELAYANG BARU",
+  "MASJID SERI MELATI",
+  "MASJID SULTAN AHMAD SHAH (UIA)",
+  "MASJID SULTAN HAJI AHMAD SHAH UIA , GOMBAK",
+  "MASJID SULTAN SALAHUDDIN ABDUL AZIZ SHAH, SHAH ALAM",
+  "MASJID SUNGAI RAMAL LUAR",
+  "MASJID UKAY PERDANA",
+  "MASJID ZAKARIA GOMBAK UTARA",
+  "PEJABAT AGAMA ISLAM DAERAH GOMBAK",
+  "SURAU AN-NUR PENJARA SUNGAI BULOH"
+  // Note: This is a sample list. In production, all Kariah from all districts would be included here.
 ];
 
-// Computed properties for conditional field visibility
-const showKariah = computed(() => {
-  return formData.value.organizationType && formData.value.organizationType !== 'masjid';
+// Simple Kariah options - all Kariah in one searchable list
+const kariahOptions = computed(() => {
+  return lzsKariahData.map(kariah => ({
+    label: kariah,
+    value: kariah
+  }));
+});
+
+
+// BA Requirement 3: Jenis Masjid options (updated per BA requirements)
+const jenisMasjidOptions = [
+  { label: 'Bandar', value: 'bandar' },
+  { label: 'Negeri', value: 'negeri' },
+  { label: 'Kariah', value: 'kariah' },
+  { label: 'Diraja', value: 'diraja' },
+  { label: 'Jamek', value: 'jamek' },
+  { label: 'Institusi', value: 'institusi' },
+  { label: 'Bandar Diraja', value: 'bandar_diraja' },
+];
+
+// BA Requirement 3: Updated computed properties for conditional field visibility
+const showKariahField = computed(() => {
+  // Show kariah field only for Surau organization type (exclude Masjid)
+  return formData.value.organizationType && 
+         formData.value.organizationType === 'surau';
 });
 
 const showZone = computed(() => {
@@ -830,41 +1084,41 @@ const showHQDropdown = computed(() => {
 });
 
 const formData = ref({
-  // Step 1: Maklumat Pendaftaran Organisasi
-  organizationName: "",
-  registrationNumber: "",
-  organizationType: "",
-  registrationStatus: "",
-  structure: "",
+  // Step 1: Maklumat Pendaftaran Organisasi (BA Requirement 3: New field order)
+  organizationType: "", // a) Jenis organisasi
+  organizationName: "", // b) Nama organisasi
+  registrationNumber: "", // c) No pendaftaran organisasi
+  kariah: "", // e) Kariah - dropdown
+  jenisMasjid: "", // f) Jenis masjid - dropdown (conditional for masjid)
+  structure: "", // Structure field (conditional)
   
-  // Conditional fields moved from Step 3 to Step 1
-  kariah: "",
-  branch: "",
+  // Conditional fields
   zone: "",
   hq: "", // New field for HQ selection when structure is Cawangan
 
   // Step 2: Maklumat Alamat
+  country: 'Malaysia',
   addressLine1: "",
   addressLine2: "",
   addressLine3: "",
   postcode: "",
   city: "",
   district: "",
-  state: "",
+  state: "Selangor", // Default to Selangor for LZS system
 
-  // Step 3: Maklumat Perhubungan (renumbered from Step 4)
+  // Step 3: Maklumat Perhubungan (BA Requirement 7: Add jawatan field)
   representatives: [
-    { name: "", ic: "", phoneNumber: "", email: "" },
+    { name: "", ic: "", phoneNumber: "", email: "", jawatan: "" },
   ],
 
-  // Step 4: Maklumat Bank (renumbered from Step 5)
+  // Step 4: Maklumat Bank (BA Requirement 8: Maklumat Bank Induk)
   bankName: "",
   bankAccountNumber: "",
   penamaBank: "",
   paymentMethod: "",
   bankSameAsHQ: "", // New field for bank HQ logic
 
-  // Step 5: Muat Naik Dokumen Sokongan (renumbered from Step 6)
+  // Step 5: Muat Naik Dokumen Sokongan (BA Requirement 1: Mandatory documents)
   registrationCertificate: null,
   appointmentLetter: null,
   bankProof: null,
@@ -890,7 +1144,7 @@ const goToStep = (stepId) => {
 };
 
 const tambahMaklumatWakil = () => {
-  formData.value.representatives.push({ name: "", ic: "", phoneNumber: "", email: "" });
+  formData.value.representatives.push({ name: "", ic: "", phoneNumber: "", email: "", jawatan: "" });
 };
 
 const removeRepresentative = (index) => {
@@ -928,7 +1182,29 @@ const confirmSaveDraft = () => {
   showDraftModal.value = false;
 };
 
-const submitForm = () => {
+// BA Requirement 4: Duplicate checking function
+const checkDuplicateRegistration = async (registrationNumber) => {
+  // Simulate API call to check for duplicates
+  const mockExistingRegistrations = [
+    '201901000005',
+    'PPM-001-10-14032020',
+    'PPM-2021-001',
+    'PPM-2021-002'
+  ];
+  
+  return mockExistingRegistrations.includes(registrationNumber);
+};
+
+const submitForm = async () => {
+  // BA Requirement 4: Check for duplicate registration number
+  const isDuplicate = await checkDuplicateRegistration(formData.value.registrationNumber);
+  
+  if (isDuplicate) {
+    // Show error message for duplicate registration
+    alert('Nombor pendaftaran organisasi telah wujud dalam sistem. Sila gunakan nombor pendaftaran yang berbeza.');
+    return;
+  }
+
   // Here you would normally handle the API submission
   console.log("Form data to be submitted:", formData.value);
 
@@ -962,6 +1238,27 @@ const additionalDocsCount = computed(() => {
   const f = formData.value.additionalDocuments;
   return Array.isArray(f) ? f.length : (f ? 1 : 0);
 });
+
+// Watch for changes in bank selection to update SWIFT code
+watch(
+  () => formData.value.bankName,
+  (newBank) => {
+    if (newBank) {
+      currentSwiftCode.value = getSwiftCodeForBank(newBank);
+    } else {
+      currentSwiftCode.value = '';
+    }
+  },
+  { immediate: true }
+);
+
+// Watch for changes in organization name to clear kariah selection
+watch(
+  () => formData.value.organizationName,
+  () => {
+    formData.value.kariah = "";
+  }
+);
 </script>
 
 <style lang="scss" scoped>

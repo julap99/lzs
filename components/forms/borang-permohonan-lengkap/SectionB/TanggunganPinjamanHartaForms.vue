@@ -15,6 +15,7 @@
           name="nama_institusi_pemberi_pinjaman_tanggungan"
           label="Nama Institusi / Individu Pemberi Pinjaman"
           placeholder="Sila masukkan nama institusi atau individu"
+          :disabled="readOnly"
           v-model="getCurrentTanggungan().nama_institusi_pemberi_pinjaman"
         />
 
@@ -30,6 +31,7 @@
               label="Jenis Pinjaman"
               :options="jenisPinjamanOptions"
               placeholder="Sila Pilih Jenis Pinjaman"
+              :disabled="readOnly"
               v-model="getCurrentTanggungan().jenis_pinjaman"
             />
 
@@ -39,6 +41,7 @@
               label="Amaun Bayaran Bulanan (RM)"
               step="0.01"
               min="0"
+              :disabled="readOnly"
               v-model="getCurrentTanggungan().amaun_bayaran_bulanan"
             />
 
@@ -48,6 +51,7 @@
               label="Jumlah Keseluruhan Pinjaman (RM)"
               step="0.01"
               min="0"
+              :disabled="readOnly"
               v-model="
                 getCurrentTanggungan().jumlah_keseluruhan_perbelanjaan
               "
@@ -57,6 +61,7 @@
               type="date"
               name="tahun_mula_pinjaman_tanggungan"
               label="Tahun Mula Pinjaman"
+              :disabled="readOnly"
               v-model="getCurrentTanggungan().tahun_mula_pinjaman"
             />
 
@@ -64,6 +69,7 @@
               type="date"
               name="tahun_akhir_pinjaman_tanggungan"
               label="Tahun Akhir Pinjaman"
+              :disabled="readOnly"
               v-model="getCurrentTanggungan().tahun_akhir_pinjaman"
             />
 
@@ -76,6 +82,7 @@
                 accept=".pdf,.jpg,.jpeg,.png"
                 help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                 validation="max:5|mime:application/pdf,image/jpeg,image/png"
+                :disabled="readOnly"
                 v-model="
                   getCurrentTanggungan().dokumen_perjanjian_pinjaman
                 "
@@ -86,7 +93,7 @@
       </div>
     </div>
 
-    <div class="flex justify-between gap-3 mt-6">
+    <div v-if="showFooterButtons" class="flex justify-between gap-3 mt-6">
       <rs-button
         type="button"
         variant="primary-outline"
@@ -101,7 +108,7 @@
           >Simpan</rs-button
         >
         <rs-button type="button" variant="primary" @click="$emit('next-step')"
-          >Pengesahan</rs-button
+          >Maklumat Pekerjaan</rs-button
         >
       </div>
     </div>
@@ -115,12 +122,26 @@ const props = defineProps({
     type: Function,
     required: true
   },
-  jenisPinjamanOptions: {
-    type: Array,
-    default: () => []
+  readOnly: {
+    type: Boolean,
+    default: false
+  },
+  showFooterButtons: {
+    type: Boolean,
+    default: true
   }
 })
 
 // Emits
 const emit = defineEmits(['next-step', 'prev-step', 'save-step'])
+
+// Local options: jenis pinjaman
+const jenisPinjamanOptions = [
+  { label: 'Pinjaman Rumah', value: 'Pinjaman Rumah' },
+  { label: 'Pinjaman Kereta', value: 'Pinjaman Kereta' },
+  { label: 'Pinjaman Peribadi', value: 'Pinjaman Peribadi' },
+  { label: 'Sewa Beli', value: 'Sewa Beli' },
+  { label: 'Pinjaman Pendidikan', value: 'Pinjaman Pendidikan' },
+  { label: 'Lain-lain', value: 'Lain-lain' }
+]
 </script>

@@ -62,67 +62,91 @@
                   </template>
 
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
+                    <div v-if="formData.nama">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                         >Nama</label
                       >
                       <p class="text-gray-900">{{ formData.nama }}</p>
                     </div>
-                    <div>
+                    <div v-if="formData.noPendaftaran">
+                      <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >No Pendaftaran</label
+                      >
+                      <p class="text-gray-900">{{ formData.noPendaftaran }}</p>
+                    </div>
+                    <div v-if="formData.struktur">
+                      <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Struktur</label
+                      >
+                      <p class="text-gray-900">{{ formData.struktur }}</p>
+                    </div>
+                    <div v-if="formData.alamat">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                       >Alamat</label
                     >
                       <p class="text-gray-900">{{ formData.alamat }}</p>
                     </div>
-                    <div>
+                    <div v-if="formData.kariah">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                         >Kariah</label
                       >
                       <p class="text-gray-900">{{ formData.kariah }}</p>
                   </div>
-                    <div>
+                    <div v-if="formData.daerah">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                         >Daerah</label
                       >
                       <p class="text-gray-900">{{ formData.daerah }}</p>
                     </div>
-                    <div>
+                    <div v-if="formData.jenisPengenalan">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                         >Jenis Pengenalan</label
                       >
                       <p class="text-gray-900">{{ formData.jenisPengenalan }}</p>
                   </div>
-                    <div>
+                    <div v-if="formData.noPengenalan">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                         >No Pengenalan</label
                       >
                       <p class="text-gray-900">{{ formData.noPengenalan }}</p>
                     </div>
-                    <div>
+                    <div v-if="formData.namaWakil">
+                      <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Nama Wakil</label
+                      >
+                      <p class="text-gray-900">{{ formData.namaWakil }}</p>
+                    </div>
+                    <div v-if="formData.noTelefon">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                         >No Telefon</label
                       >
                       <p class="text-gray-900">{{ formData.noTelefon }}</p>
                   </div>
-                    <div>
+                    <div v-if="formData.email">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                         >E-mel</label
                       >
                       <p class="text-gray-900">{{ formData.email }}</p>
                     </div>
-                    <div>
+                    <div v-if="formData.statusOrganisasi">
+                      <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Status Organisasi</label
+                      >
+                      <p class="text-gray-900">{{ formData.statusOrganisasi }}</p>
+                  </div>
+                    <div v-if="formData.statusKeluarga">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                         >Status Keluarga</label
                       >
                       <p class="text-gray-900">{{ formData.statusKeluarga }}</p>
                   </div>
-                    <div>
+                    <div v-if="formData.statusIndividu">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                       >Status Individu</label
                     >
                       <p class="text-gray-900">{{ formData.statusIndividu }}</p>
                     </div>
-                    <div>
+                    <div v-if="formData.statusMultidimensi">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                       >Status Multidimensi</label
                     >
@@ -307,7 +331,6 @@
       </div>
     </div>
     </div>
-
 
     <!-- Success Modal -->
     <rs-modal
@@ -536,6 +559,45 @@ const mockByNoRujukan = {
     statusPermohonanBaru: '',
     catatanUmumPegawai: 'Pemohon baru memeluk Islam 6 bulan yang lalu. Memerlukan bantuan sara hidup dan pendidikan agama.',
   },
+  'NAS-2025-0006': {
+    noRujukan: 'NAS-2025-0006',
+    nama: 'Mohd Kamal bin Mohd Luffy',
+    alamat: '60, Jalan Perdana 2/2, Seksyen 1, 40000 Shah Alam, Selangor',
+    kariah: 'Masjid Al-Ikhlas',
+    daerah: 'Kuala Selangor',
+    jenisPengenalan: 'MyKad',
+    noPengenalan: '990504082567',
+    noTelefon: '0156122314',
+    email: 'kamal@email.com',
+    statusKeluarga: 'Mualaf',
+    statusIndividu: 'Mualaf',
+    statusMultidimensi: 'Asnaf Mualaf',
+    status: 'Dalam Semakan',
+          senaraiBantuan: [
+            { id: 'B110', jenisBantuan: 'B110 - (HQ) BANTUAN HUTANG PERUBATAN (JPSK)', status: 'Dalam Semakan', sla: '3h', tindakan: '' },
+          ],
+    statusPermohonanBaru: '',
+    catatanUmumPegawai: 'Pemohon perlukan bantuan untuk membayar hutang perubatan.',
+  },
+  'NAS-2025-0007': {
+    noRujukan: 'NAS-2025-0007',
+    nama: 'Majlis Agama Islam Selangor (MAIS)',
+    alamat: 'Tingkat 9 & 10, Menara Utara Bangunan Sultan Idris Shah, 40000 Shah Alam, Selangor',
+    struktur:'HQ',
+    kariah: 'Masjid Bandar Utama',
+    daerah: 'Shah Alam',
+    noPendaftaran: '254900406XLRQPZSC186',
+    namaWakil: 'Muhammad Haziq bin Sujaini',
+    noTelefon: '03-55123458',
+    email: 'haziq@mais.gov.my', 
+    statusOrganisasi: 'Disahkan',
+    status: 'Dalam Semakan',
+          senaraiBantuan: [
+            { id: 'B134', jenisBantuan: 'B134 - BANTUAN PROGRAM PENERAPAN NILAI ISLAM', status: 'Dalam Semakan', sla: '3h', tindakan: '' },
+          ],
+    statusPermohonanBaru: '',
+    catatanUmumPegawai: 'Permohonan dari MAIS untuk program penerapan nilai Islam di sekolah-sekolah.',
+  },
 };
 
 // Flat reactive form state to be populated from mock
@@ -543,10 +605,14 @@ const formData = ref({
   noRujukan: '',
   nama: '',
   alamat: '',
+  struktur: '',
   kariah: '',
   daerah: '',
   jenisPengenalan: '',
   noPengenalan: '',
+  noPendaftaran: '',
+  statusorganisasi: '',
+  namaWakil: '',
   noTelefon: '',
   email: '',
   statusKeluarga: '',

@@ -478,7 +478,10 @@
                         <rs-button
                           variant="primary"
                           @click="editAssistance(value.actions)"
+                          :loading="editingAssistance"
+                          :disabled="editingAssistance"
                         >
+                          <Icon name="heroicons:pencil-square" class="w-4 h-4 mr-1" />
                           Edit
                         </rs-button>
                       </template>
@@ -1152,6 +1155,18 @@ const loadApplicantData = (applicantId) => {
       statusIndividu: "Fakir",
       statusMultidimensi: "Asnaf Tidak Produktif",
       status: "Dalam Siasatan",
+    },
+    "btn-004": {
+      nama: "Amirul Hakim bin Zainuddin",
+      alamat: "No. 321, Jalan Sejahtera, Taman Al-Taqwa, 45000 Kuala Selangor, Selangor",
+      jenisPengenalan: "MyKad",
+      noPengenalan: "791230104321",
+      noTelefon: "0187654321",
+      email: "amirul.hakim@gmail.com",
+      statusKeluarga: "Fakir",
+      statusIndividu: "Fakir",
+      statusMultidimensi: "Asnaf Tidak Produktif",
+      status: "Dalam Siasatan",
     }
   };
 
@@ -1184,6 +1199,14 @@ const loadInvestigationData = (applicantId) => {
       bilTanggungan: "1 Orang (Ibu)",
       statusTanggungan: "Tidak Bekerja, Bergantung kepada anak",
       catatanPenilianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
+    },
+    "btn-004": {
+      jenisPekerjaan: "Buruh Harian",
+      statusKediaman: "Rumah Sendiri",
+      jumlahBayaranRumah: "RM0",
+      bilTanggungan: "3 Orang (Isteri dan 2 Anak)",
+      statusTanggungan: "Isteri suri rumah, 2 anak bersekolah",
+      catatanPenilianAwal: "Pemohon Amirul Hakim bekerja sebagai buruh harian dengan pendapatan tidak tetap. Rumah dalam keadaan memerlukan pembaikan bumbung dan dinding yang retak. Keluarga memerlukan bantuan untuk pembaikan dan sara hidup harian.",
     }
   };
 
@@ -1257,6 +1280,7 @@ const showPreviewModal = ref(false);
 const previewingImage = ref(null);
 const processing = ref(false);
 const actionType = ref("");
+const editingAssistance = ref(false);
 const uploadProgress = ref([]);
 const fileInputRef = ref(null);
 
@@ -1532,6 +1556,16 @@ if (route.params.id === "btn-003") {
   });
 }
 
+// Tambah bantuan untuk Amirul Hakim bin Zainuddin (btn-004)
+if (route.params.id === "btn-004") {
+  assistanceApplications.value.push({
+    jenisBantuan: "B103 - (HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)",
+    status: "Perlu Diproses",
+    sla: "3 hari lagi",
+        actions: "/BF-BTN/tugasan/bantuan/kelulusan/Dialisis/B103",
+  });
+}
+
 const existingAssistance = ref([
   {
     jan: "Jan Sewaan/Ansuran Rumah (Fakir)",
@@ -1701,9 +1735,47 @@ const addNewAssistance = () => {
   // Handle adding new assistance
 };
 
-const editAssistance = (path) => {
-  if (path && typeof path === "string") {
-    navigateTo(path);
+const editAssistance = async (path) => {
+  console.log("Edit assistance clicked, path:", path);
+  
+  if (!path || typeof path !== "string") {
+    console.error("Invalid path provided for edit assistance");
+    // You could add a toast notification here
+    return;
+  }
+
+  // Set loading state
+  editingAssistance.value = true;
+
+  try {
+    console.log("Navigating to:", path);
+    
+    // Navigate to the edit page
+    await navigateTo(path);
+    
+    console.log("Navigation successful");
+  } catch (error) {
+    console.error("Navigation failed:", error);
+    
+    // Fallback: if the specific route doesn't exist, navigate to a general edit page
+    console.log("Attempting fallback navigation...");
+    
+    try {
+      // Extract the assistance type and create a fallback route
+      if (path.includes("/pendidikan/")) {
+        await navigateTo(`/BF-BTN/tugasan/bantuan/kelulusan/pendidikan/${route.params.id}`);
+      } else if (path.includes("/sewarumah/")) {
+        await navigateTo(`/BF-BTN/tugasan/bantuan/kelulusan/sewarumah/${route.params.id}`);
+      } else {
+        // Default fallback to the current page's edit mode
+        await navigateTo(`/BF-BTN/tugasan/bantuan/kelulusan/${route.params.id}`);
+      }
+    } catch (fallbackError) {
+      console.error("Fallback navigation also failed:", fallbackError);
+    }
+  } finally {
+    // Reset loading state
+    editingAssistance.value = false;
   }
 };
 

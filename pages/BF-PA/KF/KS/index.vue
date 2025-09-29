@@ -96,7 +96,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -143,7 +143,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -229,7 +229,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -268,7 +268,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -354,7 +354,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -407,7 +407,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -453,7 +453,7 @@
                     </rs-badge>
                   </template>
 
-                  <template v-slot:tarikhKuatkuasa="data">
+                  <template v-slot:tarikhPaparan="data">
                     <span v-if="data.text" class="text-sm text-gray-900">{{ data.text }}</span>
                     <span v-else class="text-sm text-gray-500 italic">Akan ditetapkan selepas kelulusan</span>
                   </template>
@@ -702,51 +702,51 @@ const tableKey = ref(0);
 const sessionsList = ref([
   {
     rujukan: "KS-2024-001",
-    kategoriPenolongAmil: "Penolong Amil Fitrah",
+    kategoriPenolongAmil: "Fitrah",
     namaSesi: "2021-2025",
     tarikhMula: "01-01-2025",
     tarikhTamat: "31-12-2025",
-    tarikhKuatkuasa: "01-01-2025",
+    tarikhPaparan: "01-01-2025",
     status: "Aktif",
     tindakan: 1
   },
   {
     rujukan: "KS-2024-002",
-    kategoriPenolongAmil: "Penolong Amil Padi",
+    kategoriPenolongAmil: "Padi",
     namaSesi: "2021-2025",
     tarikhMula: "01-01-2024",
     tarikhTamat: "31-12-2024",
-    tarikhKuatkuasa: "01-01-2024",
+    tarikhPaparan: "01-01-2024",
     status: "Aktif",
     tindakan: 2
   },
   {
     rujukan: "KS-2024-003",
-    kategoriPenolongAmil: "Penolong Amil Kariah",
+    kategoriPenolongAmil: "Kariah",
     namaSesi: "2021-2025",
     tarikhMula: "01-01-2023",
     tarikhTamat: "31-12-2023",
-    tarikhKuatkuasa: "01-01-2023",
+    tarikhPaparan: "01-01-2023",
     status: "Aktif",
     tindakan: 3
   },
   {
     rujukan: "KS-2024-004",
-    kategoriPenolongAmil: "Penolong Amil Komuniti",
+    kategoriPenolongAmil: "Komuniti",
     namaSesi: "2021-2025",
     tarikhMula: "01-01-2025",
     tarikhTamat: "31-12-2025",
-    tarikhKuatkuasa: "",
+    tarikhPaparan: "",
     status: "Menunggu Kelulusan",
     tindakan: 4
   },
   {
     rujukan: "KS-2024-005",
-    kategoriPenolongAmil: "Penolong Amil Kariah",
+    kategoriPenolongAmil: "Kariah",
     namaSesi: "2021-2025",
     tarikhMula: "01-01-2022",
     tarikhTamat: "31-12-2022",
-    tarikhKuatkuasa: "01-01-2022",
+    tarikhPaparan: "01-01-2022",
     status: "Tidak Aktif",
     tindakan: 5
   },
@@ -781,8 +781,8 @@ const tableColumns = [
     sortable: true,
   },
   {
-    key: 'tarikhKuatkuasa',
-    name: 'Tarikh Kuatkuasa',
+    key: 'tarikhPaparan',
+    name: 'Tarikh Paparan',
     sortable: true,
   },
   {
@@ -960,8 +960,8 @@ const getStatusVariant = (status) => {
   return variants[status] || 'disabled';
 };
 
-// Helper function to format tarikhKuatkuasa display
-const formatTarikhKuatkuasa = (date) => {
+// Helper function to format tarikhPaparan display
+const formattarikhPaparan = (date) => {
   if (!date || date === '') {
     return 'Belum ditetapkan';
   }
@@ -1061,7 +1061,7 @@ const performBulkApproval = async () => {
     }
     toApprove.forEach(session => {
       session.status = 'Aktif';
-      session.tarikhKuatkuasa = formattedDate;
+      session.tarikhPaparan = formattedDate;
     });
     
     toast.success(`${toApprove.length} sesi berjaya diluluskan secara beramai-ramai`);

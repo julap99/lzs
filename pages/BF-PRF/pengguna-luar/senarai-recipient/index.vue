@@ -151,7 +151,7 @@ const recipientList = ref([
     jenisRecipient: 'Individu',
     tarikhPermohonan: '23/7/2025',
     status: 'Menunggu Pengesahan',
-    statusNPS: 'Verified',
+    statusNPS: 'Telah Disahkan',
     tindakan: { id: 'RE-202507-0011', status: 'Menunggu Pengesahan' },
   },
   {
@@ -160,7 +160,7 @@ const recipientList = ref([
     jenisRecipient: 'Syarikat',
     tarikhPermohonan: '15/6/2025',
     status: 'Disahkan',
-    statusNPS: 'Verified',
+    statusNPS: 'Telah Disahkan',
     tindakan: { id: 'RE-202506-0012', status: 'Disahkan' },
   },
   {
@@ -169,7 +169,7 @@ const recipientList = ref([
     jenisRecipient: 'Individu',
     tarikhPermohonan: '8/5/2025',
     status: 'Tidak Sah',
-    statusNPS: 'Tidak Verified',
+    statusNPS: 'Belum Disahkan',
     tindakan: { id: 'RE-202505-0013', status: 'Tidak Sah' },
   },
   {
@@ -178,7 +178,7 @@ const recipientList = ref([
     jenisRecipient: 'Syarikat',
     tarikhPermohonan: '30/7/2025',
     status: 'Perlu Pembetulan',
-    statusNPS: 'Verified',
+    statusNPS: 'Telah Disahkan',
     tindakan: { id: 'RE-202507-0014', status: 'Perlu Pembetulan' },
   },
 ])
@@ -232,8 +232,8 @@ const getStatusVariant = (status) => {
 
 const getNPSStatusVariant = (status) => {
   const variants = {
-    'Verified': 'success',
-    'Tidak Verified': 'warning'
+    'Telah Disahkan': 'success',
+    'Belum Disahkan': 'warning'
   }
   return variants[status] || 'default'
 }

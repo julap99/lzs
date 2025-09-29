@@ -638,7 +638,7 @@ const paginationEndDitolak = computed(() => {
 // Methods
 const handleReview = (noBantuan) => {
   console.log("Review bantuan:", noBantuan);
-  navigateTo(`/BF-BTN/bantuan/${noBantuan}`);
+  navigateTo(`/BF-BTN/mohon-bantuan/${noBantuan}`);
 };
 
 const handleCancel = (noBantuan) => {

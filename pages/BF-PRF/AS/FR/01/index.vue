@@ -37,161 +37,186 @@
           <!-- Form Section -->
           <div class="mb-8">
             <FormKit type="form" :actions="false" @submit="handleSubmit">
-              <!-- Enhanced Search Fields -->
-              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                <!-- Name Field -->
-                <div>
-                  <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center">
-                      <Icon name="mdi:account" size="1.2rem" class="text-blue-600 mr-2" />
-                      <label class="text-sm font-medium text-gray-700">Nama</label>
+              <!-- Personal Information Section -->
+              <div class="mb-8">
+                <!-- <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                  <Icon name="mdi:account" size="1.5rem" class="text-blue-600 mr-2" />
+                  Maklumat Peribadi
+                </h3> -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <!-- Name Field -->
+                  <div>
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center">
+                        <Icon name="mdi:account" size="1.2rem" class="text-blue-600 mr-2" />
+                        <label class="text-sm font-medium text-gray-700">Nama</label>
+                      </div>
+                      <div v-if="validationErrors.searchName" class="text-xs text-red-500">
+                        {{ validationErrors.searchName }}
+                      </div>
                     </div>
-                    <div v-if="validationErrors.searchName" class="text-xs text-red-500">
-                      {{ validationErrors.searchName }}
-                    </div>
+                    <FormKit
+                      type="text"
+                      name="searchName"
+                      v-model="formData.searchName"
+                      placeholder="Masukkan nama (sebarang bahagian nama)"
+                      input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      @input="debouncedValidateField('searchName')"
+                    />
+                    <p class="mt-1 text-xs text-gray-500">Cari dengan nama pertama, nama bapa, atau nama penuh. Semua perkataan mesti ada dalam nama. Contoh: "nur . ahmad" untuk carian tepat atau "ahmad" untuk carian umum</p>
                   </div>
-                  <FormKit
-                    type="text"
-                    name="searchName"
-                    v-model="formData.searchName"
-                    placeholder="Masukkan nama (sebarang bahagian nama)"
-                    input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    @input="debouncedValidateField('searchName')"
-                  />
-                  <p class="mt-1 text-xs text-gray-500">Cari dengan nama pertama, nama bapa, atau nama penuh. Semua perkataan mesti ada dalam nama. Contoh: "nur . ahmad" untuk carian tepat atau "ahmad" untuk carian umum</p>
-                </div>
 
-                <!-- Kariah Field -->
-                <div>
-                  <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center">
-                      <Icon name="mdi:mosque" size="1.2rem" class="text-blue-600 mr-2" />
-                      <label class="text-sm font-medium text-gray-700">Kariah</label>
+                  <!-- Jenis Pengenalan ID Field -->
+                  <div>
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center">
+                        <Icon name="mdi:card-account-details" size="1.2rem" class="text-blue-600 mr-2" />
+                        <label class="text-sm font-medium text-gray-700">Jenis Pengenalan ID</label>
+                      </div>
+                      <div v-if="validationErrors.idType" class="text-xs text-red-500">
+                        {{ validationErrors.idType }}
+                      </div>
                     </div>
-                    <div v-if="validationErrors.searchKariah" class="text-xs text-red-500">
-                      {{ validationErrors.searchKariah }}
-                    </div>
+                    <FormKit
+                      type="select"
+                      name="idType"
+                      :options="idTypeOptions" 
+                      placeholder="Pilih jenis ID"
+                      v-model="formData.idType"
+                      input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      @change="validateField('idType')"
+                    />
                   </div>
-                  <FormKit
-                    type="select"
-                    name="searchKariah"
-                    :options="kariahOptions"
-                    placeholder="Pilih kariah"
-                    v-model="formData.searchKariah"
-                    input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    @change="validateField('searchKariah')"
-                  />
-                  <p class="mt-1 text-xs text-gray-500">Pilih kariah untuk menapis hasil carian mengikut lokasi</p>
-                </div>
 
-                <!-- Phone Field -->
-                <div>
-                  <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center">
-                      <Icon name="mdi:phone" size="1.2rem" class="text-blue-600 mr-2" />
-                      <label class="text-sm font-medium text-gray-700">No Telefon</label>
+                  <!-- Pengenalan ID Field (conditional) -->
+                  <div v-if="formData.idType">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center">
+                        <Icon name="mdi:numeric" size="1.2rem" class="text-blue-600 mr-2" />
+                        <label class="text-sm font-medium text-gray-700">Pengenalan ID</label>
+                      </div>
+                      <div v-if="validationErrors.idNumber" class="text-xs text-red-500">
+                        {{ validationErrors.idNumber }}
+                      </div>
                     </div>
-                    <div v-if="validationErrors.searchPhone" class="text-xs text-red-500">
-                      {{ validationErrors.searchPhone }}
-                    </div>
+                    <FormKit
+                      type="text"
+                      name="idNumber"
+                      v-model="formData.idNumber"
+                      :placeholder="getPlaceholder()"
+                      input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      @input="debouncedValidateField('idNumber')"
+                    />
                   </div>
-                  <FormKit
-                    type="text"
-                    name="searchPhone"
-                    v-model="formData.searchPhone"
-                    placeholder="Contoh: 0123456789"
-                    input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    @input="debouncedValidateField('searchPhone')"
-                  />
-                  <p class="mt-1 text-xs text-gray-500">Boleh masukkan sebahagian atau penuh nombor telefon</p>
                 </div>
-
-                <!-- Address Field -->
-                <div class>
-                  <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center">
-                      <Icon name="mdi:home-map-marker" size="1.2rem" class="text-blue-600 mr-2" />
-                      <label class="text-sm font-medium text-gray-700">Alamat</label>
-                    </div>
-                    <div v-if="validationErrors.searchAddress" class="text-xs text-red-500">
-                      {{ validationErrors.searchAddress }}
-                    </div>
-                  </div>
-                  <FormKit
-                    type="text"
-                    name="searchAddress"
-                    v-model="formData.searchAddress"
-                    placeholder="Masukkan alamat (sebahagian atau penuh)"
-                    input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    @input="debouncedValidateField('searchAddress')"
-                  />
-                  <p class="mt-1 text-xs text-gray-500">Padankan alamat separa dibenarkan</p>
-                </div>
-
-                <!-- Bank Account Field -->
-                <!-- <div>
-                  <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center">
-                      <Icon name="mdi:bank" size="1.2rem" class="text-blue-600 mr-2" />
-                      <label class="text-sm font-medium text-gray-700">Nombor Akaun Bank</label>
-                    </div>
-                    <div v-if="validationErrors.searchBankAccount" class="text-xs text-red-500">
-                      {{ validationErrors.searchBankAccount }}
-                    </div>
-                  </div>
-                  <FormKit
-                    type="text"
-                    name="searchBankAccount"
-                    v-model="formData.searchBankAccount"
-                    placeholder="Masukkan nombor akaun bank"
-                    input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    @input="debouncedValidateField('searchBankAccount')"
-                  />
-                  <p class="mt-1 text-xs text-gray-500">Cari dengan nombor akaun bank yang tepat (8-20 digit)</p>
-                </div> -->
               </div>
 
-              <!-- ID Type and ID Number Fields -->
-              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center">
-                      <Icon name="mdi:card-account-details" size="1.2rem" class="text-blue-600 mr-2" />
-                      <label class="text-sm font-medium text-gray-700">Jenis Pengenalan ID</label>
+              <!-- Location Information Section -->
+              <div class="mb-8">
+                <!-- <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                  <Icon name="mdi:map-marker" size="1.5rem" class="text-blue-600 mr-2" />
+                  Maklumat Lokasi
+                </h3> -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <!-- Daerah Field -->
+                  <div>
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center">
+                        <Icon name="mdi:map-marker" size="1.2rem" class="text-blue-600 mr-2" />
+                        <label class="text-sm font-medium text-gray-700">Daerah</label>
+                      </div>
+                      <div v-if="validationErrors.searchDaerah" class="text-xs text-red-500">
+                        {{ validationErrors.searchDaerah }}
+                      </div>
                     </div>
-                    <div v-if="validationErrors.idType" class="text-xs text-red-500">
-                      {{ validationErrors.idType }}
-                    </div>
+                    <FormKit
+                      type="select"
+                      name="searchDaerah"
+                      :options="daerahOptions"
+                      placeholder="Pilih daerah"
+                      v-model="formData.searchDaerah"
+                      input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      @change="handleDaerahChange"
+                    />
+                    <p class="mt-1 text-xs text-gray-500">Pilih daerah untuk menapis kariah yang tersedia</p>
                   </div>
-                  <FormKit
-                    type="select"
-                    name="idType"
-                    :options="idTypeOptions" 
-                    placeholder="Pilih jenis ID"
-                    v-model="formData.idType"
-                    input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    @change="validateField('idType')"
-                  />
-                </div>
 
-                <div v-if="formData.idType">
-                  <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center">
-                      <Icon name="mdi:numeric" size="1.2rem" class="text-blue-600 mr-2" />
-                      <label class="text-sm font-medium text-gray-700">Pengenalan ID</label>
+                  <!-- Kariah Field -->
+                  <div>
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center">
+                        <Icon name="mdi:mosque" size="1.2rem" class="text-blue-600 mr-2" />
+                        <label class="text-sm font-medium text-gray-700">Kariah</label>
+                      </div>
+                      <div v-if="validationErrors.searchKariah" class="text-xs text-red-500">
+                        {{ validationErrors.searchKariah }}
+                      </div>
                     </div>
-                    <div v-if="validationErrors.idNumber" class="text-xs text-red-500">
-                      {{ validationErrors.idNumber }}
-                    </div>
+                    <FormKit
+                      type="select"
+                      name="searchKariah"
+                      :options="filteredKariahOptions"
+                      placeholder="Pilih kariah"
+                      v-model="formData.searchKariah"
+                      input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      :disabled="!formData.searchDaerah"
+                      @change="validateField('searchKariah')"
+                    />
+                    <p class="mt-1 text-xs text-gray-500">Pilih kariah untuk menapis hasil carian mengikut lokasi</p>
                   </div>
-                  <FormKit
-                    type="text"
-                    name="idNumber"
-                    v-model="formData.idNumber"
-                    :placeholder="getPlaceholder()"
-                    input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    @input="debouncedValidateField('idNumber')"
-                  />
+                </div>
+              </div>
+
+              <!-- Contact Information Section -->
+              <div class="mb-8">
+                <!-- <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                  <Icon name="mdi:phone" size="1.5rem" class="text-blue-600 mr-2" />
+                  Maklumat Hubungan
+                </h3> -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <!-- Phone Field -->
+                  <div>
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center">
+                        <Icon name="mdi:phone" size="1.2rem" class="text-blue-600 mr-2" />
+                        <label class="text-sm font-medium text-gray-700">No Telefon</label>
+                      </div>
+                      <div v-if="validationErrors.searchPhone" class="text-xs text-red-500">
+                        {{ validationErrors.searchPhone }}
+                      </div>
+                    </div>
+                    <FormKit
+                      type="text"
+                      name="searchPhone"
+                      v-model="formData.searchPhone"
+                      placeholder="Contoh: 0123456789"
+                      input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      @input="debouncedValidateField('searchPhone')"
+                    />
+                    <p class="mt-1 text-xs text-gray-500">Boleh masukkan sebahagian atau penuh nombor telefon</p>
+                  </div>
+
+                  <!-- Address Field -->
+                  <div>
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center">
+                        <Icon name="mdi:home-map-marker" size="1.2rem" class="text-blue-600 mr-2" />
+                        <label class="text-sm font-medium text-gray-700">Alamat</label>
+                      </div>
+                      <div v-if="validationErrors.searchAddress" class="text-xs text-red-500">
+                        {{ validationErrors.searchAddress }}
+                      </div>
+                    </div>
+                    <FormKit
+                      type="text"
+                      name="searchAddress"
+                      v-model="formData.searchAddress"
+                      placeholder="Masukkan alamat (sebahagian atau penuh)"
+                      input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      @input="debouncedValidateField('searchAddress')"
+                    />
+                    <p class="mt-1 text-xs text-gray-500">Padankan alamat separa dibenarkan</p>
+                  </div>
                 </div>
               </div>
 
@@ -282,6 +307,9 @@
                       <span v-if="hasSearchCriteria" class="ml-2 text-xs">
                         untuk kriteria carian anda
                       </span>
+                      <span v-if="sortField" class="ml-2 text-xs text-blue-600">
+                        • Disusun mengikut: {{ getSortFieldLabel(sortField) }} ({{ sortDirection === 'asc' ? 'A-Z' : 'Z-A' }})
+                      </span>
                     </div>
                     <div class="flex items-center space-x-2">
                       <rs-button 
@@ -321,19 +349,74 @@
                     <thead class="bg-gray-50">
                       <tr>
                         <th class="w-1/6 px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Jenis Pengenalan ID
+                          <button 
+                            @click="handleSort('idType')"
+                            :class="[
+                              'flex items-center justify-center space-x-1 transition-colors',
+                              sortField.value === 'idType' 
+                                ? 'text-blue-600 hover:text-blue-700' 
+                                : 'hover:text-gray-700'
+                            ]"
+                          >
+                            <span>Jenis Pengenalan ID</span>
+                            <Icon :name="getSortIcon('idType')" size="1rem" />
+                          </button>
                         </th>
                         <th class="w-1/6 px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Pengenalan ID
+                          <button 
+                            @click="handleSort('id')"
+                            :class="[
+                              'flex items-center justify-center space-x-1 transition-colors',
+                              sortField.value === 'id' 
+                                ? 'text-blue-600 hover:text-blue-700' 
+                                : 'hover:text-gray-700'
+                            ]"
+                          >
+                            <span>Pengenalan ID</span>
+                            <Icon :name="getSortIcon('id')" size="1rem" />
+                          </button>
                         </th>
                         <th class="w-1/4 px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Nama
+                          <button 
+                            @click="handleSort('name')"
+                            :class="[
+                              'flex items-center justify-center space-x-1 transition-colors',
+                              sortField.value === 'name' 
+                                ? 'text-blue-600 hover:text-blue-700' 
+                                : 'hover:text-gray-700'
+                            ]"
+                          >
+                            <span>Nama</span>
+                            <Icon :name="getSortIcon('name')" size="1rem" />
+                          </button>
                         </th>
                         <th class="w-1/4 px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Kariah
+                          <button 
+                            @click="handleSort('kariah')"
+                            :class="[
+                              'flex items-center justify-center space-x-1 transition-colors',
+                              sortField.value === 'kariah' 
+                                ? 'text-blue-600 hover:text-blue-700' 
+                                : 'hover:text-gray-700'
+                            ]"
+                          >
+                            <span>Kariah</span>
+                            <Icon :name="getSortIcon('kariah')" size="1rem" />
+                          </button>
                         </th>
                         <th class="w-1/6 px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Kategori Asnaf
+                          <button 
+                            @click="handleSort('kategoriAsnaf')"
+                            :class="[
+                              'flex items-center justify-center space-x-1 transition-colors',
+                              sortField.value === 'kategoriAsnaf' 
+                                ? 'text-blue-600 hover:text-blue-700' 
+                                : 'hover:text-gray-700'
+                            ]"
+                          >
+                            <span>Kategori Asnaf</span>
+                            <Icon :name="getSortIcon('kategoriAsnaf')" size="1rem" />
+                          </button>
                         </th>
                         <th class="w-1/6 px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Tindakan
@@ -388,18 +471,8 @@
                 </div>
                 
                 <!-- Pagination Controls -->
-                <div v-if="searchResults.length > itemsPerPage" class="mt-6 flex items-center justify-between">
+                <div v-if="searchResults.length > 0" class="mt-6 flex items-center justify-between">
                   <div class="flex items-center space-x-2">
-                    <span class="text-sm text-gray-700">Tunjuk setiap halaman:</span>
-                    <select 
-                      v-model="itemsPerPage" 
-                      class="border border-gray-300 rounded px-2 py-1 text-sm"
-                      @change="currentPage = 1"
-                    >
-                      <option value="10">10</option>
-                      <option value="20">20</option>
-                      <option value="50">50</option>
-                    </select>
                     <span class="text-sm text-gray-500">
                       {{ paginationStart }}-{{ paginationEnd }} daripada {{ searchResults.length }}
                     </span>
@@ -471,6 +544,7 @@
                     <h5 class="text-sm font-medium text-blue-900 mb-2">Kriteria Carian:</h5>
                     <div class="text-sm text-blue-700 space-y-1">
                       <p v-if="formData.searchName">• Nama: "{{ formData.searchName }}"</p>
+                      <p v-if="formData.searchDaerah">• Daerah: "{{ daerahOptions.find(d => d.value === formData.searchDaerah)?.label }}"</p>
                       <p v-if="formData.searchKariah">• Kariah: "{{ formData.searchKariah }}"</p>
                       <p v-if="formData.searchAddress">• Alamat: "{{ formData.searchAddress }}"</p>
                       <p v-if="formData.searchBankAccount">• Akaun Bank: "{{ formData.searchBankAccount }}"</p>
@@ -533,17 +607,49 @@ const errorMessage = ref('');
 
 // Pagination
 const currentPage = ref(1);
-const itemsPerPage = ref(10);
-const totalPages = computed(() => Math.ceil(searchResults.value.length / itemsPerPage.value));
+const itemsPerPage = 10; // Fixed at 10 items per page
+const totalPages = computed(() => Math.ceil(searchResults.value.length / itemsPerPage));
+const paginationStart = computed(() => (currentPage.value - 1) * itemsPerPage + 1);
+const paginationEnd = computed(() => Math.min(currentPage.value * itemsPerPage, searchResults.value.length));
+
+// Sorting
+const sortField = ref('');
+const sortDirection = ref('asc'); // 'asc' or 'desc'
+
+// Computed property for sorted and paginated results
 const paginatedResults = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage.value;
-  const end = start + itemsPerPage.value;
-  return searchResults.value.slice(start, end);
+  let sortedResults = [...searchResults.value];
+  
+  // Apply sorting if sortField is set
+  if (sortField.value) {
+    sortedResults.sort((a, b) => {
+      let aValue = a[sortField.value];
+      let bValue = b[sortField.value];
+      
+      // Handle different data types
+      if (typeof aValue === 'string') {
+        aValue = aValue.toLowerCase();
+        bValue = bValue.toLowerCase();
+      }
+      
+      if (aValue < bValue) {
+        return sortDirection.value === 'asc' ? -1 : 1;
+      }
+      if (aValue > bValue) {
+        return sortDirection.value === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+  }
+  
+  // Apply pagination
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return sortedResults.slice(start, end);
 });
-const paginationStart = computed(() => (currentPage.value - 1) * itemsPerPage.value + 1);
-const paginationEnd = computed(() => Math.min(currentPage.value * itemsPerPage.value, searchResults.value.length));
 const validationErrors = ref({
   searchName: '',
+  searchDaerah: '',
   searchKariah: '',
   searchBankAccount: '',
   searchPhone: '',
@@ -576,7 +682,64 @@ const idTypeOptions = [
   { label: "Foreign ID", value: "foreignID" },
 ];
 
-// Kariah options for dropdown
+// Daerah options for Selangor
+const daerahOptions = [
+  { label: "Gombak", value: "gombak" },
+  { label: "Hulu Langat", value: "hulu_langat" },
+  { label: "Hulu Selangor", value: "hulu_selangor" },
+  { label: "Klang", value: "klang" },
+  { label: "Kuala Langat", value: "kuala_langat" },
+  { label: "Kuala Selangor", value: "kuala_selangor" },
+  { label: "Petaling", value: "petaling" },
+  { label: "Sabak Bernam", value: "sabak_bernam" },
+  { label: "Sepang", value: "sepang" },
+];
+
+// Kariah options organized by daerah
+const kariahByDaerah = {
+  gombak: [
+    { label: "Kariah Masjid Al-Hidayah", value: "Kariah Masjid Al-Hidayah" },
+    { label: "Kariah Masjid Al-Ikhlas", value: "Kariah Masjid Al-Ikhlas" },
+    { label: "Taman Seri Gombak", value: "Taman Seri Gombak" },
+    { label: "Masjid Bandar Utama", value: "Masjid Bandar Utama" },
+  ],
+  hulu_langat: [
+    { label: "Masjid Al-Amin Bangi", value: "Masjid Al-Amin Bangi" },
+    { label: "Kariah Masjid Al-Muttaqin", value: "Kariah Masjid Al-Muttaqin" },
+    { label: "Kariah Masjid Al-Rahman", value: "Kariah Masjid Al-Rahman" },
+  ],
+  hulu_selangor: [
+    { label: "Batang Kali", value: "Batang Kali" },
+    { label: "Kariah Masjid Al-Salam", value: "Kariah Masjid Al-Salam" },
+  ],
+  klang: [
+    { label: "Kariah Masjid Al-Taqwa", value: "Kariah Masjid Al-Taqwa" },
+    { label: "Kariah Masjid An-Nur", value: "Kariah Masjid An-Nur" },
+    { label: "Masjid Al-Khairiyah", value: "Masjid Al-Khairiyah" },
+  ],
+  kuala_langat: [
+    { label: "Kariah Masjid Ar-Rahman", value: "Kariah Masjid Ar-Rahman" },
+    { label: "Kariah Masjid As-Salam", value: "Kariah Masjid As-Salam" },
+  ],
+  kuala_selangor: [
+    { label: "Kariah Masjid At-Taqwa", value: "Kariah Masjid At-Taqwa" },
+  ],
+  petaling: [
+    { label: "Masjid Negeri", value: "Masjid Negeri" },
+    { label: "Masjid Sultan Salahuddin Abdul Aziz Shah", value: "Masjid Sultan Salahuddin Abdul Aziz Shah" },
+    { label: "Masjid Al-Azim Pandan Indah", value: "Masjid Al-Azim Pandan Indah" },
+    { label: "Masjid Wilayah Persekutuan", value: "Masjid Wilayah Persekutuan" },
+    { label: "Masjid Damansara Perdana", value: "Masjid Damansara Perdana" },
+  ],
+  sabak_bernam: [
+    { label: "Kariah Masjid Al-Hidayah", value: "Kariah Masjid Al-Hidayah" },
+  ],
+  sepang: [
+    { label: "Kariah Masjid Al-Ikhlas", value: "Kariah Masjid Al-Ikhlas" },
+  ],
+};
+
+// All kariah options for dropdown (fallback)
 const kariahOptions = [
   { label: "Kariah Masjid Al-Hidayah", value: "Kariah Masjid Al-Hidayah" },
   { label: "Kariah Masjid Al-Ikhlas", value: "Kariah Masjid Al-Ikhlas" },
@@ -602,6 +765,7 @@ const kariahOptions = [
 
 const formData = ref({
   searchName: "",
+  searchDaerah: "",
   searchKariah: "",
   searchBankAccount: "",
   searchPhone: "",
@@ -616,6 +780,7 @@ const mockDatabase = [
     id: '123456789', 
     idType: 'myKad',
     name: 'Ali bin Abu', 
+    daerah: 'gombak',
     kariah: 'Kariah Masjid Al-Hidayah', 
     bankAccount: '001122334455', 
     kategoriAsnaf: 'Fakir',
@@ -627,6 +792,7 @@ const mockDatabase = [
     id: '987654321', 
     idType: 'myKad',
     name: 'Fatimah binti Ahmad', 
+    daerah: 'gombak',
     kariah: 'Kariah Masjid Al-Ikhlas', 
     bankAccount: '005566778899', 
     kategoriAsnaf: 'Miskin',
@@ -638,6 +804,7 @@ const mockDatabase = [
     id: '555666777', 
     idType: 'myKad',
     name: 'Ahmad bin Hassan', 
+    daerah: 'hulu_langat',
     kariah: 'Kariah Masjid Al-Muttaqin', 
     bankAccount: '009988776655', 
     kategoriAsnaf: 'Fakir',
@@ -649,6 +816,7 @@ const mockDatabase = [
     id: '111222333', 
     idType: 'myKad',
     name: 'Siti binti Omar', 
+    daerah: 'hulu_langat',
     kariah: 'Kariah Masjid Al-Rahman', 
     bankAccount: '004433221100', 
     kategoriAsnaf: 'Mualaf',
@@ -660,6 +828,7 @@ const mockDatabase = [
     id: '888999000', 
     idType: 'myKad',
     name: 'Mohammad bin Ismail', 
+    daerah: 'hulu_selangor',
     kariah: 'Kariah Masjid Al-Salam', 
     bankAccount: '007788990011', 
     kategoriAsnaf: 'Fakir',
@@ -671,6 +840,7 @@ const mockDatabase = [
     id: '444555666', 
     idType: 'myKad',
     name: 'Aminah binti Zulkifli', 
+    daerah: 'klang',
     kariah: 'Kariah Masjid Al-Taqwa', 
     bankAccount: '002233445566', 
     kategoriAsnaf: 'Miskin',
@@ -682,6 +852,7 @@ const mockDatabase = [
     id: '777888999', 
     idType: 'myKad',
     name: 'Hassan bin Abdullah', 
+    daerah: 'klang',
     kariah: 'Kariah Masjid An-Nur', 
     bankAccount: '006677889900', 
     kategoriAsnaf: 'Fakir',
@@ -693,6 +864,7 @@ const mockDatabase = [
     id: '222333444', 
     idType: 'myKad',
     name: 'Noraini binti Kamal', 
+    daerah: 'kuala_langat',
     kariah: 'Kariah Masjid Ar-Rahman', 
     bankAccount: '008899001122', 
     kategoriAsnaf: 'Mualaf',
@@ -704,6 +876,7 @@ const mockDatabase = [
     id: '666777888', 
     idType: 'myKad',
     name: 'Ismail bin Rahman', 
+    daerah: 'kuala_langat',
     kariah: 'Kariah Masjid As-Salam', 
     bankAccount: '003344556677', 
     kategoriAsnaf: 'Miskin',
@@ -715,6 +888,7 @@ const mockDatabase = [
     id: '333444555', 
     idType: 'myKad',
     name: 'Zainab binti Yusof', 
+    daerah: 'kuala_selangor',
     kariah: 'Kariah Masjid At-Taqwa', 
     bankAccount: '004455667788', 
     kategoriAsnaf: 'Fakir',
@@ -733,155 +907,13 @@ const mockDatabase = [
     email: 'abdul.rahman@email.com',
     registrationDate: '20/10/2023'
   },
-  { 
-    id: '555666777', 
-    idType: 'myKad',
-    name: 'Mariam binti Khalid', 
-    kariah: 'Masjid Sultan Salahuddin Abdul Aziz Shah', 
-    bankAccount: '005566778899', 
-    kategoriAsnaf: 'Mualaf',
-    phone: '011-1234567',
-    email: 'mariam.khalid@email.com',
-    registrationDate: '03/12/2023'
-  },
-  { 
-    id: '111222333', 
-    idType: 'myKad',
-    name: 'Khalid bin Omar', 
-    kariah: 'Masjid Al-Azim Pandan Indah', 
-    bankAccount: '009988776655', 
-    kategoriAsnaf: 'Fakir',
-    phone: '012-2345678',
-    email: 'khalid.omar@email.com',
-    registrationDate: '17/01/2024'
-  },
-  { 
-    id: '777888999', 
-    idType: 'myKad',
-    name: 'Salma binti Ibrahim', 
-    kariah: 'Masjid Al-Amin Bangi', 
-    bankAccount: '004433221100', 
-    kategoriAsnaf: 'Miskin',
-    phone: '013-3456789',
-    email: 'salma.ibrahim@email.com',
-    registrationDate: '28/02/2024'
-  },
-  { 
-    id: '444555666', 
-    idType: 'myKad',
-    name: 'Ibrahim bin Ahmad', 
-    kariah: 'Masjid Wilayah Persekutuan', 
-    bankAccount: '007788990011', 
-    kategoriAsnaf: 'Fakir',
-    phone: '014-4567890',
-    email: 'ibrahim.ahmad@email.com',
-    registrationDate: '10/03/2024'
-  },
-  { 
-    id: '222333444', 
-    idType: 'myKad',
-    name: 'Nurul Ain binti Zainal', 
-    kariah: 'Masjid Al-Khairiyah', 
-    bankAccount: '002233445566', 
-    kategoriAsnaf: 'Mualaf',
-    phone: '015-5678901',
-    email: 'nurul.ain@email.com',
-    registrationDate: '22/03/2024'
-  },
-  { 
-    id: '888999000', 
-    idType: 'myKad',
-    name: 'Zainal bin Mohamed', 
-    kariah: 'Taman Seri Gombak', 
-    bankAccount: '006677889900', 
-    kategoriAsnaf: 'Miskin',
-    phone: '016-6789012',
-    email: 'zainal.mohamed@email.com',
-    registrationDate: '05/04/2024'
-  },
-  { 
-    id: '666777888', 
-    idType: 'myKad',
-    name: 'Rohana binti Sulaiman', 
-    kariah: 'Masjid Damansara Perdana', 
-    bankAccount: '008899001122', 
-    kategoriAsnaf: 'Fakir',
-    phone: '017-7890123',
-    email: 'rohana.sulaiman@email.com',
-    registrationDate: '18/04/2024'
-  },
-  { 
-    id: '333444555', 
-    idType: 'myKad',
-    name: 'Sulaiman bin Hashim', 
-    kariah: 'Masjid Bandar Utama', 
-    bankAccount: '003344556677', 
-    kategoriAsnaf: 'Miskin',
-    phone: '018-8901234',
-    email: 'sulaiman.hashim@email.com',
-    registrationDate: '30/04/2024'
-  },
-  { 
-    id: '999000111', 
-    idType: 'myKad',
-    name: 'Haslina binti Aziz', 
-    kariah: 'Batang Kali', 
-    bankAccount: '004455667788', 
-    kategoriAsnaf: 'Mualaf',
-    phone: '019-9012345',
-    email: 'haslina.aziz@email.com',
-    registrationDate: '12/05/2024'
-  },
-  { 
-    id: '777888999', 
-    idType: 'myKad',
-    name: 'Nur Elezza Ainna Ahmad', 
-    kariah: 'Kariah Masjid Al-Hidayah', 
-    bankAccount: '112233445566', 
-    kategoriAsnaf: 'Fakir',
-    phone: '010-1234567',
-    email: 'nur.elezza@email.com',
-    registrationDate: '15/06/2024'
-  },
-  { 
-    id: '888999000', 
-    idType: 'myKad',
-    name: 'Nur Elezza Binti Mohammad Ahmad', 
-    kariah: 'Kariah Masjid Al-Ikhlas', 
-    bankAccount: '223344556677', 
-    kategoriAsnaf: 'Miskin',
-    phone: '011-2345678',
-    email: 'nur.elezza.mohammad@email.com',
-    registrationDate: '20/06/2024'
-  },
-  { 
-    id: '666777888', 
-    idType: 'myKad',
-    name: 'Mohammad Harun Bin Ali Hassan', 
-    kariah: 'Kariah Masjid Al-Muttaqin', 
-    bankAccount: '334455667788', 
-    kategoriAsnaf: 'Fakir',
-    phone: '012-3456789',
-    email: 'mohammad.harun@email.com',
-    registrationDate: '25/06/2024'
-  },
-  { 
-    id: '555666777', 
-    idType: 'myKad',
-    name: 'Aminah Binti Omar Bin Khalid', 
-    kariah: 'Kariah Masjid Al-Rahman', 
-    bankAccount: '445566778899', 
-    kategoriAsnaf: 'Mualaf',
-    phone: '013-4567890',
-    email: 'aminah.omar@email.com',
-    registrationDate: '30/06/2024'
-  }
 ];
 
 // Computed property for form validation
 const isFormValid = computed(() => {
   // Allow search if at least one field is filled
   const hasSearchName = formData.value.searchName.trim() !== '';
+  const hasSearchDaerah = formData.value.searchDaerah !== '';
   const hasSearchKariah = formData.value.searchKariah !== '';
   const hasSearchBankAccount = formData.value.searchBankAccount.trim() !== '';
   const hasSearchPhone = formData.value.searchPhone.trim() !== '';
@@ -890,7 +922,7 @@ const isFormValid = computed(() => {
   const hasIdNumber = formData.value.idNumber.trim() !== '';
   
   // At least one field must be filled
-  const hasAtLeastOneField = hasSearchName || hasSearchKariah || hasSearchBankAccount || hasSearchPhone || hasSearchAddress || hasIdType || hasIdNumber;
+  const hasAtLeastOneField = hasSearchName || hasSearchDaerah || hasSearchKariah || hasSearchBankAccount || hasSearchPhone || hasSearchAddress || hasIdType || hasIdNumber;
   
   // Check for critical validation errors (only if they are non-empty strings)
   const hasCriticalErrors = (validationErrors.value.searchName && validationErrors.value.searchName.trim() !== '') || 
@@ -911,6 +943,14 @@ const getPlaceholder = () => {
     default:
       return "Sila pilih jenis ID dahulu";
   }
+};
+
+// Handler for daerah changes
+const handleDaerahChange = () => {
+  // Clear kariah selection when daerah changes
+  formData.value.searchKariah = "";
+  validationErrors.value.searchKariah = '';
+  validationErrors.value.searchDaerah = '';
 };
 
 const getSelectedIdTypeLabel = (idType) => {
@@ -947,6 +987,7 @@ const getIdTypeIcon = (idType) => {
 // Computed properties for search feedback
 const hasSearchCriteria = computed(() => {
   return formData.value.searchName.trim() !== '' ||
+         formData.value.searchDaerah !== '' ||
          formData.value.searchKariah !== '' ||
          formData.value.searchBankAccount.trim() !== '' ||
          formData.value.searchPhone.trim() !== '' ||
@@ -957,12 +998,21 @@ const hasSearchCriteria = computed(() => {
 const searchCriteriaText = computed(() => {
   const criteria = [];
   if (formData.value.searchName.trim()) criteria.push(`Nama: "${formData.value.searchName}"`);
+  if (formData.value.searchDaerah) criteria.push(`Daerah: "${daerahOptions.find(d => d.value === formData.value.searchDaerah)?.label}"`);
   if (formData.value.searchKariah) criteria.push(`Kariah: "${formData.value.searchKariah}"`);
   if (formData.value.searchBankAccount.trim()) criteria.push(`Akaun Bank: "${formData.value.searchBankAccount}"`);
   if (formData.value.searchPhone.trim()) criteria.push(`Telefon: "${formData.value.searchPhone}"`);
   if (formData.value.searchAddress.trim()) criteria.push(`Alamat: "${formData.value.searchAddress}"`);
   if (formData.value.idNumber.trim()) criteria.push(`ID: "${formData.value.idNumber}"`);
   return criteria.join(', ');
+});
+
+// Computed property for filtered kariah options based on selected daerah
+const filteredKariahOptions = computed(() => {
+  if (!formData.value.searchDaerah) {
+    return [];
+  }
+  return kariahByDaerah[formData.value.searchDaerah] || [];
 });
 
 // Pagination helper function
@@ -978,6 +1028,40 @@ const getVisiblePages = () => {
   return pages;
 };
 
+// Sorting function
+const handleSort = (field) => {
+  if (sortField.value === field) {
+    // Toggle direction if same field
+    sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
+  } else {
+    // New field, default to ascending
+    sortField.value = field;
+    sortDirection.value = 'asc';
+  }
+  // Reset to first page when sorting
+  currentPage.value = 1;
+};
+
+// Get sort icon for table headers
+const getSortIcon = (field) => {
+  if (sortField.value !== field) {
+    return 'mdi:unfold-more-horizontal';
+  }
+  return sortDirection.value === 'asc' ? 'mdi:chevron-up' : 'mdi:chevron-down';
+};
+
+// Get sort field label for display
+const getSortFieldLabel = (field) => {
+  const labels = {
+    'idType': 'Jenis Pengenalan ID',
+    'id': 'Pengenalan ID',
+    'name': 'Nama',
+    'kariah': 'Kariah',
+    'kategoriAsnaf': 'Kategori Asnaf'
+  };
+  return labels[field] || field;
+};
+
 // Real-time validation
 const validateField = (fieldName) => {
   const value = formData.value[fieldName];
@@ -991,6 +1075,10 @@ const validateField = (fieldName) => {
       } else {
         validationErrors.value.searchName = '';
       }
+      break;
+      
+    case 'searchDaerah':
+      validationErrors.value.searchDaerah = '';
       break;
       
     case 'searchKariah':
@@ -1077,6 +1165,7 @@ const debouncedValidateField = (fieldName) => {
 
 const resetForm = () => {
   formData.value.searchName = "";
+  formData.value.searchDaerah = "";
   formData.value.searchKariah = "";
   formData.value.searchBankAccount = "";
   formData.value.searchPhone = "";
@@ -1088,8 +1177,11 @@ const resetForm = () => {
   searchCompleted.value = false;
   errorMessage.value = "";
   currentPage.value = 1; // Reset pagination
+  sortField.value = ''; // Reset sorting
+  sortDirection.value = 'asc'; // Reset sorting direction
   validationErrors.value = {
     searchName: '',
+    searchDaerah: '',
     searchKariah: '',
     searchBankAccount: '',
     searchPhone: '',
@@ -1104,6 +1196,7 @@ const validateAndSearch = () => {
   
   // Validate all fields
   validateField('searchName');
+  validateField('searchDaerah');
   validateField('searchKariah');
   validateField('searchBankAccount');
   validateField('searchPhone');
@@ -1113,6 +1206,7 @@ const validateAndSearch = () => {
   
   // Check if at least one field is filled
   const hasSearchName = formData.value.searchName.trim() !== '';
+  const hasSearchDaerah = formData.value.searchDaerah !== '';
   const hasSearchKariah = formData.value.searchKariah !== '';
   const hasSearchBankAccount = formData.value.searchBankAccount.trim() !== '';
   const hasSearchPhone = formData.value.searchPhone.trim() !== '';
@@ -1121,7 +1215,7 @@ const validateAndSearch = () => {
   const hasIdType = formData.value.idType !== '';
   
   // At least one field must be filled
-  if (!hasSearchName && !hasSearchKariah && !hasSearchBankAccount && !hasSearchPhone && !hasSearchAddress && !hasIdNumber && !hasIdType) {
+  if (!hasSearchName && !hasSearchDaerah && !hasSearchKariah && !hasSearchBankAccount && !hasSearchPhone && !hasSearchAddress && !hasIdNumber && !hasIdType) {
     errorMessage.value = 'Sila isi sekurang-kurangnya satu maklumat untuk carian';
     return;
   }
@@ -1148,6 +1242,8 @@ const performFlexibleSearch = async () => {
   searchResults.value = [];
   selectedProfile.value = null;
   currentPage.value = 1; // Reset to first page on new search
+  sortField.value = ''; // Reset sorting on new search
+  sortDirection.value = 'asc'; // Reset sorting direction on new search
 
   // Simulate API call delay
   setTimeout(() => {
@@ -1157,6 +1253,7 @@ const performFlexibleSearch = async () => {
     };
     
     const searchName = sanitizeInput(formData.value.searchName).toLowerCase();
+    const searchDaerah = formData.value.searchDaerah;
     const searchKariah = formData.value.searchKariah;
     const searchBankAccount = sanitizeInput(formData.value.searchBankAccount);
     const searchPhone = sanitizeInput(formData.value.searchPhone).toLowerCase();
@@ -1198,6 +1295,12 @@ const performFlexibleSearch = async () => {
         }
         
         match = match && nameMatch;
+      }
+      
+      // Check daerah (exact match)
+      if (searchDaerah) {
+        const daerahMatch = profile.daerah === searchDaerah;
+        match = match && daerahMatch;
       }
       
       // Check kariah (exact match)
