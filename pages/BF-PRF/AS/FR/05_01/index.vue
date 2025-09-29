@@ -10,7 +10,7 @@
         <div class="bg-white rounded-lg shadow-md p-6">
           <h3 class="text-lg font-semibold mb-2">Had Kifayah</h3>
           <div class="mb-2">
-            Baki Pendapatan: <span class="font-bold">RM-968</span>
+            Jurang Had Kifayah: <span class="font-bold">RM-968</span>
           </div>
           <div class="mb-2">
             Peratusan Perbezaan: <span class="font-bold">50.81%</span>
