@@ -14,7 +14,7 @@
         <div class="mb-6">
           <h3 class="text-lg font-medium mb-4">Maklumat Carian</h3>
           <FormKit type="form" :actions="false" @submit="handleSubmit">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormKit
                 type="select"
                 name="jenisRecipient"
@@ -34,6 +34,19 @@
                 placeholder="Pilih jenis pengenalan"
                 v-model="formData.jenisPengenalan"
                 :validation-messages="{ required: 'Jenis Pengenalan adalah wajib' }"
+                :disabled="!formData.jenisRecipient"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              <FormKit
+                type="text"
+                name="namaSyarikatIndividu"
+                :label="formData.jenisRecipient === 'individu' ? 'Nama Individu' : 'Nama Syarikat'"
+                validation="required"
+                v-model="formData.namaSyarikatIndividu"
+                :placeholder="formData.jenisRecipient === 'individu' ? 'Masukkan nama individu' : 'Masukkan nama syarikat'"
+                :validation-messages="{ required: formData.jenisRecipient === 'individu' ? 'Nama Individu adalah wajib' : 'Nama Syarikat adalah wajib' }"
                 :disabled="!formData.jenisRecipient"
               />
               <FormKit
@@ -178,6 +191,7 @@ const jenisRecipientOptions = [
 const formData = ref({ 
   jenisRecipient: "", 
   jenisPengenalan: "", 
+  namaSyarikatIndividu: "",
   noPengenalan: "" 
 });
 
@@ -287,13 +301,14 @@ const getNPSStatusVariant = (status) => {
 const resetForm = () => {
   formData.value.jenisRecipient = "";
   formData.value.jenisPengenalan = "";
+  formData.value.namaSyarikatIndividu = "";
   formData.value.noPengenalan = "";
   searchCompleted.value = false;
   searchResults.value = [];
 };
 
 const validateAndSearch = () => {
-  if (!formData.value.jenisRecipient || !formData.value.jenisPengenalan || !formData.value.noPengenalan) return;
+  if (!formData.value.jenisRecipient || !formData.value.jenisPengenalan || !formData.value.namaSyarikatIndividu || !formData.value.noPengenalan) return;
   performSearch();
 };
 
@@ -347,6 +362,7 @@ watch(
   () => formData.value.jenisRecipient,
   () => { 
     formData.value.jenisPengenalan = "";
+    formData.value.namaSyarikatIndividu = "";
     formData.value.noPengenalan = "";
     searchCompleted.value = false;
     searchResults.value = [];
