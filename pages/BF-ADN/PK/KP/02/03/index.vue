@@ -1,7 +1,12 @@
 <template>
   <div>
-    <!-- Breadcrumb -->
-    <LayoutsBreadcrumb :items="breadcrumb" />
+    <!-- Breadcrumb + Kembali -->
+    <div class="flex justify-between items-center mb-6">
+      <LayoutsBreadcrumb :items="breadcrumb" />
+      <NuxtLink to="/BF-ADN/PK/KP/02/01">
+        <rs-button variant="secondary" size="sm">Kembali</rs-button>
+      </NuxtLink>
+    </div>
 
     <!-- Title -->
     <h2 class="text-xl font-bold mb-6">Butiran Kelulusan Konfigurasi Penutupan Aduan</h2>

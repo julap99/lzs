@@ -8,70 +8,59 @@
       Senarai Permohonan Kelulusan Konfigurasi Penutupan Aduan
     </h2>
 
-    <!-- Table -->
-    <div class="overflow-x-auto">
-      <table class="w-full border border-gray-300 rounded-lg overflow-hidden">
-        <thead>
-          <tr class="bg-gray-900 text-white text-left">
-            <th class="px-4 py-2">No</th>
-            <th class="px-4 py-2">Sebab Penutupan</th>
-            <th class="px-4 py-2">Status</th>
-            <th class="px-4 py-2">Tarikh Permohonan</th>
-            <th class="px-4 py-2">Dimohon Oleh</th>
-            <th class="px-4 py-2">Status Semasa</th>
-            <th class="px-4 py-2">Tindakan</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(permohonan, index) in permohonanList"
-            :key="index"
-            class="hover:bg-gray-50"
-          >
-            <td class="px-4 py-2 border">{{ index + 1 }}</td>
-            <td class="px-4 py-2 border">{{ permohonan.sebab }}</td>
-            <td class="px-4 py-2 border">
-              <span
-                v-if="permohonan.status === 'Aktif'"
-                class="bg-green-600 text-white text-xs px-2 py-1 rounded"
-              >
-                Aktif
-              </span>
-              <span
-                v-else
-                class="bg-red-600 text-white text-xs px-2 py-1 rounded"
-              >
-                Tidak Aktif
-              </span>
-            </td>
-            <td class="px-4 py-2 border">{{ permohonan.tarikh }}</td>
-            <td class="px-4 py-2 border">{{ permohonan.dimohonOleh }}</td>
-            <td class="px-4 py-2 border">
-              <span class="bg-yellow-500 text-white text-xs px-2 py-1 rounded">
-                {{ permohonan.statusSemasa }}
-              </span>
-            </td>
-            <td class="px-4 py-2 border space-x-2">
-              <!-- Semakan & Kelulusan -->
-              <NuxtLink
-                to="/BF-ADN/PK/KP/02/02"
-                class="bg-green-600 hover:bg-green-700 text-white text-sm px-3 py-1 rounded"
-              >
-                Semakan & Kelulusan
+    <rs-card>
+      <template #body>
+        <rs-table
+          class="mt-4"
+          :data="permohonanList"
+          :pageSize="5"
+          :showNoColumn="true"
+          :options="{ variant: 'default', hover: true, bordered: true, striped: true }"
+        >
+          <!-- Dark header row -->
+          <template #head="{ column }">
+            <span class="bg-gray-900 text-white px-3 py-2 block uppercase font-bold text-sm">
+              {{ column.label }}
+            </span>
+          </template>
+
+          <!-- Status badge -->
+          <template #status="cell">
+            <div class="flex justify-center">
+              <rs-badge :variant="cell.text === 'Aktif' ? 'success' : 'danger'" size="sm">
+                {{ cell.text }}
+              </rs-badge>
+            </div>
+          </template>
+
+          <!-- Status Semasa badge -->
+          <template #statusSemasa="cell">
+            <div class="flex justify-center">
+              <rs-badge variant="warning" size="sm">
+                {{ cell.text }}
+              </rs-badge>
+            </div>
+          </template>
+
+          <!-- Tindakan buttons (always shown like your screenshot) -->
+          <template #tindakan="slot">
+            <div class="flex justify-center space-x-2">
+              <NuxtLink to="/BF-ADN/PK/KP/02/02">
+                <rs-button variant="success" size="sm" class="!px-3 !py-1">
+                  Semakan & Kelulusan
+                </rs-button>
               </NuxtLink>
 
-              <!-- Lihat -->
-              <NuxtLink
-                to="/BF-ADN/PK/KP/02/03"
-                class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded"
-              >
-                Lihat
+              <NuxtLink to="/BF-ADN/PK/KP/02/03">
+                <rs-button variant="primary" size="sm" class="!px-3 !py-1">
+                  Lihat
+                </rs-button>
               </NuxtLink>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+            </div>
+          </template>
+        </rs-table>
+      </template>
+    </rs-card>
   </div>
 </template>
 
@@ -92,6 +81,7 @@ const breadcrumb = ref([
   },
 ]);
 
+// Ensure each row has 'tindakan' so rs-table renders the column and the slot above runs
 const permohonanList = ref([
   {
     sebab: "Siasatan Tamat",
@@ -99,6 +89,7 @@ const permohonanList = ref([
     tarikh: "2025-09-18",
     dimohonOleh: "Eksekutif_A",
     statusSemasa: "Menunggu Kelulusan",
+    tindakan: true,
   },
   {
     sebab: "Luar Skop Zakat",
@@ -106,6 +97,7 @@ const permohonanList = ref([
     tarikh: "2025-09-17",
     dimohonOleh: "Eksekutif_B",
     statusSemasa: "Menunggu Kelulusan",
+    tindakan: true,
   },
 ]);
 </script>

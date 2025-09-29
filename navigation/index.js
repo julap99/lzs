@@ -415,20 +415,20 @@ export default [
             ]
           },
 	        {
-            title: "Senarai SLA",
+            title: "Senarai Kelulusan",
             icon: "iconamoon:file-document",
             path: "/BF-ADN/PK",
             child: [
+                
+                  {
+                title: "Senarai SLA",
+                icon: "iconamoon:file-document",
+                path: "/BF-ADN/PK/KS/01/01",
+                }, 
                 {
                 title: "Senarai Permohonan Kelulusan SLA",
                 icon: "iconamoon:file-document",
                 path: "/BF-ADN/PK/KS/02/01",
-                },
-                {
-                  title: "Butiran Permohonan Kelulusan SLA",
-                  icon: "iconamoon:file-document",
-                  path: "/BF-ADN/PK/KS/02/03",
-                
                 },            
           ],
           },
@@ -441,12 +441,7 @@ export default [
                 title: "Senarai Konfigurasi Penutupan Aduan",
                 icon: "iconamoon:file-document",
                 path: "/BF-ADN/PK/KP/01/01", 
-            },
-            {
-              title: "Butiran Konfigurasi Penutupan Aduan",
-              icon: "iconamoon:file-document",
-              path: "/BF-ADN/PK/KP/01/03",
-            },
+            },         
             {
             title: "Senarai Permohonan Kelulusan Konfigurasi Penutupan Aduan",
               icon: "iconamoon:file-document",

@@ -1,104 +1,65 @@
 <template>
   <div>
-    <!-- Breadcrumb -->
-    <LayoutsBreadcrumb :items="breadcrumb" />
-
-    <!-- Title -->
+    <!-- Breadcrumb + Top Bar -->
     <div class="flex justify-between items-center mb-6">
-      <h2 class="text-xl font-bold">Butiran Konfigurasi Penutupan Aduan</h2>
-      <NuxtLink
-        to="/BF-ADN/PK/KP/01/04"
-        class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded shadow"
-      >
-        Kemaskini
+      <LayoutsBreadcrumb :items="breadcrumb" />
+      <NuxtLink to="/BF-ADN/PK/KP/01/04">
+        <rs-button variant="warning" size="sm">Kemaskini</rs-button>
       </NuxtLink>
     </div>
 
-    <!-- Konfigurasi Semasa -->
-    <div class="border rounded p-4 mb-6 bg-white shadow">
-      <h3 class="font-semibold text-lg mb-3">Konfigurasi Semasa</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <p><span class="font-medium">Sebab Penutupan:</span> Bantuan telah diterima daripada agensi lain</p>
+    <!-- Title -->
+    <h2 class="text-xl font-bold mb-6">Butiran Konfigurasi Penutupan Aduan</h2>
+
+    <!-- Maklumat Konfigurasi Semasa -->
+    <rs-card class="mb-6">
+      <template #header>Maklumat Konfigurasi Semasa</template>
+      <template #body>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+          <p><b>Sebab Penutupan:</b> {{ current.sebab }}</p>
+          <p><b>Tarikh Mula Kuasa:</b> {{ formatDate(current.tarikhMula) }}</p>
           <p>
-            <span class="font-medium">Status:</span>
-            <span
-              class="ml-2 px-2 py-1 rounded text-white text-sm"
-              :class="form.status === 'Aktif' ? 'bg-green-600' : 'bg-red-600'"
-            >
-              {{ form.status }}
-            </span>
+            <b>Status:</b>
+            <rs-badge :variant="statusVariant(current.status)">
+              {{ current.status }}
+            </rs-badge>
           </p>
+          <p><b>Catatan:</b> {{ current.catatan }}</p>
         </div>
-        <div>
-          <p><span class="font-medium">Tarikh Mula Kuasa:</span> 05/10/2025</p>
-          <p><span class="font-medium">Catatan:</span> Konfigurasi ini digunakan untuk situasi bantuan luar diterima.</p>
-        </div>
-      </div>
-    </div>
+      </template>
+    </rs-card>
 
     <!-- Senarai Sejarah Perubahan -->
-    <div class="border rounded p-4 bg-white shadow">
-      <h3 class="font-semibold text-lg mb-3">Senarai Sejarah Perubahan</h3>
-      <div class="overflow-x-auto">
-        <table class="w-full border border-gray-300 rounded-lg overflow-hidden">
-          <thead>
-            <tr class="bg-gray-200 text-left">
-              <th class="px-3 py-2 border">No</th>
-              <th class="px-3 py-2 border">Sebab Penutupan</th>
-              <th class="px-3 py-2 border">Tarikh Mula Kuasa</th>
-              <th class="px-3 py-2 border">Status Konfigurasi</th>
-              <th class="px-3 py-2 border">Dikemaskini Oleh</th>
-              <th class="px-3 py-2 border">Tarikh Kemaskini</th>
-              <th class="px-3 py-2 border">Catatan Kemaskini</th>
-              <th class="px-3 py-2 border">Status Kelulusan</th>
-              <th class="px-3 py-2 border">Diluluskan Oleh</th>
-              <th class="px-3 py-2 border">Tarikh Diluluskan</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(item, index) in sejarahList"
-              :key="index"
-              class="hover:bg-gray-50"
-            >
-              <td class="px-3 py-2 border">{{ index + 1 }}</td>
-              <td class="px-3 py-2 border">{{ item.sebab }}</td>
-              <td class="px-3 py-2 border">{{ item.tarikhMula }}</td>
-              <td class="px-3 py-2 border">
-                <span
-                  class="px-2 py-1 text-sm rounded text-white"
-                  :class="{
-                    'bg-green-600': item.statusKonfigurasi === 'Aktif',
-                    'bg-red-600': item.statusKonfigurasi === 'Tidak Aktif',
-                    'bg-yellow-500': item.statusKonfigurasi === 'Menunggu Kelulusan'
-                  }"
-                >
-                  {{ item.statusKonfigurasi }}
-                </span>
-              </td>
-              <td class="px-3 py-2 border">{{ item.dikemaskiniOleh }}</td>
-              <td class="px-3 py-2 border">{{ item.tarikhKemaskini }}</td>
-              <td class="px-3 py-2 border">{{ item.catatan }}</td>
-              <td class="px-3 py-2 border">
-                <span
-                  class="px-2 py-1 text-sm rounded text-white"
-                  :class="{
-                    'bg-green-600': item.statusKelulusan === 'Diluluskan',
-                    'bg-yellow-500': item.statusKelulusan === 'Dalam Proses',
-                    'bg-red-600': item.statusKelulusan === 'Ditolak'
-                  }"
-                >
-                  {{ item.statusKelulusan }}
-                </span>
-              </td>
-              <td class="px-3 py-2 border">{{ item.diluluskanOleh }}</td>
-              <td class="px-3 py-2 border">{{ item.tarikhDiluluskan }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <rs-card>
+      <template #header>Senarai Sejarah Perubahan</template>
+      <template #body>
+        <rs-table
+          :data="rows"
+          :pageSize="5"
+          :showNoColumn="true"
+          :options="{ variant: 'default', hover: true, striped: true }"
+        >
+          <!-- Status Konfigurasi badge -->
+          <template #status="data">
+            <rs-badge :variant="statusVariant(data.text)">
+              {{ data.text }}
+            </rs-badge>
+          </template>
+
+          <!-- Status Kelulusan badge -->
+          <template #statusKelulusan="data">
+            <rs-badge :variant="approvalVariant(data.text)">
+              {{ data.text }}
+            </rs-badge>
+          </template>
+
+          <!-- Tarikh formatting -->
+          <template #tarikhMula="data">{{ formatDate(data.text) }}</template>
+          <template #tarikhKemaskini="data">{{ formatDate(data.text) }}</template>
+          <template #tarikhDiluluskan="data">{{ formatDate(data.text) }}</template>
+        </rs-table>
+      </template>
+    </rs-card>
   </div>
 </template>
 
@@ -116,76 +77,73 @@ const breadcrumb = ref([
   { name: "Butiran Konfigurasi", type: "current", path: "/BF-ADN/PK/KP/01/03" },
 ]);
 
-const form = ref({
+// Current config
+const current = ref({
+  sebab: "Bantuan telah diterima daripada agensi lain",
   status: "Aktif",
+  tarikhMula: "2025-10-05",
+  catatan: "Konfigurasi ini digunakan untuk situasi bantuan luar diterima.",
 });
 
-const sejarahList = ref([
+// History rows
+const rows = ref([
   {
     sebab: "Bantuan telah diterima daripada agensi lain",
-    tarikhMula: "01/09/2025",
-    statusKonfigurasi: "Tidak Aktif",
+    tarikhMula: "2025-09-01",
+    status: "Tidak Aktif",
     dikemaskiniOleh: "admin1",
-    tarikhKemaskini: "30/08/2025",
-    catatan: "Kemaskini ulasan tambahan diperlukan",
+    tarikhKemaskini: "2025-08-30",
+    catatanKemaskini: "Kemaskini ulasan tambahan diperlukan",
     statusKelulusan: "Diluluskan",
     diluluskanOleh: "Ketua Jabatan",
-    tarikhDiluluskan: "01/09/2025",
+    tarikhDiluluskan: "2025-09-01",
   },
   {
     sebab: "Masalah telah diselesaikan oleh pengadu sendiri",
-    tarikhMula: "15/08/2025",
-    statusKonfigurasi: "Tidak Aktif",
+    tarikhMula: "2025-08-15",
+    status: "Tidak Aktif",
     dikemaskiniOleh: "admin2",
-    tarikhKemaskini: "10/08/2025",
-    catatan: "Menambah konfigurasi baru untuk keselesaan pengadu",
+    tarikhKemaskini: "2025-08-10",
+    catatanKemaskini: "Menambah konfigurasi baru untuk keselesaan pengadu",
     statusKelulusan: "Diluluskan",
     diluluskanOleh: "Pengarah",
-    tarikhDiluluskan: "12/08/2025",
+    tarikhDiluluskan: "2025-08-12",
   },
   {
     sebab: "Maklumat tidak lengkap atau tidak tepat",
-    tarikhMula: "20/07/2025",
-    statusKonfigurasi: "Menunggu Kelulusan",
+    tarikhMula: "2025-07-20",
+    status: "Menunggu Kelulusan",
     dikemaskiniOleh: "admin3",
-    tarikhKemaskini: "18/07/2025",
-    catatan: "Kemaskini format catatan untuk lebih terperinci",
+    tarikhKemaskini: "2025-07-18",
+    catatanKemaskini: "Kemaskini format catatan untuk lebih terperinci",
     statusKelulusan: "Dalam Proses",
     diluluskanOleh: "-",
     tarikhDiluluskan: "-",
   },
-  {
-    sebab: "Permohonan di luar bidang kuasa",
-    tarikhMula: "07/07/2025",
-    statusKonfigurasi: "Tidak Aktif",
-    dikemaskiniOleh: "admin1",
-    tarikhKemaskini: "01/07/2025",
-    catatan: "Menambah konfigurasi untuk kes di luar bidang kuasa",
-    statusKelulusan: "Diluluskan",
-    diluluskanOleh: "Ketua Jabatan",
-    tarikhDiluluskan: "03/07/2025",
-  },
-  {
-    sebab: "Pengadu menarik balik aduan",
-    tarikhMula: "25/06/2025",
-    statusKonfigurasi: "Tidak Aktif",
-    dikemaskiniOleh: "admin4",
-    tarikhKemaskini: "20/06/2025",
-    catatan: "Kemaskini status untuk kes penarikan balik",
-    statusKelulusan: "Diluluskan",
-    diluluskanOleh: "Ketua Unit",
-    tarikhDiluluskan: "22/06/2025",
-  },
-  {
-    sebab: "Dokumen sokongan tidak mencukupi",
-    tarikhMula: "10/06/2025",
-    statusKonfigurasi: "Tidak Aktif",
-    dikemaskiniOleh: "admin2",
-    tarikhKemaskini: "05/06/2025",
-    catatan: "Menambah konfigurasi untuk kes dokumen tidak lengkap",
-    statusKelulusan: "Diluluskan",
-    diluluskanOleh: "Pengarah",
-    tarikhDiluluskan: "08/06/2025",
-  },
 ]);
+
+// Badge coloring
+const statusVariant = (status) => {
+  if (status === "Aktif") return "success";
+  if (status === "Tidak Aktif") return "danger";
+  if (status === "Menunggu Kelulusan") return "warning";
+  return "secondary";
+};
+
+const approvalVariant = (status) => {
+  if (status === "Diluluskan") return "success";
+  if (status === "Dalam Proses") return "warning";
+  if (status === "Tidak Diluluskan") return "danger";
+  return "secondary";
+};
+
+// Date formatting
+const formatDate = (date) => {
+  if (!date || date === "-") return "-";
+  return new Date(date).toLocaleDateString("ms-MY", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+};
 </script>
