@@ -630,8 +630,8 @@ const performSearch = () => {
 // CRUD Operations
 const viewItem = (id) => navigateTo(`/BF-PRF/OR/PP/view/${id}`);
 const editItem = (id) => navigateTo(`/BF-PRF/OR/PP/kemaskini/${id}`);
-const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/OR/PP/04/eksekutif/${id}`);
-const handleKelulusan = (id) => navigateTo(`/BF-PRF/OR/PP/04/ketua-jabatan/${id}`);
+const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/OR/PP/view/eksekutif/${id}`);
+const handleKelulusan = (id) => navigateTo(`/BF-PRF/OR/PP/view/ketua-jabatan/${id}`);
 
 // Delete operations
 const confirmDelete = (id, item) => {
