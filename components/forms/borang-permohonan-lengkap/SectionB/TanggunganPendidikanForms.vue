@@ -467,9 +467,14 @@
             />
             <FormKit
               class="mt-4"
-              type="text"
+              type="select"
               name="nama_baitul_tanggungan"
               label="Nama Baitul"
+              :options="[
+                { label: 'Hasanah', value: 'Hasanah' },
+                { label: 'Salam', value: 'Salam' }
+              ]"
+              placeholder="Pilih Nama Baitul"
               :disabled="readOnly"
               v-model="getCurrentTanggungan().nama_baitul"
             />
