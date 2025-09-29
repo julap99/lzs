@@ -93,7 +93,7 @@
     </div>
 
     <!-- Hubungan kekeluargaan dengan kakitangan LZS? -->
-    <div class="mb-6">
+    <!-- <div class="mb-6">
       <div class="flex flex-col gap-2">
         <label class="font-medium"
           >Hubungan kekeluargaan dengan kakitangan LZS?</label
@@ -137,7 +137,7 @@
           validation="required"
           v-model="formData.pengesahan.hubungan_kakitangan" />
       </div>
-    </div>
+    </div> -->
 
     <!-- Hubungan kekeluargaan dengan Penolong Amil? -->
     <div class="mb-6">
