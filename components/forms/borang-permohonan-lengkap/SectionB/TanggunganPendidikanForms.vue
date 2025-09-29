@@ -362,26 +362,23 @@
                   >Pembiayaan Pengajian</label
                 >
                 <FormKit
-                  type="checkbox"
+                  type="select"
                   :name="`eduTanggungan${index}PembiayaanPengajian`"
                   :options="['JPA', 'PTPTN', 'LZS', 'Tiada', 'Lain-lain']"
-                  validation="required|min:1"
+                  validation="required"
                   :disabled="readOnly"
                   v-model="edu.pembiayaan_pengajian"
                   :validation-messages="{
                     required: 'Sila pilih sekurang-kurangnya satu pembiayaan',
-                    min: 'Sila pilih sekurang-kurangnya satu pembiayaan',
                   }"
+                  placeholder="Pilih Pembiayaan"
                 />
               </div>
             </div>
 
             <!-- Lain-lain Pembiayaan Pengajian -->
             <div
-              v-if="
-                edu.pembiayaan_pengajian &&
-                edu.pembiayaan_pengajian.includes('Lain-lain')
-              "
+              v-if="edu.pembiayaan_pengajian === 'Lain-lain'"
               class="mt-4"
             >
               <FormKit
@@ -543,7 +540,7 @@ const addEducationEntry = () => {
     poskod_sekolah: "",
     bidang_kursus: "",
     jurusan_bidang: "",
-    pembiayaan_pengajian: [],
+    pembiayaan_pengajian: "",
     lain_pembiayaan: "",
     catatan: "",
   });
