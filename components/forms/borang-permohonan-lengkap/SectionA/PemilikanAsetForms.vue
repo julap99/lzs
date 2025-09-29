@@ -22,7 +22,7 @@
           type="radio"
           name="jenis_wang_simpanan"
           label="Jenis wang simpanan"
-          :options="['Tunai', 'Bank']"
+          :options="['Tunai', 'bank/institusi kewangan']"
           v-model="formData.jenis_wang_simpanan"
           :disabled="readOnly" />
 
@@ -76,7 +76,7 @@
     <FormKit
       type="number"
       name="rumah_kedai"
-      label="Rumah Kedai (unit)"
+      label="Rumah/Kedai (unit)"
       min="0"
       v-model="formData.rumah_kedai"
       :disabled="readOnly" />
