@@ -605,7 +605,7 @@ const handleCancel = () => {
   <iframe 
   src="https://bp.corrad.ai/workflow/89222165-3a2d-44e8-98b1-5109cffbf7a4?debug=false&hideComplete=true&theme=light"
   width="100%" 
-  height="600px"
+  height="700vh"
   style="border: none; border-radius: 8px;">
 </iframe>
 </template>

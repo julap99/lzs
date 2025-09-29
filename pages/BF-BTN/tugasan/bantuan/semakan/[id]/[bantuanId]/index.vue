@@ -85,18 +85,17 @@
                     />
                   </div>
 
-                  <div class="space-y-1">
+                  <div class="space-y-1" v-if="route.params.bantuanId === 'B134'">
                     <FormKit
-                      type="text"
+                      type="select"
                       name="aidProduct"
                       label="Aid Product"
-                      placeholder="Contoh: Bantuan Sewaan/Ansuran Rumah (Miskin)"
+                      :options="aidProductOptions"
                       validation="required"
-                      :validation-messages="{
-                        required: 'Aid Product diperlukan'
-                      }"
+                      :validation-messages="{ required: 'Aid Product diperlukan' }"
+                      placeholder="-- Pilih Aid Product --"
                       :classes="{ outer: 'mb-0' }"
-                      v-model="formData.aidProduct"
+                      v-model="formData1.aidProduct"
                     />
                   </div>
 
@@ -123,24 +122,12 @@
                       type="select"
                       name="productPackage"
                       label="Product Package"
-                      :options="[
-                        { label: '-- Pilih Product Package --', value: '', disabled: true },
-                        { label: 'MODERATOR (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM', value: 'MODERATOR (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM' },
-                        { label: 'MODERATOR (MUKIM) - JAIS / MAIS - HONORARIUM', value: 'MODERATOR (MUKIM) - JAIS / MAIS - HONORARIUM' },
-                        { label: 'MODERATOR (NEGERI) - JAIS / MAIS - HONORARIUM', value: 'MODERATOR (NEGERI) - JAIS / MAIS - HONORARIUM' },
-                        { label: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM', value: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM' },
-                        { label: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (MUKIM) - JAIS / MAIS - HONORARIUM', value: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (MUKIM) - JAIS / MAIS - HONORARIUM' },
-                        { label: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (NEGERI) - JAIS / MAIS - HONORARIUM', value: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (NEGERI) - JAIS / MAIS - HONORARIUM' },
-                        { label: 'PENCERAMAH (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM', value: 'PENCERAMAH (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM' },
-                        { label: 'PENCERAMAH TOKOH AWAM (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM', value: 'PENCERAMAH TOKOH AWAM (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM' },
-                        { label: 'PENGERUSI MAJILIS (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM', value: 'PENGERUSI MAJILIS (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM' },
-                        { label: 'SUMBANGAN - HONORARIUM', value: 'SUMBANGAN - HONORARIUM' }
-                      ]"
+                      :options="productPackageOptions"
                       validation="required"
                       :validation-messages="{ required: 'Product Package diperlukan' }"
-                      placeholder="Pilih Product Package"
+                      placeholder="-- Pilih Product Package --"
                       :classes="{ outer: 'mb-0' }"
-                      v-model="formData.productPackage"
+                      v-model="formData1.productPackage"
                     />
                   </div>
 
@@ -164,25 +151,25 @@
 
                   <!-- === Template: Entitlement (B134) === -->
                   <div
-                    class="space-y-1"
-                    v-if="route.params.bantuanId === 'B134' && formData.entitlementProducts?.length"
-                  >
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                      Entitlement Product
-                    </label>
+                      class="space-y-1"
+                      v-if="route.params.bantuanId === 'B134' && filteredEntitlements.length"
+                    >
+                      <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Entitlement Product
+                      </label>
 
-                    <div v-for="item in formData.entitlementProducts" :key="item.id" class="flex items-center">
-                      <input
-                        type="checkbox"
-                        :id="item.id"
-                        :checked="!!item.dipilih"
-                        @change="onToggle(item, $event)"
-                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                      />
-                      <label :for="item.id" class="ml-2 text-sm text-gray-700">{{ item.nama }}</label>
+                      <div v-for="item in filteredEntitlements" :key="item.id" class="flex items-center">
+                        <input
+                          type="checkbox"
+                          :id="item.id"
+                          :checked="!!item.dipilih"
+                          @change="onToggle(item, $event)"
+                          class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        />
+                        <label :for="item.id" class="ml-2 text-sm text-gray-700">{{ item.nama }}</label>
+                      </div>
                     </div>
 
-                  </div>
 
 
 
@@ -2101,10 +2088,11 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, nextTick } from "vue";
+import { ref, reactive, computed, watch, nextTick, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 import { formatDate } from "~/utils/dateFormatter.js";
+import aidData from './aid.json'
 
 const route = useRoute();
 const router = useRouter();
@@ -2676,7 +2664,7 @@ const mockByBantuanId = {
         jumlah: 0,
         tempoh: "Sekali",
         status: "Tersedia",
-        ddipilih: false
+        dipilih: false
       },
       {
         id: "ent-006",
@@ -2716,7 +2704,7 @@ const mockByBantuanId = {
         jumlah: 0,
         tempoh: "Sekali",
         status: "Tersedia",
-        ddipilih: false
+        dipilih: false
       },
       {
         id: "ent-010",
@@ -3389,25 +3377,90 @@ const entitlementOptions = [
 
 // Keep a separate array of selected ids (if you need it for API payloads)
 if (!Array.isArray(formData.entitlementProduct)) {
-  formData.entitlementProduct = []; // ensure it's an array, not boolean
+  formData.value.entitlementProduct = []; // ensure it's an array, not boolean
 }
 
-function onToggle(item, e) {
-  const checked = !!e.target.checked;
-  item.dipilih = checked;
+ const onToggle = (item, ev) => {
+   const checked = !!ev?.target?.checked
+   ;(formData.value.entitlementProducts || []).forEach(e => { e.dipilih = false })
+   if (checked) {
+     item.dipilih = true
+     formData1.productPackage = item.nama
+   } else {
+     formData1.productPackage = ''
+   }
+ }
 
-  const id = String(item.id);
-  const arr = formData.entitlementProduct.map(String);
-  const idx = arr.indexOf(id);
+const AID_NAME = 'BANTUAN PROGRAM PENERAPAN NILAI ISLAM'
 
-  if (checked && idx === -1) {
-    formData.entitlementProduct.push(id);
-  } else if (!checked && idx !== -1) {
-    formData.entitlementProduct.splice(idx, 1);
+const toId = (s) =>
+  s.toLowerCase()
+   .replace(/\s+/g, '_')
+   .replace(/[^\w]/g, '_')
+   .replace(/_+/g, '_')
+   .replace(/^_|_$/g, '')
+
+const aidNode = computed(() => (aidData?.aids || []).find(a => a.aid === AID_NAME) || null)
+const aidProducts = computed(() => aidNode.value?.aid_products || [])
+
+const formData1 = reactive({
+  aidProduct: '',
+  productPackage: '',
+  entitlementSelected: [] // ← plain array, no `as string[]`
+})
+
+const aidProductOptions = computed(() => [
+  { label: '-- Pilih Aid Product --', value: '', disabled: true },
+  ...aidProducts.value.map(p => ({ label: p.name, value: p.name }))
+])
+
+const currentAidProduct = computed(() =>
+  aidProducts.value.find(p => p.name === formData1.aidProduct) || null
+)
+
+ const productPackageOptions = computed(() => [
+   { label: '-- Pilih Product Package --', value: '', disabled: true },
+   ...((formData.value.entitlementProducts || []).map(e => ({
+     label: e.nama,
+     value: e.nama, // store by name to match your checkbox names
+   })))
+ ])
+
+const entitlementList = computed(() => {
+  const items = currentAidProduct.value?.items || []
+  return items.map(it => ({ id: toId(it.entitlement_product), nama: it.entitlement_product }))
+})
+
+const entitlementIdByPackageId = computed(() => {
+  const items = currentAidProduct.value?.items || []
+  return Object.fromEntries(items.map(it => [toId(it.product_package), toId(it.entitlement_product)]))
+})
+
+watch(() => formData1.aidProduct, () => {
+  formData1.productPackage = ''
+  formData1.entitlementSelected = []
+})
+
+watch(() => formData1.productPackage, (newPkgId) => {
+  if (!newPkgId) return
+  const entId = entitlementIdByPackageId.value[newPkgId]
+  if (entId && !formData1.entitlementSelected.includes(entId)) {
+    formData1.entitlementSelected.push(entId)
   }
-}
+})
 
+ const filteredEntitlements = computed(() => {
+   const selected = formData1.productPackage || ''
+   const list = formData.value.entitlementProducts || []
+   if (!selected) return []
+   return list.filter(e => e.nama === selected)
+ })
 
+watch(() => formData1.productPackage, (newNama) => {
+  (formData.value.entitlementProducts || []).forEach(e => {
+    e.dipilih = (e.nama === newNama && !!newNama)
+  })
+})
 /* (Optional) expose for parent usage */
 // defineExpose({
 //   dokumenSokonganRows, addDokumenRow, removeDokumenRow, getTemplateUrl, downloadTemplate, onFileChange,

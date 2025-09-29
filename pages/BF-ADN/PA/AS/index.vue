@@ -122,7 +122,7 @@ const lihatAduan = (noRujukan) => {
   <iframe 
     src="https://bp.corrad.ai/workflow/7635e4be-ed80-443a-ae57-e495e977f3c6?debug=false&hideComplete=true&theme=light"
     width="100%" 
-    height="600px"
+    height="700vh"
     style="border: none; border-radius: 8px;">
   </iframe>
 </template>
