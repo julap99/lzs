@@ -550,7 +550,7 @@ const formData = ref({
     {
       nama_bank: "bank-islam",
       no_akaun_bank: "3063020371170",
-      nama_pemegang_akaun: "adnan bin abu",
+      nama_pemegang_akaun: "ADNAN BIN ABU",
       jenis_akaun: "individu",
       id_pengenalan: "801004035672",
       nama_bersama: "",

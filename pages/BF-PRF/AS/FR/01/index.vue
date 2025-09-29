@@ -44,28 +44,6 @@
                   Maklumat Peribadi
                 </h3> -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  <!-- Name Field -->
-                  <div>
-                    <div class="flex items-center justify-between mb-2">
-                      <div class="flex items-center">
-                        <Icon name="mdi:account" size="1.2rem" class="text-blue-600 mr-2" />
-                        <label class="text-sm font-medium text-gray-700">Nama</label>
-                      </div>
-                      <div v-if="validationErrors.searchName" class="text-xs text-red-500">
-                        {{ validationErrors.searchName }}
-                      </div>
-                    </div>
-                    <FormKit
-                      type="text"
-                      name="searchName"
-                      v-model="formData.searchName"
-                      placeholder="Masukkan nama (sebarang bahagian nama)"
-                      input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                      @input="debouncedValidateField('searchName')"
-                    />
-                    <p class="mt-1 text-xs text-gray-500">Cari dengan nama pertama, nama bapa, atau nama penuh. Semua perkataan mesti ada dalam nama. Contoh: "nur . ahmad" untuk carian tepat atau "ahmad" untuk carian umum</p>
-                  </div>
-
                   <!-- Jenis Pengenalan ID Field -->
                   <div>
                     <div class="flex items-center justify-between mb-2">
@@ -107,6 +85,28 @@
                       input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                       @input="debouncedValidateField('idNumber')"
                     />
+                  </div>
+
+                  <!-- Name Field -->
+                  <div>
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center">
+                        <Icon name="mdi:account" size="1.2rem" class="text-blue-600 mr-2" />
+                        <label class="text-sm font-medium text-gray-700">Nama</label>
+                      </div>
+                      <div v-if="validationErrors.searchName" class="text-xs text-red-500">
+                        {{ validationErrors.searchName }}
+                      </div>
+                    </div>
+                    <FormKit
+                      type="text"
+                      name="searchName"
+                      v-model="formData.searchName"
+                      placeholder="Masukkan nama (sebarang bahagian nama)"
+                      input-class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      @input="debouncedValidateField('searchName')"
+                    />
+                    <p class="mt-1 text-xs text-gray-500">Cari dengan nama pertama, nama bapa, atau nama penuh. Semua perkataan mesti ada dalam nama. Contoh: "nur . ahmad" untuk carian tepat atau "ahmad" untuk carian umum</p>
                   </div>
                 </div>
               </div>

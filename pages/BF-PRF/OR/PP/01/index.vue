@@ -14,59 +14,70 @@
         <div class="mb-6">
           <h3 class="text-lg font-medium mb-4">Carian Profil Organisasi</h3>
           <FormKit type="form" :actions="false" @submit="handleSubmit">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- Jenis Organisasi (ID FR 3.1.1) -->
-              <FormKit
-                type="select"
-                name="organizationType"
-                label="Jenis Organisasi"
-                :options="organizationTypeOptions"
-                placeholder="Pilih jenis organisasi"
-                v-model="formData.organizationType"
-              />
+            <div class="space-y-6">
+              <!-- Row 1: Jenis Organisasi & Nama Organisasi -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Jenis Organisasi (ID FR 3.1.1) -->
+                <FormKit
+                  type="select"
+                  name="organizationType"
+                  label="Jenis Organisasi"
+                  :options="organizationTypeOptions"
+                  placeholder="Pilih jenis organisasi"
+                  v-model="formData.organizationType"
+                />
 
-              <!-- Nama Organisasi (ID FR 3.1.1) -->
-              <FormKit
-                type="text"
-                name="organizationName"
-                label="Nama Organisasi"
-                v-model="formData.organizationName"
-                placeholder="Masukkan nama organisasi"
-              />
+                <!-- Nama Organisasi (ID FR 3.1.1) -->
+                <FormKit
+                  type="text"
+                  name="organizationName"
+                  label="Nama Organisasi"
+                  v-model="formData.organizationName"
+                  placeholder="Masukkan nama organisasi"
+                />
+              </div>
 
-              <!-- Jenis ID (ID FR 3.1.2) -->
-              <FormKit
-                type="select"
-                name="idType"
-                label="Jenis ID"
-                :options="idTypeOptions"
-                placeholder="Pilih jenis ID (pilihan)"
-                v-model="formData.idType"
-              />
+              <!-- Row 2: Daerah (two-column layout) -->
+              <div v-if="shouldShowDaerah" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormKit
+                  type="select"
+                  name="daerah"
+                  label="Daerah"
+                  validation="required"
+                  :options="daerahOptions"
+                  placeholder="Pilih daerah"
+                  v-model="formData.daerah"
+                  :validation-messages="{ required: 'Daerah adalah wajib' }"
+                  :disabled="!formData.organizationType"
+                />
+                <!-- Empty div to maintain grid structure -->
+                <div></div>
+              </div>
 
-              <!-- Nombor Pendaftaran Organisasi (ID FR 3.1.3) -->
-              <FormKit
-                type="text"
-                name="idNumber"
-                label="Nombor Pendaftaran Organisasi (SSM/ROS/ID Organisasi)"
-                v-model="formData.idNumber"
-                :placeholder="getPlaceholder()"
-              />
+              <!-- Row 3: Jenis ID & Nombor Pendaftaran Organisasi -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Jenis ID (ID FR 3.1.2) -->
+                <FormKit
+                  type="select"
+                  name="idType"
+                  label="Jenis ID"
+                  :options="idTypeOptions"
+                  placeholder="Pilih jenis ID (pilihan)"
+                  v-model="formData.idType"
+                />
+
+                <!-- Nombor Pendaftaran Organisasi (ID FR 3.1.3) -->
+                <FormKit
+                  type="text"
+                  name="idNumber"
+                  label="Nombor Pendaftaran Organisasi (SSM/ROS/ID Organisasi)"
+                  v-model="formData.idNumber"
+                  :placeholder="getPlaceholder()"
+                />
+              </div>
             </div>
 
-            <div v-if="shouldShowDaerah" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-              <FormKit
-                type="select"
-                name="daerah"
-                label="Daerah"
-                validation="required"
-                :options="daerahOptions"
-                placeholder="Pilih daerah"
-                v-model="formData.daerah"
-                :validation-messages="{ required: 'Daerah adalah wajib' }"
-                :disabled="!formData.organizationType"
-              />
-            </div>
+            
 
             <!-- Search Method Info -->
             <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
