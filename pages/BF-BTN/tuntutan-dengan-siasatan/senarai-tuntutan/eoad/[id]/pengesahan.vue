@@ -355,7 +355,12 @@ const handleSimpan = async () => {
   try {
     processing.value = true
     await fakeDelay(600)
-    await $swal.fire({ icon: 'success', title: 'Maklumat telah berjaya disimpan!', timer: 3000, showConfirmButton: false })
+
+    await $swal.fire({
+      icon: 'success',
+      title: 'Berjaya!',
+      text: 'Permohanan Tuntutan telah berjaya "disemak/diluluskan"',
+    })
   } catch {
     await $swal.fire({ icon: 'error', title: 'Ralat', text: 'Gagal menyimpan maklumat.' })
   } finally {
@@ -375,7 +380,13 @@ const handleSimpanHantar = async () => {
   try {
     processing.value = true
     await fakeDelay(700)
-    await $swal.fire({ icon: 'success', title: 'Maklumat telah berjaya dihantar!', timer: 3500, showConfirmButton: false })
+
+    await $swal.fire({
+      icon: 'success',
+      title: 'Berjaya!',
+      text: 'Permohanan Tuntutan telah berjaya "disemak/diluluskan"',
+    })
+
     navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad')
   } catch {
     await $swal.fire({ icon: 'error', title: 'Ralat', text: 'Gagal menghantar maklumat.' })

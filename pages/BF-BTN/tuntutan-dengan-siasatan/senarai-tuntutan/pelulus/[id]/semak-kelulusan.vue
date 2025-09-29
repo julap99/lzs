@@ -318,6 +318,8 @@ const setDecision = (id: string, keputusan: 'Lulus' | 'Tidak Lulus', catatan?: s
 
 definePageMeta({ title: 'Semakan & Kelulusan Tuntutan' })
 
+const nuxtApp = useNuxtApp()
+const $swal = nuxtApp.$swal as any
 const route = useRoute()
 const paramId = computed<string>(() => {
   const p = route.params as Record<string, string | number | undefined>
@@ -377,7 +379,13 @@ const handleSave = async () => {
     isSubmitting.value = true
     await new Promise((r) => setTimeout(r, 400))
     setDecision(paramId.value, form.value.keputusan as 'Lulus' | 'Tidak Lulus', form.value.catatan)
-    showBanner('save')
+
+    // SweetAlert2 popup
+    await $swal.fire({
+      icon: 'success',
+      title: 'Berjaya!',
+      text: 'Permohanan Tuntutan telah berjaya "disemak/diluluskan"',
+    })
   } finally {
     isSubmitting.value = false
   }
@@ -390,7 +398,14 @@ const handleConfirmSend = async () => {
     isSubmitting.value = true
     await new Promise((r) => setTimeout(r, 600))
     setDecision(paramId.value, form.value.keputusan as 'Lulus' | 'Tidak Lulus', form.value.catatan)
-    showBanner('send')
+
+    // SweetAlert2 popup
+    await $swal.fire({
+      icon: 'success',
+      title: 'Berjaya!',
+      text: 'Permohanan Tuntutan telah berjaya "disemak/diluluskan"',
+    })
+
     navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus')
   } finally {
     isSubmitting.value = false
