@@ -497,6 +497,14 @@
                 :help="isFieldLocked('penamaBank') ? 'Kemaskini maklumat bank memerlukan pengesahan manual' : ''"
               />
 
+              <FormKit
+                type="text"
+                name="swiftCode"
+                label="SWIFT Code"
+                v-model="currentSwiftCode"
+                readonly              
+                placeholder="SWIFT Code akan dipaparkan berdasarkan bank yang dipilih"
+              />
               <!-- BA Requirement 13: Single account policy -->
               <div v-if="hasExistingAccount" class="mt-3 p-3 bg-red-50 border border-red-200 rounded">
                 <div class="flex items-center">
@@ -842,7 +850,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
@@ -895,6 +903,32 @@ const selangorCities = [
   'Shah Alam','Petaling Jaya','Subang Jaya','Klang','Ampang','Cheras','Kajang','Bangi','Puchong','Selayang','Gombak','Rawang','Sungai Buloh','Batu Caves','Kuala Selangor','Bestari Jaya','Ijok','Tanjong Karang','Sabak Bernam','Sungai Besar','Kuala Kubu Bharu','Batang Kali','Serendah','Hulu Bernam','Semenyih','Beranang','Sepang','Cyberjaya','Dengkil','Banting','Teluk Panglima Garang','Port Klang'
 ];
 const isMalaysia = computed(() => formData.value.country === 'Malaysia');
+
+// Bank to SWIFT Code mapping
+const bankSwiftCodes = {
+  'Maybank': 'MAYBMYKL',
+  'CIMB Bank': 'CIBBMYKL',
+  'Public Bank': 'PBBEMYKL',
+  'RHB Bank': 'RHBBMYKL',
+  'Hong Leong Bank': 'HLBBMYKL',
+  'AmBank': 'ARBKMYKL',
+  'Bank Islam': 'BIMBMYKL',
+  'Bank Rakyat': 'BKRMMYKL',
+  'Bank Muamalat': 'BMMBMYKL',
+  'OCBC Bank': 'OCBCMYKL',
+  'HSBC Bank': 'HBMBMYKL',
+  'Standard Chartered Bank': 'SCBLMYKL',
+  'Citibank': 'CITIMYKL',
+  'UOB Bank': 'UOVBMYKL'
+};
+
+// Function to get SWIFT code based on selected bank
+const getSwiftCodeForBank = (bankName) => {
+  return bankSwiftCodes[bankName] || '';
+};
+
+// Reactive SWIFT code that updates when bank changes
+const currentSwiftCode = ref('');
 
 // Computed properties for conditional field visibility
 const showKariah = computed(() => {
@@ -1354,6 +1388,19 @@ const additionalDocsCount = computed(() => {
   const f = formData.value.additionalDocuments;
   return Array.isArray(f) ? f.length : (f ? 1 : 0);
 });
+
+// Watch for changes in bank selection to update SWIFT code
+watch(
+  () => formData.value.bankName,
+  (newBank) => {
+    if (newBank) {
+      currentSwiftCode.value = getSwiftCodeForBank(newBank);
+    } else {
+      currentSwiftCode.value = '';
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <style lang="scss" scoped>

@@ -498,6 +498,16 @@
                 placeholder="Masukkan penama akaun bank"
                 v-model="formData.penamaBank"
               />
+
+              <FormKit
+                type="text"
+                name="swiftCode"
+                label="SWIFT Code"
+                v-model="currentSwiftCode"
+                readonly
+                disabled
+                placeholder="SWIFT Code akan dipaparkan berdasarkan bank yang dipilih"
+              />
             </div>
           </div>
 
@@ -783,7 +793,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -812,6 +822,32 @@ const selangorCities = [
 ];
 
 const isMalaysia = computed(() => formData.value.country === 'Malaysia');
+
+// Bank to SWIFT Code mapping
+const bankSwiftCodes = {
+  'Maybank': 'MAYBMYKL',
+  'CIMB Bank': 'CIBBMYKL',
+  'Public Bank': 'PBBEMYKL',
+  'RHB Bank': 'RHBBMYKL',
+  'Hong Leong Bank': 'HLBBMYKL',
+  'AmBank': 'ARBKMYKL',
+  'Bank Islam': 'BIMBMYKL',
+  'Bank Rakyat': 'BKRMMYKL',
+  'Bank Muamalat': 'BMMBMYKL',
+  'OCBC Bank': 'OCBCMYKL',
+  'HSBC Bank': 'HBMBMYKL',
+  'Standard Chartered Bank': 'SCBLMYKL',
+  'Citibank': 'CITIMYKL',
+  'UOB Bank': 'UOVBMYKL'
+};
+
+// Function to get SWIFT code based on selected bank
+const getSwiftCodeForBank = (bankName) => {
+  return bankSwiftCodes[bankName] || '';
+};
+
+// Reactive SWIFT code that updates when bank changes
+const currentSwiftCode = ref('');
 
 const breadcrumb = ref([
   {
@@ -1202,6 +1238,19 @@ const additionalDocsCount = computed(() => {
   const f = formData.value.additionalDocuments;
   return Array.isArray(f) ? f.length : (f ? 1 : 0);
 });
+
+// Watch for changes in bank selection to update SWIFT code
+watch(
+  () => formData.value.bankName,
+  (newBank) => {
+    if (newBank) {
+      currentSwiftCode.value = getSwiftCodeForBank(newBank);
+    } else {
+      currentSwiftCode.value = '';
+    }
+  },
+  { immediate: true }
+);
 
 // Watch for changes in organization name to clear kariah selection
 watch(

@@ -187,6 +187,10 @@
                 <span class="font-medium text-gray-600">Kaedah Pembayaran:</span>
                 <span class="text-gray-900 ml-2">{{ organisasiData.bank?.paymentMethod || '-' }}</span>
               </div>
+              <div class="py-2 border-b border-gray-100">
+                <span class="font-medium text-gray-600">SWIFT Code:</span>
+                <span class="text-gray-900 ml-2">{{ getSwiftCodeForBank(organisasiData.bank?.bankName) || '-' }}</span>
+              </div>
             </div>
           </div>
 
@@ -354,6 +358,29 @@ const getStatusVariant = (status) => {
     'Tidak Sah': 'danger'
   }
   return variants[status] || 'default'
+}
+
+// Bank to SWIFT Code mapping
+const bankSwiftCodes = {
+  'Maybank': 'MAYBMYKL',
+  'CIMB Bank': 'CIBBMYKL',
+  'Public Bank': 'PBBEMYKL',
+  'RHB Bank': 'RHBBMYKL',
+  'Hong Leong Bank': 'HLBBMYKL',
+  'AmBank': 'ARBKMYKL',
+  'Bank Islam': 'BIMBMYKL',
+  'Bank Rakyat': 'BKRMMYKL',
+  'Bank Muamalat': 'BMMBMYKL',
+  'OCBC Bank': 'OCBCMYKL',
+  'HSBC Bank': 'HBMBMYKL',
+  'Standard Chartered Bank': 'SCBLMYKL',
+  'Citibank': 'CITIMYKL',
+  'UOB Bank': 'UOVBMYKL'
+}
+
+// Function to get SWIFT code based on selected bank
+const getSwiftCodeForBank = (bankName) => {
+  return bankSwiftCodes[bankName] || ''
 }
 
 const hasDocument = (document) => {
