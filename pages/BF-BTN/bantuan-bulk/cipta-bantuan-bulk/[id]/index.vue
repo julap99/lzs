@@ -252,7 +252,7 @@
             <div class="flex items-center space-x-3">
               <div class="flex-shrink-0">
                 <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
-                  <Icon name="material-symbols:people" class="w-6 h-6 text-teal-600" />
+                  <Icon name="material-symbols:person" class="w-6 h-6 text-teal-600" />
                 </div>
               </div>
               <div>
