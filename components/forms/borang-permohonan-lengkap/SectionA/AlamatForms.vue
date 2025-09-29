@@ -206,8 +206,8 @@
 
         <FormKit
           type="select"
-          name="kadar_sewa_tempat_tinggal"
-          label="Kadar Sewa Tempat Tinggal"
+          name="status_kediaman"
+          label="Status kediaman Tempat Tinggal"
           :options="[
             'Milik Sendiri Tidak Berbayar',
             'Milik Sendiri Berbayar',
@@ -260,7 +260,7 @@
           <FormKit
             type="number"
             name="kadar_bayaran_bulanan"
-            label="Status Kediaman jika Milik Sendiri Berbayar"
+            label="Kadar Bayaran Bulanan jika Milik Sendiri Berbayar"
             step="0.01"
             min="0"
             placeholder="Isi kadar bayaran bulanan (RM)"
@@ -287,7 +287,7 @@
           <FormKit
             type="number"
             name="kadar_sewa_bulanan"
-            label="Status Kediaman jika Sewa"
+            label="Kadar Sewa Bulanan jika Sewa"
             step="0.01"
             min="0"
             placeholder="Isi kadar sewa bulanan (RM)"
