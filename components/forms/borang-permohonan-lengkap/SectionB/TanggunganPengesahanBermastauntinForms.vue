@@ -20,6 +20,7 @@
         type="select"
         name="kariah_bermastautin"
         label="Kariah"
+        value="kariah-al-hidayah"
         :options="kariahOptions"
         placeholder="Pilih kariah"
         v-model="formData.pengesahan.kariah_bermastautin"
@@ -30,6 +31,7 @@
         type="text"
         name="nama_pengesah"
         label="Nama"
+        value="Ustaz Ahmad bin Abdullah"
         validation="required"
         v-model="formData.pengesahan.nama_pengesah"
         disabled
@@ -39,6 +41,7 @@
         type="text"
         name="jawatan_pengesah"
         label="Jawatan"
+        value="Pegawai PAK"
         validation="required"
         v-model="formData.pengesahan.jawatan_pengesah"
         disabled
@@ -48,6 +51,7 @@
         type="number"
         name="no_telefon_pengesah"
         label="No Telefon"
+        value="012-3456789"
         validation="required"
         v-model="formData.pengesahan.no_telefon_pengesah"
         disabled
@@ -57,6 +61,7 @@
         type="date"
         name="tarikh_pengesahan_permastautin"
         label="Tarikh Pengesahan"
+        value="2024-01-15"
         validation="required"
         v-model="formData.pengesahan.tarikh_pengesahan_permastautin"
         disabled
