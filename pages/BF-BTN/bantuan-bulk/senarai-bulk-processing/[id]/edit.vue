@@ -143,32 +143,21 @@
                 }"
                 :disabled="!formData.aidProduct"
               />
-            <!-- Product Entitlement (checkbox list, consistent with index.vue) -->
-            <div class="space-y-1">
-              <label class="text-sm font-medium text-gray-700">Product Entitlement</label>
-              <div class="mt-2 space-y-2">
-                <div
-                  v-for="option in productEntitlementOptions"
-                  :key="option.value"
-                  class="flex items-center"
-                >
-                  <input
-                    :id="`entitlement-${option.value}`"
-                    type="checkbox"
-                    :value="option.value"
-                    v-model="formData.productEntitlement"
-                    :disabled="!formData.productPackage"
-                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded disabled:opacity-50"
-                  />
-                  <label
-                    :for="`entitlement-${option.value}`"
-                    class="ml-2 text-sm text-gray-700 cursor-pointer"
-                  >
-                    {{ option.label }}
-                  </label>
-                </div>
-              </div>
-            </div>
+            <FormKit
+                type="select"
+                name="productEntitlement"
+                label="Product Entitlement"
+                v-model="formData.productEntitlement"
+                :options="productEntitlementOptions"
+                searchable
+                :search-attributes="['label']"
+                :search-filter="(option, search) => option.label.toLowerCase().includes(search.toLowerCase())"
+                validation="required"
+                :validation-messages="{
+                  required: 'Sila pilih product Entitlement',
+                }"
+                :disabled="!formData.productPackage"
+            />
 
             <FormKit
               type="date"
@@ -209,49 +198,7 @@
         </template>
       </rs-card>
 
-  <!-- ===================== Senarai Entitlement Product ===================== -->
-  <rs-card class="shadow-sm border-0 bg-white">
-    <template #header>
-      <div class="flex items-center space-x-3">
-        <div class="flex-shrink-0">
-          <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-            <Icon name="ph:gift" class="w-6 h-6 text-indigo-600" />
-          </div>
-        </div>
-        <div>
-          <h2 class="text-lg font-semibold text-gray-900">Senarai Entitlement Product</h2>
-          <p class="text-sm text-gray-500">Bantuan yang dipilih berdasarkan checkbox</p>
-        </div>
-      </div>
-    </template>
-
-    <template #body>
-      <div class="space-y-4">
-        <div v-if="selectedEntitlementProducts.length > 0" class="grid grid-cols-1">
-          <div
-            v-for="(product, index) in selectedEntitlementProducts"
-            :key="product.code"
-            class="relative border rounded-lg p-4 transition-all duration-200 hover:shadow-md"
-            :class="{
-              'border-green-200 bg-green-50': product.status === 'lengkap',
-              'border-blue-200 bg-blue-50': product.status === 'sedang_edit',
-              'border-gray-200 bg-white': product.status === 'baru',
-            }"
-          >
-            <div class="absolute top-2 right-2">
-              <rs-badge :variant="getProductStatusVariant(product.status)" class="text-xs">
-                {{ getProductStatusText(product.status) }}
-              </rs-badge>
-            </div>
-
-            <div class="pr-16">
-              <h3 class="font-semibold text-gray-900 text-sm mb-2">{{ product.name }}</h3>
-              <p class="text-xs text-gray-600 mb-1">{{ product.code }}</p>
-              <p class="text-xs text-gray-600 mb-3">{{ product.category }}</p>
-            </div>
-
-            <div class="mt-4 space-y-4" v-if="product.status === 'sedang_edit'">
-                   <!-- Import Data Section -->
+      <!-- Import Data Section -->
       <rs-card>
         <template #header>
           <div class="flex items-center space-x-3">
@@ -273,7 +220,7 @@
               type="file"
               name="importFile"
               label="Muat Naik Fail"
-              accept=".xlsx,.xls,.csv"
+              accept=".xlsx,.xls"
               help="Format fail: Excel (.xlsx, .xls, .csv)"
               validation="required"
               @change="handleFileUpload"
@@ -289,7 +236,7 @@
               <Icon name="material-symbols:upload" class="mr-1" />
               {{ isLoading ? "Sedang Import..." : "Import" }}
             </rs-button>
-
+            
             <!-- Download Payable To CSV Template -->
             <rs-button
               variant="secondary"
@@ -300,7 +247,7 @@
               Template Format Excel
             </rs-button>
             </div>
-
+            
           </div>
         </template>
       </rs-card>
@@ -324,7 +271,7 @@
             <div class="flex items-center gap-2">
 
               <rs-button
-
+                
                 variant="primary"
                 @click="handleAddPayment"
               >
@@ -431,7 +378,7 @@
         </template>
       </rs-card>
 
-
+      
       <!-- Maklumat Data Rosak Section -->
       <rs-card v-if="showImportCards">
         <template #header>
@@ -515,9 +462,9 @@
               </div>
         </template>
       </rs-card>
+      
 
-
-
+      
       <!-- Maklumat Senarai Penerima Section -->
       <rs-card v-if="showImportCards">
         <template #header>
@@ -558,7 +505,7 @@
               <template v-slot:amaun="{ text }">
                 {{ formatCurrency(text) }}
               </template>
-
+            
               <template v-slot:actions="{ row }">
                 <div class="flex space-x-2 justify-center">
                   <rs-button variant="info" size="sm" @click="handleEditRecipientModal(row)">
@@ -573,30 +520,6 @@
           </div>
         </template>
       </rs-card>
-            </div>
-
-            <div class="flex items-center justify-between mt-4 pt-3 border-t border-gray-200">
-              <div v-if="product.status === 'sedang_edit'" class="flex space-x-2">
-                <rs-button variant="success" size="sm" @click="saveProduct(index)">Simpan</rs-button>
-                <rs-button variant="secondary" size="sm" @click="cancelEdit(index)">Batal</rs-button>
-              </div>
-              <div v-else class="flex space-x-2">
-                <rs-button variant="primary" size="sm" @click="editProduct(index)">Edit</rs-button>
-                <button @click="removeProduct(index)" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded">
-                  <Icon name="ph:trash" class="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div v-if="selectedEntitlementProducts.length === 0" class="text-center py-8 text-gray-500">
-          <Icon name="ph:gift" class="w-12 h-12 mx-auto mb-2 text-gray-400" />
-          <p class="text-sm">Tiada entitlement product dipilih. Pilih checkbox di atas untuk menambah.</p>
-        </div>
-      </div>
-    </template>
-  </rs-card> 
 
       <!-- Maklumat Dokumen Sokongan Section -->
       <rs-card>
@@ -608,7 +531,7 @@
               </div>
             </div>
             <div>
-              <h2 class="text-xl font-semibold text-gray-900">Maklumat Dokumen Sokongan</h2>
+              <h2 class="text-xl font-semibold text-gray-900">Dokumen Sokongan</h2>
               <p class="text-sm text-gray-500">Fail dan dokumen berkaitan</p>
             </div>
           </div>
@@ -624,7 +547,7 @@
               multiple
               @change="handleDocumentUpload"
             />
-
+            
             <!-- Display selected files -->
             <div v-if="selectedDocuments.length > 0" class="mt-4">
               <h4 class="text-sm font-medium text-gray-700 mb-2">Fail yang dipilih:</h4>
@@ -649,7 +572,7 @@
                 </div>
               </div>
             </div>
-
+            
             <rs-button
               variant="primary"
               :disabled="!selectedDocuments.length || isLoading"
@@ -662,7 +585,6 @@
             <!-- Existing uploaded documents -->
             <div v-if="documentList.length > 0" class="mt-6 space-y-3">
               <h4 class="text-sm font-medium text-gray-700">Dokumen sedia ada:</h4>
-              <h4 class="text-sm font-medium text-gray-700">Dokumen yang telah dimuat naik:</h4>
             <div
               v-for="(document, index) in documentList"
                 :key="document.id || index"
@@ -678,7 +600,7 @@
                 <div class="flex items-center space-x-2">
                   <rs-button variant="info-text" size="sm" :title="'Muat turun'" aria-label="Muat turun">
                     <Icon name="material-symbols:download" class="w-4 h-4" />
-                  </rs-button>
+              </rs-button>
                 </div>
               </div>
             </div>
@@ -760,7 +682,7 @@
           type="text"
           name="bayaranKepada"
           label="Bayaran Kepada"
-          v-model="paymentForm.bayaranKepada"
+          v-model="paymentForm.recipient"
           placeholder="Masukkan bayaran kepada"
           validation="required"
         />
@@ -1011,7 +933,7 @@
               disabled
             />
           </div>
-
+          
           <!-- Notes Section -->
           <FormKit
             type="textarea"
@@ -1023,7 +945,7 @@
               input: 'min-h-[60px]',
             }"
           />
-
+          
           <!-- Issue Details -->
           <FormKit
             type="text"
@@ -1032,10 +954,10 @@
             :value="selectedDamagedData.jenisMasalah || 'Tiada maklumat'"
             disabled
           />
-
+          
         </div>
       </template>
-
+     
      <template #footer>
        <div class="flex justify-end space-x-2">
          <rs-button variant="secondary" @click="showViewDetailsModal = false">
@@ -1065,7 +987,7 @@
                input: '!py-2',
              }"
            />
-
+           
            <FormKit
              type="text"
              name="idPermohonan"
@@ -1077,19 +999,19 @@
              }"
            />
          </div>
-
+         
          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
            <FormKit
              type="text"
              name="bayaranKepada"
              label="Bayaran Kepada"
-             :value="editingPaymentForDefect.bayaranKepada"
+             :value="editingPaymentForDefect.recipient"
              disabled
              :classes="{
                input: '!py-2',
              }"
            />
-
+           
            <FormKit
              type="text"
              name="asnaf"
@@ -1101,7 +1023,7 @@
              }"
            />
          </div>
-
+         
          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
            <FormKit
              type="text"
@@ -1113,19 +1035,19 @@
                input: '!py-2',
              }"
            />
-
+           
            <FormKit
              type="text"
              name="recipient"
              label="Recipient"
-             :value="editingPaymentForDefect.recipient"
+             :value="editingPaymentForDefect.bayaranKepada"
              disabled
              :classes="{
                input: '!py-2',
              }"
            />
          </div>
-
+         
          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
            <FormKit
              type="text"
@@ -1137,7 +1059,7 @@
                input: '!py-2',
              }"
            />
-
+           
            <FormKit
              type="text"
              name="tarikhBayaran"
@@ -1149,7 +1071,7 @@
              }"
            />
          </div>
-
+         
          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
            <FormKit
              type="select"
@@ -1162,7 +1084,7 @@
                input: '!py-2',
              }"
            />
-
+           
            <FormKit
              type="text"
              name="bankAccount"
@@ -1174,7 +1096,7 @@
              }"
            />
          </div>
-
+         
          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
            <FormKit
              type="text"
@@ -1189,7 +1111,7 @@
          </div>
        </div>
      </template>
-
+     
      <template #footer>
        <div class="flex justify-end space-x-2">
          <rs-button variant="secondary" @click="() => { showKemaskiniModal = false; editingPaymentForDefect = null; }">
@@ -1201,7 +1123,7 @@
        </div>
      </template>
    </rs-modal>
-
+   
    <!-- Duplicate List Modal (Inlined) -->
    <rs-modal
      v-model="showDuplicateModal"
@@ -1290,7 +1212,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch, onMounted } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 
 definePageMeta({
   title: "Edit Bantuan Bulk",
@@ -1314,7 +1236,7 @@ const breadcrumb = ref([
     path: "/BF-BTN/bantuan-bulk",
   },
   {
-    name: "Bulk Processing",
+    name: "Senarai Bulk Processing",
     type: "link",
     path: "/BF-BTN/bantuan-bulk/senarai-bulk-processing",
   },
@@ -1340,7 +1262,7 @@ const getBantuanData = (id) => {
       aid: 'B314',
       aidProduct: 'Wang Saku',
       productPackage: 'KPIPT (Fakir)',
-      productEntitlement: ['Bantuan Wang Saku'],
+      productEntitlement: 'Bantuan Wang Saku',
       penyiasat: 'ahmad_hassan',
       cawangan: 'hq',
       tarikhJangkaanBayaran: '2025-05-04'
@@ -1357,7 +1279,7 @@ const getBantuanData = (id) => {
       aid: 'B314',
       aidProduct: 'Wang Saku',
       productPackage: 'KPIPT (Fakir)',
-      productEntitlement: ['Bantuan Wang Saku'],
+      productEntitlement: 'Bantuan Wang Saku',
       penyiasat: 'ahmad_hassan',
       cawangan: 'hq',
       tarikhJangkaanBayaran: '2025-05-04'
@@ -1374,7 +1296,7 @@ const getBantuanData = (id) => {
       aid: 'B315',
       aidProduct: 'Wang Saku',
       productPackage: 'KPIPT (Miskin)',
-      productEntitlement: ['Bantuan Wang Saku'],
+      productEntitlement: 'Bantuan Wang Saku',
       penyiasat: 'ahmad_hassan',
       cawangan: 'hq',
       tarikhJangkaanBayaran: '2025-05-04'
@@ -1391,7 +1313,7 @@ const getBantuanData = (id) => {
       aid: 'B146',
       aidProduct: 'Bantuan Bencana',
       productPackage: 'BANTUAN BANJIR (FAKIR)',
-      productEntitlement: ['Bantuan Banjir'],
+      productEntitlement: 'Bantuan Banjir',
       penyiasat: 'ahmad_hassan',
       cawangan: 'hq',
       tarikhJangkaanBayaran: '2025-05-04'
@@ -1408,7 +1330,7 @@ const getBantuanData = (id) => {
       aid: 'B315',
       aidProduct: 'Wang Saku',
       productPackage: 'KPIPT (Miskin)',
-      productEntitlement: ['Bantuan Wang Saku'],
+      productEntitlement: 'Bantuan Wang Saku',
       penyiasat: 'ahmad_hassan',
       cawangan: 'hq',
       tarikhJangkaanBayaran: '2025-05-04'
@@ -1425,7 +1347,7 @@ const getBantuanData = (id) => {
       aid: 'B200',
       aidProduct: 'Bantuan Kesihatan',
       productPackage: 'BANTUAN KESIHATAN',
-      productEntitlement: ['Bantuan Kesihatan',],
+      productEntitlement: 'Bantuan Kesihatan',
       penyiasat: 'ahmad_hassan',
       cawangan: 'hq'
     },
@@ -1441,7 +1363,7 @@ const getBantuanData = (id) => {
       aid: 'B100',
       aidProduct: 'Bantuan Rumah',
       productPackage: 'BANTUAN RUMAH',
-      productEntitlement: ['Bantuan Rumah'],
+      productEntitlement: 'Bantuan Rumah',
       penyiasat: 'ahmad_hassan',
       cawangan: 'hq',
       tarikhJangkaanBayaran: '2025-05-04'
@@ -1458,7 +1380,7 @@ const getBantuanData = (id) => {
       aid: 'B150',
       aidProduct: 'Bantuan Makanan',
       productPackage: 'BANTUAN MAKANAN',
-      productEntitlement: ['Bantuan Makanan'],
+      productEntitlement: 'Bantuan Makanan',
       penyiasat: 'ahmad_hassan',
       cawangan: 'hq',
       tarikhJangkaanBayaran: '2025-05-04'
@@ -1470,12 +1392,6 @@ const getBantuanData = (id) => {
 
 // Form data state (populated with data based on ID)
 const formData = ref(getBantuanData(id));
-// Ensure productEntitlement is always an array for checkbox v-model
-if (!Array.isArray(formData.value.productEntitlement)) {
-  formData.value.productEntitlement = formData.value.productEntitlement
-    ? [formData.value.productEntitlement]
-    : [];
-}
 
 // Tooltip state for action buttons
 const tooltips = ref({});
@@ -1672,16 +1588,16 @@ const aid = computed(() => {
 watch(() => formData.value.aid, () => {
   formData.value.aidProduct = "";
   formData.value.productPackage = "";
-  formData.value.productEntitlement = [];
+  formData.value.productEntitlement = "";
 });
 
 watch(() => formData.value.aidProduct, () => {
   formData.value.productPackage = "";
-  formData.value.productEntitlement = [];
+  formData.value.productEntitlement = "";
 });
 
 watch(() => formData.value.productPackage, () => {
-  formData.value.productEntitlement = [];
+  formData.value.productEntitlement = "";
 });
 
 // Compute aid product options based on selected jenis bantuan
@@ -1728,148 +1644,35 @@ const productPackageOptions = computed(() => {
 });
 
 const productEntitlementOptions = computed(() => {
-  console.log('=== Product Entitlement Debug ===');
-  console.log('formData.aid:', formData.value.aid);
-  console.log('formData.aidProduct:', formData.value.aidProduct);
-  console.log('formData.productPackage:', formData.value.productPackage);
-  console.log('bantuanData.bantuan:', bantuanData.value.bantuan);
-  
   if (!formData.value.aid || !formData.value.aidProduct || !formData.value.productPackage || !bantuanData.value.bantuan) {
-    console.log('Early return: missing required data');
-    return [];
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
   }
   
   const aidNode = bantuanData.value.bantuan[formData.value.aid];
-  console.log('aidNode:', aidNode);
   if (!aidNode) {
-    console.log('No aidNode found');
-    return [];
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
   }
   
   const productNode = aidNode[formData.value.aidProduct];
-  console.log('productNode:', productNode);
   if (!productNode) {
-    console.log('No productNode found');
-    return [];
+    return [{ label: "-- Pilih --", value: "", disabled: true }];
   }
   
   const entitlements = productNode[formData.value.productPackage] || [];
-  console.log('entitlements:', entitlements);
   if (!Array.isArray(entitlements) || entitlements.length === 0) {
-    console.log('No valid entitlements found');
-    return [];
+    return [{ label: "Tiada entitlements", value: "", disabled: true }];
   }
   
   const options = entitlements.map((e) => ({ 
     label: e, 
     value: e 
   }));
-  console.log('Final options:', options);
   
-   return options.sort((a, b) => a.label.localeCompare(b.label));
+  return [
+    { label: "-- Pilih --", value: "", disabled: true },
+    ...options.sort((a, b) => a.label.localeCompare(b.label))
+  ];
 });
-
-  // Build entitlement cards from current selections (similar to tambah/index.vue)
-  // Map the selected entitlement strings to card data used by the UI
-const selectedEntitlementProducts = computed(() => {
-  const selected = formData.value?.productEntitlement ?? [];
-  if (!Array.isArray(selected) || selected.length === 0) return [];
-  
-  return selected.map((code, idx) => {
-    const stored = productState[code]?.status ?? 'baru';
-    return {
-      id: `product-${code}`,
-      code,
-      name: code.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-      category: formData.value.aidProduct || '-',
-      status: idx === editingProductIndex.value ? 'sedang_edit' : stored,
-    // Include the actual data arrays used in the template
-    paymentList: paymentList.value,
-    recipientList: recipientList.value,
-    damagedDataList: damagedDataList.value,
-    damagedDataListGrouped: damagedDataListGrouped.value,
-    cleanPaymentList: cleanPaymentList.value,
-    selectedPayments: selectedPayments.value,
-    selectedDocuments: selectedDocuments.value,
-    showImportCards: showImportCards.value,
-    isLoading: isLoading.value,
-    // Helper methods that are used in the template
-    formatCurrency: (amount) => new Intl.NumberFormat('ms-MY', {
-      style: 'currency',
-      currency: 'MYR'
-    }).format(amount || 0),
-    formatFileSize: (bytes) => {
-      if (bytes === 0) return '0 Bytes';
-      const k = 1024;
-      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-    };
-  });
-});
-
-  const getProductStatusVariant = (status) => {
-    const variants = { lengkap: 'success', sedang_edit: 'primary', baru: 'info' };
-    return variants[status] || 'default';
-  };
-
-  const getProductStatusText = (status) => {
-    const map = { lengkap: 'Lengkap', sedang_edit: 'Sedang Edit', baru: 'Baru' };
-    return map[status] || status;
-  };
-
-  // Track per-entitlement status like in tambah page
-  const productState = reactive({});
-  const editingProductIndex = ref(-1);
-
-  // Ensure productState has entries for current selections
-  watch(
-    () => formData.value.productEntitlement,
-    (list) => {
-      if (!Array.isArray(list)) return;
-      list.forEach((code) => {
-        if (!productState[code]) productState[code] = { status: 'baru' };
-      });
-      // Clean up removed codes
-      Object.keys(productState).forEach((code) => {
-        if (!list.includes(code)) delete productState[code];
-      });
-    },
-    { immediate: true, deep: true }
-  );
-
-  const editProduct = (index) => {
-    const card = selectedEntitlementProducts.value[index];
-    if (!card) return;
-    const code = card.code;
-    productState[code] = { ...(productState[code] ?? { status: 'baru' }), status: 'sedang_edit' };
-    editingProductIndex.value = index;
-  };
-
-  const cancelEdit = (index) => {
-    const card = selectedEntitlementProducts.value[index];
-    if (!card) return;
-    const code = card.code;
-    productState[code] = { ...(productState[code] ?? { status: 'baru' }), status: 'baru' };
-    editingProductIndex.value = -1;
-  };
-
-  const saveProduct = (index) => {
-    const card = selectedEntitlementProducts.value[index];
-    if (!card) return;
-    const code = card.code;
-    productState[code] = { ...(productState[code] ?? { status: 'baru' }), status: 'lengkap' };
-    editingProductIndex.value = -1;
-  };
-
-  const removeProduct = (index) => {
-    const list = formData.value?.productEntitlement ?? [];
-    const code = selectedEntitlementProducts.value[index]?.code;
-    if (!code) return;
-    formData.value.productEntitlement = list.filter((c) => c !== code);
-    delete productState[code];
-  };
 
 // Watch for changes in payment and recipient lists for debugging
 watch(
@@ -1913,20 +1716,14 @@ const formatCurrency = (n) => {
 const handleFileUpload = (event) => {
   const file = event.target.files[0];
   if (file) {
-    const fileName = file.name.toLowerCase();
-    const isValidExtension = fileName.endsWith('.xlsx') || fileName.endsWith('.xls') || fileName.endsWith('.csv');
-    const isValidMimeType = file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
-      file.type === "application/vnd.ms-excel" ||
-      file.type === "text/csv" ||
-      file.type === "application/csv" ||
-      file.type === "text/plain" ||
-      file.type === "";
-
-    if (isValidExtension || isValidMimeType) {
+    if (
+      file.type ===
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+      file.type === "application/vnd.ms-excel"
+    ) {
       selectedFile.value = file;
-      console.log('File selected:', file.name, 'Type:', file.type);
     } else {
-      alert("error", "Sila pilih fail Excel yang sah (.xlsx, .xls, atau .csv)");
+      alert("error", "Sila pilih fail Excel yang sah (.xlsx atau .xls)");
       event.target.value = "";
     }
   }
@@ -2488,7 +2285,7 @@ const handleKemaskiniDamagedData = (defectRow) => {
   // Populate the editingPaymentForDefect with payment data
   editingPaymentForDefect.value = {
     pointer: payment.kod,
-    bayaranKepada: payment.recipient,
+    bayaranKepada: payment.bayaranKepada,
     idPermohonan: payment.idPermohonan,
     bankAccount: payment.bankAccount,
     bankName: payment.bankName,
@@ -2660,7 +2457,7 @@ const getStatusVariant = (status) => {
 };
 
 const handleKembali = () => {
-  navigateTo('/BF-BTN/bantuan-bulk/senarai-bulk-processing');
+  navigateTo('/BF-BTN/bantuan-bulk/cipta-bantuan-bulk');
 };
 
 // Download CSV template for Maklumat Bayaran Kepada (Payable To)
@@ -2756,7 +2553,7 @@ const handleSahkanSelected = () => {
   pointer-events: none;
 }
 
-.form-actions {
+  .form-actions {
   position: sticky;
   bottom: 0;
   background-color: white;
