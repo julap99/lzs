@@ -12,7 +12,7 @@
       <template #body>
         <!-- Main Tabs -->
         <rs-tab variant="primary" type="card">
-          <rs-tab-item title="Profiling" active>
+          <rs-tab-item title="Profiling">
             <!-- Profiling Tab Content -->
             <div>
               <h3 class="text-lg font-semibold mb-4 text-gray-800">
@@ -295,7 +295,7 @@
 
               <!-- Sub-tabs for Bantuan -->
               <rs-tab variant="secondary" type="border" class="mb-6">
-                <rs-tab-item title="Permohonan" active v-if="permohonanTable">
+                <rs-tab-item title="Permohonan" v-if="permohonanTable">
                   <!-- Permohonan Sub-tab Content -->
                   <div>
                     <h4 class="text-md font-medium mb-3 text-gray-700">
@@ -653,7 +653,7 @@
                   </div>
                 </rs-tab-item>
 
-                <rs-tab-item title="Siasatan" v-if="siasatanTable">
+                <rs-tab-item title="Siasatan" v-if="siasatanTable" active>
                   <!-- Siasatan Sub-tab Content -->
                   <div>
                     <h4 class="text-md font-medium mb-3 text-gray-700">
@@ -2170,4 +2170,5 @@ const onChangeSimulasiPeranan = () => {
 .tooltip-leave-to {
   opacity: 0;
 }
+
 </style>

@@ -16,56 +16,50 @@
                 <h3 class="text-lg font-medium">Maklumat Pemohon</h3>
               </template>
               <template #body>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormKit
-                  type="text"
-                  name="tarikhPermohonan"
-                  label="Tarikh Permohonan"
-                  :value="formatDateDMY(new Date())"
-                  disabled
-                />
-                <FormKit
-                  type="text"
-                  name="namaPemohon"
-                  label="Nama Pemohon"
-                  :value="userProfile.nama"
-                  disabled
-                />
-                <FormKit
-                  type="text"
-                  name="jenisPengenalan"
-                  label="Jenis Pengenalan"
-                  :value="userProfile.jenisPengenalan"
-                  disabled
-                />
-                <FormKit
-                  type="text"
-                  name="noPengenalan"
-                  label="No. Pengenalan"
-                  :value="userProfile.noKadPengenalan"
-                  disabled
-                />
-                <FormKit
-                  type="text"
-                  name="statusKeluarga"
-                  label="Status Keluarga"
-                  :value="userProfile.statusHousehold"
-                  disabled
-                />
-                <FormKit
-                  type="text"
-                  name="statusIndividu"
-                  label="Status Individu"
-                  :value="userProfile.statusIndividu"
-                  disabled
-                />
-                <FormKit
-                  type="text"
-                  name="statusMultidimensi"
-                  label="Status Multidimensi"
-                  :value="userProfile.statusMultidimensi"
-                  disabled
-                />
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <!-- Left Column -->
+                  <div class="space-y-4">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
+                      <p class="text-sm text-gray-900">{{ userProfile.nama || 'Ali Natasha binti Hussain' }}</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Pengenalan</label>
+                      <p class="text-sm text-gray-900">{{ userProfile.jenisPengenalan || 'MyKad' }}</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">No Telefon</label>
+                      <p class="text-sm text-gray-900">{{ userProfile.noTelefon || '0198765432' }}</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Status Keluarga</label>
+                      <p class="text-sm text-gray-900">{{ userProfile.statusHousehold || 'Fakir' }}</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Status Multidimensi</label>
+                      <p class="text-sm text-gray-900">{{ userProfile.statusMultidimensi || 'Asnaf Tidak Produktif' }}</p>
+                    </div>
+                  </div>
+                  
+                  <!-- Right Column -->
+                  <div class="space-y-4">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
+                      <p class="text-sm text-gray-900">{{ userProfile.alamat || 'No. 456, Jalan Harmoni, Taman Seri Kembangan, 43300 Seri Kembangan, Selangor' }}</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">No Pengenalan</label>
+                      <p class="text-sm text-gray-900">{{ userProfile.noKadPengenalan || '971207020568' }}</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">E-mel</label>
+                      <p class="text-sm text-gray-900">{{ userProfile.emel || 'ali11@gmail.com' }}</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Status Individu</label>
+                      <p class="text-sm text-gray-900">{{ userProfile.statusIndividu || 'Fakir' }}</p>
+                    </div>
+                  </div>
                 </div>
               </template>
             </rs-card>
@@ -123,6 +117,56 @@
                   label="No. Bantuan"
                   :value="noBantuan"
                   disabled
+                />
+
+                <FormKit
+                  type="select"
+                  name="aidType"
+                  label="Aid"
+                  :options="aidTypeOptions"
+                  searchable
+                  :search-attributes="['label']"
+                  :search-filter="(option, search) => option.label.toLowerCase().includes(search.toLowerCase())"
+                  placeholder="Pilih jenis bantuan..."
+                  validation="required"
+                  :validation-messages="{
+                    required: 'Sila pilih jenis bantuan',
+                  }"
+                  v-model="formData.aidType"
+                />
+
+                <FormKit
+                  type="select"
+                  name="aidProduct"
+                  label="Aid Product"
+                  :options="aidProductOptionsCustom"
+                  searchable
+                  :search-attributes="['label']"
+                  :search-filter="(option, search) => option.label.toLowerCase().includes(search.toLowerCase())"
+                  placeholder="Pilih produk bantuan..."
+                  validation="required"
+                  :validation-messages="{
+                    required: 'Sila pilih produk bantuan',
+                  }"
+                  :disabled="!formData.aidType"
+                  v-model="formData.aidProduct"
+                />
+
+                <FormKit
+                  type="select"
+                  name="productPackage"
+                  label="Product Package"
+                  :options="productPackageOptionsCustom"
+                  searchable
+                  :search-attributes="['label']"
+                  :search-filter="(option, search) => option.label.toLowerCase().includes(search.toLowerCase())"
+                  placeholder="Pilih pakej produk..."
+                  validation="required"
+                  :validation-messages="{
+                    required: 'Sila pilih pakej produk',
+                  }"
+                  :disabled="!formData.aidProduct"
+                  v-model="formData.productPackage"
                 />
 
                 <CustomSelect
@@ -817,6 +861,129 @@
   });
   const jumlahKeseluruhanFormatted = computed(() => {
     return `RM ${Number(jumlahKeseluruhan.value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  });
+
+  // 3.3 Maklumat Permohonan Bantuan helpers
+  const aidTypeOptions = [
+    { label: "-- Pilih Jenis Bantuan --", value: "", disabled: true },
+    { label: "B102 - (HQ) BANTUAN BINAAN RUMAH (FAKIR)", value: "B102" },
+    { label: "B104 - BANTUAN PEMBELIAN RUMAH KOS RENDAH /SEDERHANA (FAKIR)", value: "B104" },
+  ];
+
+  // Aid Product options based on selected Aid Type
+  const aidProductOptionsCustom = computed(() => {
+    if (!formData.value.aidType) {
+      return [{ label: "-- Pilih Aid terlebih dahulu --", value: "", disabled: true }];
+    }
+
+    const baseOption = { label: "-- Pilih Produk Bantuan --", value: "", disabled: true };
+
+    if (formData.value.aidType === "B102") {
+      return [
+        baseOption,
+        { label: "(HQ) BANTUAN BINAAN RUMAH (FAKIR)", value: "HQ_BINAAN_RUMAH" },
+        { label: "(HQ) BANTUAN PEMBELIAN RUMAH KOS RENDAH/SEDERHANA (FAKIR)", value: "HQ_PEMBELIAN_RUMAH" },
+      ];
+    }
+
+    if (formData.value.aidType === "B104") {
+      return [
+        baseOption,
+        { label: "KATEGORI PENDIDIKAN (FAKIR)", value: "KATEGORI_PENDIDIKAN" },
+        { label: "KATEGORI MAKAN/MINUM (FAKIR)", value: "KATEGORI_MAKAN_MINUM" },
+        { label: "KATEGORI RAWATAN/PERUBATAN (FAKIR)", value: "KATEGORI_RAWATAN" },
+        { label: "KATEGORI PAKAIAN ASAS (FAKIR)", value: "KATEGORI_PAKAIAN" },
+        { label: "KATEGORI PENGANGKUTAN (FAKIR)", value: "KATEGORI_PENGANGKUTAN" },
+        { label: "KATEGORI TEMPAT TINGGAL/RUMAH (FAKIR)", value: "KATEGORI_TEMPAT_TINGGAL" },
+      ];
+    }
+
+    return [{ label: "-- Pilih Aid terlebih dahulu --", value: "", disabled: true }];
+  });
+
+  // Watch for changes in Aid Type and reset Aid Product
+  watch(() => formData.value.aidType, (newAidType, oldAidType) => {
+    if (newAidType !== oldAidType) {
+      formData.value.aidProduct = "";
+    }
+  });
+
+  // Product Package options based on selected Aid Product
+  const productPackageOptionsCustom = computed(() => {
+    if (!formData.value.aidProduct) {
+      return [{ label: "-- Pilih Aid Product terlebih dahulu --", value: "", disabled: true }];
+    }
+
+    const baseOption = { label: "-- Pilih Pakej Produk --", value: "", disabled: true };
+
+    if (formData.value.aidProduct === "HQ_BINAAN_RUMAH") {
+      return [
+        baseOption,
+        { label: "(PEROLEHAN) BINA RUMAH (FAKIR)", value: "PEROLEHAN_BINA_RUMAH" },
+        { label: "(WO) 3 BILIK (FAKIR) - TANGGUNGAN 3-6 ORANG", value: "WO_3_BILIK" },
+        { label: "PEMANTAUAN DAN PENGAWASAN TAPAK PROJEK (FAKIR)", value: "PEMANTAUAN_PENGAWASAN" },
+      ];
+    }
+
+    if (formData.value.aidProduct === "HQ_PEMBELIAN_RUMAH") {
+      return [
+        baseOption,
+        { label: "(HQ) ANSURAN TERTUNGGAK (FAKIR)", value: "HQ_ANSURAN_TERTUNGGAK" },
+        { label: "(HQ) BAKI AKHIR (FAKIR)", value: "HQ_BAKI_AKHIR" },
+        { label: "(HQ) BAYARAN DEPOSIT PEMBELIAN(FAKIR)", value: "HQ_BAYARAN_DEPOSIT" },
+        { label: "(HQ) PEMBELIAN RUMAH PBT (FAKIR)", value: "HQ_PEMBELIAN_RUMAH_PBT" },
+        { label: "(HQ) SEPARA PEMBIAYAAN (FAKIR)", value: "HQ_SEPARA_PEMBIAYAAN" },
+      ];
+    }
+
+    // For B104 products - specific packages based on categories
+    if (formData.value.aidProduct === "KATEGORI_PENDIDIKAN") {
+      return [
+        baseOption,
+        { label: "KECEMASAN (FAKIR) - PENDIDIKAN (PERALATAN DAN KEPERLUAN PEMBELAJARAN)", value: "KECEMASAN_PENDIDIKAN" },
+        { label: "KEPERLUAN PENDIDIKAN (FAKIR) - SELEPAS TAHUN PERTAMA", value: "KEPERLUAN_SELEPAS_TAHUN_PERTAMA" },
+        { label: "KEPERLUAN PENDIDIKAN (FAKIR) - TAHUN PERTAMA", value: "KEPERLUAN_TAHUN_PERTAMA" },
+        { label: "TUNGGAKAN YURAN SEKOLAH/IPT (FAKIR)", value: "TUNGGAKAN_YURAN" },
+      ];
+    }
+
+    if (formData.value.aidProduct === "KATEGORI_MAKAN_MINUM") {
+      return [
+        baseOption,
+        { label: "KEPERLUAN MAKAN/MINUM (FAKIR)", value: "KEPERLUAN_MAKAN_MINUM" },
+      ];
+    }
+
+    if (formData.value.aidProduct === "KATEGORI_RAWATAN") {
+      return [
+        baseOption,
+        { label: "(PTJ) KEPERLUAN RAWATAN/PERUBATAN (FAKIR) - BIL RAWATAN ASAS SEMASA", value: "PTJ_BIL_RAWATAN_ASAS" },
+        { label: "(PTJ) KEPERLUAN RAWATAN/PERUBATAN (FAKIR) - PERALATAN SOKONGAN ASAS PERUBATAN", value: "PTJ_PERALATAN_SOKONGAN" },
+        { label: "(PTJ) KEPERLUAN RAWATAN/PERUBATAN (FAKIR) - UBAT-UBATAN", value: "PTJ_UBAT_UBATAN" },
+        { label: "BANTUAN BERKHITAN", value: "BANTUAN_BERKHITAN" },
+        { label: "BANTUAN CERMIN MATA", value: "BANTUAN_CERMIN_MATA" },
+        { label: "KEPERLUAN RAWATAN/PERUBATAN (FAKIR) - BIL RAWATAN ASAS SEMASA", value: "BIL_RAWATAN_ASAS" },
+        { label: "KEPERLUAN RAWATAN/PERUBATAN (FAKIR) - PERALATAN SOKONGAN ASAS PERUBATAN", value: "PERALATAN_SOKONGAN" },
+        { label: "KEPERLUAN RAWATAN/PERUBATAN (FAKIR) - UBAT-UBATAN", value: "UBAT_UBATAN" },
+      ];
+    }
+
+    // For other B104 products, we can add default packages or return empty for now
+    if (formData.value.aidType === "B104") {
+      return [
+        baseOption,
+        { label: "PAKEJ STANDARD", value: "PAKEJ_STANDARD" },
+      ];
+    }
+
+    return [{ label: "-- Pilih Aid Product terlebih dahulu --", value: "", disabled: true }];
+  });
+
+  // Watch for changes in Aid Product and reset Product Package
+  watch(() => formData.value.aidProduct, (newAidProduct, oldAidProduct) => {
+    if (newAidProduct !== oldAidProduct) {
+      formData.value.productPackage = "";
+    }
   });
 
   // 3.4 Maklumat Penerima Bayaran helpers
