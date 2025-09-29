@@ -143,12 +143,12 @@ const columns = [
 ]
 
 // Mock data - filtered for Pengguna Luar (only their organization and branches)
-// This represents a user from Pusat Asuhan OKU As-Solihin
+// This represents a user from Masjid Sultan Salahuddin Abdul Aziz Shah
 const organisasiList = ref([
   {
     noRujukan: 'ORG-202507-0001',
-    namaOrganisasi: 'Pusat Asuhan OKU As-Solihin',
-    jenisOrganisasi: 'NGO',
+    namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
+    jenisOrganisasi: 'Masjid',
     jenisStruktur: 'HQ',
     tarikhPermohonan: '15/7/2025',
     status: 'Disahkan',
@@ -156,8 +156,8 @@ const organisasiList = ref([
   },
   {
     noRujukan: 'ORG-202506-0002',
-    namaOrganisasi: 'Pusat Asuhan OKU As-Solihin - Cawangan Bangi',
-    jenisOrganisasi: 'NGO',
+    namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Petaling Jaya',
+    jenisOrganisasi: 'Masjid',
     jenisStruktur: 'Cawangan',
     tarikhPermohonan: '16/7/2025',
     status: 'Disahkan',
@@ -165,8 +165,8 @@ const organisasiList = ref([
   },
   {
     noRujukan: 'ORG-202505-0003',
-    namaOrganisasi: 'Pusat Asuhan OKU As-Solihin - Cawangan Shah Alam',
-    jenisOrganisasi: 'NGO',
+    namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Klang',
+    jenisOrganisasi: 'Masjid',
     jenisStruktur: 'Cawangan',
     tarikhPermohonan: '17/7/2025',
     status: 'Menunggu Pengesahan',
@@ -174,8 +174,8 @@ const organisasiList = ref([
   },
   {
     noRujukan: 'ORG-202507-0004',
-    namaOrganisasi: 'Pusat Asuhan OKU As-Solihin - Cawangan Klang',
-    jenisOrganisasi: 'NGO',
+    namaOrganisasi: 'Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Shah Alam',
+    jenisOrganisasi: 'Masjid',
     jenisStruktur: 'Cawangan',
     tarikhPermohonan: '18/7/2025',
     status: 'Disahkan',
