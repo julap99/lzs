@@ -903,29 +903,18 @@
                   <label class="text-sm font-medium text-gray-700">Jumlah Bajet Semasa</label>
                   <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
                     <span class="text-sm text-gray-900">
-                      {{ showBajetInfo ? `RM ${jumlahBajetSemasa.toLocaleString()}` : '0.00' }}
+                      RM {{ jumlahBajetSemasa.toLocaleString() }}
                     </span>
                   </div>
-                  <rs-button 
-                    variant="primary-outline" 
-                    size="sm" 
-                    @click="handleSemakanBajet"
-                    :disabled="showBajetInfo"
-                    class="w-full mt-2"
-                  >
-                    Semakan Bajet
-                  </rs-button>
                 </div>
                 <div class="space-y-1">
                   <label class="text-sm font-medium text-gray-700">Bajet Mencukupi</label>
                   <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                    <span v-if="!showBajetInfo" class="text-sm text-gray-500">
-                      
-                    </span>
-                    <rs-badge v-else :variant="bajetCukupVariant" class="text-sm">
+                    <rs-badge :variant="bajetCukupVariant" class="text-sm">
                       {{ bajetCukupText }}
                     </rs-badge>
                   </div>
+                  <p class="text-xs text-gray-500 mt-1">Jumlah bajet disemak pada {{ currentTimestamp }}</p>
                 </div>
               </div>
             </template>
@@ -1372,21 +1361,31 @@ const jumlahKeseluruhan = computed(() => {
   return kadar * tempoh
 })
 
-// Bajet semasa (mock: RM 1,000,000)
-const jumlahBajetSemasa = ref(1000000)
-const showBajetInfo = ref(false)
+// Bajet semasa (pre-filled with 12.3 million)
+const jumlahBajetSemasa = ref(12300000)
+const showBajetInfo = ref(true)
 
-// Bajet mencukupi?
-const bajetCukup = computed(() => {
-  const semasa = Number(jumlahBajetSemasa.value) || 0
-  const diperlukan = Number(jumlahKeseluruhan.value) || 0
-  return semasa >= diperlukan
-})
+// Bajet mencukupi - always set to "Ya"
+const bajetCukup = computed(() => true)
 
-const bajetCukupText = computed(() => (bajetCukup.value ? 'Ya' : 'Tidak'))
-const bajetCukupVariant = computed(() => (bajetCukup.value ? 'success' : 'danger'))
+const bajetCukupText = computed(() => 'Ya')
+const bajetCukupVariant = computed(() => 'success')
 
-// Handler for Semakan Bajet button
+// Current timestamp for budget check
+const currentTimestamp = computed(() => {
+  const now = new Date();
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const year = now.getFullYear();
+  const hours = now.getHours();
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const displayHours = hours % 12 || 12;
+  const time = `${displayHours}:${minutes} ${ampm}`;
+  return `${day}/${month}/${year}, ${time}`;
+});
+
+// Handler for Semakan Bajet button (no longer needed but keeping for compatibility)
 const handleSemakanBajet = () => {
   showBajetInfo.value = true
 }

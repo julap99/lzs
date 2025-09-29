@@ -830,12 +830,7 @@
                     </rs-badge>
                     <span v-else class="text-gray-900">{{ budgetInfo.bajetMencukupi }}</span>
                   </div>
-                </div>
-                
-                <div class="pt-2">
-                  <rs-button variant="success" @click="checkBudget">
-                    Semakan Bajet
-                  </rs-button>
+                  <p class="text-xs text-gray-500 mt-1">Jumlah bajet disemak pada {{ currentTimestamp }}</p>
                 </div>
               </div>
             </template>
@@ -1460,9 +1455,23 @@ const siasatanDetails = ref({
 // Maklumat Bajet
 const budgetInfo = ref({
   kodBajet: "A-200400-1000-1-P-1-B103",
-  jumlahBajetSemasa: "0.00",
-  bajetMencukupi: "",
+  jumlahBajetSemasa: "RM15,500,000.00",
+  bajetMencukupi: "Ya",
 })
+
+// Current timestamp for budget check
+const currentTimestamp = computed(() => {
+  const now = new Date();
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const year = now.getFullYear();
+  const hours = now.getHours();
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const displayHours = hours % 12 || 12;
+  const time = `${displayHours}:${minutes} ${ampm}`;
+  return `${day}/${month}/${year}, ${time}`;
+});
 
 // Maklumat Kelulusan
 const approvalInfo = ref({
