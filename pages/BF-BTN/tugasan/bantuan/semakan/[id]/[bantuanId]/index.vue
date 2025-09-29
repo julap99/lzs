@@ -85,6 +85,21 @@
                     />
                   </div>
 
+                  <div class="space-y-1" v-if="route.params.bantuanId !== 'B134'">
+                    <FormKit
+                      type="text"
+                      name="aidProduct"
+                      label="Aid Product"
+                      placeholder="Contoh: Bantuan Sewaan/Ansuran Rumah (Miskin)"
+                      validation="required"
+                      :validation-messages="{
+                        required: 'Aid Product diperlukan'
+                      }"
+                      :classes="{ outer: 'mb-0' }"
+                      v-model="formData.aidProduct"
+                    />
+                  </div>
+
                   <div class="space-y-1" v-if="route.params.bantuanId === 'B134'">
                     <FormKit
                       type="select"

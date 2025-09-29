@@ -86,7 +86,7 @@
                       variant="primary"
                       size="sm"
                       class="p-1 flex gap-2"
-                      @click="handleReview(text)"
+                      @click="navigateTo('/BF-BTN/mohon-bantuan')"
                     >
                       Semak
                     </rs-button>
@@ -392,8 +392,11 @@ const bantuanColumns = [
     sortable: true,
   },
   {
-    key: "tarikhPermohonan",
-    label: "Tarikh Permohonan",
+    sortable: true,
+  },
+  {
+    key: "jumlah",
+    label: "Jumlah (RM)",
     sortable: true,
   },
   {
@@ -418,15 +421,17 @@ const permohonanData = ref([
     namaBantuan: "Bantuan Makanan",
     status: "Permohonan Dihantar",
     kekerapan: "Bulanan",
-    tarikhPermohonan: "2024-01-15",
+    // tarikhPermohonan: "2024-01-15",
+      jumlah: 150.0,
     aksi: "B001",
   },
   {
     noBantuan: "B002",
     namaBantuan: "Bantuan Pendidikan",
-    status: "Dalam Semakan",
+    status: "Pending Dokumen",
     kekerapan: "Sekali",
-    tarikhPermohonan: "2024-01-16",
+    // tarikhPermohonan: "2024-01-16",
+      jumlah: 800.0,
     aksi: "B002",
   },
   {
@@ -434,7 +439,8 @@ const permohonanData = ref([
     namaBantuan: "Bantuan Perubatan",
     status: "Dalam Siasatan",
     kekerapan: "Bulanan",
-    tarikhPermohonan: "2024-01-17",
+    // tarikhPermohonan: "2024-01-17",
+      jumlah: 300.0,
     aksi: "B003",
   },
   {
@@ -442,7 +448,8 @@ const permohonanData = ref([
     namaBantuan: "Bantuan Rumah",
     status: "Dalam Kelulusan",
     kekerapan: "Sekali",
-    tarikhPermohonan: "2024-01-18",
+    // tarikhPermohonan: "2024-01-18",
+      jumlah: 5000.0,
     aksi: "B004",
   },
 ]);
@@ -454,7 +461,8 @@ const lulusData = ref([
     namaBantuan: "Bantuan BaikPulih Rumah AM (Miskin)",
     status: "Lulus",
     kekerapan: "Sekali",
-    tarikhPermohonan: "2024-01-10",
+    // tarikhPermohonan: "2024-01-10",
+      jumlah: 12000.0,
     aksi: "B005",
   },
   {
@@ -462,7 +470,8 @@ const lulusData = ref([
     namaBantuan: "Bantuan Kematian",
     status: "Lulus",
     kekerapan: "Sekali",
-    tarikhPermohonan: "2024-01-12",
+    // tarikhPermohonan: "2024-01-12",
+      jumlah: 1000.0,
     aksi: "B006",
   },
   {
@@ -471,6 +480,7 @@ const lulusData = ref([
     status: "Lulus",
     kekerapan: "Sekali",
     tarikhPermohonan: "2024-01-14",
+      jumlah: 500.0,
     aksi: "B007",
   },
   {
@@ -478,7 +488,8 @@ const lulusData = ref([
     namaBantuan: "(HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)",
     status: "Lulus",
     kekerapan: "Sekali",
-    tarikhPermohonan: "2025-08-09",
+    // tarikhPermohonan: "2025-08-09",
+      jumlah: 2500.0,
     aksi: "B010",
   },
   {
@@ -486,7 +497,8 @@ const lulusData = ref([
     namaBantuan: "(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS)",
     status: "Lulus",
     kekerapan: "Sekali",
-    tarikhPermohonan: "2025-09-09",
+    // tarikhPermohonan: "2025-09-09",
+      jumlah: 3000.0,
     aksi: "B011",
   },
 ]);
@@ -498,7 +510,8 @@ const ditolakData = ref([
     namaBantuan: "Bantuan Perniagaan",
     status: "Tidak Lulus",
     kekerapan: "Sekali",
-    tarikhPermohonan: "2024-01-05",
+    // tarikhPermohonan: "2024-01-05",
+      jumlah: 7000.0,
     aksi: "B008",
   },
 ]);
@@ -638,7 +651,7 @@ const paginationEndDitolak = computed(() => {
 // Methods
 const handleReview = (noBantuan) => {
   console.log("Review bantuan:", noBantuan);
-  navigateTo(`/BF-BTN/mohon-bantuan/${noBantuan}`);
+  navigateTo(`/BF-BTN/bantuan/${noBantuan}`);
 };
 
 const handleCancel = (noBantuan) => {
@@ -652,6 +665,7 @@ const getStatusVariant = (status) => {
   const variants = {
     "permohonan dihantar": "info",
     "dalam semakan": "warning",
+    "pending dokumen": "danger",
     "dalam siasatan": "warning",
     "dalam kelulusan": "secondary",
     lulus: "success",
