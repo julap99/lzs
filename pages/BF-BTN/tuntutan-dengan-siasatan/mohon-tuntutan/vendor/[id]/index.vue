@@ -13,36 +13,21 @@
                 <p class="mt-1 text-gray-600">{{ formData.namaPemohon }}</p>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700">No. Kad Pengenalan / No. Vendor</label>
+                <label class="block text-sm font-medium text-gray-700">No. Vendor</label>
                 <p class="mt-1 text-gray-600">{{ formData.noPengenalan }}</p>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700">No. Telefon</label>
                 <p class="mt-1 text-gray-600">{{ formData.noTelefonPemohon }}</p>
               </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Kategori Asnaf</label>
-                <p class="mt-1 text-gray-600">{{ formData.kategoriAsnaf }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Status Household</label>
-                <rs-badge :variant="getStatusVariant(formData.statusHousehold)">{{ formData.statusHousehold }}</rs-badge>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Status Individu</label>
-                <rs-badge :variant="getStatusVariant(formData.statusIndividu)">{{ formData.statusIndividu }}</rs-badge>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Status Multidimensi</label>
-                <rs-badge :variant="getStatusVariant(formData.statusMultidimensi)">{{ formData.statusMultidimensi }}</rs-badge>
-              </div>
+              
             </div>
           </RsTabItem>
 
           <RsTabItem title="Maklumat Bantuan">
             <h3 class="text-lg font-medium mb-4">Maklumat Bantuan</h3>
             <div class="bg-gray-50 p-4 rounded-lg mb-6">
-              <h4 class="text-md font-medium mb-4">Maklumat Asnaf</h4>
+              <h4 class="text-lg font-medium mb-4">Maklumat Asnaf</h4>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label class="block text-sm font-medium text-gray-700">Nama</label>
@@ -76,6 +61,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormKit v-model="formData.noBtn" type="text" label="No. Bantuan" readonly :classes="{ input: 'bg-gray-100 cursor-not-allowed' }" />
               <FormKit v-model="formData.aidProduct" type="text" label="Jenis Bantuan" readonly :classes="{ input: 'bg-gray-100 cursor-not-allowed' }" />
             </div>
 
@@ -568,12 +554,12 @@ const createInvoice = () => {
     diNo: 'DI-001',
     glNo: selectedGlNo.value,
     paNo: '',
-    statusKelulusan: 'Menunggu Kelulusan',
+    statusKelulusan: '',
     amaun: newInvoice.value.amaun
   }
-  
+
   invoices.value.push(invoice)
-  
+
   // Add uploaded files to documents
   if (newInvoice.value.lampiran && newInvoice.value.lampiran.length > 0) {
     newInvoice.value.lampiran.forEach((file, index) => {
@@ -617,14 +603,7 @@ const handleSaveDraft = () => {
   })
 }
 
-const handleSubmit = () => {
-  $swal.fire({
-    title: 'Tuntutan Dihantar',
-    text: 'Tuntutan telah berjaya dihantar untuk semakan.',
-    icon: 'success',
-    confirmButtonText: 'OK'
-  })
-}
+const handleSubmit = () => {}
 
 // Hydrate entirely from :id preset, fallback to default session mock if unknown
 onMounted(() => {
