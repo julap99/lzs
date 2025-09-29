@@ -77,15 +77,16 @@
 
                 <template v-slot:tindakan="{ text }">
                   <div class="flex space-x-3">
-                    <!-- BA Requirement 15: Changed icon from mata to document -->
+                    <!-- View Button - Role-based navigation -->
                     <button
                       @click="viewItem(text.id)"
-                      title="Lihat"
+                      title="Papar"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
                       <Icon name="mdi:file-document-outline" size="20" class="text-primary" />
                     </button>
-                    <!-- Kemaskini -->
+                    
+                    <!-- Edit Button per role rules -->
                     <button
                       v-if="showEditAction(text.status)"
                       @click="editItem(text.id)"
@@ -93,24 +94,6 @@
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
                       <Icon name="ic:outline-edit" size="20" class="text-warning" />
-                    </button>
-                    <!-- Semak (Eksekutif) -->
-                    <button
-                      v-if="showSemakAction(text.status)"
-                      @click="handleSemakPengesahan(text.id)"
-                      title="Semak"
-                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                    >
-                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
-                    </button>
-                    <!-- Lulus (Ketua Jabatan) -->
-                    <button
-                      v-if="showLulusAction(text.status)"
-                      @click="handleKelulusan(text.id)"
-                      title="Lulus"
-                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                    >
-                      <Icon name="material-symbols:check-circle-outline" size="20" class="text-success" />
                     </button>
                   </div>
                 </template>
@@ -148,13 +131,13 @@
 
                 <template v-slot:tindakan="{ text }">
                   <div class="flex space-x-3">
-                    <!-- View Button - Always available -->
+                    <!-- View Button - Role-based navigation -->
                     <button
                       @click="viewItem(text.id)"
-                      title="Lihat"
+                      title="Papar"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                      <Icon name="mdi:file-document-outline" size="20" class="text-primary" />
                     </button>
                     <!-- Edit Button - per role rules -->
                     <button
@@ -201,13 +184,13 @@
 
                 <template v-slot:tindakan="{ text }">
                   <div class="flex space-x-3">
-                    <!-- View Button - Always available -->
+                    <!-- View Button - Role-based navigation -->
                     <button
                       @click="viewItem(text.id)"
-                      title="Lihat"
+                      title="Papar"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                      <Icon name="mdi:file-document-outline" size="20" class="text-primary" />
                     </button>
                   </div>
                 </template>
@@ -245,13 +228,13 @@
 
                 <template v-slot:tindakan="{ text }">
                   <div class="flex space-x-3">
-                    <!-- View Button - Always available -->
+                    <!-- View Button - Role-based navigation -->
                     <button
                       @click="viewItem(text.id)"
-                      title="Lihat"
+                      title="Papar"
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
-                      <Icon name="ic:baseline-visibility" size="20" class="text-primary" />
+                      <Icon name="mdi:file-document-outline" size="20" class="text-primary" />
                     </button>
                     
                     <!-- Edit Button per role rules -->
@@ -262,26 +245,6 @@
                       class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
                     >
                       <Icon name="ic:outline-edit" size="20" class="text-warning" />
-                    </button>
-                    
-                    <!-- Semak (Eksekutif) -->
-                    <button
-                      v-if="showSemakAction(text.status)"
-                      @click="handleSemakPengesahan(text.id)"
-                      title="Semak"
-                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                    >
-                      <Icon name="iconamoon:arrow-right-2-duotone" size="20" class="text-info" />
-                    </button>
-                    
-                    <!-- Lulus (Ketua Jabatan) -->
-                    <button
-                      v-if="showLulusAction(text.status)"
-                      @click="handleKelulusan(text.id)"
-                      title="Lulus"
-                      class="flex items-center justify-center w-8 h-8 p-0 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                    >
-                      <Icon name="material-symbols:check-circle-outline" size="20" class="text-success" />
                     </button>
                     
                     <!-- Delete Button - Only for Eksekutif role -->
@@ -596,14 +559,6 @@ const showEditAction = (status) => {
   return false;
 };
 
-const showSemakAction = (status) => {
-  return currentUserRole.value === 'Eksekutif' && status === 'Menunggu Pengesahan';
-};
-
-const showLususStatuses = ['Menunggu Pengesahan', 'Dalam Semakan Pelulus'];
-const showLulusAction = (status) => {
-  return currentUserRole.value === 'Ketua Jabatan' && showLususStatuses.includes(status);
-};
 
 // Backward-compat leftover helpers (kept for reuse if referenced)
 const canEdit = (status) => showEditAction(status);
@@ -628,10 +583,19 @@ const performSearch = () => {
 };
 
 // CRUD Operations
-const viewItem = (id) => navigateTo(`/BF-PRF/OR/PP/view/${id}`);
+const viewItem = (id) => {
+  // Role-based navigation for view button
+  if (currentUserRole.value === 'Eksekutif') {
+    navigateTo(`/BF-PRF/OR/PP/view/eksekutif/${id}`);
+  } else if (currentUserRole.value === 'Ketua Jabatan') {
+    navigateTo(`/BF-PRF/OR/PP/view/ketua-jabatan/${id}`);
+  } else {
+    // Default view for other roles (PenggunaLuar, Staf Zakat, etc.)
+    navigateTo(`/BF-PRF/OR/PP/view/${id}`);
+  }
+};
 const editItem = (id) => navigateTo(`/BF-PRF/OR/PP/kemaskini/${id}`);
-const handleSemakPengesahan = (id) => navigateTo(`/BF-PRF/OR/PP/view/eksekutif/${id}`);
-const handleKelulusan = (id) => navigateTo(`/BF-PRF/OR/PP/view/ketua-jabatan/${id}`);
+
 
 // Delete operations
 const confirmDelete = (id, item) => {
