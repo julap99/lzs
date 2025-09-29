@@ -203,29 +203,28 @@
       <h4 class="text-md font-medium mb-3">Maklumat Tempat Tinggal</h4>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div :class="getFieldClasses('addressInfo.status_kediaman')" class="p-2 rounded">
-          <FormKit
-            type="select"
-            name="status_kediaman"
-            label="Status Kediaman Tempat Tinggal"
-            :options="[
-              'Milik Sendiri Tidak Berbayar',
-              'Milik Sendiri Berbayar',
-              'Sewa',
-              'Kuarters Majikan',
-              'Tumpang Rumah Ibu/Bapa/Mertua',
-              'Pusaka',
-              'Sumbangan LZS / PPRT / RISDA',
-              'Lain-lain',
-            ]"
-            validation="required"
-            v-model="formData.addressInfo.status_kediaman"
-            :disabled="readOnly"
-            :validation-messages="{
-              required: 'Status kediaman adalah wajib',
-            }"
-          />
-        </div>
+
+        <FormKit
+          type="select"
+          name="kadar_sewa_tempat_tinggal"
+          label="Kadar Sewa Tempat Tinggal"
+          :options="[
+            'Milik Sendiri Tidak Berbayar',
+            'Milik Sendiri Berbayar',
+            'Sewa',
+            'Kuarters Majikan',
+            'Tumpang Rumah Ibu/Bapa/Mertua',
+            'Pusaka',
+            'Sumbangan LZS / PPRT / RISDA',
+            'Lain-lain',
+          ]"
+          validation="required"
+          v-model="formData.addressInfo.status_kediaman"
+          :disabled="readOnly"
+          :validation-messages="{
+            required: 'Status kediaman adalah wajib',
+          }"
+        />
 
         <FormKit
           type="text"
@@ -241,20 +240,18 @@
           }"
         />
 
-        <div :class="getFieldClasses('addressInfo.keadaan_kediaman')" class="p-2 rounded">
-          <FormKit
-            type="select"
-            name="keadaan_kediaman"
-            label="Keadaan Kediaman"
-            :options="['Baik', 'Sempurna', 'Uzur', 'Separa Uzur']"
-            validation="required"
-            v-model="formData.addressInfo.keadaan_kediaman"
-            :disabled="readOnly"
-            :validation-messages="{
-              required: 'Keadaan kediaman adalah wajib',
-            }"
-          />
-        </div>
+        <FormKit
+          type="select"
+          name="keadaan_kediaman"
+          label="Keadaan Kediaman"
+          :options="['Baik', 'Uzur', 'Separa Uzur']"
+          validation="required"
+          v-model="formData.addressInfo.keadaan_kediaman"
+          :disabled="readOnly"
+          :validation-messages="{
+            required: 'Keadaan kediaman adalah wajib',
+          }"
+        />
       </div>
 
       <!-- Kos Tempat Tinggal Section -->
