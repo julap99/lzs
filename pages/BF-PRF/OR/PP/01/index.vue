@@ -34,6 +34,19 @@
                 placeholder="Masukkan nama organisasi"
               />
 
+              <FormKit
+              v-if="shouldShowDaerah"
+                type="select"
+                name="daerah"
+                label="Daerah"
+                validation="required"
+                :options="daerahOptions"
+                placeholder="Pilih daerah"
+                v-model="formData.daerah"
+                :validation-messages="{ required: 'Daerah adalah wajib' }"
+                :disabled="!formData.organizationType"
+              />
+
               <!-- Jenis ID (ID FR 3.1.2) -->
               <FormKit
                 type="select"
@@ -54,19 +67,7 @@
               />
             </div>
 
-            <div v-if="shouldShowDaerah" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-              <FormKit
-                type="select"
-                name="daerah"
-                label="Daerah"
-                validation="required"
-                :options="daerahOptions"
-                placeholder="Pilih daerah"
-                v-model="formData.daerah"
-                :validation-messages="{ required: 'Daerah adalah wajib' }"
-                :disabled="!formData.organizationType"
-              />
-            </div>
+            
 
             <!-- Search Method Info -->
             <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
