@@ -59,28 +59,6 @@
             </div>
           </div>
 
-          <!-- Eksekutif Review Section -->
-          <div v-if="eksekutifReview" class="mb-8">
-            <h3 class="text-lg font-semibold mb-4 text-gray-900">Ulasan Eksekutif</h3>
-            <div class="p-6 border border-gray-200 rounded-lg bg-blue-50">
-              <div class="grid grid-cols-2 gap-4">
-                <div class="py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Status:</span>
-                  <rs-badge :variant="getStatusVariant(eksekutifReview.status)" class="ml-2">
-                    {{ eksekutifReview.status }}
-                  </rs-badge>
-                </div>
-                <div class="py-2 border-b border-gray-100">
-                  <span class="font-medium text-gray-600">Tarikh Ulasan:</span>
-                  <span class="text-gray-900 ml-2">{{ formatDate(eksekutifReview.reviewDate) }}</span>
-                </div>
-                <div v-if="eksekutifReview.justification" class="py-2 col-span-2">
-                  <span class="font-medium text-gray-600">Ulasan:</span>
-                  <p class="text-gray-900 mt-1">{{ eksekutifReview.justification }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
                 
           <!-- Maklumat Asas -->
           <h3 class="text-lg font-semibold mb-4 text-gray-900">Maklumat Asas</h3>
@@ -241,10 +219,33 @@
             </div>
           </div>
 
+          <!-- Eksekutif Review Section -->
+          <div v-if="eksekutifReview" class="mb-8">
+            <h3 class="text-lg font-semibold mb-4 text-gray-900">Ulasan Eksekutif</h3>
+            <div class="p-6 border border-gray-200 rounded-lg">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="py-2 border-b border-gray-100">
+                  <span class="font-medium text-gray-600">Status:</span>
+                  <rs-badge :variant="getStatusVariant(eksekutifReview.status)" class="ml-2">
+                    {{ eksekutifReview.status }}
+                  </rs-badge>
+                </div>
+                <div class="py-2 border-b border-gray-100">
+                  <span class="font-medium text-gray-600">Tarikh Ulasan:</span>
+                  <span class="text-gray-900 ml-2">{{ formatDate(eksekutifReview.reviewDate) }}</span>
+                </div>
+                <div v-if="eksekutifReview.justification" class="py-2 col-span-2">
+                  <span class="font-medium text-gray-600">Ulasan:</span>
+                  <p class="text-gray-900 mt-1">{{ eksekutifReview.justification }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Keputusan Kelulusan - Ketua Jabatan Section -->
           <div v-if="organisasiData.status === 'Dalam Semakan Pelulus'" class="mb-8">
             <h3 class="text-lg font-semibold mb-4 text-gray-900">Keputusan Kelulusan</h3>
-            <div class="p-6 border border-gray-200 rounded-lg bg-green-50">
+            <div class="p-6 border border-gray-200 rounded-lg bg-orange-50">
               <div class="space-y-4">
                 <!-- Status Kelulusan -->
                 <div>
