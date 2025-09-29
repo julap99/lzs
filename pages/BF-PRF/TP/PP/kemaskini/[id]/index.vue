@@ -152,6 +152,15 @@
             :value="formData.penamaAkaunBank"
           />
 
+          <FormKit
+            type="text"
+            name="swiftCode"
+            label="SWIFT Code"
+            v-model="currentSwiftCode"
+            readonly
+            disabled
+            placeholder="SWIFT Code akan dipaparkan berdasarkan bank yang dipilih"
+          />
           <div class="flex justify-between mt-6">
             <rs-button variant="primary-outline" @click="prevStep">
               Kembali
@@ -416,6 +425,32 @@ const bankOptions = [
   'UOB Bank'
 ];
 
+// Bank to SWIFT Code mapping
+const bankSwiftCodes = {
+  'Maybank': 'MAYBMYKL',
+  'CIMB Bank': 'CIBBMYKL',
+  'Public Bank': 'PBBEMYKL',
+  'RHB Bank': 'RHBBMYKL',
+  'Hong Leong Bank': 'HLBBMYKL',
+  'AmBank': 'ARBKMYKL',
+  'Bank Islam': 'BIMBMYKL',
+  'Bank Rakyat': 'BKRMMYKL',
+  'Bank Muamalat': 'BMMBMYKL',
+  'OCBC Bank': 'OCBCMYKL',
+  'HSBC Bank': 'HBMBMYKL',
+  'Standard Chartered Bank': 'SCBLMYKL',
+  'Citibank': 'CITIMYKL',
+  'UOB Bank': 'UOVBMYKL'
+};
+
+// Function to get SWIFT code based on selected bank
+const getSwiftCodeForBank = (bankName) => {
+  return bankSwiftCodes[bankName] || '';
+};
+
+// Reactive SWIFT code that updates when bank changes
+const currentSwiftCode = ref('');
+
 const getIdPlaceholder = () => {
   switch (formData.value.jenisPengenalan) {
     case "mykad": return "Contoh: 880101123456";
@@ -670,6 +705,19 @@ watch(
     formData.value.idPengenalan = "";
     formData.value.idSyarikat = "";
   }
+);
+
+// Watch for changes in bank selection to update SWIFT code
+watch(
+  () => formData.value.namaBank,
+  (newBank) => {
+    if (newBank) {
+      currentSwiftCode.value = getSwiftCodeForBank(newBank);
+    } else {
+      currentSwiftCode.value = '';
+    }
+  },
+  { immediate: true }
 );
 </script>
 
