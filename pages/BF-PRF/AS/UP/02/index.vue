@@ -254,6 +254,7 @@
           <TanggunganKesihatanForms
             v-if="currentStepB === 5"
             :get-current-tanggungan="getCurrentTanggungan"
+            :next-label="nextVisibleStepLabel"
             @prev-step="prevStepB"
             @next-step="nextStepB"
             @save-step="handleSaveStepB"
@@ -696,6 +697,16 @@ const prevStepB = () => {
     currentStepB.value = prevId;
   }
 };
+
+// Next visible step label for dynamic button text
+const nextVisibleStepLabel = computed(() => {
+  const ids = visibleStepsB.value.map((s) => s.id);
+  const greater = ids.filter((id) => id > currentStepB.value);
+  if (!greater.length) return '';
+  const nextId = greater[0];
+  const next = visibleStepsB.value.find((s) => s.id === nextId);
+  return next?.label || '';
+});
 
 // Simple handlers for Section B actions
 const handleSaveStepB = () => {
