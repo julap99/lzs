@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Senarai Tuntutan (EOAD / ETD)</h2>
+          <h2 class="text-xl font-semibold">Senarai Tuntutan</h2>
         </div>
       </template>
 
@@ -140,9 +140,11 @@ type TindakanCell = { noTuntutan: string; status: string }
 type Row = TuntutanListItem & { tindakan: TindakanCell }
 
 const breadcrumb = ref([
-  { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad' },
-  { name: 'Senarai Tuntutan', type: 'current', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad' },
+  { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/eoad' },
+  { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/eoad' },
+  { name: 'Semakan Tuntutan', type: 'current', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/eoad' },
 ])
+
 
 /** ========== Seed list (local only to this file) ========== */
 const baseList = ref<TuntutanListItem[]>([
@@ -166,10 +168,8 @@ const tuntutanList = ref<Row[]>(
 
 /** ========== Table config ========== */
 const columns = [
-  { key: 'noTuntutan', label: 'No. Tuntutan / ID Tuntutan', sortable: true },
-  { key: 'noGL', label: 'No. GL', sortable: true },
+  { key: 'noTuntutan', label: 'No. Tuntutan', sortable: true },
   { key: 'namaPemohon', label: 'Nama Pemohon / Institusi', sortable: true },
-  { key: 'maklumatBantuan', label: 'Maklumat Bantuan', sortable: true },
   { key: 'tarikhTuntutan', label: 'Tarikh Tuntutan', sortable: true },
   { key: 'amaunTuntutan', label: 'Amaun Tuntutan (RM)', sortable: true },
   { key: 'statusPermohonan', label: 'Status Permohonan', sortable: true },
