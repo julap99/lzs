@@ -1650,70 +1650,56 @@ export default [
         icon: "iconamoon:component-fill",
         child: [
           {
-            title: "Tuntutan Dengan Siasatan",
+            title: "Mohon Tuntutan",
             icon: "iconamoon:arrow-right-2-duotone",
             child: [
               {
-                title: "Pemohon",
+                title: "Mohon Tuntutan (Asnaf)",
                 icon: "iconamoon:arrow-right-2-duotone",
-                child: [
-                  {
-                    title: "Senarai Tuntutan (Vendor)",
-                    icon: "iconamoon:arrow-right-2-duotone",
-                    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
-                    child: [],
-                    meta: {},
-                  },
-                  {
-                    title: "Mohon Tuntutan (Vendor)",
-                    icon: "iconamoon:arrow-right-2-duotone",
-                    path: "/BF-BTN/tuntutan-dengan-siasatan/carian-tuntutan",
-                    child: [],
-                    meta: {},
-                  },
-                  {
-                    title: "Senarai Tuntutan (Asnaf)",
-                    icon: "iconamoon:arrow-right-2-duotone",
-                    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-asnaf",
-                    child: [],
-                    meta: {},
-                  },
-                  {
-                    title: "Mohon Tuntutan (Asnaf)",
-                    icon: "iconamoon:arrow-right-2-duotone",
-                    path: "/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan-asnaf",
-                    child: [],
-                    meta: {},
-                  },
-                ],
+                path: "/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan-asnaf",
+                child: [],
                 meta: {},
               },
               {
-                title: "EOAD",
+                title: "Mohon Tuntutan (Vendor)",
                 icon: "iconamoon:arrow-right-2-duotone",
-                child: [
-                  {
-                    title: "Senarai Tuntutan (EOAD)",
-                    icon: "iconamoon:arrow-right-2-duotone",
-                    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad",
-                    child: [],
-                    meta: {},
-                  },
-                ],
+                path: "/BF-BTN/tuntutan-dengan-siasatan/carian-tuntutan",
+                child: [],
+                meta: {},
+              },
+            ],
+            meta: {},
+          },
+          {
+            title: "Semakan Tuntutan (EOAD)",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Kelulusan Tuntutan (Pelulus)",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus",
+            child: [],
+            meta: {},
+          },
+          {
+            title: "Senarai Tuntutan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            child: [
+              {
+                title: "Senarai Tuntutan (Asnaf)",
+                icon: "iconamoon:arrow-right-2-duotone",
+                path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-asnaf",
+                child: [],
                 meta: {},
               },
               {
-                title: "Pelulus",
+                title: "Senarai Tuntutan (Vendor)",
                 icon: "iconamoon:arrow-right-2-duotone",
-                child: [
-                  {
-                    title: "Senarai Tuntutan (Pelulus)",
-                    icon: "iconamoon:arrow-right-2-duotone",
-                    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus",
-                    child: [],
-                    meta: {},
-                  },
-                ],
+                path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
+                child: [],
                 meta: {},
               },
             ],
