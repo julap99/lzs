@@ -69,7 +69,7 @@
               <rs-button
                 variant="primary"
                 size="sm"
-                @click="viewBantuan(text)"
+                @click="editBantuan(text)"
                 title="Kemaskini"
               >
                 <Icon name="ic:baseline-edit" class="w-4 h-4" />
@@ -302,11 +302,6 @@ const breadcrumb = ref([
 
 // Table columns configuration
 const columns = [
-  {
-    key: 'bil',
-    label: 'Bil.',
-    sortable: true,
-  },
   {
     key: 'id',
     label: 'Kod BP',
