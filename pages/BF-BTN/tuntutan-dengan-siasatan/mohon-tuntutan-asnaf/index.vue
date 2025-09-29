@@ -311,7 +311,8 @@ const saveSelectedAndGo = (row) => {
     console.warn('Unable to save selected bantuan in sessionStorage', e)
   }
   // Selaraskan dengan breadcrumb (halaman mohon tuntutan asnaf)
-  navigateTo('/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan')
+  const id = payload.noBantuan || String(payload)
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan-asnaf/${encodeURIComponent(id)}`)
 }
 
 const handleBulkApproval = async () => {
@@ -325,12 +326,12 @@ const breadcrumb = ref([
   {
     name: 'Pengurusan Bantuan',
     type: 'link',
-    path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan',
+    path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor',
   },
   {
     name: 'Tuntutan',
     type: 'link',
-    path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan',
+    path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor',
   },
   {
     name: 'Mohon Tuntutan',

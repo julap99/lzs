@@ -66,7 +66,7 @@
               variant="ghost"
               size="sm"
               class="text-blue-600 hover:text-blue-800"
-              @click="navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/${value.noBantuan}`)"
+              @click="navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan-vendor/${value.noBantuan}`)"
               title="Mohon Tuntutan"
             >
               +

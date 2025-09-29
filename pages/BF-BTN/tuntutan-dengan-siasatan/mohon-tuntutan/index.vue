@@ -483,13 +483,13 @@
 import { ref, computed, onMounted } from 'vue'
 import { useNuxtApp, navigateTo, useRoute } from '#app'
 
-definePageMeta({ title: 'Mohon Tuntutan (TDS-01)' })
+definePageMeta({ title: 'Mohon Tuntutan (Vendor)' })
 const { $swal } = useNuxtApp()
 
 const breadcrumb = ref([
-  { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan' },
-  { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan' },
-  { name: 'Mohon Tuntutan', type: 'current', path: '/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan' }
+  { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor' },
+  { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor' },
+  { name: 'Mohon Tuntutan (Vendor)', type: 'current', path: '/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan-vendor' }
 ])
 
 const formData = ref({
@@ -965,7 +965,7 @@ const handleSubmit = async () => {
     console.log('Submitting form:', formDataToSubmit)
 
     await $swal.fire({ icon: 'success', title: 'Berjaya!', text: 'Permohonan tuntutan anda telah berjaya dihantar', confirmButtonText: 'OK' })
-    navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan')
+    navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor')
   } catch (error) {
     console.error('Error submitting form:', error)
   }
@@ -977,7 +977,7 @@ const handleSaveDraft = async () => {
     console.log('Saving draft:', draftData)
 
     await $swal.fire({ icon: 'success', title: 'Berjaya!', text: 'Permohonan tuntutan anda telah berjaya disimpan sebagai "Draf"', confirmButtonText: 'OK' })
-    navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan')
+    navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor')
   } catch (error) {
     console.error('Error saving draft:', error)
   }
