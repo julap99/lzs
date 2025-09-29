@@ -591,8 +591,8 @@ watch(
 
 // Role-based tindakan visibility
 const showEditAction = (status) => {
+  // Only Eksekutif can perform Kemaskini (Update)
   if (currentUserRole.value === 'Eksekutif') return true;
-  if (currentUserRole.value === 'Ketua Jabatan') return true;
   return false;
 };
 
