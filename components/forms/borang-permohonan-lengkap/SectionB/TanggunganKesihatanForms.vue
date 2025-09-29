@@ -235,7 +235,7 @@
           >Simpan</rs-button
         >
         <rs-button type="button" variant="primary" @click="$emit('next-step')"
-          >{{ nextLabel || 'Maklumat Kemahiran' }}</rs-button
+          >Maklumat Kemahiran</rs-button
         >
       </div>
     </div>
@@ -248,10 +248,6 @@ const props = defineProps({
   getCurrentTanggungan: {
     type: Function,
     required: true
-  },
-  nextLabel: {
-    type: String,
-    default: ''
   },
   readOnly: {
     type: Boolean,

@@ -184,17 +184,17 @@ const breadcrumb = ref([
   {
     name: "Tuntutan dengan Siasatan",
     type: "link",
-    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
+    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor",
   },
   {
     name: "Senarai Tuntutan",
     type: "link",
-    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
+    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor",
   },
   {
     name: "Lihat Tuntutan Dalam Semakan",
     type: "current",
-    path: `/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/${route.params.id}/view-dalam-semakan`,
+    path: `/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor/${route.params.id}/view-dalam-semakan`,
   },
 ]);
 
@@ -481,7 +481,7 @@ const downloadDocument = (doc) => {
 };
 
 const handleBack = () => {
-  navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan");
+  navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor");
 };
 </script>
 

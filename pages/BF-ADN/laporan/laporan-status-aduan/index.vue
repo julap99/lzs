@@ -195,7 +195,7 @@ const hasSearched = ref(false)
 const results = ref([])
 
 const tableColumns = [
-  { key: 'tarikhAduan',     label: 'Tarikh Aduan' },
+  { key: 'tarikhAduan',     label: 'Tarikh & Masa' },
   { key: 'idAduan',         label: 'ID Aduan' },
   { key: 'individuDibantu', label: 'Individu Dibantu' },
   { key: 'tahapAduan',      label: 'Tahap Aduan' },

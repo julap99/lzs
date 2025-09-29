@@ -1042,7 +1042,7 @@
                             <option v-for="opt in registrationOptions" :key="opt" :value="opt">{{ opt }}</option>
                           </select>
                         </div>
-                        <rs-badge :variant="editingPBStatus === 'unverified' ? 'warning' : 'success'" class="mb-0.5">{{ editingPBStatus || 'verified' }}</rs-badge>
+                        <rs-badge :variant="editingPBStatus === 'belum disahkan' ? 'warning' : 'success'" class="mb-0.5">{{ editingPBStatus || 'disahkan' }}</rs-badge>
                         <rs-button variant="primary" class="!py-2" @click="showAddRegistration = true">Tambah Baru</rs-button>
                       </div>
                     </div>
@@ -2368,7 +2368,7 @@ const selectedEntitlementProducts = computed(() => {
           namaPemegangAkaun: '',
           bank: '',
           noAkaunBank: '',
-          status: 'verified'
+          status: 'disahkan'
         },
         kadarBantuan: {
           kadarBantuan: 0,
@@ -3246,7 +3246,7 @@ const editingPBNoAkaun = computed({
   set: (val) => { const d = currentEditingProductData.value; if (d) d.penerimaBayaran.noAkaunBank = val }
 })
 const editingPBStatus = computed({
-  get: () => currentEditingProductData.value?.penerimaBayaran.status ?? 'verified',
+  get: () => currentEditingProductData.value?.penerimaBayaran.status ?? 'disahkan',
   set: (val) => { const d = currentEditingProductData.value; if (d) d.penerimaBayaran.status = val }
 })
 
@@ -3267,10 +3267,10 @@ const loadEditingPenerimaByRegistration = () => {
   if (!d) return
   const no = d.penerimaBayaran.noPendaftaran
   const registrationData = {
-    '800101101234 -Ahmad bin Saif': { namaPenerima: 'Ahmad bin Ali', namaPemegangAkaun: 'Ahmad bin Ali', bank: 'MAYBANK', noAkaunBank: '162345678901', status: 'verified' },
-    '202201012345(1234567-W) -Syarikat Maju Jaya': { namaPenerima: 'Syarikat Maju Jaya', namaPemegangAkaun: 'Syarikat Maju Jaya', bank: 'CIMB', noAkaunBank: '8000123456', status: 'verified' },
-    '550303109999 -Noraini bt Yusuf': { namaPenerima: 'Noraini bt Yusuf', namaPemegangAkaun: 'Noraini bt Yusuf', bank: 'RHB', noAkaunBank: '123456789012', status: 'verified' },
-    '990101019999 -Siti Aminah binti Hassan': { namaPenerima: 'Siti Aminah binti Hassan', namaPemegangAkaun: 'Siti Aminah binti Hassan', bank: 'BANK ISLAM', noAkaunBank: '140123456789', status: 'unverified' },
+    '800101101234 -Ahmad bin Saif': { namaPenerima: 'Ahmad bin Ali', namaPemegangAkaun: 'Ahmad bin Ali', bank: 'MAYBANK', noAkaunBank: '162345678901', status: 'disahkan' },
+    '202201012345(1234567-W) -Syarikat Maju Jaya': { namaPenerima: 'Syarikat Maju Jaya', namaPemegangAkaun: 'Syarikat Maju Jaya', bank: 'CIMB', noAkaunBank: '8000123456', status: 'disahkan' },
+    '550303109999 -Noraini bt Yusuf': { namaPenerima: 'Noraini bt Yusuf', namaPemegangAkaun: 'Noraini bt Yusuf', bank: 'RHB', noAkaunBank: '123456789012', status: 'disahkan' },
+    '990101019999 -Siti Aminah binti Hassan': { namaPenerima: 'Siti Aminah binti Hassan', namaPemegangAkaun: 'Siti Aminah binti Hassan', bank: 'BANK ISLAM', noAkaunBank: '140123456789', status: 'belum disahkan' },
   }
   if (registrationData[no]) {
     d.penerimaBayaran.namaPenerima = registrationData[no].namaPenerima
@@ -3368,7 +3368,7 @@ const saveNewRegistration = () => {
     d.penerimaBayaran.noKadPengenalan = newRegistration.value.noPengenalan
     d.penerimaBayaran.bank = newRegistration.value.bank
     d.penerimaBayaran.noAkaunBank = newRegistration.value.noAkaun
-    d.penerimaBayaran.status = 'unverified'
+    d.penerimaBayaran.status = 'belum disahkan'
   }
   showAddRegistration.value = false
   newRegistration.value = { 

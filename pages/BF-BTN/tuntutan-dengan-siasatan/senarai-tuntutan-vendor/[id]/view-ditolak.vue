@@ -304,17 +304,17 @@ const breadcrumb = ref([
   {
     name: "Tuntutan dengan Siasatan",
     type: "link",
-    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
+    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor",
   },
   {
     name: "Senarai Tuntutan",
     type: "link",
-    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
+    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor",
   },
   {
     name: "Lihat Tuntutan Ditolak",
     type: "current",
-    path: `/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/${route.params.id}/view-ditolak`,
+    path: `/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor/${route.params.id}/view-ditolak`,
   },
 ]);
 
@@ -367,7 +367,7 @@ const formatDate = (dateString) => {
 
 // Action handlers
 const handleBack = () => {
-  navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan");
+  navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor");
 };
 </script>
 
