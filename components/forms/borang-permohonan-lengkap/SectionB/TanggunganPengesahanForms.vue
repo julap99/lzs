@@ -49,7 +49,7 @@
       </div>
     </div>
 
-    <!-- <div class="mb-6" v-if="screenType === 'selfservice'">
+    <div class="mb-6" v-if="screenType === 'selfservice'">
       <h4 class="font-medium mb-3">Bantuan Penolong Amil</h4>
       <div class="flex flex-col gap-2">
         <label class="font-medium"
@@ -90,7 +90,7 @@
           :validation="screenType === 'selfservice' ? 'required' : ''"
           v-model="formData.pengesahan.tarikh_bantuan" />
       </div>
-    </div> -->
+    </div>
 
     <!-- Hubungan kekeluargaan dengan kakitangan LZS? -->
     <div class="mb-6">

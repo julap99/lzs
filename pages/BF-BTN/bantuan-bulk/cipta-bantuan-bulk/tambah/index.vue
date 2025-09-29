@@ -343,7 +343,7 @@
                     </div>
 
                     <div v-else class="space-y-3">
-                      <!-- <rs-table
+                      <rs-table
                         :data="product.cleanPaymentList"
                         :columns="paymentColumns"
                         :pageSize="5"
@@ -366,80 +366,7 @@
                             />
                           </div>
                         </template>
-                      </rs-table> -->
-                      <!-- Custom Table -->
-                      <div class="overflow-x-auto">
-                        <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
-                          <!-- Table Header -->
-                          <thead class="bg-gray-50">
-                            <tr>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No.</th>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kod</th>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bayaran Kepada</th>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori Asnaf</th>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contributor</th>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recipient</th>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Organization</th>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amaun</th>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mode Of Payment</th>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bank</th>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Akaun</th>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Tindakan
-                              </th>
-                            </tr>
-                          </thead>
-                          <!-- Table Body -->
-                           <tbody class="bg-white divide-y divide-gray-200">
-                             <tr v-for="(payment, index) in product.cleanPaymentList" :key="payment.kod" 
-                                 class="hover:bg-gray-50 transition-colors duration-150">
-                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                                 {{ index + 1 }}
-                               </td>
-                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                 {{ payment.kod }}
-                               </td>
-                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                 {{ payment.bayaranKepada }}
-                               </td>
-                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                 {{ payment.asnaf }}
-                               </td>
-                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                 {{ payment.contributor }}
-                               </td>
-                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                 {{ payment.recipient }}
-                               </td>
-                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                 {{ payment.organization }}
-                               </td>
-                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                                 {{ formatCurrency(payment.amaun) }}
-                               </td>
-                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                 {{ payment.modeOfPayment || '-' }}
-                               </td>
-                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                 {{ payment.bankName }}
-                               </td>
-                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                 {{ payment.accountNumber || '-' }}
-                               </td>
-                               <td class="px-4 py-4 whitespace-nowrap">
-                                 <div class="flex justify-center">
-                                   <input
-                                     type="checkbox"
-                                     :value="payment.kod"
-                                     v-model="selectedPayments"
-                                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                                   />
-                                 </div>
-                               </td>
-                             </tr>
-                           </tbody>
-                        </table>
-                      </div>
+                      </rs-table>
                     </div>
                   </template>
                 </rs-card>
@@ -533,7 +460,7 @@
                       <div class="flex items-center space-x-3">
                         <div class="flex-shrink-0">
                           <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
-                            <Icon name="material-symbols:person" class="w-6 h-6 text-teal-600" />
+                            <Icon name="material-symbols:people" class="w-6 h-6 text-teal-600" />
                           </div>
                         </div>
                         <div>
@@ -578,49 +505,53 @@
                     </div>
                   </template>
                 </rs-card>
-              </div>
+
+                
+
                 <!-- Action Buttons -->
                 <div class="flex items-center justify-between mt-4 pt-3 border-t border-gray-200">
-                  <div v-if="product.status === 'sedang_edit'" class="flex space-x-2">
-                    <rs-button 
-                      variant="success" 
-                      size="sm"
-                      @click="saveProduct(index)"
-                    >
-                      Simpan
-                    </rs-button>
-                    <rs-button 
-                      variant="secondary" 
-                      size="sm"
-                      @click="cancelEdit(index)"
-                    >
-                      Batal
-                    </rs-button>
-                  </div>
-                  <div v-else class="flex space-x-2">
-                    <rs-button 
-                      variant="primary" 
-                      size="sm"
-                      @click="editProduct(index)"
-                    >
-                      Edit
-                    </rs-button>
-                    <button 
-                      @click="removeProduct(index)"
-                      class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
-                    >
-                      <Icon name="ph:trash" class="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
+                       <div v-if="product.status === 'sedang_edit'" class="flex space-x-2">
+                         <rs-button 
+                           variant="success" 
+                           size="sm"
+                           @click="saveProduct(index)"
+                         >
+                           Simpan
+                         </rs-button>
+                         <rs-button 
+                           variant="secondary" 
+                           size="sm"
+                           @click="cancelEdit"
+                         >
+                           Batal
+                         </rs-button>
+                       </div>
+                       <div v-else class="flex space-x-2">
+                         <rs-button 
+                           variant="primary" 
+                           size="sm"
+                           @click="editProduct(index)"
+                         >
+                           Edit
+                         </rs-button>
+                         <button 
+                           @click="removeProduct(index)"
+                           class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
+                         >
+                           <Icon name="ph:trash" class="w-4 h-4" />
+                         </button>
+                       </div>
+                     </div>
+                
+              </div>
+
+             <!-- Empty State -->
+              <div v-if="selectedEntitlementProducts.length === 0" class="col-span-full text-center py-8 text-gray-500">
+                <Icon name="ph:gift" class="w-12 h-12 mx-auto mb-2 text-gray-400" />
+                <p class="text-sm">Tiada entitlement product dipilih. Pilih checkbox di atas untuk menambah.</p>
               </div>
             </div>
-
-            <!-- Empty State -->
-            <div v-if="selectedEntitlementProducts.length === 0" class="text-center py-8 text-gray-500">
-              <Icon name="ph:gift" class="w-12 h-12 mx-auto mb-2 text-gray-400" />
-              <p class="text-sm">Tiada entitlement product dipilih. Pilih checkbox di atas untuk menambah.</p>
-            </div>
+          </div>
           </div>
         </template>
       </rs-card>
@@ -1121,12 +1052,12 @@ const saveProduct = (index) => {
   if (!p) return;
   
   // Basic validation example
-  // const isYuran = p.code === 'yuran_pengajian';
-  // if (isYuran) {
-  //   if (!p.kadarBantuan?.jumlahKeseluruhan) return alert('error', 'Isi jumlah keseluruhan');
-  // } else {
-  //   if (!p.kadarBantuan?.kadarBantuan || !p.kadarBantuan?.tempohKekerapan) return alert('error', 'Isi kadar & kekerapan');
-  // }
+  const isYuran = p.code === 'yuran_pengajian';
+  if (isYuran) {
+    if (!p.kadarBantuan?.jumlahKeseluruhan) return alert('error', 'Isi jumlah keseluruhan');
+  } else {
+    if (!p.kadarBantuan?.kadarBantuan || !p.kadarBantuan?.tempohKekerapan) return alert('error', 'Isi kadar & kekerapan');
+  }
   
   // Commit status change to 'lengkap'
   productState[p.code] = { ...(productState[p.code] ?? { status: 'baru' }), status: 'lengkap' };
@@ -1377,25 +1308,14 @@ const formatNumber = (number) => {
 const handleFileUpload = (event) => {
   const file = event.target.files[0];
   if (file) {
-    // Check file extension as fallback since MIME types can vary
-    const fileName = file.name.toLowerCase();
-    const isValidExtension = fileName.endsWith('.xlsx') || 
-                            fileName.endsWith('.xls') || 
-                            fileName.endsWith('.csv');
-    
-    // Check MIME types (more comprehensive)
-    const isValidMimeType = file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
-                           file.type === "application/vnd.ms-excel" ||
-                           file.type === "text/csv" ||
-                           file.type === "application/csv" ||
-                           file.type === "text/plain" ||
-                           file.type === "";
-    
-    if (isValidExtension || isValidMimeType) {
+    if (
+      file.type ===
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+      file.type === "application/vnd.ms-excel"
+    ) {
       selectedFile.value = file;
-      console.log('File selected:', file.name, 'Type:', file.type);
     } else {
-      alert("error", "Sila pilih fail Excel yang sah (.xlsx, .xls, atau .csv)");
+      alert("error", "Sila pilih fail Excel yang sah (.xlsx atau .xls)");
       event.target.value = "";
     }
   }

@@ -806,7 +806,7 @@
               <template #header>
               <div class="flex justify-between items-center">
                 <h2 class="text-xl font-semibold">
-                  {{ shouldHideSections ? 'Maklumat Siasatan' : 'Maklumat Lawatan & Siasatan' }}
+                  {{ shouldShowSimpleTitle ? 'Maklumat Siasatan' : 'Maklumat Lawatan & Siasatan' }}
                 </h2>
                 </div>
               </template>
@@ -858,7 +858,7 @@
                   <!-- Bantuan daripada Agensi (moved under Maklumat Lawatan & Siasatan) -->
                   <div>
                     <rs-collapse>
-                      <rs-collapse-item type="card" title="Bantuan daripada Agensi">
+                      <rs-collapse-item v-if="!shouldHideSections" type="card" title="Bantuan daripada Agensi">
                         <div class="p-4">
                           <rs-table
                             :data="otherAgencyAssistance"
@@ -2859,6 +2859,11 @@
   // Check if this is the specific page where sections should be hidden
   const shouldHideSections = computed(() => {
     return route.params.id === 'NAS-2025-0005';
+  });
+
+  // Check if this page should show simplified title
+  const shouldShowSimpleTitle = computed(() => {
+    return route.params.id === 'NAS-2025-0005' || route.params.id === 'NAS-2025-0003' || route.params.id === 'NAS-2025-0004' || route.params.id === 'NAS-2025-0001' || route.params.id === 'NAS-2025-0002';
   });
   
   definePageMeta({
