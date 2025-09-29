@@ -161,31 +161,30 @@
                       </label>
                     </div>
                   </div>
-                  <div class="space-y-1" v-if="route.params.bantuanId === 'B134'">
-                    <FormKit
-                      type="select"
-                      name="entitlementProduct"
-                      label="Entitlement Product"
-                      v-model="formData.entitlementProduct"
-                      :options="[
-                        { label: '-- Pilih Entitlement Product --', value: '', disabled: true },
-                        { label: 'MODERATOR (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM', value: 'MODERATOR (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM' },
-                        { label: 'MODERATOR (MUKIM) - JAIS / MAIS - HONORARIUM', value: 'MODERATOR (MUKIM) - JAIS / MAIS - HONORARIUM' },
-                        { label: 'MODERATOR (NEGERI) - JAIS / MAIS - HONORARIUM', value: 'MODERATOR (NEGERI) - JAIS / MAIS - HONORARIUM' },
-                        { label: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM', value: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM' },
-                        { label: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (MUKIM) - JAIS / MAIS - HONORARIUM', value: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (MUKIM) - JAIS / MAIS - HONORARIUM' },
-                        { label: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (NEGERI) - JAIS / MAIS - HONORARIUM', value: 'PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (NEGERI) - JAIS / MAIS - HONORARIUM' },
-                        { label: 'PENCERAMAH (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM', value: 'PENCERAMAH (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM' },
-                        { label: 'PENCERAMAH TOKOH AWAM (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM', value: 'PENCERAMAH TOKOH AWAM (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM' },
-                        { label: 'PENGERUSI MAJILIS (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM', value: 'PENGERUSI MAJILIS (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM' },
-                        { label: 'SUMBANGAN - HONORARIUM', value: 'SUMBANGAN - HONORARIUM' }
-                      ]"
-                      validation="required"
-                      :validation-messages="{ required: 'Entitlement Product diperlukan' }"
-                      placeholder="Pilih Entitlement Product"
-                      :classes="{ outer: 'mb-0' }"
-                    />
+
+                  <!-- === Template: Entitlement (B134) === -->
+                  <div
+                    class="space-y-1"
+                    v-if="route.params.bantuanId === 'B134' && formData.entitlementProducts?.length"
+                  >
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                      Entitlement Product
+                    </label>
+
+                    <div v-for="item in formData.entitlementProducts" :key="item.id" class="flex items-center">
+                      <input
+                        type="checkbox"
+                        :id="item.id"
+                        :checked="!!item.dipilih"
+                        @change="onToggle(item, $event)"
+                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <label :for="item.id" class="ml-2 text-sm text-gray-700">{{ item.nama }}</label>
+                    </div>
+
                   </div>
+
+
 
 
 
@@ -596,7 +595,7 @@
                           <rs-button
                             variant="primary-outline"
                             size="sm"
-                            @click="editProduct(index)"
+                            @click="editProducts(index)"
                             class="!px-2 !py-1"
                           >
                             <Icon name="ph:pencil" class="w-3 h-3 mr-1" />
@@ -821,6 +820,199 @@
               </div>
             </template>
           </rs-card>
+
+          <rs-card
+            v-if="route.params.bantuanId === 'B134' && editingProductIndex >= 0"
+            ref="externalEditorEl"
+            class="shadow-sm border-0 bg-white"
+          >
+            <template #header>
+              <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                  <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <Icon name="ph:currency-dollar" class="w-6 h-6 text-green-600" />
+                  </div>
+                </div>
+                <div>
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Maklumat Kadar Bantuan
+                  </h2>
+                  <p class="text-sm text-gray-500">
+                    Nilai kadar bantuan yang dicadangkan
+                  </p>
+                </div>
+              </div>
+            </template>
+
+            <template #body>
+              <div class="space-y-6 p-4">
+                <!-- Maklumat Kadar Bantuan -->
+                <div class="bg-gray-50 p-4 rounded-lg border">
+                  <div class="flex items-center space-x-2 mb-3">
+                    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                      <Icon name="ph:currency-dollar" class="w-6 h-6 text-green-600" />
+                    </div>
+                    <div>
+                      <h4 class="text-sm font-semibold text-gray-700">Maklumat Kadar Bantuan</h4>
+                      <p class="text-xs text-gray-500">Nilai kadar bantuan yang dicadangkan</p>
+                    </div>
+                  </div>
+
+                  <div v-if="route.params.bantuanId !== 'B134'" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label class="text-xs font-medium text-gray-600">Kadar Bantuan</label>
+                      <input
+                        v-model="getCurrentEditData().kadarBantuan"
+                        type="number"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="0"
+                        @input="calculateCurrentProductTotal()"
+                      />
+                    </div>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600">Tempoh/Kekerapan</label>
+                      <input
+                        v-model="getCurrentEditData().tempohKekerapan"
+                        type="number"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="0"
+                        @input="calculateCurrentProductTotal()"
+                      />
+                    </div>
+                  </div>
+
+                  <div v-if="route.params.bantuanId !== 'B134'" class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                    <div>
+                      <label class="text-xs font-medium text-gray-600">Tarikh Mula</label>
+                      <input
+                        v-model="getCurrentEditData().tarikhMula"
+                        type="date"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600">Tarikh Tamat</label>
+                      <input
+                        v-model="getCurrentEditData().tarikhTamat"
+                        type="date"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="mt-3">
+                    <label class="text-xs font-medium text-gray-600">Jumlah Keseluruhan Bantuan akan Diterima</label>
+                    <div class="mt-1 p-3 bg-white border rounded-md text-sm">
+                      {{ getCurrentEditData().jumlahKeseluruhan }}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Maklumat Penerima Bayaran -->
+                <div class="bg-gray-50 p-4 rounded-lg border">
+                  <h4 class="text-sm font-semibold text-gray-700 mb-3">Maklumat Penerima Bayaran</h4>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="md:col-span-2">
+                      <label class="text-xs font-medium text-gray-600">Kategori Penerima</label>
+                      <select
+                        v-model="getCurrentEditData().kategoriPenerima"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        @change="loadPenerimaData()"
+                      >
+                        <option value="">Pilih kategori penerima</option>
+                        <option value="asnaf">Asnaf</option>
+                        <option value="vendor">Organisasi</option>
+                        <option value="institusi">Recipient</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label class="text-xs font-medium text-gray-600">Kaedah Pembayaran</label>
+                      <select
+                        v-model="getCurrentEditData().kaedahPembayaran"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        <option value="">Pilih kaedah pembayaran</option>
+                        <option value="EFT">EFT</option>
+                        <option value="Vcash">Vcash</option>
+                        <option value="Cheque">Cheque</option>
+                        <option value="TT">TT</option>
+                        <option value="eWallet">eWallet</option>
+                        <option value="Tunai">Tunai</option>
+                        <option value="Tunai (Kaunter Ekspres)">Tunai (Kaunter Ekspres)</option>
+                        <option value="Tunai (Lapangan)">Tunai (Lapangan)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label class="text-xs font-medium text-gray-600">No. Kad Pengenalan</label>
+                      <input
+                        v-model="getCurrentEditData().noKadPengenalan"
+                        type="text"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="010101-01-0101"
+                      />
+                    </div>
+
+                    <div>
+                      <label class="text-xs font-medium text-gray-600">Nama Penerima</label>
+                      <input
+                        v-model="getCurrentEditData().namaPenerima"
+                        type="text"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Nama Penerima"
+                      />
+                    </div>
+
+                    <div v-if="getCurrentEditData().kaedahPembayaran !== 'Tunai' && getCurrentEditData().kaedahPembayaran !== 'Tunai (Kaunter Ekspres)' && getCurrentEditData().kaedahPembayaran !== 'Tunai (Lapangan)'">
+                      <label class="text-xs font-medium text-gray-600">Nama Pemegang Akaun</label>
+                      <input
+                        v-model="getCurrentEditData().namaPemegangAkaun"
+                        type="text"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Nama Pemegang Akaun"
+                      />
+                    </div>
+
+                    <div v-if="getCurrentEditData().kaedahPembayaran !== 'Tunai' && getCurrentEditData().kaedahPembayaran !== 'Tunai (Kaunter Ekspres)' && getCurrentEditData().kaedahPembayaran !== 'Tunai (Lapangan)'">
+                      <label class="text-xs font-medium text-gray-600">Bank</label>
+                      <select
+                        v-model="getCurrentEditData().bank"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        <option value="">Pilih Bank</option>
+                        <option value="Maybank">Maybank</option>
+                        <option value="CIMB Bank">CIMB Bank</option>
+                        <option value="Public Bank">Public Bank</option>
+                        <option value="RHB Bank">RHB Bank</option>
+                        <option value="Hong Leong Bank">Hong Leong Bank</option>
+                        <option value="AmBank">AmBank</option>
+                        <option value="Bank Islam">Bank Islam</option>
+                        <option value="Bank Muamalat">Bank Muamalat</option>
+                      </select>
+                    </div>
+
+                    <div v-if="getCurrentEditData().kaedahPembayaran !== 'Tunai' && getCurrentEditData().kaedahPembayaran !== 'Tunai (Kaunter Ekspres)' && getCurrentEditData().kaedahPembayaran !== 'Tunai (Lapangan)'">
+                      <label class="text-xs font-medium text-gray-600">No. Akaun Bank</label>
+                      <input
+                        v-model="getCurrentEditData().noAkaunBank"
+                        type="text"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="1234567890"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-2">
+                  <rs-button variant="success" @click="saveProduct(editingProductIndex)">Simpan</rs-button>
+                  <rs-button variant="secondary" @click="cancelEdit">Batal</rs-button>
+                </div>
+              </div>
+            </template>
+          </rs-card>
+
 
           <!-- Section 4: Dokumen Sokongan -->
           <rs-card class="shadow-sm border-0 bg-white">
@@ -2350,7 +2542,7 @@ const mockByBantuanId = {
     aid: "B135 - (HQ) SAGUHATI GALAKAN SAUDARA BARU (MUALAF)",
     aidProduct: "(HQ) SAGUHATI GALAKAN SAUDARA BARU (MUALAF)",
     productPackage: "(HQ) SAGUHATI GALAKAN SAUDARA BARU",
-    entitlementProduct: false,
+    entitlementProduct: true,
     adakahMualaf: "yes",
     tarikhMasukIslam: "2024-03-15",
     namaLain: "Mary Catherine Johnson",
@@ -2428,7 +2620,7 @@ const mockByBantuanId = {
     jenisBantuan: "B134 - BANTUAN PROGRAM PENERAPAN NILAI ISLAM",
     aid: "B134 - BANTUAN PROGRAM PENERAPAN NILAI ISLAM",
     aidProduct: "JAIS / MAIS - HONORARIUM",
-    productPackage: "(JAIS / MAIS - HONORARIUM",
+    productPackage: "JAIS / MAIS - HONORARIUM",
     entitlementProduct: true,
     adakahMualaf: "yes",
     tarikhMasukIslam: "2024-03-15",
@@ -2444,7 +2636,7 @@ const mockByBantuanId = {
         jumlah: 0,
         tempoh: "Sekali",
         status: "Aktif",
-        dipilih: true
+        dipilih: false
       },
       {
         id: "ent-002",
@@ -2454,7 +2646,7 @@ const mockByBantuanId = {
         jumlah: 0,
         tempoh: "Sekali",
         status: "Tersedia",
-        dipilih: true
+        dipilih: false
       },
       {
         id: "ent-003",
@@ -2464,7 +2656,7 @@ const mockByBantuanId = {
         jumlah: 0,
         tempoh: "Sekali",
         status: "Tersedia",
-        dipilih: true
+        dipilih: false
       },
       {
         id: "ent-004",
@@ -2474,7 +2666,7 @@ const mockByBantuanId = {
         jumlah: 0,
         tempoh: "Sekali",
         status: "Tersedia",
-        dipilih: true
+        dipilih: false
       },
       {
         id: "ent-005",
@@ -2484,7 +2676,7 @@ const mockByBantuanId = {
         jumlah: 0,
         tempoh: "Sekali",
         status: "Tersedia",
-        dipilih: true
+        ddipilih: false
       },
       {
         id: "ent-006",
@@ -2494,7 +2686,7 @@ const mockByBantuanId = {
         jumlah: 0,
         tempoh: "Sekali",
         status: "Tersedia",
-        dipilih: true
+        dipilih: false
       },
       {
         id: "ent-007",
@@ -2504,7 +2696,7 @@ const mockByBantuanId = {
         jumlah: 0,
         tempoh: "Sekali",
         status: "Tersedia",
-        dipilih: true
+        dipilih: false
       },
       {
         id: "ent-008",
@@ -2514,7 +2706,7 @@ const mockByBantuanId = {
         jumlah: 0,
         tempoh: "Sekali",
         status: "Tersedia",
-        dipilih: true
+        dipilih: false 
       },
       {
         id: "ent-009",
@@ -2524,7 +2716,7 @@ const mockByBantuanId = {
         jumlah: 0,
         tempoh: "Sekali",
         status: "Tersedia",
-        dipilih: true
+        ddipilih: false
       },
       {
         id: "ent-010",
@@ -2534,7 +2726,7 @@ const mockByBantuanId = {
         jumlah: 0,
         tempoh: "Sekali",
         status: "Tersedia",
-        dipilih: true
+        dipilih: false
       }
     ]
 ,
@@ -2875,6 +3067,41 @@ const editProduct = (index) => {
     toast.info(`Mengedit product: ${product.nama}`);
   }
 };
+const editProducts = (index) => {
+  editingProductIndex.value = index;
+  const product = selectedEntitlements.value[index];
+  if (product) {
+    console.log(`Mengedit product: ${product.nama}`);
+    
+    // Initialize edit data for this product if not exists
+    if (!entitlementEditData.value[index]) {
+      entitlementEditData.value[index] = {
+        kadarBantuan: 30000,
+        tempohKekerapan: 1,
+        tarikhMula: '2024-01-01',
+        tarikhTamat: '2024-12-31',
+        jumlahKeseluruhan: 'RM 30,000.00',
+        kategoriPenerima: 'vendor',
+        kaedahPembayaran: 'Cheque',
+        noKadPengenalan: '254900406XLRQPZSC186',
+        namaPenerima: 'Majlis Agama Islam Selangor (MAIS)',
+        namaPemegangAkaun: 'Majlis Agama Islam Selangor (MAIS)',
+        bank: 'Bank Islam',
+        noAkaunBank: '3214567890321'
+      };
+    }
+    
+    // Scroll to external editor after it appears
+    nextTick(() => {
+      if (externalEditorEl.value) {
+        externalEditorEl.value.$el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+    
+    // Toast notification like in B112
+    toast.info(`Mengedit product: ${product.nama}`);
+  }
+};
 
 const saveProduct = (index) => {
   editingProductIndex.value = -1;
@@ -3146,6 +3373,40 @@ const removeLzsRow = () => {
     lzsDokumenRows.value.pop()
   }
 }
+
+const entitlementOptions = [
+  { id: "mod-bahagian", label: "MODERATOR (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM" },
+  { id: "mod-mukim", label: "MODERATOR (MUKIM) - JAIS / MAIS - HONORARIUM" },
+  { id: "mod-negeri", label: "MODERATOR (NEGERI) - JAIS / MAIS - HONORARIUM" },
+  { id: "pembimbing-bahagian", label: "PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM" },
+  { id: "pembimbing-mukim", label: "PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (MUKIM) - JAIS / MAIS - HONORARIUM" },
+  { id: "pembimbing-negeri", label: "PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (NEGERI) - JAIS / MAIS - HONORARIUM" },
+  { id: "penceramah-semua", label: "PENCERAMAH (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM" },
+  { id: "penceramah-tokoh", label: "PENCERAMAH TOKOH AWAM (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM" },
+  { id: "pengerusi-bahagian", label: "PENGERUSI MAJILIS (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM" },
+  { id: "sumbangan-honorarium", label: "SUMBANGAN - HONORARIUM" },
+];
+
+// Keep a separate array of selected ids (if you need it for API payloads)
+if (!Array.isArray(formData.entitlementProduct)) {
+  formData.entitlementProduct = []; // ensure it's an array, not boolean
+}
+
+function onToggle(item, e) {
+  const checked = !!e.target.checked;
+  item.dipilih = checked;
+
+  const id = String(item.id);
+  const arr = formData.entitlementProduct.map(String);
+  const idx = arr.indexOf(id);
+
+  if (checked && idx === -1) {
+    formData.entitlementProduct.push(id);
+  } else if (!checked && idx !== -1) {
+    formData.entitlementProduct.splice(idx, 1);
+  }
+}
+
 
 /* (Optional) expose for parent usage */
 // defineExpose({

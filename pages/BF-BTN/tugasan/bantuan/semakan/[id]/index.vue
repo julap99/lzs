@@ -62,67 +62,91 @@
                   </template>
 
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
+                    <div v-if="formData.nama">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                         >Nama</label
                       >
                       <p class="text-gray-900">{{ formData.nama }}</p>
                     </div>
-                    <div>
+                    <div v-if="formData.noPendaftaran">
+                      <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >No Pendaftaran</label
+                      >
+                      <p class="text-gray-900">{{ formData.noPendaftaran }}</p>
+                    </div>
+                    <div v-if="formData.struktur">
+                      <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Struktur</label
+                      >
+                      <p class="text-gray-900">{{ formData.struktur }}</p>
+                    </div>
+                    <div v-if="formData.alamat">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                       >Alamat</label
                     >
                       <p class="text-gray-900">{{ formData.alamat }}</p>
                     </div>
-                    <div>
+                    <div v-if="formData.kariah">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                         >Kariah</label
                       >
                       <p class="text-gray-900">{{ formData.kariah }}</p>
                   </div>
-                    <div>
+                    <div v-if="formData.daerah">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                         >Daerah</label
                       >
                       <p class="text-gray-900">{{ formData.daerah }}</p>
                     </div>
-                    <div>
+                    <div v-if="formData.jenisPengenalan">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                         >Jenis Pengenalan</label
                       >
                       <p class="text-gray-900">{{ formData.jenisPengenalan }}</p>
                   </div>
-                    <div>
+                    <div v-if="formData.noPengenalan">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                         >No Pengenalan</label
                       >
                       <p class="text-gray-900">{{ formData.noPengenalan }}</p>
                     </div>
-                    <div>
+                    <div v-if="formData.namaWakil">
+                      <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Nama Wakil</label
+                      >
+                      <p class="text-gray-900">{{ formData.namaWakil }}</p>
+                    </div>
+                    <div v-if="formData.noTelefon">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                         >No Telefon</label
                       >
                       <p class="text-gray-900">{{ formData.noTelefon }}</p>
                   </div>
-                    <div>
+                    <div v-if="formData.email">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                         >E-mel</label
                       >
                       <p class="text-gray-900">{{ formData.email }}</p>
                     </div>
-                    <div>
+                    <div v-if="formData.statusOrganisasi">
+                      <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Status Organisasi</label
+                      >
+                      <p class="text-gray-900">{{ formData.statusOrganisasi }}</p>
+                  </div>
+                    <div v-if="formData.statusKeluarga">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                         >Status Keluarga</label
                       >
                       <p class="text-gray-900">{{ formData.statusKeluarga }}</p>
                   </div>
-                    <div>
+                    <div v-if="formData.statusIndividu">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                       >Status Individu</label
                     >
                       <p class="text-gray-900">{{ formData.statusIndividu }}</p>
                     </div>
-                    <div>
+                    <div v-if="formData.statusMultidimensi">
                       <label class="block text-sm font-medium text-gray-700 mb-1"
                       >Status Multidimensi</label
                     >
@@ -307,7 +331,6 @@
       </div>
     </div>
     </div>
-
 
     <!-- Success Modal -->
     <rs-modal
@@ -560,16 +583,14 @@ const mockByNoRujukan = {
     noRujukan: 'NAS-2025-0007',
     nama: 'Majlis Agama Islam Selangor (MAIS)',
     alamat: 'Tingkat 9 & 10, Menara Utara Bangunan Sultan Idris Shah, 40000 Shah Alam, Selangor',
+    struktur:'HQ',
     kariah: 'Masjid Bandar Utama',
     daerah: 'Shah Alam',
-    jenisPengenalan: 'No. Pendaftaran',
-    noPengenalan: '254900406XLRQPZSC186',
+    noPendaftaran: '254900406XLRQPZSC186',
+    namaWakil: 'Muhammad Haziq bin Sujaini',
     noTelefon: '03-55123458',
-    email: 'haziq@mais.gov.my',
-    statusKeluarga: 'Organisasi',
-    statusIndividu: 'Organisasi',
-    statusMultidimensi: 'Disahkan',
-    statusorganisasi: 'Disahkan',
+    email: 'haziq@mais.gov.my', 
+    statusOrganisasi: 'Disahkan',
     status: 'Dalam Semakan',
           senaraiBantuan: [
             { id: 'B134', jenisBantuan: 'B134 - BANTUAN PROGRAM PENERAPAN NILAI ISLAM', status: 'Dalam Semakan', sla: '3h', tindakan: '' },
@@ -584,10 +605,14 @@ const formData = ref({
   noRujukan: '',
   nama: '',
   alamat: '',
+  struktur: '',
   kariah: '',
   daerah: '',
   jenisPengenalan: '',
   noPengenalan: '',
+  noPendaftaran: '',
+  statusorganisasi: '',
+  namaWakil: '',
   noTelefon: '',
   email: '',
   statusKeluarga: '',
