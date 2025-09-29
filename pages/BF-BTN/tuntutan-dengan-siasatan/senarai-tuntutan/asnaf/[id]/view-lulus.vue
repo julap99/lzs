@@ -245,8 +245,8 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">
                   Status Kelulusan
                 </label>
-                <rs-badge variant="danger" class="text-lg">
-                  Ditolak
+                <rs-badge variant="success" class="text-lg">
+                  Diluluskan
                 </rs-badge>
               </div>
 
@@ -295,7 +295,7 @@
 import { ref } from "vue";
 
 definePageMeta({
-  title: "Lihat Tuntutan Ditolak",
+  title: "Lihat Tuntutan Diluluskan",
 });
 
 const route = useRoute();
@@ -304,32 +304,32 @@ const breadcrumb = ref([
   {
     name: "Tuntutan dengan Siasatan",
     type: "link",
-    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
+    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-asnaf",
   },
   {
     name: "Senarai Tuntutan",
     type: "link",
-    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
+    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-asnaf",
   },
   {
-    name: "Lihat Tuntutan Ditolak",
+    name: "Lihat Tuntutan Diluluskan",
     type: "current",
-    path: `/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/${route.params.id}/view-ditolak`,
+    path: `/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-asnaf/${route.params.id}/view-lulus`,
   },
 ]);
 
 // Sample data - Replace with actual API call
 const tuntutan = ref({
-  idPermohonan: "TUN-2024-006",
-  noGL: "GL-006",
-  amaunTuntutan: 25000.0,
-  amaunGL: 15000.0,
-  tarikhPermohonan: "2024-03-22T09:30:00",
-  tarikhKelulusan: "2024-03-28T16:45:00",
+  idPermohonan: "TUN-2024-002",
+  noGL: "GL-002",
+  amaunTuntutan: 8000.0,
+  amaunGL: 10000.0,
+  tarikhPermohonan: "2024-03-18T09:30:00",
+  tarikhKelulusan: "2024-03-25T14:20:00",
   pegawaiETD: "Siti Aminah binti Abdullah",
   statusGL: "Valid",
-  tarikhPerkhidmatan: "2024-03-20T00:00:00",
-  catatanSemakan: "Permohonan ini tidak dapat diluluskan kerana amaun tuntutan melebihi had yang dibenarkan dalam GL. Amaun tuntutan RM25,000 melebihi had GL sebanyak RM15,000. Selain itu, beberapa dokumen sokongan tidak lengkap dan perlu dilengkapi sebelum permohonan boleh dipertimbangkan semula.",
+  tarikhPerkhidmatan: "2024-03-10T00:00:00",
+  catatanSemakan: "Permohonan ini telah disemak dengan teliti dan memenuhi semua kriteria kelayakan. Dokumen sokongan lengkap dan sah. Amaun tuntutan adalah munasabah dan dalam had yang dibenarkan. Permohonan ini disokong untuk kelulusan.",
   dokumenSokongan: [
     { name: "Dokumen 1.pdf", url: "#" },
     { name: "Dokumen 2.pdf", url: "#" },
@@ -367,7 +367,7 @@ const formatDate = (dateString) => {
 
 // Action handlers
 const handleBack = () => {
-  navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan");
+  navigateTo("/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-asnaf");
 };
 </script>
 

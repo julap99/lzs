@@ -66,7 +66,7 @@
               variant="ghost"
               size="sm"
               class="text-blue-600 hover:text-blue-800"
-              @click="navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan-vendor/${value.noBantuan}`)"
+              @click="navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/vendor/${value.noBantuan}`)"
               title="Mohon Tuntutan"
             >
               +
@@ -110,8 +110,8 @@ definePageMeta({
 })
 
 const breadcrumb = ref([
-  { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan' },
-  { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan' },
+  { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor' },
+  { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor' },
   { name: 'Carian Tuntutan', type: 'current', path: '/BF-BTN/tuntutan-dengan-siasatan/carian-tuntutan' },
 ])
 

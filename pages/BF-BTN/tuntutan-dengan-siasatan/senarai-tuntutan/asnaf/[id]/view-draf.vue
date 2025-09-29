@@ -27,6 +27,23 @@
 
       <template #body>
         <form @submit.prevent="handleSubmit">
+          <!-- Section 1: Pilih GL -->
+          <div class="mb-8">
+            <h3 class="text-lg font-medium mb-4">Pilih GL</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormKit
+                v-model="formData.noGL"
+                type="select"
+                label="Nombor GL"
+                :options="[{ label: 'Sila Pilih...', value: '' }, ...glOptions]"
+                validation="required"
+                :validation-messages="{
+                  required: 'Sila pilih Nombor GL'
+                }"
+                @change="handleGLChange"
+              />
+            </div>
+          </div>
 
           <!-- Section 2: Maklumat Bantuan -->
           <div class="mb-8">
@@ -203,17 +220,17 @@ const breadcrumb = ref([
   {
     name: "Tuntutan dengan Siasatan",
     type: "link",
-    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
+    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-asnaf",
   },
   {
     name: "Senarai Tuntutan",
     type: "link",
-    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
+    path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-asnaf",
   },
   {
     name: "Edit Tuntutan Draf",
     type: "current",
-    path: `/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/${route.params.id}/view-draf`,
+    path: `/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-asnaf/${route.params.id}/view-draf`,
   },
 ]);
 
@@ -364,7 +381,7 @@ const handleSubmit = async () => {
       text: 'Permohonan tuntutan anda telah berjaya dihantar',
       confirmButtonText: 'OK'
     });
-    navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan');
+    navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-asnaf');
   } catch (error) {
     console.error("Error submitting form:", error);
     // Show error message
@@ -392,7 +409,7 @@ const handleSaveDraft = async () => {
       text: 'Permohonan tuntutan anda telah berjaya disimpan sebagai "Draf"',
       confirmButtonText: 'OK'
     });
-    navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan');
+    navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-asnaf');
   } catch (error) {
     console.error("Error saving draft:", error);
     // Show error message
@@ -422,7 +439,7 @@ const handleDelete = async () => {
         text: 'Draf telah berjaya dipadamkan',
         confirmButtonText: 'OK'
       });
-      navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan');
+      navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-asnaf');
     }
   } catch (error) {
     console.error("Error deleting draft:", error);
@@ -431,7 +448,7 @@ const handleDelete = async () => {
 
 // Handle back
 const handleBack = () => {
-  navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan');
+  navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-asnaf');
 };
 
 // Form validation
