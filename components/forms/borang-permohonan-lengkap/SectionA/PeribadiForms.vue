@@ -119,14 +119,7 @@
             />
           </div>
         </div>
-        <FormKit
-          v-if="formData.warganegara === 'Lain-lain'"
-          type="text"
-          name="nopassportlama"
-          label="No Passport Lama"
-          :disabled="readOnly"
-          v-model="formData.nopassportlama"
-        />
+        
 
         <FormKit
           v-if="
@@ -149,6 +142,14 @@
           label="Tarikh tamat passport"
           :disabled="readOnly"
           v-model="formData.passportEndDate"
+        />
+        <FormKit
+          v-if="formData.warganegara === 'Lain-lain'"
+          type="text"
+          name="nopassportlama"
+          label="No Passport Lama"
+          :disabled="readOnly"
+          v-model="formData.nopassportlama"
         />
       </div>
     </div>
