@@ -5,7 +5,7 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="text-xl font-semibold">Senarai Tuntutan (Pelulus)</h2>
+          <h2 class="text-xl font-semibold">Senarai Tuntutan</h2>
         </div>
       </template>
 
@@ -24,10 +24,10 @@
           <!-- ID Permohonan: linkable -->
           <template #idPermohonan="{ text }">
             <a
-              href="#"
-              class="text-primary-600 hover:text-primary-800"
+              href="#" 
+              class="text-primary-600 hover:text-primary-800" 
               @click.prevent="goSemak(String(text))"
-            >
+              >
               {{ text }}
             </a>
           </template>
@@ -350,13 +350,14 @@ const items = ref<TuntutanItem[]>([
 
 /** ========= Page ========= */
 const breadcrumb = ref([
-  { name: 'Tuntutan dengan Siasatan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus' },
-  { name: 'Senarai Tuntutan Pelulus', type: 'current', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus' },
+  { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus' },
+  { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus' },
+  { name: 'Kelulusan Tuntutan', type: 'current', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus' },
 ])
 
 /** Columns */
 const columns: TableColumn[] = [
-  { key: 'idPermohonan', label: 'ID Permohonan', sortable: true },
+  { key: 'idPermohonan', label: 'No. Tuntutan', sortable: true },  // "ID Permohonan" changed to "No. Tuntutan"
   { key: 'noGL', label: 'No. GL', sortable: true },
   { key: 'maklumatBantuan', label: 'Maklumat Bantuan', sortable: true },
   { key: 'pegawaiETD', label: 'Pegawai ETD/EOAD', sortable: true },
