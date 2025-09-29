@@ -201,8 +201,8 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormKit
           type="select"
-          name="status_kediaman"
-          label="Status Kediaman Tempat Tinggal"
+          name="kadar_sewa_tempat_tinggal"
+          label="Kadar Sewa Tempat Tinggal"
           :options="[
             'Milik Sendiri Tidak Berbayar',
             'Milik Sendiri Berbayar',
@@ -239,7 +239,7 @@
           type="select"
           name="keadaan_kediaman"
           label="Keadaan Kediaman"
-          :options="['Baik', 'Sempurna', 'Uzur', 'Separa Uzur']"
+          :options="['Baik', 'Uzur', 'Separa Uzur']"
           validation="required"
           v-model="formData.addressInfo.keadaan_kediaman"
           :disabled="readOnly"
