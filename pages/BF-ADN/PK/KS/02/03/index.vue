@@ -2,7 +2,13 @@
   <div>
     <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <h2 class="text-xl font-bold mb-4 text-center">Butiran Permohonan SLA</h2>
+    <!-- Title + Button -->
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-bold">Butiran Permohonan SLA</h2>
+      <rs-button variant="primary" size="sm" @click="showForm = true">
+        + Tambah Status
+      </rs-button>
+    </div>
 
     <!-- Butiran Permohonan -->
     <rs-card class="mb-4 border-l-4 border-blue-500">
@@ -49,6 +55,52 @@
         </template>
       </rs-card>
     </div>
+
+    <!-- Modal Form -->
+    <div
+      v-if="showForm"
+      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+    >
+      <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
+        <h3 class="text-lg font-semibold mb-4">Tambah Status Baru</h3>
+
+        <!-- Form fields -->
+        <div class="mb-4">
+          <label class="block font-medium mb-1">Status Permohonan</label>
+          <select v-model="newStatus.status" class="w-full border rounded p-2">
+            <option value="">-- Pilih Status --</option>
+            <option value="Diluluskan">Diluluskan</option>
+            <option value="Menunggu Kelulusan">Menunggu Kelulusan</option>
+            <option value="Ditolak">Ditolak</option>
+          </select>
+        </div>
+
+        <div class="mb-4">
+          <label class="block font-medium mb-1">Ulasan Ketua Jabatan</label>
+          <textarea
+            v-model="newStatus.ulasan"
+            rows="3"
+            class="w-full border rounded p-2"
+            placeholder="Masukkan ulasan..."
+          ></textarea>
+        </div>
+
+        <div class="mb-4">
+          <label class="block font-medium mb-1">Tarikh</label>
+          <input
+            type="date"
+            v-model="newStatus.tarikh"
+            class="w-full border rounded p-2"
+          />
+        </div>
+
+        <!-- Action buttons -->
+        <div class="flex justify-end space-x-3">
+          <rs-button variant="secondary" @click="showForm = false">Batal</rs-button>
+          <rs-button variant="primary" @click="simpanStatus">Simpan</rs-button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -72,7 +124,7 @@ const permohonan = ref({
   tarikhPermohonan: "2025-09-10",
 });
 
-// Maklumat Kelulusan (array to allow multiple cards)
+// Maklumat Kelulusan
 const kelulusanList = ref([
   {
     diluluskanOleh: "En. Muhammad Zaki (Ketua Jabatan)",
@@ -91,6 +143,14 @@ const kelulusanList = ref([
   },
 ]);
 
+// State for modal form
+const showForm = ref(false);
+const newStatus = ref({
+  status: "",
+  ulasan: "",
+  tarikh: "",
+});
+
 // Badge coloring
 const getStatusVariant = (status) => {
   if (status === "Diluluskan") return "success";
@@ -106,5 +166,26 @@ const formatDate = (date) => {
     month: "2-digit",
     day: "2-digit",
   });
+};
+
+// Save new status
+const simpanStatus = () => {
+  if (!newStatus.value.status || !newStatus.value.tarikh) {
+    alert("Sila isi semua maklumat wajib.");
+    return;
+  }
+
+  kelulusanList.value.push({
+    status: newStatus.value.status,
+    ulasan: newStatus.value.ulasan,
+    tarikhKelulusan:
+      newStatus.value.status === "Diluluskan" ? newStatus.value.tarikh : null,
+    tarikhSemakan:
+      newStatus.value.status !== "Diluluskan" ? newStatus.value.tarikh : null,
+  });
+
+  // Reset form
+  newStatus.value = { status: "", ulasan: "", tarikh: "" };
+  showForm.value = false;
 };
 </script>

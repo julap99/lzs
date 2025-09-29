@@ -1,70 +1,64 @@
 <template>
   <div>
-    <!-- Breadcrumb -->
     <LayoutsBreadcrumb :items="breadcrumb" />
 
     <!-- Title and Button -->
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-xl font-bold">Senarai Konfigurasi Penutupan Aduan</h2>
-      <button
-        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-        @click="tambahKonfigurasi"
-      >
-        Tambah Konfigurasi
-      </button>
+      <rs-button variant="primary" @click="tambahKonfigurasi">
+        Tambah Penutupan Aduan
+      </rs-button>
     </div>
 
-    <!-- Table -->
-    <div class="overflow-x-auto">
-      <table class="w-full border border-gray-300 rounded-lg overflow-hidden">
-        <thead>
-          <tr class="bg-gray-100 text-left">
-            <th class="px-4 py-2 border">#</th>
-            <th class="px-4 py-2 border">Sebab Penutupan</th>
-            <th class="px-4 py-2 border">Status</th>
-            <th class="px-4 py-2 border">Tindakan</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(item, index) in konfigurasiList"
-            :key="index"
-            class="hover:bg-gray-50"
-          >
-            <td class="px-4 py-2 border">{{ index + 1 }}</td>
-            <td class="px-4 py-2 border">{{ item.sebab }}</td>
-            <td class="px-4 py-2 border">
-              <span
-                v-if="item.status === 'Aktif'"
-                class="bg-green-600 text-white text-xs px-2 py-1 rounded"
-              >
-                Aktif
-              </span>
-              <span
-                v-else
-                class="bg-red-600 text-white text-xs px-2 py-1 rounded"
-              >
-                Tidak Aktif
-              </span>
-            </td>
-            <td class="px-4 py-2 border space-x-2">
-              <button
-                class="bg-cyan-500 hover:bg-cyan-600 text-white text-sm px-3 py-1 rounded"
-                @click="lihatKonfigurasi(item)"
-              >
-                Lihat
-              </button>
-              <button
-                class="bg-yellow-500 hover:bg-yellow-600 text-white text-sm px-3 py-1 rounded"
-                @click="kemaskiniKonfigurasi(item)"
-              >
-                Kemaskini
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <rs-card>
+      <template #body>
+        <rs-table
+          class="mt-4"
+          :data="rows"
+          :pageSize="5"
+          :showNoColumn="true"
+          :advanced="true"
+          :showSearch="true"
+          :showFilter="true"
+          :optionsAdvanced="{
+            sortable: true,
+            filterable: true,
+            outsideBorder: true
+          }"
+          :options="{ variant: 'default', hover: true, bordered: true, striped: true }"
+        >
+          <!-- Custom headers -->
+          <template #head.sebab>
+            <span class="font-bold uppercase">Sebab Penutupan</span>
+          </template>
+          <template #head.status>
+            <span class="font-bold uppercase">Status</span>
+          </template>
+          <template #head.tindakan>
+            <span class="font-bold uppercase">Tindakan</span>
+          </template>
+
+          <!-- Status badge -->
+          <template #status="{ text }">
+            <div class="flex justify-center">
+              <rs-badge :variant="statusVariant(text)">{{ text }}</rs-badge>
+            </div>
+          </template>
+
+          <!-- Tindakan buttons -->
+          <template #tindakan>
+            <div class="flex justify-center gap-2">
+              <NuxtLink to="/BF-ADN/PK/KA/01/03"> <!--Tak jumpa page ni tapi ada dalam business requirement kena link ke sini -->
+                <rs-button variant="info" size="sm">Lihat</rs-button>
+              </NuxtLink>
+              <NuxtLink to="/BF-ADN/PK/KP/01/03">
+                <rs-button variant="warning" size="sm">Kemaskini</rs-button>
+              </NuxtLink>
+            </div>
+          </template>
+        </rs-table>
+      </template>
+    </rs-card>
   </div>
 </template>
 
@@ -85,28 +79,23 @@ const breadcrumb = ref([
   },
 ]);
 
-// Dummy data
-const konfigurasiList = ref([
-  {
-    sebab: "Bantuan telah diterima daripada agensi lain",
-    status: "Aktif",
-  },
-  {
-    sebab: "Individu tidak dijumpai selepas siasatan",
-    status: "Tidak Aktif",
-  },
+// Table data — must include 'tindakan' so rs-table renders the slot
+const rows = ref([
+  { sebab: "Bantuan telah diterima daripada agensi lain", status: "Aktif", tindakan: "" },
+  { sebab: "Individu tidak dijumpai selepas siasatan", status: "Tidak Aktif", tindakan: "" },
+  { sebab: "Permohonan ditarik balik oleh pemohon", status: "Aktif", tindakan: "" },
+  { sebab: "Selesai melalui penyelesaian luar", status: "Tidak Aktif", tindakan: "" },
+  { sebab: "Lain-lain sebab teknikal", status: "Aktif", tindakan: "" },
 ]);
 
-// Actions
+// Badge variant
+const statusVariant = (status) => {
+  if (status === "Aktif") return "success";
+  if (status === "Tidak Aktif") return "danger";
+  return "secondary";
+};
+
 const tambahKonfigurasi = () => {
   navigateTo("/BF-ADN/PK/KP/01/02");
-};
-
-const lihatKonfigurasi = (item) => {
-  navigateTo(`/BF-ADN/PK/KA/01/03`);
-};
-
-const kemaskiniKonfigurasi = (item) => {
-  navigateTo(`/BF-ADN/PK/KP/01/04`);
 };
 </script>
