@@ -26,6 +26,19 @@
                 :validation-messages="{ required: 'Jenis Recipient adalah wajib' }"
               />
               <FormKit
+                type="text"
+                name="namaSyarikatIndividu"
+                :label="formData.jenisRecipient === 'individu' ? 'Nama Individu' : 'Nama Syarikat'"
+                validation="required"
+                v-model="formData.namaSyarikatIndividu"
+                :placeholder="formData.jenisRecipient === 'individu' ? 'Masukkan nama individu' : 'Masukkan nama syarikat'"
+                :validation-messages="{ required: formData.jenisRecipient === 'individu' ? 'Nama Individu adalah wajib' : 'Nama Syarikat adalah wajib' }"
+                :disabled="!formData.jenisRecipient"
+              />  
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              <FormKit
                 type="select"
                 name="jenisPengenalan"
                 label="Jenis Pengenalan"
@@ -34,19 +47,6 @@
                 placeholder="Pilih jenis pengenalan"
                 v-model="formData.jenisPengenalan"
                 :validation-messages="{ required: 'Jenis Pengenalan adalah wajib' }"
-                :disabled="!formData.jenisRecipient"
-              />
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-              <FormKit
-                type="text"
-                name="namaSyarikatIndividu"
-                :label="formData.jenisRecipient === 'individu' ? 'Nama Individu' : 'Nama Syarikat'"
-                validation="required"
-                v-model="formData.namaSyarikatIndividu"
-                :placeholder="formData.jenisRecipient === 'individu' ? 'Masukkan nama individu' : 'Masukkan nama syarikat'"
-                :validation-messages="{ required: formData.jenisRecipient === 'individu' ? 'Nama Individu adalah wajib' : 'Nama Syarikat adalah wajib' }"
                 :disabled="!formData.jenisRecipient"
               />
               <FormKit
