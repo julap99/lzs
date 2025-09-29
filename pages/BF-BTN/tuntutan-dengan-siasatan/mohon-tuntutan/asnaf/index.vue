@@ -303,16 +303,14 @@ watch([pageSize, totalBantuan], () => {
 const formatDate = (dateString) => new Date(dateString).toLocaleDateString('ms-MY')
 
 const saveSelectedAndGo = (row) => {
+  let payload = typeof row === 'object' && row?.noBantuan ? row : { noBantuan: String(row) }
   try {
-    // Simpan hanya data perlu (contoh: noBantuan)
-    const payload = typeof row === 'object' && row?.noBantuan ? row : { noBantuan: String(row) }
     sessionStorage.setItem('NAS_SELECTED_BANTUAN', JSON.stringify(payload))
   } catch (e) {
     console.warn('Unable to save selected bantuan in sessionStorage', e)
   }
-  // Selaraskan dengan breadcrumb (halaman mohon tuntutan asnaf)
   const id = payload.noBantuan || String(payload)
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan-asnaf/${encodeURIComponent(id)}`)
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/asnaf/${encodeURIComponent(id)}`)
 }
 
 const handleBulkApproval = async () => {
@@ -326,17 +324,17 @@ const breadcrumb = ref([
   {
     name: 'Pengurusan Bantuan',
     type: 'link',
-    path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor',
+    path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus',
   },
   {
     name: 'Tuntutan',
     type: 'link',
-    path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor',
+    path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus',
   },
   {
     name: 'Mohon Tuntutan',
     type: 'current',
-    path: '/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan-asnaf',
+    path: '/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/asnaf',
   },
 ])
 

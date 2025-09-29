@@ -89,7 +89,7 @@
                     </div>
                     </div>
                     
-                  <div class="mb-2 text-sm">Baki Pendapatan: Jumlah Pendapatan Keluarga - Jumlah Had Kifayah = 1000 - 1968 = -968</div>
+                  <div class="mb-2 text-sm">Jurang Had Kifayah: Jumlah Pendapatan Keluarga - Jumlah Had Kifayah = 1000 - 1968 = -968</div>
                   <div class="mb-2 text-sm">Peratusan Perbezaan: (Pendapatan Isi Rumah / Jumlah Had Kifayah) × 100 = (1000 / 1968) × 100 = 50.81% </div>
                   <div class="mb-2 text-sm">Kategori Keluarga Asnaf: Miskin </div>
                   <div class="mb-4 text-sm">Kategori Asnaf: Miskin</div>

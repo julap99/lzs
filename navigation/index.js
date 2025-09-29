@@ -1651,7 +1651,7 @@ export default [
               {
                 title: "Mohon Tuntutan (Asnaf)",
                 icon: "iconamoon:arrow-right-2-duotone",
-                path: "/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan-asnaf",
+                path: "/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/asnaf",
                 child: [],
                 meta: {},
               },
@@ -1668,14 +1668,14 @@ export default [
           {
             title: "Semakan Tuntutan (EOAD)",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad",
+            path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/eoad",
             child: [],
             meta: {},
           },
           {
             title: "Kelulusan Tuntutan (Pelulus)",
             icon: "iconamoon:arrow-right-2-duotone",
-            path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus",
+            path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus",
             child: [],
             meta: {},
           },
@@ -1686,14 +1686,14 @@ export default [
               {
                 title: "Senarai Tuntutan (Asnaf)",
                 icon: "iconamoon:arrow-right-2-duotone",
-                path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-asnaf",
+                path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/asnaf",
                 child: [],
                 meta: {},
               },
               {
                 title: "Senarai Tuntutan (Vendor)",
                 icon: "iconamoon:arrow-right-2-duotone",
-                path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan",
+                path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/vendor",
                 child: [],
                 meta: {},
               },

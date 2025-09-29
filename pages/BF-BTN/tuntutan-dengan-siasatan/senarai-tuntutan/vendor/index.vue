@@ -294,16 +294,9 @@ definePageMeta({
 });
 
 const breadcrumb = ref([
-  {
-    name: "Tuntutan dengan Siasatan",
-    type: "link",
-  path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor",
-  },
-  {
-    name: "Senarai Tuntutan",
-    type: "current",
-  path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor",
-  },
+  { name: "Pengurusan Bantuan", type: "link", path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/vendor" },
+  { name: "Tuntutan", type: "link", path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/vendor" },
+  { name: "Senarai Tuntutan", type: "current", path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/vendor" },
 ]);
 
 // Table columns configuration
@@ -513,11 +506,11 @@ const getStatusVariant = (status) => {
 
 // Action handlers
 const handleView = (id) => {
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor/${id}`);
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/vendor/${id}`);
 };
 
 const handleEdit = (id) => {
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor/${id}/view-draf`);
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/vendor/${id}`);
 };
 
 const handleSubmit = (id) => {
@@ -541,20 +534,20 @@ const handlePrintRejection = (id) => {
 };
 
 const handleImprove = (id) => {
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor/${id}/improve`);
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/vendor/${id}`);
 };
 
 // New handlers for Lulus and Ditolak tables
 const handleViewLulus = (id) => {
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor/${id}/view-lulus`);
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/vendor/${id}`);
 };
 
 const handleViewDitolak = (id) => {
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor/${id}/view-ditolak`);
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/vendor/${id}`);
 };
 
 const handleViewDalamSemakan = (id) => {
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor/${id}/view-dalam-semakan`);
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/vendor/${id}`);
 };
 </script>
 

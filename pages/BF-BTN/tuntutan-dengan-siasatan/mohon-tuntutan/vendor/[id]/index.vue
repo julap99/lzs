@@ -13,38 +13,53 @@
                 <p class="mt-1 text-gray-600">{{ formData.namaPemohon }}</p>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700">No. Kad Pengenalan</label>
+                <label class="block text-sm font-medium text-gray-700">No. Vendor</label>
                 <p class="mt-1 text-gray-600">{{ formData.noPengenalan }}</p>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700">No. Telefon</label>
                 <p class="mt-1 text-gray-600">{{ formData.noTelefonPemohon }}</p>
               </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Emel</label>
-                <p class="mt-1 text-gray-600">{{ formData.emailPemohon }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Kategori Asnaf</label>
-                <p class="mt-1 text-gray-600">{{ formData.kategoriAsnaf }}</p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Status Household</label>
-                <rs-badge :variant="getStatusVariant(formData.statusHousehold)">{{ formData.statusHousehold }}</rs-badge>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Status Individu</label>
-                <rs-badge :variant="getStatusVariant(formData.statusIndividu)">{{ formData.statusIndividu }}</rs-badge>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Status Multidimensi</label>
-                <rs-badge :variant="getStatusVariant(formData.statusMultidimensi)">{{ formData.statusMultidimensi }}</rs-badge>
-              </div>
+              
             </div>
           </RsTabItem>
 
           <RsTabItem title="Maklumat Bantuan">
             <h3 class="text-lg font-medium mb-4">Maklumat Bantuan</h3>
+            <div class="bg-gray-50 p-4 rounded-lg mb-6">
+              <h4 class="text-lg font-medium mb-4">Maklumat Asnaf</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Nama</label>
+                  <p class="mt-1 text-gray-600">{{ formData.namaPemohon }}</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">No. Kad Pengenalan</label>
+                  <p class="mt-1 text-gray-600">{{ formData.noPengenalan }}</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">No. Telefon</label>
+                  <p class="mt-1 text-gray-600">{{ formData.noTelefonPemohon }}</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Emel</label>
+                  <p class="mt-1 text-gray-600">{{ formData.emailPemohon }}</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Status Household</label>
+                  <rs-badge :variant="getStatusVariant(formData.statusHousehold)">{{ formData.statusHousehold }}</rs-badge>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Status Individu</label>
+                  <rs-badge :variant="getStatusVariant(formData.statusIndividu)">{{ formData.statusIndividu }}</rs-badge>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Status Multidimensi</label>
+                  <rs-badge :variant="getStatusVariant(formData.statusMultidimensi)">{{ formData.statusMultidimensi }}</rs-badge>
+                </div>
+              </div>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormKit v-model="formData.noBtn" type="text" label="No. Bantuan" readonly :classes="{ input: 'bg-gray-100 cursor-not-allowed' }" />
               <FormKit v-model="formData.aidProduct" type="text" label="Jenis Bantuan" readonly :classes="{ input: 'bg-gray-100 cursor-not-allowed' }" />
@@ -90,7 +105,7 @@
             </RsTable>
 
             <h3 class="text-lg font-medium mt-6 mb-4">Senarai Invoice</h3>
-            <RsTable :data="filteredInvoices" :key="filteredInvoices.length" :field="fieldsInv" :columns="columnsInvVisible" advanced :autoFields="false" :showSearch="false" :showFilter="false" :options="{ variant: 'default', striped: true, bordered: false, borderless: false, hover: true }" :optionsAdvanced="{ sortable: true, filterable: false, responsive: true, outsideBorder: true }" :pageSize="10" :showNoColumn="true" :sort="{ column: 'tahun', direction: 'desc' }">
+            <RsTable :data="filteredInvoices" :key="filteredInvoices.length" :field="fieldsInv" :columns="columnsInv" advanced :autoFields="false" :showSearch="false" :showFilter="false" :options="{ variant: 'default', striped: true, bordered: false, borderless: false, hover: true }" :optionsAdvanced="{ sortable: true, filterable: false, responsive: true, outsideBorder: true }" :pageSize="10" :showNoColumn="true" :sort="{ column: 'tahun', direction: 'desc' }">
               <template #title="{ text }"><span class="font-medium">{{ text || '—' }}</span></template>
               <template #tahun="{ text }">{{ text || '—' }}</template>
               <template #semester="{ text }">{{ formatSemester(text) }}</template>
@@ -102,16 +117,16 @@
               <template #statusKelulusan="{ text }">
                 <rs-badge :variant="text === 'APPROVED' ? 'success' : text === 'REJECTED' ? 'danger' : 'warning'">{{ text || 'Menunggu Kelulusan' }}</rs-badge>
               </template>
-              <template #tindakan="{ value }">
-                <div class="flex items-center gap-1">
-                  <rs-button variant="ghost" size="sm" class="!px-1 !py-1 text-blue-600 hover:text-blue-800" title="Edit Invoice" @click.stop="editInvoice(value)">
-                    <Icon name="material-symbols:edit" class="w-5 h-5" />
-                  </rs-button>
-                  <rs-button variant="ghost" size="sm" class="!px-1 !py-1 text-red-600 hover:text-red-800" title="Hapus Invoice" @click.stop="deleteInvoice(value)">
-                    <Icon name="material-symbols:delete" class="w-5 h-5" />
-                  </rs-button>
-                </div>
-              </template>
+            </RsTable>
+          </RsTabItem>
+
+          <RsTabItem title="Payment Advice">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-lg font-medium">Payment Advice</h3>
+            </div>
+            <RsTable :data="[]" :field="fieldsPA" :columns="columnsPA" advanced :showSearch="false" :showFilter="false" :options="{ variant: 'default', striped: true, bordered: false, borderless: false, hover: true }" :optionsAdvanced="{ sortable: true, filterable: false, responsive: true, outsideBorder: true }" :pageSize="10" :showNoColumn="true" :sort="{ column: 'createdDate', direction: 'desc' }">
+              <template #amaun="{ text }">RM {{ toMYR(text) }}</template>
+              <template #status="{ text }"><rs-badge :variant="text === 'SAH' ? 'success' : text === 'DITOLAK' ? 'danger' : 'warning'">{{ text || '—' }}</rs-badge></template>
             </RsTable>
           </RsTabItem>
 
@@ -149,16 +164,19 @@
       <template #body>
         <div class="grid grid-cols-1 gap-6">
           <FormKit v-model="newInvoice.invoiceNo" type="text" label="No. Invois" disabled />
+          <FormKit v-model="newInvoice.noInvoisPelanggan" type="text" label="Customer Invoice No" />
           <FormKit v-model="newInvoice.tahun" type="text" label="Tahun" readonly />
-          <FormKit v-model="newInvoice.semester" type="select" label="Semester" :options="semesterOptions" validation="required" :validation-messages="{ required: 'Sila pilih Semester' }" />
+          <FormKit v-if="isIPT" v-model="newInvoice.semester" type="select" label="Semester" :options="semesterOptions" validation="required" :validation-messages="{ required: 'Sila pilih Semester' }" />
           <FormKit v-model="newInvoice.tajuk" type="text" label="Tajuk" required />
-          <FormKit v-model="newInvoice.cgpa" type="number" label="CGPA" validation="required|number|min:0|max:4" :validation-messages="{ required: 'Sila masukkan CGPA', number: 'Sila masukkan nilai yang sah', min: 'CGPA tidak boleh kurang dari 0', max: 'CGPA tidak boleh lebih dari 4' }" step="0.01" min="0" max="4" />
+          <FormKit v-if="isIPT" v-model="newInvoice.cgpa" type="number" label="CGPA" validation="required|number|min:0|max:4" :validation-messages="{ required: 'Sila masukkan CGPA', number: 'Sila masukkan nilai yang sah', min: 'CGPA tidak boleh kurang dari 0', max: 'CGPA tidak boleh lebih dari 4' }" step="0.01" min="0" max="4" />
           <FormKit v-model="newInvoice.penerimaBayaran" type="text" label="Penerima Bayaran" readonly />
           <FormKit v-model="newInvoice.mop" type="text" label="MOP" readonly />
           <FormKit v-model="newInvoice.namaPenerima" type="text" label="Nama Penerima" readonly />
           <FormKit v-model="newInvoice.bank" type="text" label="Bank" readonly />
           <FormKit v-model="newInvoice.noAkaun" type="text" label="No. Akaun" readonly />
+          <FormKit v-model="newInvoice.tarikhJangkaanPembayaran" type="date" label="Expected Payment Date" />
           <FormKit v-model="newInvoice.amaun" type="number" label="Amaun (RM)" validation="required|number|min:0" :validation-messages="{ required: 'Sila masukkan amaun', number: 'Sila masukkan nilai yang sah', min: 'Amaun tidak boleh negatif' }" step="0.01" min="0" />
+          <div v-if="amountExceedsGL" class="text-sm text-red-600 -mt-2">Amaun (RM) telah melebihi Amaun GL (RM).</div>
           <FormKit v-model="newInvoice.lampiran" type="file" label="Muat Naik Lampiran" accept=".pdf,.doc,.docx" multiple help="Lampiran apa yang perlu dimasukkan (boleh muat naik berbilang fail)" />
           <div v-if="newInvoice.lampiran && newInvoice.lampiran.length > 0" class="mt-2">
             <p class="text-sm text-gray-600 mb-2">Fail yang dipilih ({{ newInvoice.lampiran.length }}):</p>
@@ -174,7 +192,7 @@
       </template>
       <template #footer>
         <rs-button @click="showInvoiceModal = false">Batal</rs-button>
-        <rs-button :disabled="getGlBalance(selectedGlNo) <= 0 || !newInvoice.amaun || Number(newInvoice.amaun) <= 0" @click="createInvoice">Simpan</rs-button>
+        <rs-button :disabled="getGlBalance(selectedGlNo) <= 0 || !newInvoice.amaun || Number(newInvoice.amaun) <= 0 || amountExceedsGL" @click="createInvoice">Simpan</rs-button>
       </template>
     </RsModal>
   </div>
@@ -184,18 +202,19 @@
 import { ref, computed, onMounted } from 'vue'
 import { useNuxtApp, navigateTo, useRoute } from '#app'
 
-definePageMeta({ title: 'Mohon Tuntutan (Asnaf)' })
+definePageMeta({ title: 'Mohon Tuntutan (Vendor)' })
 
 const { $swal } = useNuxtApp()
 
 const breadcrumb = ref([
   { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor' },
   { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor' },
-  { name: 'Mohon Tuntutan (Asnaf)', type: 'current', path: '/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan-asnaf' }
+  { name: 'Mohon Tuntutan (Vendor)', type: 'current', path: '/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/vendor' }
 ])
 
 const route = useRoute()
 
+// Form data
 const formData = ref({
   namaPemohon: '',
   noPengenalan: '',
@@ -228,6 +247,7 @@ const formData = ref({
   tarikhDicipta: '04/04/2025 03:45 PM'
 })
 
+// DI table schema
 const fieldsDI = ['diNo', 'entitlementProduct', 'penerima', 'bulan', 'tahun', 'status', 'amaun']
 const columnsDI = [
   { key: 'diNo', label: 'DI No' },
@@ -239,6 +259,7 @@ const columnsDI = [
   { key: 'amaun', label: 'Amaun (RM)' }
 ]
 
+// GL table schema
 const fieldsGL = ['glNo', 'diNo', 'createdDate', 'penerimaBayaran', 'status', 'bulan', 'tahun', 'amaun', 'invoiceCount', 'invoiceTotal', 'currentBalance', 'tindakan']
 const columnsGL = [
   { key: 'glNo', label: 'GL No' },
@@ -255,30 +276,44 @@ const columnsGL = [
   { key: 'tindakan', label: 'Tindakan' }
 ]
 
-const fieldsInv = ['invoiceNo', 'title', 'tahun', 'semester', 'diNo', 'glNo', 'paNo', 'statusKelulusan', 'amaun', 'tindakan']
-const columnsInvVisible = computed(() => {
-  const base = [
-    { key: 'invoiceNo', label: 'Invoice No' },
-    { key: 'title', label: 'Tajuk' },
-    { key: 'tahun', label: 'Tahun' },
-    { key: 'semester', label: 'Semester' },
-    { key: 'diNo', label: 'DI No' },
-    { key: 'glNo', label: 'GL No' }
-  ]
-  const hasLulus = filteredInvoices.value.some(r => (r.statusKelulusan || '').toUpperCase() === 'APPROVED')
-  const mid = hasLulus
-    ? [
-        { key: 'paNo', label: 'PA No' },
-        { key: 'statusKelulusan', label: 'Status Kelulusan' }
-      ]
-    : []
-  const tail = [
-    { key: 'amaun', label: 'Amaun (RM)' },
-    { key: 'tindakan', label: 'Tindakan' }
-  ]
-  return [...base, ...mid, ...tail]
-})
+// Invoice table schema
+const fieldsInv = [
+  'invoiceNo',
+  'title',
+  'tahun',
+  'semester',
+  'diNo',
+  'glNo',
+  'paNo',
+  'statusKelulusan',
+  'amaun'
+]
 
+const columnsInv = [
+  { key: 'invoiceNo', label: 'Invoice No' },
+  { key: 'title', label: 'Tajuk' },
+  { key: 'tahun', label: 'Tahun' },
+  { key: 'semester', label: 'Semester' },
+  { key: 'diNo', label: 'DI No' },
+  { key: 'glNo', label: 'GL No' },
+  { key: 'paNo', label: 'PA No' },
+  { key: 'statusKelulusan', label: 'Status Kelulusan' },
+  { key: 'amaun', label: 'Amaun (RM)' }
+]
+
+// Payment Advice table schema
+const fieldsPA = ['paNo', 'createdDate', 'penerimaBayaran', 'status', 'bulan', 'tahun', 'amaun']
+const columnsPA = [
+  { key: 'paNo', label: 'PA No' },
+  { key: 'createdDate', label: 'Tarikh Dicipta' },
+  { key: 'penerimaBayaran', label: 'Penerima Bayaran' },
+  { key: 'status', label: 'Status' },
+  { key: 'bulan', label: 'Bulan' },
+  { key: 'tahun', label: 'Tahun' },
+  { key: 'amaun', label: 'Amaun (RM)' }
+]
+
+// Dokumen table schema
 const fieldsDoc = ['name', 'nameFile', 'uploadDate', 'tindakan']
 const columnsDoc = [
   { key: 'name', label: 'Nama Dokumen' },
@@ -287,16 +322,140 @@ const columnsDoc = [
   { key: 'tindakan', label: 'Tindakan' }
 ]
 
-const distributionItems = ref([
-  { diNo: 'DI-001', entitlementProduct: '(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS', penerima: 'IPTA', bulan: 'MAC', tahun: '2025', status: 'Aktif', amaun: '1500.00' }
+const noBtnOptions = ref([
+  { label: 'NAS-2025-00012', value: 'NAS-2025-00012' },
+  { label: 'NAS-2025-00014', value: 'NAS-2025-00014' }
 ])
 
-const documents = ref([])
-const guaranteeLetters = ref([
-  { glNo: 'GL-001', diNo: 'DI-001', createdDate: '15/01/2025', penerimaBayaran: 'IPTA', status: 'AKTIF', bulan: 'MAC', tahun: '2025', amaun: '1500.00' }
+const distributionItems = ref([
+  {
+    diNo: 'DI-001',
+    entitlementProduct: '(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS',
+    penerima: 'IPTA',
+    bulan: 'MAC',
+    tahun: '2025',
+    status: 'Aktif',
+    amaun: '1500.00'
+  }
 ])
+
+const documents = ref([
+  { 
+    name: 'Lampiran Invoice 1', 
+    nameFile: 'Lampiran_Invoice_INV-2025-00124.pdf', 
+    uploadDate: '22/09/2025',
+    tindakan: 1
+  },
+  { 
+    name: 'Lampiran Invoice 2', 
+    nameFile: 'Lampiran_Invoice_INV-2025-00125.pdf', 
+    uploadDate: '21/09/2025',
+    tindakan: 2
+  },
+  { 
+    name: 'Lampiran Invoice 3', 
+    nameFile: 'Lampiran_Invoice_INV-2025-00126.pdf', 
+    uploadDate: '20/09/2025',
+    tindakan: 3
+  },
+  { 
+    name: 'Lampiran Invoice 4', 
+    nameFile: 'Lampiran_Invoice_INV-2025-00127.pdf', 
+    uploadDate: '19/09/2025',
+    tindakan: 4
+  }
+])
+
+// GL state
+const guaranteeLetters = ref([
+  {
+    glNo: 'GL-001',
+    diNo: 'DI-001',
+    createdDate: '15/01/2025',
+    penerimaBayaran: 'IPTA',
+    status: 'AKTIF',
+    bulan: 'MAC',
+    tahun: '2025',
+    amaun: '1500.00'
+  }
+])
+
 const invoices = ref([])
 
+// Modal state
+const showInvoiceModal = ref(false)
+const selectedGlNo = ref('')
+const newInvoice = ref({
+  invoiceNo: 'INV-2025-00124',
+  noInvoisPelanggan: '',
+  tahun: '2025',
+  semester: '',
+  tajuk: '',
+  cgpa: '',
+  penerimaBayaran: 'IPTA',
+  mop: 'EFT',
+  namaPenerima: 'IPTA',
+  bank: 'CIMB',
+  noAkaun: '8001234567',
+  tarikhJangkaanPembayaran: '',
+  amaun: '',
+  lampiran: [],
+  catatan: ''
+})
+
+const semesterOptions = [
+  { label: 'Semester 1', value: '1' },
+  { label: 'Semester 2', value: '2' },
+  { label: 'Semester 3', value: '3' }
+]
+
+// Mock data based by noBantuan 
+const mockData = {
+  'APP-2025-001481': {
+    pemohon: 'ALI BIN MOHAMED',
+    noKPPemohon: '940511146045',
+    maklumatBantuan: '(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS',
+    namaPenerimaManfaat: 'MOHD FARHAN BIN ALI',
+    namaPenerima: 'UPM'
+  },
+  'APP-2025-001482': {
+    pemohon: 'ALI BIN MOHAMED',
+    noKPPemohon: '940511146045',
+    maklumatBantuan: '(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS',
+    namaPenerimaManfaat: 'MOHD FARHAN BIN ALI',
+    namaPenerima: 'MOHD FARHAN BIN ALI'
+  },
+  'APP-2025-001483': {
+    pemohon: 'ALI BIN MOHAMED',
+    noKPPemohon: '920511146555',
+    maklumatBantuan: '(HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)',
+    namaPenerimaManfaat: 'ZAINAB BINTI ALI',
+    namaPenerima: 'SEKOLAH MENENGAH SAINS BANTING'
+  },
+  'APP-2025-001484': {
+    pemohon: 'ALI BIN MOHAMED',
+    noKPPemohon: '920511146555',
+    maklumatBantuan: '(HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)',
+    namaPenerimaManfaat: 'ZAINAB BINTI ALI',
+    namaPenerima: 'ALI BIN MOHAMED'
+  },
+  'APP-2025-001485': {
+    pemohon: 'ALI BIN MOHAMED',
+    noKPPemohon: '850315123456',
+    maklumatBantuan: '(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)',
+    namaPenerimaManfaat: 'AHMAD BIN HASSAN',
+    namaPenerima: 'HOSPITAL SELAYANG'
+  },
+  'APP-2025-001486': {
+    pemohon: 'ALI BIN MOHAMED',
+    noKPPemohon: '880420234567',
+    maklumatBantuan: '(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)',
+    namaPenerimaManfaat: 'FATIMAH BINTI MOHAMED',
+    namaPenerima: 'HOSPITAL KUALA LUMPUR'
+  }
+}
+
+// Computed properties
 const glRows = computed(() =>
   guaranteeLetters.value.map((gl) => {
     const glTotal = toNum(gl.amaun)
@@ -311,150 +470,167 @@ const glRows = computed(() =>
   })
 )
 
-const filteredInvoices = computed(() => (selectedGlNo.value ? invoices.value.filter((r) => r.glNo === selectedGlNo.value) : invoices.value))
+const filteredInvoices = computed(() => {
+  if (!selectedGlNo.value) return invoices.value
+  return invoices.value.filter(inv => inv.glNo === selectedGlNo.value)
+})
 
+// Helper functions
 const toMYR = (n) => {
   if (n == null || n === '') return '0.00'
   const num = typeof n === 'number' ? n : Number(String(n).replace(/,/g, ''))
   return isNaN(num) ? '0.00' : num.toLocaleString('ms-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
-const toNum = (v) => {
-  if (v == null || v === '') return 0
-  const n = typeof v === 'number' ? v : Number(String(v).replace(/,/g, ''))
-  return Number.isFinite(n) ? n : 0
+
+const toNum = (n) => {
+  if (n == null || n === '') return 0
+  const num = typeof n === 'number' ? n : Number(String(n).replace(/,/g, ''))
+  return isNaN(num) ? 0 : num
 }
-const sumInvoicesByGL = (glNo) => invoices.value.filter((i) => i.glNo === glNo).reduce((s, r) => s + toNum(r.amaun), 0)
+
+const sumInvoicesByGL = (glNo) => {
+  return invoices.value
+    .filter(inv => inv.glNo === glNo)
+    .reduce((sum, inv) => sum + toNum(inv.amaun), 0)
+}
+
 const getGlBalance = (glNo) => {
-  const gl = guaranteeLetters.value.find((g) => g.glNo === glNo)
+  const gl = guaranteeLetters.value.find(g => g.glNo === glNo)
   if (!gl) return 0
   const glTotal = toNum(gl.amaun)
   const invTotal = sumInvoicesByGL(glNo)
   return Math.max(glTotal - invTotal, 0)
 }
 
-const showInvoiceModal = ref(false)
-const selectedGlNo = ref(null)
-const semesterOptions = [ { label: 'Semester 1', value: '1' }, { label: 'Semester 2', value: '2' } ]
-const newInvoice = ref({ invoiceNo: 'AUTO', tahun: '', semester: '1', tajuk: '', cgpa: null, penerimaBayaran: '', mop: '', namaPenerima: '', bank: '', noAkaun: '', amaun: null, lampiran: [] })
-
-function openInvoiceModal(glNo) {
-  selectedGlNo.value = glNo
-  const gl = guaranteeLetters.value.find((g) => g.glNo === glNo)
-  const base = {
-    invoiceNo: `INV-${new Date().getFullYear()}-${Math.floor(Math.random() * 90000 + 10000)}`,
-    tahun: String(new Date().getFullYear()),
-    semester: newInvoice.value.semester || '',
-    tajuk: '',
-    cgpa: newInvoice.value.cgpa ?? null,
-    penerimaBayaran: formData.value.penerimaBayaran || gl?.penerimaBayaran || 'PENERIMA',
-    mop: formData.value.mop || 'EFT',
-    namaPenerima: formData.value.namaPenerima || gl?.penerimaBayaran || 'PENERIMA',
-    bank: formData.value.bank || 'CIMB',
-    noAkaun: formData.value.noAkaun || '8001234567',
-    amaun: null,
-    lampiran: null,
-    catatan: newInvoice.value.catatan || ''
-  }
-  newInvoice.value = { ...base }
-  showInvoiceModal.value = true
+const formatSemester = (sem) => {
+  const map = { '1': 'Semester 1', '2': 'Semester 2', '3': 'Semester 3' }
+  return map[sem] || sem
 }
 
-function createInvoice() {
-  const gl = guaranteeLetters.value.find((g) => g.glNo === selectedGlNo.value) || {}
-  const amount = Number(newInvoice.value.amaun ?? 0)
-  if (!Number.isFinite(amount) || amount <= 0) {
-    $swal.fire({ icon: 'error', title: 'Amaun Tidak Sah', text: 'Amaun invois mesti lebih besar daripada 0.' })
-    return
-  }
-
-  const invRow = {
-    invoiceNo: newInvoice.value.invoiceNo,
-    title: newInvoice.value.tajuk,
-    tahun: newInvoice.value.tahun || String(new Date().getFullYear()),
-    semester: newInvoice.value.semester,
-    diNo: gl.diNo || '',
-    glNo: gl.glNo || selectedGlNo.value || '',
-    paNo: '',
-    statusKelulusan: '',
-    amaun: amount
-  }
-  invoices.value = [invRow, ...invoices.value]
-
-  newInvoice.value.lampiran = []
-  showInvoiceModal.value = false
-}
-
-function editInvoice(row) {
-  // Simple edit: reopen modal prefilled for amount/title update
-  if (!row?.invoiceNo) return
-  newInvoice.value = {
-    invoiceNo: row.invoiceNo,
-    tahun: row.tahun,
-    semester: row.semester,
-    tajuk: row.title,
-    cgpa: null,
-    penerimaBayaran: formData.value.penerimaBayaran || '',
-    mop: formData.value.mop || 'EFT',
-    namaPenerima: formData.value.namaPenerima || '',
-    bank: formData.value.bank || 'CIMB',
-    noAkaun: formData.value.noAkaun || '8001234567',
-    amaun: row.amaun,
-    lampiran: []
-  }
-  showInvoiceModal.value = true
-}
-
-function deleteInvoice(row) {
-  if (!row?.invoiceNo) return
-  invoices.value = invoices.value.filter(r => r.invoiceNo !== row.invoiceNo)
-}
-
-function viewDocument(id) {
-  console.log('View doc id:', id)
-  $swal.fire({ icon: 'info', title: 'Dokumen', text: `Buka dokumen ID: ${id}` })
-}
+// Derived flags & validations
+const isIPT = computed(() => {
+  const p = (formData.value.aidProduct || '').toUpperCase()
+  return p.includes('IPT')
+})
+const amountExceedsGL = computed(() => {
+  const amt = Number(newInvoice.value.amaun || 0)
+  const bal = getGlBalance(selectedGlNo.value)
+  return Number.isFinite(amt) && Number.isFinite(bal) && amt > bal
+})
 
 const getStatusVariant = (status) => {
   const variants = {
     'Fakir': 'danger',
     'Miskin': 'warning', 
-    'Non-Fakir Miskin': 'secondary',
+    'Non-Fakir Miskin': 'success',
     'Produktif': 'success',
     'Tidak Produktif': 'danger',
     'Produktif Sementara': 'warning',
-    'Produktif Tegar': 'primary'
+    'Produktif Tegar': 'info'
   }
-  return variants[status] || 'default'
+  return variants[status] || 'secondary'
 }
 
-const activeGlFilter = ref(null)
-const applyGlFilter = (glNo) => { activeGlFilter.value = glNo }
-
-function hydrateFromSelectedBantuan(preset) {
-  formData.value.namaPemohon = preset.pemohon || formData.value.namaPemohon
-  formData.value.noPengenalan = preset.noKPPemohon || formData.value.noPengenalan
-  formData.value.aidProduct = preset.maklumatBantuan || formData.value.aidProduct
-  formData.value.noBtn = route.params.id || formData.value.noBtn
+const hydrateFromSelectedBantuan = (selected) => {
+  if (selected.pemohon) formData.value.namaPemohon = selected.pemohon
+  if (selected.noKPPemohon) formData.value.noPengenalan = selected.noKPPemohon
+  if (selected.maklumatBantuan) formData.value.aidProduct = selected.maklumatBantuan
+  if (selected.namaPenerimaManfaat) formData.value.namaPenerimaManfaat = selected.namaPenerimaManfaat
+  if (selected.namaPenerima) formData.value.namaPenerima = selected.namaPenerima
 }
 
+const populateFormDataFromSession = () => {
+  // Default mock data if no preset found
+  formData.value.namaPemohon = 'ALI BIN MOHAMED'
+  formData.value.noPengenalan = '940511146045'
+  formData.value.emailPemohon = 'ali.mohamed@email.com'
+  formData.value.noTelefonPemohon = '0123456789'
+  formData.value.kategoriAsnaf = 'Fakir'
+  formData.value.statusHousehold = 'Fakir'
+  formData.value.statusIndividu = 'Fakir'
+  formData.value.statusMultidimensi = 'Produktif'
+}
+
+const applyGlFilter = (glNo) => {
+  selectedGlNo.value = glNo
+}
+
+const openInvoiceModal = (glNo) => {
+  selectedGlNo.value = glNo
+  showInvoiceModal.value = true
+  newInvoice.value.glNo = glNo
+}
+
+const createInvoice = () => {
+  const invoice = {
+    invoiceNo: newInvoice.value.invoiceNo,
+    title: newInvoice.value.tajuk,
+    tahun: newInvoice.value.tahun,
+    semester: newInvoice.value.semester,
+    diNo: 'DI-001',
+    glNo: selectedGlNo.value,
+    paNo: '',
+    statusKelulusan: '',
+    amaun: newInvoice.value.amaun
+  }
+
+  invoices.value.push(invoice)
+
+  // Add uploaded files to documents
+  if (newInvoice.value.lampiran && newInvoice.value.lampiran.length > 0) {
+    newInvoice.value.lampiran.forEach((file, index) => {
+      documents.value.push({
+        name: `Lampiran Invoice ${documents.value.length + 1}`,
+        nameFile: file.name,
+        uploadDate: new Date().toLocaleDateString('ms-MY'),
+        tindakan: documents.value.length + 1
+      })
+    })
+  }
+  
+  showInvoiceModal.value = false
+  newInvoice.value = {
+    invoiceNo: 'INV-2025-00124',
+    tahun: '2025',
+    semester: '',
+    tajuk: '',
+    cgpa: '',
+    penerimaBayaran: 'IPTA',
+    mop: 'EFT',
+    namaPenerima: 'IPTA',
+    bank: 'CIMB',
+    noAkaun: '8001234567',
+    amaun: '',
+    lampiran: [],
+    catatan: ''
+  }
+}
+
+const viewDocument = (doc) => {
+  console.log('View document:', doc)
+}
+
+const handleSaveDraft = () => {
+  $swal.fire({
+    title: 'Draf Disimpan',
+    text: 'Tuntutan telah disimpan sebagai draf.',
+    icon: 'success',
+    confirmButtonText: 'OK'
+  })
+}
+
+const handleSubmit = () => {}
+
+// Hydrate entirely from :id preset, fallback to default session mock if unknown
 onMounted(() => {
   const id = String(route.params.id || '')
-  formData.value.noBtn = id
-  // Mock hydrate based on id if needed; in real impl, fetch data by id
+  const preset = mockData[id]
+  if (preset) {
+    hydrateFromSelectedBantuan(preset)
+  } else {
+    populateFormDataFromSession()
+  }
 })
-
-function handleSaveDraft() {
-  // Implement save draft (no alerts as requested)
-  navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor')
-}
-function handleSubmit() {
-  // Submit without extra alerts as No. Bantuan is display only
-  navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-vendor')
-}
 </script>
-
-<style lang="scss" scoped>
-/* Add component-scoped styles here if needed */
-</style>
 
 
