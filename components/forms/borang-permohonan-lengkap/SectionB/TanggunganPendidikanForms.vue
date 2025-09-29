@@ -168,7 +168,9 @@
               placeholder="Pilih Peringkat"
               :options="[
                 { label: 'Peringkat Rendah', value: 'rendah' },
-                { label: 'Peringkat Tinggi', value: 'tinggi' },
+                { label: 'Peringkat Menengah', value: 'menengah' },
+                { label: 'Peringkat Tinggi', value: 'tinggi' }
+               
               ]"
               :disabled="readOnly"
               v-model="edu.jenis_sekolah"
@@ -265,7 +267,7 @@
               />
             </div>
 
-            <div class="mt-4">
+            <!-- <div class="mt-4">
               <FormKit
                 type="text"
                 :name="`eduTanggungan${index}Alamat1`"
@@ -329,7 +331,7 @@
                   v-model="edu.poskod_sekolah"
                 />
               </div>
-            </div>
+            </div> -->
 
             <div class="mt-6">
               <FormKit
