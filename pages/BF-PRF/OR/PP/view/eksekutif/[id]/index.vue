@@ -217,16 +217,71 @@
               </div>
             </div>
           </div>
+
+          <!-- Keputusan Pengesahan (Semak) - Eksekutif Section -->
+          <div v-if="organisasiData.status === 'Menunggu Pengesahan'" class="mb-8">
+            <h3 class="text-lg font-semibold mb-4 text-gray-900">Keputusan Pengesahan (Semak)</h3>
+            <div class="p-6 border border-gray-200 rounded-lg bg-orange-50">
+              <div class="space-y-4">
+                <!-- Status Pengesahan -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Status Pengesahan <span class="text-red-500">*</span>
+                  </label>
+                  <div class="space-y-2">
+                    <label class="flex items-center">
+                      <input v-model="approvalData.status" type="radio" value="Disahkan" class="mr-2 text-green-600 focus:ring-green-500" />
+                      <span class="text-sm font-medium text-gray-900">Disahkan</span>
+                    </label>
+                    <label class="flex items-center">
+                      <input v-model="approvalData.status" type="radio" value="Perlu Pembetulan" class="mr-2 text-yellow-600 focus:ring-yellow-500" />
+                      <span class="text-sm font-medium text-gray-900">Perlu Pembetulan</span>
+                    </label>
+                    <label class="flex items-center">
+                      <input v-model="approvalData.status" type="radio" value="Tidak Sah" class="mr-2 text-red-600 focus:ring-red-500" />
+                      <span class="text-sm font-medium text-gray-900">Tidak Sah</span>
+                    </label>
+                  </div>
+                  <p v-if="!approvalData.status" class="text-red-500 text-sm mt-1">Status pengesahan adalah wajib</p>
+                </div>
+
+                <!-- Ulasan/Justifikasi -->
+                <div v-if="approvalData.status === 'Perlu Pembetulan' || approvalData.status === 'Tidak Sah'">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                    {{ approvalData.status === 'Perlu Pembetulan' ? 'Ulasan Pembetulan' : 'Justifikasi Penolakan' }} 
+                    <span class="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    v-model="approvalData.justification"
+                    rows="4"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    :placeholder="`Masukkan ${approvalData.status === 'Perlu Pembetulan' ? 'ulasan pembetulan' : 'justifikasi penolakan'}...`"
+                  ></textarea>
+                  <p v-if="(approvalData.status === 'Perlu Pembetulan' || approvalData.status === 'Tidak Sah') && !approvalData.justification" class="text-red-500 text-sm mt-1">
+                    {{ approvalData.status === 'Perlu Pembetulan' ? 'Ulasan pembetulan' : 'Justifikasi penolakan' }} adalah wajib
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-          <!-- Action Buttons - Bottom Right -->
-          <div class="flex justify-end gap-3 pt-6 border-t border-gray-200">
-            <rs-button variant="secondary" @click="handleBack">
-              <Icon name="ph:arrow-left" class="w-4 h-4 mr-1" />
+        <!-- Action Buttons - Bottom Right -->
+        <div class="flex justify-end gap-3 pt-6 border-t border-gray-200">
+          <rs-button variant="secondary" @click="handleBack">
+            <Icon name="ph:arrow-left" class="w-4 h-4 mr-1" />
             Kembali
           </rs-button>
-          </div>
-      
+          <rs-button 
+            v-if="organisasiData.status === 'Menunggu Pengesahan'" 
+            variant="primary" 
+            @click="handleSubmitDecision"
+            :disabled="!approvalData.status || ((approvalData.status === 'Perlu Pembetulan' || approvalData.status === 'Tidak Sah') && !approvalData.justification)"
+          >
+            <Icon name="ph:check" class="w-4 h-4 mr-1" />
+            Hantar Keputusan
+          </rs-button>
+        </div>
       </template>
     </rs-card>
   </div>
@@ -236,7 +291,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
-definePageMeta({ title: 'Maklumat Organisasi Terperinci' })
+definePageMeta({ title: 'Maklumat Organisasi Terperinci - Eksekutif' })
 
 const route = useRoute()
 const isLoading = ref(false)
@@ -245,8 +300,14 @@ const error = ref(null)
 const breadcrumb = ref([
   { name: 'Pengesahan', type: 'link', path: '/BF-PRF/OR/PP' },
   { name: 'Senarai Organisasi', type: 'link', path: '/BF-PRF/OR/PP' },
-  { name: 'Maklumat Terperinci', type: 'current', path: `/BF-PRF/OR/PP/view/${route.params.id}` },
+  { name: 'Maklumat Terperinci', type: 'current', path: `/BF-PRF/OR/PP/view/eksekutif/${route.params.id}` },
 ])
+
+// Approval data for Eksekutif
+const approvalData = ref({
+  status: '',
+  justification: ''
+})
 
 // Mock data structure aligned with current form
 const organisasiData = ref({
@@ -283,9 +344,6 @@ const organisasiData = ref({
   status: '',
   tarikhPermohonan: ''
 })
-
-// User role simulation - for demo purposes
-const currentUserRole = ref('Eksekutif')
 
 const getStatusVariant = (status) => {
   const variants = {
@@ -377,6 +435,27 @@ const formatDate = (dateString) => {
   }
 }
 
+const handleSubmitDecision = () => {
+  if (!approvalData.value.status) {
+    alert('Sila pilih status pengesahan')
+    return
+  }
+  
+  if ((approvalData.value.status === 'Perlu Pembetulan' || approvalData.value.status === 'Tidak Sah') && !approvalData.value.justification) {
+    alert('Ulasan diperlukan untuk status ini')
+    return
+  }
+
+  // Simulate API call
+  alert(`Keputusan pengesahan telah dihantar: ${approvalData.value.status}`)
+  
+  // Update status
+  organisasiData.value.status = approvalData.value.status
+  
+  // Navigate back
+  handleBack()
+}
+
 const loadOrganisasiData = (id) => {
   const dataset = {
     'ORG-202507-0001': {
@@ -387,7 +466,7 @@ const loadOrganisasiData = (id) => {
       registrationStatus: 'Berdaftar',
       struktur: 'HQ',
       hq: '',
-      kariah: 'MASJID SULTAN SALAHUDDIN SHAH ALAM',
+      kariah: '',
       zone: 'Zon Shah Alam',
       alamat: {
         addressLine1: 'No. 1, Jalan Masjid',
@@ -417,7 +496,7 @@ const loadOrganisasiData = (id) => {
       appointmentLetter: { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan_masjid_2025.pdf', size: '1.8 MB' },
       bankProof: { name: 'Penyata Bank', filename: 'bank_statement_masjid_jan_2025.pdf', size: '1.1 MB' },
       additionalDocuments: null,
-      status: 'Disahkan',
+      status: 'Menunggu Pengesahan',
       tarikhPermohonan: '15/7/2025'
     },
     'ORG-202506-0002': {
@@ -426,9 +505,9 @@ const loadOrganisasiData = (id) => {
       organizationType: 'Masjid',
       registrationNumber: 'PPM-2020-001',
       registrationStatus: 'Berdaftar',
-      struktur: 'Cawangan',
-      hq: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
-      kariah: 'MASJID SULTAN SALAHUDDIN PJ',
+      struktur: 'HQ',
+      hq: '',
+      kariah: '',
       zone: 'Zon Petaling Jaya',
       alamat: {
         addressLine1: 'No. 456, Jalan Masjid 2/3',
@@ -448,7 +527,7 @@ const loadOrganisasiData = (id) => {
         }
       ],
       bank: {
-        bankSameAsHQ: 'tidak',
+        bankSameAsHQ: '',
         bankName: 'Maybank',
         bankAccountNumber: '5123456789012',
         penamaBank: 'Masjid Al-Amin',
@@ -458,7 +537,7 @@ const loadOrganisasiData = (id) => {
       appointmentLetter: { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan_cawangan_2025.pdf', size: '1.5 MB' },
       bankProof: { name: 'Surat Pengesahan Bank', filename: 'bank_confirmation_cawangan.pdf', size: '0.9 MB' },
       additionalDocuments: null,
-      status: 'Disahkan',
+      status: 'Menunggu Pengesahan',
       tarikhPermohonan: '16/7/2025'
     },
     'ORG-202505-0003': {
@@ -467,9 +546,9 @@ const loadOrganisasiData = (id) => {
       organizationType: 'Masjid',
       registrationNumber: 'PPM-2020-001',
       registrationStatus: 'Berdaftar',
-      struktur: 'Cawangan',
-      hq: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
-      kariah: 'MASJID SULTAN SALAHUDDIN KLANG',
+      struktur: 'HQ',
+      hq: '',
+      kariah: '',
       zone: 'Zon Klang',
       alamat: {
         addressLine1: 'Lot 789, Jalan Masjid 5/2',
@@ -489,7 +568,7 @@ const loadOrganisasiData = (id) => {
         }
       ],
       bank: {
-        bankSameAsHQ: 'tidak',
+        bankSameAsHQ: '',
         bankName: 'Bank Islam',
         bankAccountNumber: '2098765432109',
         penamaBank: 'Masjid Al-Hidayah',
@@ -501,217 +580,6 @@ const loadOrganisasiData = (id) => {
       additionalDocuments: null,
       status: 'Menunggu Pengesahan',
       tarikhPermohonan: '17/7/2025'
-    },
-    'ORG-202507-0004': {
-      noRujukan: 'ORG-202507-0004',
-      organizationName: 'Masjid An-Nur',
-      organizationType: 'Masjid',
-      registrationNumber: 'PPM-2020-001',
-      registrationStatus: 'Berdaftar',
-      struktur: 'Cawangan',
-      hq: 'Masjid Sultan Salahuddin Abdul Aziz Shah',
-      kariah: 'MASJID SULTAN SALAHUDDIN SHAH ALAM',
-      zone: 'Zon Shah Alam',
-      alamat: {
-        addressLine1: 'No. 321, Jalan Masjid 4/1',
-        addressLine2: 'Taman Masjid Shah Alam',
-        addressLine3: '',
-        postcode: '40000',
-        city: 'Shah Alam',
-        district: 'Petaling',
-        state: 'Selangor'
-      },
-      wakil: [
-        {
-          name: 'Ustaz Mohd Rashid bin Hassan',
-          ic: '700301067890',
-          phoneNumber: '03-55123459',
-          email: 'rashid@masjidssa.gov.my'
-        }
-      ],
-      bank: {
-        bankSameAsHQ: 'tidak',
-        bankName: 'RHB Bank',
-        bankAccountNumber: '3456789012345',
-        penamaBank: 'Masjid An-Nur',
-        paymentMethod: 'Bank Transfer'
-      },
-      registrationCertificate: { name: 'Sijil Pendaftaran ROS', filename: 'sijil_ros_masjid_2020.pdf', size: '2.1 MB' },
-      appointmentLetter: { name: 'Surat Perwakilan Kuasa', filename: 'surat_cawangan_2025.pdf', size: '1.4 MB' },
-      bankProof: { name: 'Pengesahan Bank', filename: 'bank_verification_cawangan_2025.pdf', size: '0.7 MB' },
-      additionalDocuments: null,
-      status: 'Disahkan',
-      tarikhPermohonan: '18/7/2025'
-    },
-    'ORG-202506-0005': {
-      noRujukan: 'ORG-202506-0005',
-      organizationName: 'Pertubuhan Kebajikan Islam Selangor',
-      organizationType: 'NGO',
-      registrationNumber: 'PPM-2018-045',
-      registrationStatus: 'Berdaftar',
-      struktur: 'HQ',
-      hq: '',
-      kariah: 'MASJID AL-IKHLAS',
-      zone: 'Zon Puchong',
-      alamat: {
-        addressLine1: 'No. 654, Jalan Kebajikan 6/3',
-        addressLine2: 'Taman Kebajikan Islam',
-        addressLine3: '',
-        postcode: '47100',
-        city: 'Puchong',
-        district: 'Petaling',
-        state: 'Selangor'
-      },
-      wakil: [
-        {
-          name: 'Ustaz Fikri bin Omar',
-          ic: '850610089012',
-          phoneNumber: '03-55123460',
-          email: 'fikri@pki-selangor.org'
-        }
-      ],
-      bank: {
-        bankSameAsHQ: '',
-        bankName: 'Public Bank',
-        bankAccountNumber: '4567890123456',
-        penamaBank: 'Pertubuhan Kebajikan Islam Selangor',
-        paymentMethod: 'Bank Transfer'
-      },
-      registrationCertificate: { name: 'Sijil Pendaftaran ROS', filename: 'sijil_ros_pki_2018.pdf', size: '2.6 MB' },
-      appointmentLetter: { name: 'Surat Perwakilan Kuasa', filename: 'surat_perwakilan_pki_2025.pdf', size: '1.2 MB' },
-      bankProof: { name: 'Penyata Bank', filename: 'bank_statement_pki_feb_2025.pdf', size: '1.0 MB' },
-      additionalDocuments: null,
-      status: 'Tidak Sah',
-      tarikhPermohonan: '12/6/2025'
-    },
-    'ORG-202505-0006': {
-      noRujukan: 'ORG-202505-0006',
-      organizationName: 'Rumah Anak Yatim Darul Ehsan',
-      organizationType: 'NGO',
-      registrationNumber: 'PPM-2015-012',
-      registrationStatus: 'Berdaftar',
-      struktur: 'HQ',
-      hq: '',
-      kariah: 'MASJID AL-IKHLAS',
-      zone: 'Zon Puchong',
-      alamat: {
-        addressLine1: 'No. 33, Jalan Anak Yatim 4/2',
-        addressLine2: 'Taman Anak Yatim Cemerlang',
-        addressLine3: '',
-        postcode: '47100',
-        city: 'Puchong',
-        district: 'Petaling',
-        state: 'Selangor'
-      },
-      wakil: [
-        {
-          name: 'Ustaz Fikri bin Omar',
-          ic: '850610089012',
-          phoneNumber: '03-55123461',
-          email: 'fikri@rumah-yatim.org'
-        },
-        {
-          name: 'Ustazah Nurul Ain binti Zaki',
-          ic: '870315091234',
-          phoneNumber: '019-7654321',
-          email: 'nurul@rumah-yatim.org'
-        }
-      ],
-      bank: {
-        bankSameAsHQ: '',
-        bankName: 'AmBank',
-        bankAccountNumber: '6789012345678',
-        penamaBank: 'Rumah Anak Yatim Darul Ehsan',
-        paymentMethod: 'Bank Transfer'
-      },
-      registrationCertificate: { name: 'Sijil Pendaftaran ROS', filename: 'sijil_ros_rumah_yatim_2015.pdf', size: '1.9 MB' },
-      appointmentLetter: { name: 'Surat Perwakilan', filename: 'surat_perwakilan_rumah_yatim.pdf', size: '1.2 MB' },
-      bankProof: { name: 'Penyata Bank', filename: 'bank_statement_rumah_yatim.pdf', size: '0.9 MB' },
-      additionalDocuments: null,
-      status: 'Menunggu Pengesahan',
-      tarikhPermohonan: '25/5/2025'
-    },
-    'ORG-202504-0007': {
-      noRujukan: 'ORG-202504-0007',
-      organizationName: 'Maahad Tahfiz Selangor',
-      organizationType: 'IPT',
-      registrationNumber: 'MTS-2019-008',
-      registrationStatus: 'Berdaftar',
-      struktur: 'HQ',
-      hq: '',
-      kariah: 'MASJID AL-AMIN',
-      zone: 'Zon Kajang',
-      alamat: {
-        addressLine1: 'No. 88, Jalan Tahfiz 2/1',
-        addressLine2: 'Taman Tahfiz Jaya',
-        addressLine3: '',
-        postcode: '43000',
-        city: 'Kajang',
-        district: 'Hulu Langat',
-        state: 'Selangor'
-      },
-      wakil: [
-        {
-          name: 'Ustaz Dr. Ahmad Fauzi bin Ismail',
-          ic: '601205012345',
-          phoneNumber: '03-55123462',
-          email: 'fauzi@maahad-tahfiz.edu.my'
-        }
-      ],
-      bank: {
-        bankSameAsHQ: '',
-        bankName: 'Bank Islam',
-        bankAccountNumber: '7890123456789',
-        penamaBank: 'Maahad Tahfiz Selangor',
-        paymentMethod: 'Bank Transfer'
-      },
-      registrationCertificate: { name: 'Sijil Pendaftaran', filename: 'sijil_maahad_tahfiz_2019.pdf', size: '3.1 MB' },
-      appointmentLetter: { name: 'Surat Lantikan', filename: 'surat_lantikan_maahad.pdf', size: '2.2 MB' },
-      bankProof: { name: 'Pengesahan Bank', filename: 'bank_confirmation_maahad.pdf', size: '1.3 MB' },
-      additionalDocuments: null,
-      status: 'Tidak Sah',
-      tarikhPermohonan: '18/4/2025'
-    },
-    'ORG-202508-0008': {
-      noRujukan: 'ORG-202508-0008',
-      organizationName: 'Pusat Dialisis As-Salam Shah Alam',
-      organizationType: 'Kesihatan',
-      registrationNumber: 'PPM-2021-015',
-      registrationStatus: 'Berdaftar',
-      struktur: 'Cawangan',
-      hq: 'Pusat Dialisis As-Salam HQ',
-      kariah: 'MASJID SULTAN SALAHUDDIN SHAH ALAM',
-      zone: 'Zon Shah Alam',
-      alamat: {
-        addressLine1: 'No. 88, Jalan Kesihatan 2/1',
-        addressLine2: 'Taman Kesihatan Jaya',
-        addressLine3: 'Seksyen 2',
-        postcode: '40000',
-        city: 'Shah Alam',
-        district: 'Petaling',
-        state: 'Selangor'
-      },
-      wakil: [
-        {
-          name: 'Dr. Siti Aisyah binti Hassan',
-          ic: '720315123456',
-          phoneNumber: '03-55123463',
-          email: 'aisyah@dialisis-assalam.org'
-        }
-      ],
-      bank: {
-        bankSameAsHQ: 'tidak',
-        bankName: 'Bank Islam',
-        bankAccountNumber: '1234567890123',
-        penamaBank: 'Pusat Dialisis As-Salam Shah Alam',
-        paymentMethod: 'Bank Transfer'
-      },
-      registrationCertificate: { name: 'Sijil Pendaftaran ROS', filename: 'sijil_ros_dialisis_2021.pdf', size: '2.8 MB' },
-      appointmentLetter: { name: 'Surat Cawangan', filename: 'surat_cawangan_dialisis.pdf', size: '1.6 MB' },
-      bankProof: { name: 'Penyata Bank', filename: 'bank_statement_dialisis.pdf', size: '1.0 MB' },
-      additionalDocuments: null,
-      status: 'Dalam Pembetulan',
-      tarikhPermohonan: '05/8/2025'
     }
   }
 
@@ -723,7 +591,6 @@ const loadOrganisasiData = (id) => {
 const handleBack = () => {
   navigateTo('/BF-PRF/OR/PP')
 }
-
 
 const retryLoad = () => {
   error.value = null
@@ -745,4 +612,4 @@ const loadData = async () => {
 onMounted(() => {
   loadData()
 })
-</script> 
+</script>

@@ -931,13 +931,15 @@ const isSubmitted = ref(true); // Whether the organization has been submitted
 // BA Requirement 14: Field locking logic
 const isFieldLocked = (fieldName) => {
   // Nama dan nombor pendaftaran tidak dibenarkan tukar jika telah hantar
+  // Lock for external users (PenggunaLuar), allow Staf Zakat (admin/developer) to edit
   if (['organizationName', 'registrationNumber'].includes(fieldName)) {
-    return isSubmitted.value && currentUserRole.value !== 'Staf Zakat';
+    return isSubmitted.value && currentUserRole.value === 'PenggunaLuar';
   }
   
   // Bank updates require manual approval (BA Requirement 11)
+  // Lock for external users, allow Staf Zakat to edit
   if (['bankName', 'bankAccountNumber', 'penamaBank'].includes(fieldName)) {
-    return organizationStatus.value === 'Disahkan' && currentUserRole.value !== 'Staf Zakat';
+    return organizationStatus.value === 'Disahkan' && currentUserRole.value === 'PenggunaLuar';
   }
   
   return false;
@@ -950,6 +952,7 @@ const canUpdateAddress = computed(() => {
 
 // BA Requirement 12: Contact changes require supporting letter
 const canUpdateContact = computed(() => {
+  // Allow Staf Zakat (admin/developer) to update, restrict external users
   return currentUserRole.value === 'Staf Zakat' || !isSubmitted.value;
 });
 
@@ -1103,7 +1106,7 @@ const loadExistingData = async () => {
         city: "Shah Alam",
         district: "Petaling",
         state: "Selangor",
-        kariah: "MASJID SULTAN SALAHUDDIN ABDUL AZIZ SHAH",
+        kariah: "",
         branch: "",
         zone: "Zon A",
         hq: "",
@@ -1117,11 +1120,11 @@ const loadExistingData = async () => {
         bankSameAsHQ: "",
       },
       'ORG-202506-0002': {
-        organizationName: "Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Petaling Jaya",
+        organizationName: "Masjid Sultan Salahuddin Abdul Aziz Shah",
         registrationNumber: "PPM-2021-002",
         organizationType: "masjid",
         registrationStatus: "berdaftar",
-        structure: "cawangan",
+        structure: "hq",
         country: 'Malaysia',
         addressLine1: "No. 88, Jalan Masjid PJ",
         addressLine2: "Taman Masjid Jaya",
@@ -1130,10 +1133,10 @@ const loadExistingData = async () => {
         city: "Petaling Jaya",
         district: "Petaling",
         state: "Selangor",
-        kariah: "MASJID SULTAN SALAHUDDIN ABDUL AZIZ SHAH - CAWANGAN PJ",
-        branch: "Cawangan Petaling Jaya",
+        kariah: "",
+        branch: "",
         zone: "Zon B",
-        hq: "masjid_sultan_salahuddin_hq",
+        hq: "",
         representatives: [
           { name: "Ustaz Ibrahim bin Yusof", ic: "730505045678", phoneNumber: "03-22345678", email: "ibrahim@masjid-pj-selangor.gov.my", supportingLetter: { name: 'surat_lantikan_ibrahim.pdf', size: 198765, type: 'application/pdf' } }
         ],
@@ -1143,11 +1146,11 @@ const loadExistingData = async () => {
         bankSameAsHQ: "tidak",
       },
       'ORG-202505-0003': {
-        organizationName: "Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Klang",
+        organizationName: "Masjid Al-Amin",
         registrationNumber: "PPM-2021-003",
         organizationType: "masjid",
         registrationStatus: "berdaftar",
-        structure: "cawangan",
+        structure: "hq",
         country: 'Malaysia',
         addressLine1: "No. 15, Jalan Masjid Klang",
         addressLine2: "Taman Masjid Klang",
@@ -1156,10 +1159,10 @@ const loadExistingData = async () => {
         city: "Klang",
         district: "Klang",
         state: "Selangor",
-        kariah: "MASJID SULTAN SALAHUDDIN ABDUL AZIZ SHAH - CAWANGAN KLANG",
-        branch: "Cawangan Klang",
+        kariah: "",
+        branch: "",
         zone: "Zon C",
-        hq: "masjid_sultan_salahuddin_hq",
+        hq: "",
         representatives: [
           { name: "Dr. Ahmad Fauzi bin Abdul Rahman", ic: "650815056789", phoneNumber: "03-33456789", email: "fauzi@masjid-klang-selangor.gov.my", supportingLetter: { name: 'surat_lantikan_fauzi.pdf', size: 156789, type: 'application/pdf' } }
         ],
@@ -1169,11 +1172,11 @@ const loadExistingData = async () => {
         bankSameAsHQ: "tidak",
       },
       'ORG-202507-0004': {
-        organizationName: "Masjid Sultan Salahuddin Abdul Aziz Shah - Cawangan Shah Alam",
+        organizationName: "Masjid Al-Hidayah",
         registrationNumber: "PPM-2021-004",
         organizationType: "masjid",
         registrationStatus: "berdaftar",
-        structure: "cawangan",
+        structure: "hq",
         country: 'Malaysia',
         addressLine1: "No. 200, Jalan Masjid Shah Alam",
         addressLine2: "Taman Masjid Shah Alam",
@@ -1182,10 +1185,10 @@ const loadExistingData = async () => {
         city: "Shah Alam",
         district: "Petaling",
         state: "Selangor",
-        kariah: "MASJID SULTAN SALAHUDDIN ABDUL AZIZ SHAH - CAWANGAN SHAH ALAM",
-        branch: "Cawangan Shah Alam",
+        kariah: "",
+        branch: "",
         zone: "Zon A",
-        hq: "masjid_sultan_salahuddin_hq",
+        hq: "",
         representatives: [
           { name: "Encik Mohd Rashid bin Hassan", ic: "700301067890", phoneNumber: "03-55567890", email: "rashid@masjid-sa-selangor.gov.my", supportingLetter: { name: 'surat_lantikan_rashid.pdf', size: 167890, type: 'application/pdf' } }
         ],
@@ -1208,7 +1211,7 @@ const loadExistingData = async () => {
         city: "Puchong",
         district: "Petaling",
         state: "Selangor",
-        kariah: "MASJID PUCHONG",
+        kariah: "",
         branch: "Ibu Pejabat",
         zone: "Zon Puchong",
         hq: "",
@@ -1234,7 +1237,7 @@ const loadExistingData = async () => {
         city: "Puchong",
         district: "Petaling",
         state: "Selangor",
-        kariah: "MASJID PUCHONG",
+        kariah: "",
         branch: "Ibu Pejabat",
         zone: "Zon Puchong",
         hq: "",
@@ -1261,7 +1264,7 @@ const loadExistingData = async () => {
         city: "Kajang",
         district: "Hulu Langat",
         state: "Selangor",
-        kariah: "MASJID KAJANG",
+        kariah: "",
         branch: "Sekolah Utama",
         zone: "Zon Kajang",
         hq: "",
@@ -1287,7 +1290,7 @@ const loadExistingData = async () => {
         city: "Shah Alam",
         district: "Petaling",
         state: "Selangor",
-        kariah: "MASJID SHAH ALAM",
+        kariah: "",
         branch: "Cawangan Shah Alam",
         zone: "Zon Selangor",
         hq: "pusat_dialisis_as_salam_hq",
