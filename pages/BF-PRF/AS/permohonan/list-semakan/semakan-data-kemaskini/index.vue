@@ -87,6 +87,25 @@
                 :isBefore="false" />
             </template>
           </rs-card>
+
+          <div class="flex justify-between w-full">
+            <FormKit
+              type="date"
+              name="tarikh_kemaskini"
+              label="Tarikh Kemaskini"
+              value="2025-09-01"
+              placeholder="dd-mm-yyyy"
+              readonly
+            />
+            <FormKit
+              type="date"
+              name="tarikh"
+              label="Tarikh"
+              :value="new Date().toISOString().split('T')[0]"
+              placeholder="dd-mm-yyyy"
+              readonly
+            />
+          </div>
         </div>
 
         <!-- Step 2: Alamat - Perbandingan Sebelum vs Selepas Kemaskini -->
@@ -122,6 +141,25 @@
                 :isBefore="false" />
             </template>
           </rs-card>
+
+          <div class="flex justify-between w-full">
+            <FormKit
+              type="date"
+              name="tarikh_kemaskini"
+              label="Tarikh Kemaskini"
+              value="2025-09-09"
+              placeholder="dd-mm-yyyy"
+              readonly
+            />
+            <FormKit
+              type="date"
+              name="tarikh"
+              label="Tarikh"
+              :value="new Date().toISOString().split('T')[0]"
+              placeholder="dd-mm-yyyy"
+              readonly
+            />
+          </div>
         </div>
 
         <!-- Step 3: Pendapatan & Perbelanjaan - Perbandingan Sebelum vs Selepas Kemaskini -->
@@ -157,7 +195,26 @@
                 :isBefore="false" />
             </template>
           </rs-card>
+          <div class="flex justify-between w-full">
+            <FormKit
+              type="date"
+              name="tarikh_kemaskini"
+              label="Tarikh Kemaskini"
+              value="2025-09-09"
+              placeholder="dd-mm-yyyy"
+              readonly
+            />
+            <FormKit
+              type="date"
+              name="tarikh"
+              label="Tarikh"
+              :value="new Date().toISOString().split('T')[0]"
+              placeholder="dd-mm-yyyy"
+              readonly
+            />
+          </div>
         </div>
+        
       </template>
 
       <template #footer>
