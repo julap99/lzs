@@ -158,7 +158,6 @@
             label="SWIFT Code"
             v-model="currentSwiftCode"
             readonly
-            disabled
             placeholder="SWIFT Code akan dipaparkan berdasarkan bank yang dipilih"
           />
           <div class="flex justify-between mt-6">
