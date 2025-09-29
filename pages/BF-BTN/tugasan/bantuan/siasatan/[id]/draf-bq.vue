@@ -191,9 +191,16 @@
                                     <Icon name="ph:spinner" class="w-8 h-8 text-gray-400 animate-spin mx-auto mb-2" />
                                     <p class="text-sm text-gray-500">Memuat dokumen...</p>
                                   </div>
-                                  <div v-else-if="documentUrls[index]" class="w-full h-full">
-                                    <!-- HTML document preview -->
-                                    <iframe :src="documentUrls[index]" class="w-full h-full rounded-lg border-0" frameborder="0"></iframe>
+                                  <div v-else-if="documentUrls[index]" class="w-full h-full relative">
+                                    <!-- Document preview - supports both HTML and PDF -->
+                                    <iframe 
+                                      :src="documentUrls[index]" 
+                                      class="w-full h-full rounded-lg border-0" 
+                                      frameborder="0"
+                                      allow="autoplay"
+                                      sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                                    ></iframe>
+                                    
                                   </div>
                                   <div v-else class="text-center">
                                     <Icon name="ph:file-image" class="w-16 h-16 text-gray-400 mx-auto mb-2" />
@@ -1303,16 +1310,9 @@ const expandedDocuments = ref({});
 const loadingPdf = ref({});
 const documentUrls = ref({});
 
-// Document actions
-const previewDocument = (dokumen) => {
-  toast.info(`Pratonton dokumen: ${dokumen.jenis}`);
-  console.log("Preview document:", dokumen);
-};
 
-const downloadDocument = (dokumen) => {
-  toast.success(`Memuat turun dokumen: ${dokumen.jenis}`);
-  console.log("Download document:", dokumen);
-};
+// Document actions
+
 
 // Toggle document preview accordion
 const toggleDocumentPreview = (index) => {
@@ -1332,11 +1332,18 @@ const loadDocumentPreview = async (dokumen, index) => {
     // Simulate loading delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Use the sample BQ document HTML file that resembles your provided image
-    const sampleBqDocumentUrl = "/sample-bq-document.html";
-    
-    // All documents will show the same BQ format as example
-    documentUrls.value[index] = sampleBqDocumentUrl;
+    // For document #1 (Surat permohonan), use the new Google Drive PDF
+    if (index === 0) { // Index 0 = Document #1 (0-based)
+      // Convert Google Drive sharing link to embeddable format
+      const driveFileId = "1bWb2RxjTABcabDi9ddyVye2l2n7P0ocM";
+      documentUrls.value[index] = `https://drive.google.com/file/d/${driveFileId}/preview`;
+      console.log(`Loading PDF for document ${index + 1}:`, documentUrls.value[index]);
+    } else {
+      // For all other documents, use the sample BQ document HTML file
+      const sampleBqDocumentUrl = "/sample-bq-document.html";
+      documentUrls.value[index] = sampleBqDocumentUrl;
+      console.log(`Loading HTML for document ${index + 1}:`, documentUrls.value[index]);
+    }
     
     toast.success(`Dokumen berjaya dimuat: ${dokumen.filename}`);
   } catch (error) {
@@ -1346,6 +1353,7 @@ const loadDocumentPreview = async (dokumen, index) => {
     loadingPdf.value[index] = false;
   }
 };
+
 
 // Accordion functions (no longer needed for table format)
 // const toggleAccordion = (index) => {
@@ -1377,67 +1385,6 @@ const loadDocumentPreview = async (dokumen, index) => {
 //   }
 // };
 
-// Text extraction function (simulates OCR/text extraction)
-const extractTextFromDocument = async (dokumen) => {
-  const index = b400DokumenSokongan.value.findIndex(d => d === dokumen);
-  
-  if (index === -1) return;
-  
-  toast.info("Memulakan ekstrak teks...");
-  
-  try {
-    // Simulate text extraction process
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Sample extracted text (in real implementation, this would be from OCR)
-    let sampleText = "";
-    
-    if (index === 4) { // Document #5 (Minit mesyuarat)
-      sampleText = `MINIT MESYUARAT JAWATANKUASA MASJID AT-TAQWA
-      
-Tarikh: 15 September 2025
-Masa: 2:00 PM
-Tempat: Masjid At-Taqwa
-
-KEHADIRAN:
-1. Encik Ahmad bin Rahman (Pengerusi)
-2. Puan Siti Aishah binti Hassan (Setiausaha)
-3. Encik Mohamed bin Ali (Bendahari)
-
-PERBINCANGAN:
-1. Keperluan bantuan untuk baik pulih masjid
-   - Bumbung masjid mengalami kebocoran
-   - Sistem elektrik perlu dinaik taraf
-   - Cat dinding telah pudar
-
-2. Anggaran kos baik pulih: RM 25,000
-   - Pembaikan bumbung: RM 15,000
-   - Sistem elektrik: RM 7,000
-   - Pengecatan: RM 3,000
-
-3. Kontraktor yang dilantik: Syarikat ABC Renovation Sdn Bhd
-   - Berdaftar dengan SSM: 123456-A
-   - Pengalaman 10 tahun dalam kerja-kerja baik pulih masjid`;
-    } else {
-      sampleText = `DOKUMEN ${index + 1}: ${dokumen.jenis}
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
-
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-Maklumat tambahan:
-- Tarikh: ${new Date().toLocaleDateString('ms-MY')}
-- Status: ${dokumen.status}
-- Filename: ${dokumen.filename}`;
-    }
-    
-    extractedText.value[index] = sampleText;
-    toast.success("Teks berjaya diekstrak!");
-  } catch (error) {
-    toast.error(`Ralat ekstrak teks: ${error.message}`);
-    console.error("Error extracting text:", error);
-  }
-};
 
 // Helper functions
 const getDocumentTitle = (jenis) => {
@@ -1875,14 +1822,14 @@ const initializeFormData = () => {
         kuantiti: 1,
         kadar: 40000,
       },
-      {
-        ref: "CMP",
+             {
+         ref: "CMP",
         jenisKerja: "baik_pulih_struktur",
         keteranganKerja: "Baik pulih struktur bangunan termasuk kerja-kerja pembaikan dinding retak, penggantian bumbung rosak, pembaikan lantai, cat dalam dan luar, serta kerja-kerja berkaitan untuk memulihkan keadaan bangunan kepada kondisi yang selamat dan sesuai untuk didiami.",
         unit: "Pukal",
         kuantiti: 1,
         kadar: 15000,
-      },
+       },
     ];
   }
 
