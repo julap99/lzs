@@ -1,30 +1,31 @@
 <template>
   <div>
-    <LayoutsBreadcrumb :items="breadcrumb" />
+  <LayoutsBreadcrumb :items="breadcrumb" />
 
-    <div class="space-y-6">
-      <h1 class="text-2xl font-semibold">Permohonan Tuntutan</h1>
+  <div class="space-y-6">
 
-      <!-- 3.1 Maklumat Pemohon -->
+      <!-- 7.2 Maklumat Pemohon (selaraskan, tambah/ubah/buang field) -->
       <rs-card>
         <template #header><h2 class="text-xl font-semibold">Maklumat Pemohon</h2></template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div><label class="block text-sm font-medium text-gray-700 mb-1">Nama</label><p class="text-gray-900">{{ pemohon.nama }}</p></div>
-            <div><label class="block text-sm font-medium text-gray-700 mb-1">No. Kad Pengenalan / No. Vendor</label><p class="text-gray-900">{{ pemohon.noId }}</p></div>
+            <div><label class="block text-sm font-medium text-gray-700 mb-1">No. KP Pemohon</label><p class="text-gray-900">{{ pemohon.noId }}</p></div>
             <div><label class="block text-sm font-medium text-gray-700 mb-1">No. Telefon</label><p class="text-gray-900">{{ pemohon.noTelefon }}</p></div>
-            <div><label class="block text-sm font-medium text-gray-700 mb-1">Kategori Asnaf</label><p class="text-gray-900">{{ pemohon.kategoriAsnaf }}</p></div>
+            <div><label class="block text-sm font-medium text-gray-700 mb-1">Emel</label><p class="text-gray-900">{{ pemohon.emel || '-' }}</p></div>
+            <div><label class="block text-sm font-medium text-gray-700 mb-1">Status Household</label><p class="text-gray-900">{{ pemohon.statusHousehold || '-' }}</p></div>
+            <div><label class="block text-sm font-medium text-gray-700 mb-1">Status Individu</label><p class="text-gray-900">{{ pemohon.statusIndividu || '-' }}</p></div>
+            <div><label class="block text-sm font-medium text-gray-700 mb-1">Status Multidimensi</label><p class="text-gray-900">{{ pemohon.statusMultidimensi || '-' }}</p></div>
           </div>
         </template>
       </rs-card>
 
-      <!-- 3.2 Maklumat Bantuan -->
+      <!-- 7.3 Maklumat Bantuan (betulkan No. Bantuan, buang No. GL) -->
       <rs-card>
         <template #header><h2 class="text-xl font-semibold">Maklumat Bantuan</h2></template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormKit type="select" label="No. Bantuan" :options="opsyenNoBantuan" v-model="bantuan.noBantuan" :disabled="true" />
-            <FormKit type="select" label="No. GL" :options="opsyenNoGL" v-model="bantuan.noGL" :disabled="true" />
+            <FormKit type="text" label="No. Bantuan" :value="bantuan.noBantuan || '-'" :disabled="true" />
             <FormKit type="text" label="Aid" v-model="bantuan.aid" :disabled="true" />
             <FormKit type="text" label="Aid Product" v-model="bantuan.aidProduct" :disabled="true" />
             <FormKit type="text" label="Product Package" v-model="bantuan.productPackage" :disabled="true" />
@@ -33,11 +34,14 @@
         </template>
       </rs-card>
 
-      <!-- 3.3 Maklumat Tuntutan -->
+      <!-- 7.4 Maklumat Tuntutan (tambah No. Tuntutan, No. GL, ubah label, group amaun) -->
       <rs-card>
         <template #header><h2 class="text-xl font-semibold">Maklumat Tuntutan</h2></template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormKit type="text" label="No. Tuntutan" :value="id" :disabled="true" />
+            <FormKit type="text" label="No. GL" :value="bantuan.noGL || '-'" :disabled="true" />
+            <FormKit type="text" label="Tarikh Mohon Tuntutan" :value="formatDateTime(tuntutan.tarikhCipta)" :disabled="true" />
             <FormKit type="text" label="No. Invois" v-model="tuntutan.noInvois" :disabled="true" />
             <FormKit type="text" label="No. Invois Pelanggan" v-model="tuntutan.noInvoisPelanggan" :disabled="true" />
             <FormKit type="text" label="Tajuk" v-model="tuntutan.tajuk" :disabled="true" />
@@ -49,15 +53,16 @@
             <FormKit type="text" label="Bank" v-model="tuntutan.bank" :disabled="true" />
             <FormKit type="text" label="No. Akaun" v-model="tuntutan.noAkaun" :disabled="true" />
             <FormKit type="date" label="Tarikh Jangkaan Pembayaran" v-model="tuntutan.tarikhJangkaan" :disabled="true" />
-            <FormKit type="text" label="Tarikh Dicipta" :value="formatDateTime(tuntutan.tarikhCipta)" :disabled="true" />
-            <FormKit type="text" label="Amaun Tuntutan (RM)" :value="formatNumber(tuntutan.amaunRm)" :disabled="true" />
-            <FormKit type="text" label="Amaun GL (RM)" :value="formatNumber(tuntutan.amaunGL)" :disabled="true" />
-            <FormKit type="text" label="Baki Amaun (RM)" :value="formatNumber(tuntutan.bakiAmaun)" :disabled="true" />
+            <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6">
+              <FormKit type="text" label="Amaun Tuntutan (RM)" :value="formatNumber(tuntutan.amaunRm)" :disabled="true" />
+              <FormKit type="text" label="Amaun GL (RM)" :value="formatNumber(tuntutan.amaunGL)" :disabled="true" />
+              <FormKit type="text" label="Baki Amaun (RM)" :value="formatNumber(tuntutan.bakiAmaun)" :disabled="true" />
+            </div>
           </div>
         </template>
       </rs-card>
 
-      <!-- 3.4 Maklumat Dokumen Sokongan -->
+      <!-- 7.5 Maklumat Dokumen Sokongan (buang Muat Turun) -->
       <rs-card>
         <template #header><h2 class="text-xl font-semibold">Maklumat Dokumen Sokongan</h2></template>
         <template #body>
@@ -66,7 +71,6 @@
               <span class="text-gray-900">{{ doc.nama }}</span>
               <div class="flex gap-2">
                 <rs-button size="sm" variant="secondary" @click="viewDocument(doc)">Lihat</rs-button>
-                <rs-button size="sm" variant="secondary" @click="downloadDocument(doc)">Muat Turun</rs-button>
               </div>
             </div>
           </div>
@@ -125,7 +129,7 @@
         </template>
       </rs-card>
 
-      <!-- 3.6 Keputusan Siasatan -->
+      <!-- 7.6 Keputusan Siasatan (tambah Tidak Lengkap) -->
       <rs-card>
         <template #header><h2 class="text-xl font-semibold">Keputusan Siasatan</h2></template>
         <template #body>
@@ -138,6 +142,7 @@
                 { label: 'Sila Pilih...', value: '' },
                 { label: 'Sokong', value: 'Sokong' },
                 { label: 'Tidak Sokong', value: 'Tidak Sokong' },
+                { label: 'Tidak Lengkap', value: 'Tidak Lengkap' },
               ]"
               validation="required"
               :validation-messages="{ required: 'Sila pilih status sokongan' }"
@@ -168,7 +173,7 @@ definePageMeta({ title: 'Permohonan Tuntutan (TDS-02_2)' })
 type Dokumen = { id: string; nama: string; url: string }
 type TuntutanDetail = {
   noTuntutan: string
-  pemohon: { nama: string; noId: string; noTelefon: string; kategoriAsnaf: string }
+  pemohon: { nama: string; noId: string; noTelefon: string; kategoriAsnaf: string; emel?: string; statusHousehold?: string; statusIndividu?: string; statusMultidimensi?: string }
   bantuan: { noBantuan: string; noGL: string; aid: string; aidProduct: string; productPackage: string; entitlementProduct: string }
   tuntutan: {
     noInvois: string
@@ -242,16 +247,24 @@ const $swal = nuxtApp.$swal as any
 const route = useRoute()
 
 const breadcrumb = ref([
-  { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad' },
+  { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus' },
+  { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus' },
   { name: 'Senarai Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad' },
-  { name: 'Pengesahan', type: 'current', path: `/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad/${route.params.id}/pengesahan` },
+  { name: 'Semakan Tuntutan', type: 'current', path: `/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/eoad/${route.params.id}/pengesahan` },
 ])
 
 const id = String(route.params.id || '')
 const detail = getTuntutanDetail(id)
 if (!detail) navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad')
 
-const pemohon = ref(detail!.pemohon)
+// Extend pemohon with new fields for emel, statusHousehold, statusIndividu, statusMultidimensi
+const pemohon = ref({
+  ...detail!.pemohon,
+  emel: detail!.pemohon.emel || '',
+  statusHousehold: detail!.pemohon.statusHousehold || '',
+  statusIndividu: detail!.pemohon.statusIndividu || '',
+  statusMultidimensi: detail!.pemohon.statusMultidimensi || '',
+})
 const bantuan = ref(detail!.bantuan)
 const tuntutan = ref(detail!.tuntutan)
 const dokumenSokongan = ref(detail!.dokumenSokongan)
