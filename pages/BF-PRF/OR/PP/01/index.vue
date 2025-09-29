@@ -54,6 +54,20 @@
               />
             </div>
 
+            <div v-if="shouldShowDaerah" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              <FormKit
+                type="select"
+                name="daerah"
+                label="Daerah"
+                validation="required"
+                :options="daerahOptions"
+                placeholder="Pilih daerah"
+                v-model="formData.daerah"
+                :validation-messages="{ required: 'Daerah adalah wajib' }"
+                :disabled="!formData.organizationType"
+              />
+            </div>
+
             <!-- Search Method Info -->
             <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <div class="flex items-start">
@@ -214,11 +228,25 @@ const idTypeOptions = [
   { label: "No Pendaftaran Organisasi (SSM/ROS)", value: "no_pendaftaran" },
 ];
 
+// Daerah Options (Selangor only)
+const daerahOptions = [
+  { label: "Gombak", value: "gombak" },
+  { label: "Hulu Langat", value: "hulu_langat" },
+  { label: "Hulu Selangor", value: "hulu_selangor" },
+  { label: "Klang", value: "klang" },
+  { label: "Kuala Langat", value: "kuala_langat" },
+  { label: "Kuala Selangor", value: "kuala_selangor" },
+  { label: "Petaling", value: "petaling" },
+  { label: "Sabak Bernam", value: "sabak_bernam" },
+  { label: "Sepang", value: "sepang" },
+];
+
 const formData = ref({
   organizationType: "",
   organizationName: "",
   idType: "",
   idNumber: "",
+  daerah: "",
 });
 
 // Enhanced search results with table data
@@ -243,6 +271,12 @@ const searchResult = ref({
   location: "",
 });
 
+// Computed property to determine if daerah field should be shown
+const shouldShowDaerah = computed(() => {
+  const selectedType = formData.value.organizationType;
+  return selectedType === 'masjid' || selectedType === 'surau' || selectedType === 'institusi';
+});
+
 // Computed property to determine if search button should be enabled
 const canSearch = computed(() => {
   // Check if at least one search method is provided
@@ -254,8 +288,12 @@ const canSearch = computed(() => {
                      formData.value.idNumber && 
                      formData.value.idNumber.trim().length > 0;
   
-  // User must provide at least one complete search method
-  return hasOrganizationSearch || hasIDSearch;
+  // Daerah is required only for masjid, surau, and institusi
+  const needsDaerah = shouldShowDaerah.value;
+  const hasDaerah = !needsDaerah || (formData.value.daerah && formData.value.daerah.trim().length > 0);
+  
+  // User must provide at least one complete search method AND daerah (if required)
+  return (hasOrganizationSearch || hasIDSearch) && hasDaerah;
 });
 
 const getPlaceholder = () => {
@@ -274,6 +312,7 @@ const resetForm = () => {
   formData.value.organizationName = "";
   formData.value.idType = "";
   formData.value.idNumber = "";
+  formData.value.daerah = "";
   searchCompleted.value = false;
   profileExists.value = false;
 };
@@ -375,11 +414,15 @@ watch(
   }
 );
 
-// Watch for changes in organization type to clear organization name
+// Watch for changes in organization type to clear organization name and daerah
 watch(
   () => formData.value.organizationType,
   () => {
     formData.value.organizationName = "";
+    // Clear daerah when switching to a type that doesn't need it
+    if (!shouldShowDaerah.value) {
+      formData.value.daerah = "";
+    }
   }
 );
 </script>
