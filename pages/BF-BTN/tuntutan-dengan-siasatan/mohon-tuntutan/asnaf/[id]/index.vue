@@ -149,16 +149,19 @@
       <template #body>
         <div class="grid grid-cols-1 gap-6">
           <FormKit v-model="newInvoice.invoiceNo" type="text" label="No. Invois" disabled />
+          <FormKit v-model="newInvoice.noInvoisPelanggan" type="text" label="Customer Invoice No" />
           <FormKit v-model="newInvoice.tahun" type="text" label="Tahun" readonly />
-          <FormKit v-model="newInvoice.semester" type="select" label="Semester" :options="semesterOptions" validation="required" :validation-messages="{ required: 'Sila pilih Semester' }" />
+          <FormKit v-if="isIPT" v-model="newInvoice.semester" type="select" label="Semester" :options="semesterOptions" validation="required" :validation-messages="{ required: 'Sila pilih Semester' }" />
           <FormKit v-model="newInvoice.tajuk" type="text" label="Tajuk" required />
-          <FormKit v-model="newInvoice.cgpa" type="number" label="CGPA" validation="required|number|min:0|max:4" :validation-messages="{ required: 'Sila masukkan CGPA', number: 'Sila masukkan nilai yang sah', min: 'CGPA tidak boleh kurang dari 0', max: 'CGPA tidak boleh lebih dari 4' }" step="0.01" min="0" max="4" />
+          <FormKit v-if="isIPT" v-model="newInvoice.cgpa" type="number" label="CGPA" validation="required|number|min:0|max:4" :validation-messages="{ required: 'Sila masukkan CGPA', number: 'Sila masukkan nilai yang sah', min: 'CGPA tidak boleh kurang dari 0', max: 'CGPA tidak boleh lebih dari 4' }" step="0.01" min="0" max="4" />
           <FormKit v-model="newInvoice.penerimaBayaran" type="text" label="Penerima Bayaran" readonly />
           <FormKit v-model="newInvoice.mop" type="text" label="MOP" readonly />
           <FormKit v-model="newInvoice.namaPenerima" type="text" label="Nama Penerima" readonly />
           <FormKit v-model="newInvoice.bank" type="text" label="Bank" readonly />
           <FormKit v-model="newInvoice.noAkaun" type="text" label="No. Akaun" readonly />
+          <FormKit v-model="newInvoice.tarikhJangkaanPembayaran" type="date" label="Expected Payment Date" />
           <FormKit v-model="newInvoice.amaun" type="number" label="Amaun (RM)" validation="required|number|min:0" :validation-messages="{ required: 'Sila masukkan amaun', number: 'Sila masukkan nilai yang sah', min: 'Amaun tidak boleh negatif' }" step="0.01" min="0" />
+          <div v-if="amountExceedsGL" class="text-sm text-red-600 -mt-2">Amaun (RM) telah melebihi Amaun GL (RM).</div>
           <FormKit v-model="newInvoice.lampiran" type="file" label="Muat Naik Lampiran" accept=".pdf,.doc,.docx" multiple help="Lampiran apa yang perlu dimasukkan (boleh muat naik berbilang fail)" />
           <div v-if="newInvoice.lampiran && newInvoice.lampiran.length > 0" class="mt-2">
             <p class="text-sm text-gray-600 mb-2">Fail yang dipilih ({{ newInvoice.lampiran.length }}):</p>
@@ -174,7 +177,7 @@
       </template>
       <template #footer>
         <rs-button @click="showInvoiceModal = false">Batal</rs-button>
-        <rs-button :disabled="getGlBalance(selectedGlNo) <= 0 || !newInvoice.amaun || Number(newInvoice.amaun) <= 0" @click="createInvoice">Simpan</rs-button>
+        <rs-button :disabled="getGlBalance(selectedGlNo) <= 0 || !newInvoice.amaun || Number(newInvoice.amaun) <= 0 || amountExceedsGL" @click="createInvoice">Simpan</rs-button>
       </template>
     </RsModal>
   </div>
@@ -318,6 +321,12 @@ const toMYR = (n) => {
   const num = typeof n === 'number' ? n : Number(String(n).replace(/,/g, ''))
   return isNaN(num) ? '0.00' : num.toLocaleString('ms-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
+const isIPT = computed(() => ((formData.value.aidProduct || '').toUpperCase().includes('IPT')))
+const amountExceedsGL = computed(() => {
+  const amt = Number(newInvoice.value.amaun || 0)
+  const bal = getGlBalance(selectedGlNo.value)
+  return Number.isFinite(amt) && Number.isFinite(bal) && amt > bal
+})
 const toNum = (v) => {
   if (v == null || v === '') return 0
   const n = typeof v === 'number' ? v : Number(String(v).replace(/,/g, ''))
@@ -335,7 +344,7 @@ const getGlBalance = (glNo) => {
 const showInvoiceModal = ref(false)
 const selectedGlNo = ref(null)
 const semesterOptions = [ { label: 'Semester 1', value: '1' }, { label: 'Semester 2', value: '2' } ]
-const newInvoice = ref({ invoiceNo: 'AUTO', tahun: '', semester: '1', tajuk: '', cgpa: null, penerimaBayaran: '', mop: '', namaPenerima: '', bank: '', noAkaun: '', amaun: null, lampiran: [] })
+const newInvoice = ref({ invoiceNo: 'AUTO', noInvoisPelanggan: '', tahun: '', semester: '1', tajuk: '', cgpa: null, penerimaBayaran: '', mop: '', namaPenerima: '', bank: '', noAkaun: '', tarikhJangkaanPembayaran: '', amaun: null, lampiran: [] })
 
 function openInvoiceModal(glNo) {
   selectedGlNo.value = glNo

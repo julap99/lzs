@@ -164,16 +164,19 @@
       <template #body>
         <div class="grid grid-cols-1 gap-6">
           <FormKit v-model="newInvoice.invoiceNo" type="text" label="No. Invois" disabled />
+          <FormKit v-model="newInvoice.noInvoisPelanggan" type="text" label="Customer Invoice No" />
           <FormKit v-model="newInvoice.tahun" type="text" label="Tahun" readonly />
-          <FormKit v-model="newInvoice.semester" type="select" label="Semester" :options="semesterOptions" validation="required" :validation-messages="{ required: 'Sila pilih Semester' }" />
+          <FormKit v-if="isIPT" v-model="newInvoice.semester" type="select" label="Semester" :options="semesterOptions" validation="required" :validation-messages="{ required: 'Sila pilih Semester' }" />
           <FormKit v-model="newInvoice.tajuk" type="text" label="Tajuk" required />
-          <FormKit v-model="newInvoice.cgpa" type="number" label="CGPA" validation="required|number|min:0|max:4" :validation-messages="{ required: 'Sila masukkan CGPA', number: 'Sila masukkan nilai yang sah', min: 'CGPA tidak boleh kurang dari 0', max: 'CGPA tidak boleh lebih dari 4' }" step="0.01" min="0" max="4" />
+          <FormKit v-if="isIPT" v-model="newInvoice.cgpa" type="number" label="CGPA" validation="required|number|min:0|max:4" :validation-messages="{ required: 'Sila masukkan CGPA', number: 'Sila masukkan nilai yang sah', min: 'CGPA tidak boleh kurang dari 0', max: 'CGPA tidak boleh lebih dari 4' }" step="0.01" min="0" max="4" />
           <FormKit v-model="newInvoice.penerimaBayaran" type="text" label="Penerima Bayaran" readonly />
           <FormKit v-model="newInvoice.mop" type="text" label="MOP" readonly />
           <FormKit v-model="newInvoice.namaPenerima" type="text" label="Nama Penerima" readonly />
           <FormKit v-model="newInvoice.bank" type="text" label="Bank" readonly />
           <FormKit v-model="newInvoice.noAkaun" type="text" label="No. Akaun" readonly />
+          <FormKit v-model="newInvoice.tarikhJangkaanPembayaran" type="date" label="Expected Payment Date" />
           <FormKit v-model="newInvoice.amaun" type="number" label="Amaun (RM)" validation="required|number|min:0" :validation-messages="{ required: 'Sila masukkan amaun', number: 'Sila masukkan nilai yang sah', min: 'Amaun tidak boleh negatif' }" step="0.01" min="0" />
+          <div v-if="amountExceedsGL" class="text-sm text-red-600 -mt-2">Amaun (RM) telah melebihi Amaun GL (RM).</div>
           <FormKit v-model="newInvoice.lampiran" type="file" label="Muat Naik Lampiran" accept=".pdf,.doc,.docx" multiple help="Lampiran apa yang perlu dimasukkan (boleh muat naik berbilang fail)" />
           <div v-if="newInvoice.lampiran && newInvoice.lampiran.length > 0" class="mt-2">
             <p class="text-sm text-gray-600 mb-2">Fail yang dipilih ({{ newInvoice.lampiran.length }}):</p>
@@ -189,7 +192,7 @@
       </template>
       <template #footer>
         <rs-button @click="showInvoiceModal = false">Batal</rs-button>
-        <rs-button :disabled="getGlBalance(selectedGlNo) <= 0 || !newInvoice.amaun || Number(newInvoice.amaun) <= 0" @click="createInvoice">Simpan</rs-button>
+        <rs-button :disabled="getGlBalance(selectedGlNo) <= 0 || !newInvoice.amaun || Number(newInvoice.amaun) <= 0 || amountExceedsGL" @click="createInvoice">Simpan</rs-button>
       </template>
     </RsModal>
   </div>
@@ -384,6 +387,7 @@ const showInvoiceModal = ref(false)
 const selectedGlNo = ref('')
 const newInvoice = ref({
   invoiceNo: 'INV-2025-00124',
+  noInvoisPelanggan: '',
   tahun: '2025',
   semester: '',
   tajuk: '',
@@ -393,6 +397,7 @@ const newInvoice = ref({
   namaPenerima: 'IPTA',
   bank: 'CIMB',
   noAkaun: '8001234567',
+  tarikhJangkaanPembayaran: '',
   amaun: '',
   lampiran: [],
   catatan: ''
@@ -501,6 +506,17 @@ const formatSemester = (sem) => {
   const map = { '1': 'Semester 1', '2': 'Semester 2', '3': 'Semester 3' }
   return map[sem] || sem
 }
+
+// Derived flags & validations
+const isIPT = computed(() => {
+  const p = (formData.value.aidProduct || '').toUpperCase()
+  return p.includes('IPT')
+})
+const amountExceedsGL = computed(() => {
+  const amt = Number(newInvoice.value.amaun || 0)
+  const bal = getGlBalance(selectedGlNo.value)
+  return Number.isFinite(amt) && Number.isFinite(bal) && amt > bal
+})
 
 const getStatusVariant = (status) => {
   const variants = {
