@@ -3669,6 +3669,8 @@
     { key: "jan", label: "JAN", sortable: true },
     { key: "kadar", label: "KADAR (RM)", sortable: true },
     { key: "frekuensi", label: "FREKUENSI", sortable: true },
+    { key:"tarikhMula", label: "TARIKH MULA", sortable: true },
+    { key: "tarikhTamat", label: "TARIKH TAMAT", sortable: true },
     { key: "jumlah", label: "JUMLAH (RM)", sortable: true },
     { key: "status", label: "STATUS", sortable: true },
   ];
@@ -3743,6 +3745,8 @@
       jan: "Jan Sewaan/Ansuran Rumah (Fakir)",
       kadar: "800",
       frekuensi: "12",
+      tarikhMula: "01/01/2024",
+      tarikhTamat: "31/12/2024",
       jumlah: "9,600",
       status: "Lulus",
     },
@@ -3750,8 +3754,10 @@
       jan: "Jan Pendidikan Dialisis (Fakir)",
       kadar: "2,800",
       frekuensi: "6",
+      tarikhMula: "01/01/2024",
+      tarikhTamat: "31/12/2024",
       jumlah: "16,800",
-      status: "Lulus",
+      status: "Tidak Lulus",
     },
   ]);
   
