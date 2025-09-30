@@ -443,7 +443,7 @@ const getAction = (v: unknown): { id: string } => {
 
 const goSemak = (id: string) => {
   if (!id) return
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus/${id}/semak-kelulusan`)
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus/${id}/semak-kelulusan`)
 }
 </script>
 
