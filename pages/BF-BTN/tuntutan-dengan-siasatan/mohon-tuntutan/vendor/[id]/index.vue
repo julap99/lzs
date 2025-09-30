@@ -98,6 +98,16 @@
               <template #statusKelulusan="{ text }">
                 <rs-badge :variant="text === 'APPROVED' ? 'success' : text === 'REJECTED' ? 'danger' : 'warning'">{{ text || 'Menunggu Kelulusan' }}</rs-badge>
               </template>
+              <template #tindakan="{ value }">
+                <div class="flex items-center gap-1">
+                  <rs-button variant="ghost" size="sm" class="!px-1 !py-1 text-blue-600 hover:text-blue-800" title="Kemaskini Invoice" @click.stop="editInvoice(value)">
+                    <Icon name="material-symbols:edit" class="w-5 h-5" />
+                  </rs-button>
+                  <rs-button variant="ghost" size="sm" class="!px-1 !py-1 text-red-600 hover:text-red-800" title="Padam Invoice" @click.stop="deleteInvoice(value)">
+                    <Icon name="material-symbols:delete" class="w-5 h-5" />
+                  </rs-button>
+                </div>
+              </template>
             </RsTable>
           </RsTabItem>
 
@@ -142,7 +152,7 @@
     </rs-card>
 
     <!-- Modal: Cipta Invoice -->
-    <RsModal v-model="showInvoiceModal" title="Cipta Invoice" size="lr">
+    <RsModal v-model="showInvoiceModal" :title="isEditingInvoice ? 'Kemaskini Invoice' : 'Cipta Invoice'" size="lr">
       <template #body>
         <div class="grid grid-cols-1 gap-6">
           <FormKit v-model="newInvoice.invoiceNo" type="text" label="No. Invois" disabled />
@@ -158,7 +168,14 @@
           <FormKit v-model="newInvoice.noAkaun" type="text" label="No. Akaun" readonly />
           <FormKit v-model="newInvoice.tarikhJangkaanPembayaran" type="date" label="Expected Payment Date" />
           <FormKit v-model="newInvoice.amaun" type="number" label="Amaun (RM)" validation="required|number|min:0" :validation-messages="{ required: 'Sila masukkan amaun', number: 'Sila masukkan nilai yang sah', min: 'Amaun tidak boleh negatif' }" step="0.01" min="0" />
-          <div v-if="amountExceedsGL" class="text-sm text-red-600 -mt-2">Amaun (RM) telah melebihi Amaun GL (RM).</div>
+          <div v-if="amountExceedsLimit && newInvoice.amaun" class="text-sm text-red-600 -mt-2">
+            <span v-if="isEditingInvoice">
+              Amaun baru melebihi baki yang tersedia. Sila kurangkan amaun atau pilih amaun yang lebih rendah.
+            </span>
+            <span v-else>
+              Amaun (RM) telah melebihi baki GL yang tersedia.
+            </span>
+          </div>
           <FormKit v-model="newInvoice.lampiran" type="file" label="Muat Naik Lampiran" accept=".pdf,.doc,.docx" multiple help="Lampiran apa yang perlu dimasukkan (boleh muat naik berbilang fail)" />
           <div v-if="newInvoice.lampiran && newInvoice.lampiran.length > 0" class="mt-2">
             <p class="text-sm text-gray-600 mb-2">Fail yang dipilih ({{ newInvoice.lampiran.length }}):</p>
@@ -174,7 +191,9 @@
       </template>
       <template #footer>
         <rs-button @click="showInvoiceModal = false">Batal</rs-button>
-        <rs-button :disabled="getGlBalance(selectedGlNo) <= 0 || !newInvoice.amaun || Number(newInvoice.amaun) <= 0 || amountExceedsGL" @click="createInvoice">Simpan</rs-button>
+        <rs-button :disabled="!newInvoice.amaun || Number(newInvoice.amaun) <= 0 || !isAmountValid" @click="createInvoice">
+          {{ isEditingInvoice ? 'Kemaskini' : 'Simpan' }}
+        </rs-button>
       </template>
     </RsModal>
   </div>
@@ -268,7 +287,8 @@ const fieldsInv = [
   'glNo',
   'paNo',
   'statusKelulusan',
-  'amaun'
+  'amaun',
+  'tindakan'
 ]
 
 const columnsInv = [
@@ -280,7 +300,8 @@ const columnsInv = [
   { key: 'glNo', label: 'GL No' },
   { key: 'paNo', label: 'PA No' },
   { key: 'statusKelulusan', label: 'Status Kelulusan' },
-  { key: 'amaun', label: 'Amaun (RM)' }
+  { key: 'amaun', label: 'Amaun (RM)' },
+  { key: 'tindakan', label: 'Tindakan' }
 ]
 
 // Payment Advice table schema
@@ -367,6 +388,8 @@ const invoices = ref([])
 // Modal state
 const showInvoiceModal = ref(false)
 const selectedGlNo = ref('')
+const isEditingInvoice = ref(false)
+const editingInvoiceIndex = ref(-1)
 const newInvoice = ref({
   invoiceNo: 'INV-2025-00124',
   noInvoisPelanggan: '',
@@ -484,21 +507,83 @@ const getGlBalance = (glNo) => {
   return Math.max(glTotal - invTotal, 0)
 }
 
+// More sophisticated validation for edit scenarios
+const isAmountValid = computed(() => {
+  const amt = Number(newInvoice.value.amaun || 0)
+  
+  if (!Number.isFinite(amt) || amt <= 0) return false
+  
+  if (isEditingInvoice.value) {
+    // For editing: calculate what the total would be after this edit
+    const currentInvoice = invoices.value[editingInvoiceIndex.value]
+    const currentAmount = Number(currentInvoice?.amaun || 0)
+    
+    // If reducing amount, always allow (this fixes the over-allocation issue)
+    if (amt <= currentAmount) {
+      return true
+    }
+    
+    // If increasing amount, check if the resulting total would exceed GL limit
+    const gl = guaranteeLetters.value.find(g => g.glNo === selectedGlNo.value)
+    if (!gl) return false
+    
+    const glTotal = toNum(gl.amaun)
+    const otherInvoicesTotal = invoices.value
+      .filter(inv => inv.glNo === selectedGlNo.value && inv.invoiceNo !== currentInvoice.invoiceNo)
+      .reduce((sum, inv) => sum + toNum(inv.amaun), 0)
+    
+    // Calculate what the total would be after this edit
+    const newTotal = otherInvoicesTotal + amt
+    
+    // Only allow if the new total doesn't exceed GL limit
+    return newTotal <= glTotal
+  } else {
+    // For new invoices: amount must not exceed balance
+    const bal = getGlBalance(selectedGlNo.value)
+    return amt <= bal
+  }
+})
+
+// Computed property to check if amount exceeds limit for warning message
+const amountExceedsLimit = computed(() => {
+  const amt = Number(newInvoice.value.amaun || 0)
+  
+  if (!Number.isFinite(amt) || amt <= 0) return false
+  
+  if (isEditingInvoice.value) {
+    const currentInvoice = invoices.value[editingInvoiceIndex.value]
+    const currentAmount = Number(currentInvoice?.amaun || 0)
+    
+    // If reducing amount, no warning needed
+    if (amt <= currentAmount) {
+      return false
+    }
+    
+    // If increasing amount, check if the resulting total would exceed GL limit
+    const gl = guaranteeLetters.value.find(g => g.glNo === selectedGlNo.value)
+    if (!gl) return false
+    
+    const glTotal = toNum(gl.amaun)
+    const otherInvoicesTotal = invoices.value
+      .filter(inv => inv.glNo === selectedGlNo.value && inv.invoiceNo !== currentInvoice.invoiceNo)
+      .reduce((sum, inv) => sum + toNum(inv.amaun), 0)
+    
+    // Calculate what the total would be after this edit
+    const newTotal = otherInvoicesTotal + amt
+    
+    return newTotal > glTotal
+  } else {
+    // For new invoices: check if exceeds balance
+    const bal = getGlBalance(selectedGlNo.value)
+    return amt > bal
+  }
+})
+
 const formatSemester = (sem) => {
   const map = { '1': 'Semester 1', '2': 'Semester 2', '3': 'Semester 3' }
   return map[sem] || sem
 }
 
-// Derived flags & validations
-const isIPT = computed(() => {
-  const p = (formData.value.aidProduct || '').toUpperCase()
-  return p.includes('IPT')
-})
-const amountExceedsGL = computed(() => {
-  const amt = Number(newInvoice.value.amaun || 0)
-  const bal = getGlBalance(selectedGlNo.value)
-  return Number.isFinite(amt) && Number.isFinite(bal) && amt > bal
-})
 
 const getStatusVariant = (status) => {
   const variants = {
@@ -553,10 +638,19 @@ const createInvoice = () => {
     glNo: selectedGlNo.value,
     paNo: '',
     statusKelulusan: '',
-    amaun: newInvoice.value.amaun
+    amaun: newInvoice.value.amaun,
+    tindakan: newInvoice.value.invoiceNo // Use invoiceNo as the tindakan value for the template
   }
 
-  invoices.value.push(invoice)
+  if (isEditingInvoice.value) {
+    // Update existing invoice
+    invoices.value[editingInvoiceIndex.value] = invoice
+    isEditingInvoice.value = false
+    editingInvoiceIndex.value = -1
+  } else {
+    // Add new invoice
+    invoices.value.push(invoice)
+  }
 
   // Add uploaded files to documents
   if (newInvoice.value.lampiran && newInvoice.value.lampiran.length > 0) {
@@ -585,6 +679,42 @@ const createInvoice = () => {
     amaun: '',
     lampiran: [],
     catatan: ''
+  }
+}
+
+const editInvoice = (invoiceNo) => {
+  const index = invoices.value.findIndex(inv => inv.invoiceNo === invoiceNo)
+  if (index !== -1) {
+    const invoice = invoices.value[index]
+    isEditingInvoice.value = true
+    editingInvoiceIndex.value = index
+    selectedGlNo.value = invoice.glNo
+    
+    // Populate the modal with invoice data
+    newInvoice.value = {
+      invoiceNo: invoice.invoiceNo,
+      tahun: invoice.tahun,
+      semester: invoice.semester,
+      tajuk: invoice.title,
+      cgpa: '',
+      penerimaBayaran: 'IPTA',
+      mop: 'EFT',
+      namaPenerima: 'IPTA',
+      bank: 'CIMB',
+      noAkaun: '8001234567',
+      amaun: invoice.amaun,
+      lampiran: [],
+      catatan: ''
+    }
+    
+    showInvoiceModal.value = true
+  }
+}
+
+const deleteInvoice = (invoiceNo) => {
+  const index = invoices.value.findIndex(inv => inv.invoiceNo === invoiceNo)
+  if (index !== -1) {
+    invoices.value.splice(index, 1)
   }
 }
 

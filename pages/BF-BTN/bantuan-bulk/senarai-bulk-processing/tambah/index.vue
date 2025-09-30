@@ -376,14 +376,11 @@
                               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No.</th>
                               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kod</th>
                               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bayaran Kepada</th>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori Asnaf</th>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contributor</th>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recipient</th>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Organization</th>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amaun</th>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mode Of Payment</th>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bank</th>
-                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Akaun</th>
+                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Penerima</th>   
+                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amaun (RM)</th>
+                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">MOP</th>
+                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Bank</th>
+                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Akaun Bank</th>
                               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Tindakan
                               </th>
@@ -401,19 +398,10 @@
                                </td>
                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                                  {{ payment.bayaranKepada }}
-                               </td>
-                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                 {{ payment.asnaf }}
-                               </td>
-                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                 {{ payment.contributor }}
-                               </td>
+                               </td>                               
                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                                  {{ payment.recipient }}
-                               </td>
-                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                 {{ payment.organization }}
-                               </td>
+                               </td>                               
                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
                                  {{ formatCurrency(payment.amaun) }}
                                </td>
@@ -550,7 +538,7 @@
                     </div>
 
                     <div v-else class="space-y-3">
-                      <rs-table
+                      <!-- <rs-table
                         :data="product.recipientList"
                         :columns="recipientColumns"
                         :pageSize="5"
@@ -574,7 +562,60 @@
                             </rs-button>
                           </div>
                         </template>
-                      </rs-table>
+                      </rs-table> -->
+                      <!-- Custom Table -->
+                      <!-- Custom Table -->
+                      <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
+                          <!-- Table Header -->
+                          <thead class="bg-gray-50">
+                            <tr>
+                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No.</th>
+                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Penuh</th>
+                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amaun (RM)</th>
+                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Agihan Semula</th>   
+                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kod BP</th>
+                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori Asnaf</th>
+                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bayaran Kepada</th>
+                              <!-- <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Negeri</th>
+                              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Negara</th> -->
+                            </tr>
+                          </thead>
+                          <!-- Table Body -->
+                           <tbody class="bg-white divide-y divide-gray-200">
+                             <tr v-for="(payment, index) in product.recipientList" :key="payment.id" 
+                                 class="hover:bg-gray-50 transition-colors duration-150">
+                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                                 {{ index + 1 }}
+                               </td>
+                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                                 {{ payment.namaPenuh }}
+                               </td>
+                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                                 {{ formatCurrency(payment.amaun)  }}
+                               </td>                               
+                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                                 {{ payment.agihanSemula }}
+                               </td>                               
+                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                                 {{ payment.bulkProcessing }}
+                               </td>
+                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                                 {{ payment.kategoriAsnaf }}
+                               </td>
+                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                                 {{ payment.bayaranKepada }}
+                               </td>
+                               <!-- <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                                 {{ payment.negeri }}
+                               </td>
+                               <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                                 {{ payment.negara }}
+                               </td>                                -->
+                             </tr>
+                           </tbody>
+                        </table>
+                      </div>
                     </div>
                   </template>
                 </rs-card>
@@ -1157,12 +1198,12 @@ const breadcrumb = ref([
     path: "/BF-BTN/bantuan-bulk",
   },
   {
-    name: "Senarai Bulk Processing",
+    name: "Bulk Processing",
     type: "link",
     path: "/BF-BTN/bantuan-bulk/senarai-bulk-processing",
   },
   {
-    name: "Tambah Bulk Processing",
+    name: "Cipta Bulk Processing",
     type: "current",
     path: "/BF-BTN/bantuan-bulk/senarai-bulk-processing/tambah",
   },

@@ -50,54 +50,82 @@
 
             <template #body>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-1">
-                  <label class="text-sm font-medium text-gray-700"
-                    >ID Permohonan</label
-                  >
-                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                    <span class="text-sm font-mono text-gray-900">{{
-                      permohonanData.idPermohonan
-                    }}</span>
+                <!-- Left Column -->
+                <div class="space-y-4">
+                  <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700"
+                      >ID Permohonan</label
+                    >
+                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                      <span class="text-sm font-mono text-gray-900">{{
+                        permohonanData.idPermohonan
+                      }}</span>
+                    </div>
+                  </div>
+
+                  <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700"
+                      >Jenis Bantuan</label
+                    >
+                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                      <span class="text-sm text-gray-900">{{
+                        permohonanData.jenisBantuan
+                      }}</span>
+                    </div>
+                  </div>
+
+                  <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700"
+                      >PR No</label
+                    >
+                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                      <span class="text-sm font-mono text-gray-900">{{
+                        permohonanData.prNo
+                      }}</span>
+                    </div>
                   </div>
                 </div>
 
-                <div class="space-y-1">
-                  <label class="text-sm font-medium text-gray-700"
-                    >Nama Pemohon / Institusi</label
-                  >
-                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                    <span class="text-sm text-gray-900">{{
-                      permohonanData.namaPemohon
-                    }}</span>
+                <!-- Right Column -->
+                <div class="space-y-4">
+                  <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700"
+                      >Nama Pemohon / Institusi</label
+                    >
+                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                      <span class="text-sm text-gray-900">{{
+                        permohonanData.namaPemohon
+                      }}</span>
+                    </div>
                   </div>
-                </div>
 
-                <div class="space-y-1">
-                  <label class="text-sm font-medium text-gray-700"
-                    >Jenis Bantuan</label
-                  >
-                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                    <span class="text-sm text-gray-900">{{
-                      permohonanData.jenisBantuan
-                    }}</span>
+                  <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700"
+                      >Status Permohonan</label
+                    >
+                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                      <span class="text-sm text-gray-900">{{
+                        permohonanData.statusPermohonan
+                      }}</span>
+                    </div>
                   </div>
-                </div>
 
-                <div class="space-y-1">
-                  <label class="text-sm font-medium text-gray-700"
-                    >Status Permohonan</label
-                  >
-                  <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
-                    <span class="text-sm text-gray-900">{{
-                      permohonanData.statusPermohonan
-                    }}</span>
+                  <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700"
+                      >PO No</label
+                    >
+                    <div class="mt-1 p-3 bg-gray-50 rounded-lg border">
+                      <span class="text-sm font-mono text-gray-900">{{
+                        permohonanData.poNo
+                      }}</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </template>
           </rs-card>
 
-          <!-- Section 2: Dokumen PR -->
+          <!-- Section 2: Maklumat PO -->
           <rs-card class="shadow-sm border-0 bg-white">
             <template #header>
               <div class="flex items-center justify-between">
@@ -111,10 +139,10 @@
                   </div>
                   <div>
                     <h2 class="text-lg font-semibold text-gray-900">
-                      Dokumen PR (Perakuan Rundingan)
+                      Maklumat PO
                     </h2>
                     <p class="text-sm text-gray-500">
-                      Akses dokumen PR untuk semakan dan kemaskini
+                      Akses dokumen PO untuk semakan dan kemaskini
                     </p>
                   </div>
                 </div>
@@ -151,27 +179,6 @@
                         </p>
                       </div>
                     </div>
-                    <div class="flex space-x-2">
-                      <div class="flex space-x-2">
-                        <rs-button
-                          variant="primary"
-                          @click="previewPR"
-                          class="!py-2 !px-4"
-                        >
-                          <Icon name="ph:eye" class="w-4 h-4 mr-2" />
-                          Preview PR
-                        </rs-button>
-
-                        <rs-button
-                          variant="success"
-                          @click="generateArahanKerja"
-                          class="!py-2 !px-4"
-                        >
-                          <Icon name="ph:file-plus" class="w-4 h-4 mr-2" />
-                          Jana Arahan Kerja
-                        </rs-button>
-                      </div>
-                    </div>
                   </div>
 
                   <div class="p-4 bg-white">
@@ -201,7 +208,7 @@
                         }}</span>
                       </div>
                       <div>
-                        <span class="font-medium text-gray-700">Alamat:</span>
+                        <span class="font-medium text-gray-700">Alamat Tapak:</span>
                         <span class="ml-2 text-gray-900">{{
                           formData.alamatPenerima
                         }}</span>
@@ -237,6 +244,16 @@
                             class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
                             Kuantiti
+                          </th>
+                          <th
+                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            Jumlah dari BQ (RM)
+                          </th>
+                          <th
+                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            Kuantiti Diterima
                           </th>
                           <th
                             class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -278,6 +295,25 @@
                             {{ item.totalPrice }}
                           </td>
                           <td class="px-4 py-3">
+                            <input
+                              type="number"
+                              v-model="item.kuantitiDiterima"
+                              placeholder="Masukkan bilangan"
+                              min="0"
+                              step="1"
+                              class="text-sm w-full border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            />
+                          </td>
+                          <td class="px-4 py-3">
+                            <input
+                              type="text"
+                              v-model="item.jumlahKuantitiDiterima"
+                              placeholder="RM 0.00"
+                              class="text-sm w-full border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-medium text-gray-900"
+                              :title="`Auto-calculated: ${item.kuantitiDiterima || 0} × ${item.unitPrice} = ${formatCurrency((item.kuantitiDiterima || 0) * parseFloat(item.unitPrice.replace('RM ', '')) || 0)}`"
+                            />
+                          </td>
+                          <td class="px-4 py-3">
                             <select
                               v-model="item.status"
                               @change="updateWorkItemStatus(item)"
@@ -308,6 +344,18 @@
                             ></textarea>
                             <span v-else class="text-xs text-gray-400">-</span>
                           </td>
+                        </tr>
+                        <!-- Total Row -->
+                        <tr class="bg-blue-50 border-t-2 border-blue-200">
+                          <td class="px-4 py-3"></td>
+                          <td class="px-4 py-3"></td>
+                          <td class="px-4 py-3"></td>
+                          <td class="px-4 py-3"></td>
+                          <td class="px-4 py-3 text-sm font-bold text-blue-900">
+                            {{ formatCurrency(totalJumlahKuantitiDiterima) }}
+                          </td>
+                          <td class="px-4 py-3"></td>
+                          <td class="px-4 py-3"></td>
                         </tr>
                       </tbody>
                     </table>
@@ -763,104 +811,6 @@
                               />
                             </div>
 
-                            <!-- List of Documents from Contractor -->
-                            <div
-                              v-if="
-                                kad.dokumenDariKontraktor &&
-                                kad.dokumenDariKontraktor.length > 0
-                              "
-                            >
-                              <h4 class="font-medium text-gray-900 mb-3">
-                                Senarai Dokumen daripada Kontraktor
-                              </h4>
-                              <div
-                                class="bg-blue-50 rounded-lg border border-blue-200"
-                              >
-                                <rs-table
-                                  :data="
-                                    kad.dokumenDariKontraktor.map(
-                                      (dok, index) => ({
-                                        ...dok,
-                                        no: index + 1,
-                                      })
-                                    )
-                                  "
-                                  :columns="[
-                                    { key: 'no', label: 'No' },
-                                    {
-                                      key: 'namaDokumen',
-                                      label: 'Nama Dokumen',
-                                    },
-                                    {
-                                      key: 'tarikhDicipta',
-                                      label: 'Tarikh Dicipta',
-                                    },
-                                    { key: 'actions', label: 'Tindakan' },
-                                  ]"
-                                  :options="{
-                                    variant: 'info',
-                                    striped: false,
-                                    bordered: false,
-                                    hover: true,
-                                  }"
-                                  :optionsAdvanced="{
-                                    sortable: false,
-                                    filterable: false,
-                                    responsive: true,
-                                  }"
-                                  :show-no-column="false"
-                                  :show-search="false"
-                                  :advanced="false"
-                                  :page-size="10"
-                                >
-                                  <template #no="{ value }">
-                                    <span
-                                      class="text-sm text-blue-900 font-medium"
-                                      >{{ value.no }}</span
-                                    >
-                                  </template>
-                                  <template #namaDokumen="{ value }">
-                                    <span
-                                      class="text-sm text-blue-900 font-medium"
-                                      >{{ value.namaDokumen }}</span
-                                    >
-                                  </template>
-                                  <template #tarikhDicipta="{ value }">
-                                    <span class="text-sm text-blue-700">{{
-                                      formatDateTime(value.tarikhDicipta)
-                                    }}</span>
-                                  </template>
-                                  <template #actions="{ value }">
-                                    <div class="flex space-x-2">
-                                      <rs-button
-                                        variant="primary-outline"
-                                        size="sm"
-                                        @click="uploadDocument()"
-                                        class="!py-1 !px-2"
-                                      >
-                                        <Icon
-                                          name="ph:upload"
-                                          class="w-3 h-3 mr-1"
-                                        />
-                                        Upload
-                                      </rs-button>
-                                      <rs-button
-                                        variant="info-outline"
-                                        size="sm"
-                                        @click="viewDocument()"
-                                        class="!py-1 !px-2"
-                                      >
-                                        <Icon
-                                          name="ph:eye"
-                                          class="w-3 h-3 mr-1"
-                                        />
-                                        Lihat
-                                      </rs-button>
-                                    </div>
-                                  </template>
-                                </rs-table>
-                              </div>
-                            </div>
                           </div>
                         </div>
 
@@ -879,29 +829,9 @@
                           </h3>
 
                           <div class="space-y-6">
-                            <!-- Checkbox Tuntutan Boleh Dibuat -->
-                            <div>
-                              <FormKit
-                                type="checkbox"
-                                name="tuntutanBolehDibuat"
-                                :options="[
-                                  {
-                                    label: 'Tuntutan Boleh Dibuat',
-                                    value: true,
-                                  },
-                                ]"
-                                help="Tandakan jika kontraktor dibenarkan membuat tuntutan"
-                                :value="kad.tuntutanBolehDibuat"
-                                v-model="kad.tuntutanBolehDibuat"
-                                @change="
-                                  toggleTuntutanBolehDibuat(kad.id, $event)
-                                "
-                              />
-                            </div>
 
-                            <!-- Kelulusan Tuntutan (Conditional) -->
+                            <!-- Kelulusan Tuntutan -->
                             <div
-                              v-if="kad.tuntutanBolehDibuat"
                               class="mt-6 p-4 bg-purple-50 rounded-lg border border-purple-200"
                             >
                               <h4
@@ -917,7 +847,7 @@
                                 class="grid grid-cols-1 md:grid-cols-2 gap-6"
                               >
                                 <!-- Dropdown % Boleh Dituntut -->
-                                <FormKit
+                                <!-- <FormKit
                                   type="select"
                                   name="peratusanBolehDituntut"
                                   label="Peratusan Boleh Dituntut"
@@ -926,6 +856,21 @@
                                   help="Pilih peratusan yang dibenarkan untuk dituntut"
                                   :value="kad.peratusanBolehDituntut"
                                   v-model="kad.peratusanBolehDituntut"
+                                /> -->
+
+                                <!-- Jumlah Boleh Dituntut (RM) -->
+                                <FormKit
+                                  type="text"
+                                  name="jumlahBolehDituntut"
+                                  label="Jumlah Boleh Dituntut (RM)"
+                                  placeholder="Contoh: RM 25,000.00"
+                                  help="Masukkan jumlah dalam format RM"
+                                  :value="kad.jumlahBolehDituntut"
+                                  v-model="kad.jumlahBolehDituntut"
+                                  :classes="{ 
+                                    input: 'text-sm !font-mono',
+                                    wrapper: 'mb-4'
+                                  }"
                                 />
 
                                 <!-- Status Kelulusan -->
@@ -1076,6 +1021,239 @@
               </div>
             </template>
           </rs-card>
+
+          <!-- Maklumat Kontraktor/Vendor -->
+          <rs-card class="shadow-sm border-0 bg-white">
+            <template #header>
+              <h3 class="text-lg font-semibold text-gray-900">
+                Maklumat Kontraktor/Vendor
+              </h3>
+            </template>
+
+            <template #body>
+              <div class="space-y-4">
+                <!-- Contact Information -->
+                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div class="space-y-2">
+                    <div class="flex items-start">
+                      <span class="text-sm font-medium text-gray-700 w-20 flex-shrink-0">Nama Kontraktor:</span>
+                      <span class="text-sm text-gray-900">Syarikat Maju Jaya Sdn Bhd</span>
+                    </div>
+                    <div class="flex items-start">
+                      <span class="text-sm font-medium text-gray-700 w-20 flex-shrink-0">Nama Wakil:</span>
+                      <span class="text-sm text-gray-900">Ahmad Ikhwan bin Saif</span>
+                    </div>
+                    <div class="flex items-start">
+                      <span class="text-sm font-medium text-gray-700 w-20 flex-shrink-0">No Tel:</span>
+                      <span class="text-sm text-gray-900">+60 12-345 6789</span>
+                    </div>
+                    <div class="flex items-start">
+                      <span class="text-sm font-medium text-gray-700 w-20 flex-shrink-0">Emel:</span>
+                      <span class="text-sm text-blue-600">ikhwan@majujaya.com.my</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Senarai Dokumen daripada Kontraktor -->
+                <div>
+                  <h4 class="font-medium text-gray-900 mb-3">
+                    Senarai Dokumen daripada Kontraktor
+                  </h4>
+                  <div
+                    v-if="contractorDocuments && contractorDocuments.length > 0"
+                    class="bg-blue-50 rounded-lg border border-blue-200"
+                  >
+                    <rs-table
+                      :data="
+                        contractorDocuments.map(
+                          (dok, index) => ({
+                            ...dok,
+                            no: index + 1,
+                          })
+                        )
+                      "
+                      :columns="[
+                        { key: 'no', label: 'No' },
+                        {
+                          key: 'namaDokumen',
+                          label: 'Nama Dokumen',
+                        },
+                        {
+                          key: 'tarikhDicipta',
+                          label: 'Tarikh Dicipta',
+                        },
+                        { key: 'actions', label: 'Tindakan' },
+                      ]"
+                      :options="{
+                        variant: 'info',
+                        striped: false,
+                        bordered: false,
+                        hover: true,
+                      }"
+                      :optionsAdvanced="{
+                        sortable: false,
+                        filterable: false,
+                        responsive: true,
+                      }"
+                      :show-no-column="false"
+                      :show-search="false"
+                      :advanced="false"
+                      :page-size="10"
+                    >
+                      <template #no="{ value }">
+                        <span
+                          class="text-sm text-blue-900 font-medium"
+                          >{{ value.no }}</span
+                        >
+                      </template>
+                      <template #namaDokumen="{ value }">
+                        <span
+                          class="text-sm text-blue-900 font-medium"
+                          >{{ value.namaDokumen }}</span
+                        >
+                      </template>
+                      <template #tarikhDicipta="{ value }">
+                        <span class="text-sm text-blue-700">{{
+                          formatDateTime(value.tarikhDicipta)
+                        }}</span>
+                      </template>
+                      <template #actions="{ value }">
+                        <div class="flex space-x-2">
+                          <rs-button
+                            variant="primary-outline"
+                            size="sm"
+                            @click="uploadDocument()"
+                            class="!py-1 !px-2"
+                          >
+                            <Icon
+                              name="ph:upload"
+                              class="w-3 h-3 mr-1"
+                            />
+                            Upload
+                          </rs-button>
+                          <rs-button
+                            variant="info-outline"
+                            size="sm"
+                            @click="viewDocument()"
+                            class="!py-1 !px-2"
+                          >
+                            <Icon
+                              name="ph:eye"
+                              class="w-3 h-3 mr-1"
+                            />
+                            Lihat
+                          </rs-button>
+                        </div>
+                      </template>
+                    </rs-table>
+                  </div>
+                  <div
+                    v-else
+                    class="text-center text-gray-500 py-8 border border-gray-200 rounded-lg"
+                  >
+                    <Icon name="ph:file-x" class="w-12 h-12 text-gray-300 mx-auto mb-2" />
+                    <p class="text-sm">Tiada dokumen dari kontraktor</p>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </rs-card>
+
+          <!-- Maklumat Tuntutan -->
+          <rs-card class="shadow-sm border-0 bg-white">
+            <template #header>
+              <h3 class="text-lg font-semibold text-gray-900">
+                Maklumat Tuntutan
+              </h3>
+            </template>
+
+            <template #body>
+              <div class="space-y-4">
+                <div
+                  v-if="tuntutanData && tuntutanData.length > 0"
+                  class="bg-blue-50 rounded-lg border border-blue-200"
+                >
+                  <rs-table
+                    :data="
+                      tuntutanData.map(
+                        (tuntutan, index) => ({
+                          ...tuntutan,
+                          no: index + 1,
+                        })
+                      )
+                    "
+                    :columns="[
+                      { key: 'no', label: 'No' },
+                      {
+                        key: 'grNo',
+                        label: 'GR No',
+                      },
+                      {
+                        key: 'jumlahDiluluskan',
+                        label: 'Jumlah Diluluskan (RM)',
+                      },
+                      { key: 'paNo', label: 'PA No' },
+                      { key: 'status', label: 'Status' },
+                    ]"
+                    :options="{
+                      variant: 'info',
+                      striped: false,
+                      bordered: false,
+                      hover: true,
+                    }"
+                    :optionsAdvanced="{
+                      sortable: false,
+                      filterable: false,
+                      responsive: true,
+                    }"
+                    :show-no-column="false"
+                    :show-search="false"
+                    :advanced="false"
+                    :page-size="10"
+                  >
+                    <template #no="{ value }">
+                      <span
+                        class="text-sm text-blue-900 font-medium"
+                        >{{ value.no }}</span
+                      >
+                    </template>
+                    <template #grNo="{ value }">
+                      <span
+                        class="text-sm text-blue-900 font-medium"
+                        >{{ value.grNo }}</span
+                      >
+                    </template>
+                    <template #jumlahDiluluskan="{ value }">
+                      <span class="text-sm text-green-700 font-medium">{{
+                        value.jumlahDiluluskan
+                      }}</span>
+                    </template>
+                    <template #paNo="{ value }">
+                      <span
+                        class="text-sm text-blue-900 font-medium"
+                        >{{ value.paNo }}</span
+                      >
+                    </template>
+                    <template #status="{ value }">
+                      <rs-badge
+                        :variant="getTuntutanStatusVariant(value.status)"
+                        class="text-xs"
+                      >
+                        {{ value.status }}
+                      </rs-badge>
+                    </template>
+                  </rs-table>
+                </div>
+                <div
+                  v-else
+                  class="text-center text-gray-500 py-8 border border-gray-200 rounded-lg"
+                >
+                  <Icon name="ph:receipt-x" class="w-12 h-12 text-gray-300 mx-auto mb-2" />
+                  <p class="text-sm">Tiada maklumat tuntutan</p>
+                </div>
+              </div>
+            </template>
+          </rs-card>
         </div>
       </div>
     </div>
@@ -1164,15 +1342,17 @@ const permohonanData = ref({
   idPermohonan: "BNT-2024-001234",
   namaPemohon: "Masjid Al-Hidayah",
   jenisBantuan: "Bantuan Naik Taraf Bangunan",
+  prNo: "PR-2025-0001",
   statusPermohonan: "Dalam Pemantauan",
+  poNo: "PO-2025-0001",
   status: "Aktif",
 });
 
 // Form data for PR Document Section
 const formData = ref({
   // Section 2: PR Document Info
-  namaDokumenPR: "ARAHAN KERJA BAGI MASJID AL-HIDAYAH",
-  jenisDokumen: "Perakuan Rundingan (PR)",
+  namaDokumenPR: "Arahan Kerja Bagi Baik Pulih Rumah",
+  jenisDokumen: "Purchase Order",
   statusPR: "Dijanakan",
   tarikhDijana: new Date(),
   tarikhKemaskiniTerakhir: new Date(),
@@ -1193,7 +1373,9 @@ const workItems = ref([
     quantity: "50 meter persegi",
     unitPrice: "RM 25.00",
     totalPrice: "RM 1,250.00",
-    status: "lulus",
+    kuantitiDiterima: 0,
+    jumlahKuantitiDiterima: "RM 0.00",
+    status: "pending",
     kivRemarks: "",
   },
   {
@@ -1202,7 +1384,9 @@ const workItems = ref([
     quantity: "200 meter persegi", 
     unitPrice: "RM 8.00",
     totalPrice: "RM 1,600.00",
-    status: "lulus",
+    kuantitiDiterima: 0,
+    jumlahKuantitiDiterima: "RM 0.00",
+    status: "pending",
     kivRemarks: "",
   },
   {
@@ -1211,8 +1395,10 @@ const workItems = ref([
     quantity: "1 set",
     unitPrice: "RM 500.00", 
     totalPrice: "RM 500.00",
-    status: "kiv",
-    kivRemarks: "Menunggu bahan khas dari pembekal",
+    kuantitiDiterima: 0,
+    jumlahKuantitiDiterima: "RM 0.00",
+    status: "pending",
+    kivRemarks: "",
   },
   {
     id: 4,
@@ -1220,7 +1406,9 @@ const workItems = ref([
     quantity: "20 unit",
     unitPrice: "RM 35.00",
     totalPrice: "RM 700.00", 
-    status: "lulus",
+    kuantitiDiterima: 0,
+    jumlahKuantitiDiterima: "RM 0.00",
+    status: "pending",
     kivRemarks: "",
   },
   {
@@ -1229,7 +1417,9 @@ const workItems = ref([
     quantity: "30 meter persegi",
     unitPrice: "RM 40.00",
     totalPrice: "RM 1,200.00",
-    status: "gagal",
+    kuantitiDiterima: 0,
+    jumlahKuantitiDiterima: "RM 0.00",
+    status: "pending",
     kivRemarks: "",
   },
   {
@@ -1238,6 +1428,8 @@ const workItems = ref([
     quantity: "2 unit",
     unitPrice: "RM 350.00", 
     totalPrice: "RM 700.00",
+    kuantitiDiterima: 0,
+    jumlahKuantitiDiterima: "RM 0.00",
     status: "pending",
     kivRemarks: "",
   },
@@ -1247,7 +1439,9 @@ const workItems = ref([
     quantity: "150 meter persegi",
     unitPrice: "RM 12.00",
     totalPrice: "RM 1,800.00",
-    status: "lulus",
+    kuantitiDiterima: 0,
+    jumlahKuantitiDiterima: "RM 0.00",
+    status: "pending",
     kivRemarks: "",
   },
   {
@@ -1256,8 +1450,10 @@ const workItems = ref([
     quantity: "1 set",
     unitPrice: "RM 800.00",
     totalPrice: "RM 800.00",
-    status: "kiv",
-    kivRemarks: "Perlu permit dari JKR",
+    kuantitiDiterima: 0,
+    jumlahKuantitiDiterima: "RM 0.00",
+    status: "pending",
+    kivRemarks: "",
   }
 ]);
 
@@ -1379,6 +1575,7 @@ const kadPemantauanList = ref([
     serahKepadaKontraktor: true,
     tuntutanBolehDibuat: true,
     peratusanBolehDituntut: "50%",
+    jumlahBolehDituntut: "RM 25,000.00",
     statusKelulusanTuntutan: "dalam-semakan",
     catatan: "Sila muat naik dokumen invois",
     dokumenDariKontraktor: [
@@ -1401,6 +1598,7 @@ const kadPemantauanList = ref([
     serahKepadaKontraktor: false,
     tuntutanBolehDibuat: false,
     peratusanBolehDituntut: "0%",
+    jumlahBolehDituntut: "RM 0.00",
     statusKelulusanTuntutan: "ditolak",
     catatan: "Projek belum bermula.",
     dokumenDariKontraktor: [],
@@ -1489,6 +1687,38 @@ const canMakeClaim = computed(() => {
   );
 });
 
+// Calculate total of Jumlah (RM) column
+const totalJumlahKuantitiDiterima = computed(() => {
+  return workItems.value.reduce((total, item) => {
+    // Parse the currency string to get the numeric value
+    const amount = parseFloat(item.jumlahKuantitiDiterima?.replace(/[^\d.-]/g, '') || '0');
+    return total + amount;
+  }, 0);
+});
+
+// Aggregate all contractor documents from all kad pemantauan
+const contractorDocuments = computed(() => {
+  const allDocuments = [];
+  kadPemantauanList.value.forEach((kad) => {
+    if (kad.dokumenDariKontraktor && kad.dokumenDariKontraktor.length > 0) {
+      kad.dokumenDariKontraktor.forEach((dok) => {
+        allDocuments.push(dok);
+      });
+    }
+  });
+  return allDocuments;
+});
+
+// Sample tuntutan data
+const tuntutanData = ref([
+  {
+    grNo: "GE-2025-0001",
+    jumlahDiluluskan: "RM 50,000.00",
+    paNo: "",
+    status: "Pending NPS"
+  }
+]);
+
 // Methods
 const getStatusVariant = (status) => {
   const variants = {
@@ -1496,6 +1726,17 @@ const getStatusVariant = (status) => {
     "Dalam Pemantauan": "warning",
     Selesai: "success",
     Ditangguhkan: "danger",
+  };
+  return variants[status] || "default";
+};
+
+const getTuntutanStatusVariant = (status) => {
+  const variants = {
+    "Diluluskan": "success",
+    "Dalam Pemprosesan": "warning", 
+    "Ditolak": "danger",
+    "Menunggu": "info",
+    "Pending NPS": "warning"
   };
   return variants[status] || "default";
 };
@@ -1522,6 +1763,7 @@ const addNewKadPemantauan = () => {
     serahKepadaKontraktor: false,
     tuntutanBolehDibuat: false,
     peratusanBolehDituntut: "0%",
+    jumlahBolehDituntut: "RM 0.00",
     statusKelulusanTuntutan: "ditolak",
     catatan: "",
     dokumenDariKontraktor: [],
@@ -1841,6 +2083,16 @@ const formatDate = (date) => {
   return new Date(date).toLocaleDateString("ms-MY");
 };
 
+const formatCurrency = (amount) => {
+  if (!amount || amount === 0) return "RM 0.00";
+  return new Intl.NumberFormat('ms-MY', {
+    style: 'currency',
+    currency: 'MYR',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(amount);
+};
+
 // PR Status methods
 const getPRStatusVariant = (status) => {
   const variants = {
@@ -1931,6 +2183,23 @@ watch(
       }
       if (!selectedDocumentsForKad.value.hasOwnProperty(kad.id)) {
         selectedDocumentsForKad.value[kad.id] = [];
+      }
+    });
+  },
+  { deep: true }
+);
+
+// Watch for changes in kuantitiDiterima to auto-update jumlahKuantitiDiterima
+watch(
+  workItems,
+  (newWorkItems) => {
+    newWorkItems.forEach((item) => {
+      const unitPrice = parseFloat(item.unitPrice.replace('RM ', '')) || 0;
+      const calculatedAmount = (item.kuantitiDiterima || 0) * unitPrice;
+      
+      // Only update if the current value is the default or empty
+      if (!item.jumlahKuantitiDiterima || item.jumlahKuantitiDiterima === "RM 0.00") {
+        item.jumlahKuantitiDiterima = formatCurrency(calculatedAmount);
       }
     });
   },

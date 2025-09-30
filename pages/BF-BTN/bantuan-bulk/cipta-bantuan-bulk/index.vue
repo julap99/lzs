@@ -125,7 +125,7 @@
                 </rs-badge>
               </template>
 
-              <template v-slot:actions="{ text, index }">
+              <!-- <template v-slot:actions="{ text, index }">
                 <div class="flex justify-center items-center gap-2">
                   <div class="relative flex items-center justify-center" @mouseenter="tooltips['view'+index] = true" @mouseleave="tooltips['view'+index] = false">
                     <rs-button 
@@ -142,7 +142,22 @@
                     </transition>
                   </div>
                 </div>
-              </template>
+              </template> -->
+                
+                  <template v-slot:actions="{ text}">
+                    <div class="flex justify-center items-center">
+                      <rs-button
+                        variant="info"
+                        size="sm"
+                        class="p-1 w-8 h-8"
+                        @click="viewBantuan(text)"
+                        title="Lihat"
+                      >
+                        <Icon name="ic:outline-visibility" class="ic:outline-visibility" size="18" />
+                      </rs-button>
+                    </div>
+                  </template>
+                
             </rs-table>
           </RsTabItem>
 
@@ -183,30 +198,25 @@
                 </rs-badge>
               </template>
 
-              <template v-slot:actions="{ text, index }">
-                <div class="flex justify-center items-center gap-2">
-                  <div class="relative flex items-center justify-center" @mouseenter="tooltips['view'+index] = true" @mouseleave="tooltips['view'+index] = false">
-                    <rs-button 
-                      variant="info-text" 
-                      class="p-1 w-8 h-8"
-                      @click="viewBantuan(text)"
-                    >
-                      <Icon name="ic:outline-visibility" size="18" />
-                    </rs-button>
-                    <transition name="tooltip">
-                      <span v-if="tooltips['view'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
-                        Lihat
-                      </span>
-                    </transition>
-                  </div>
+              <template v-slot:actions="{ text}">
+                <div class="flex justify-center items-center">
+                  <rs-button
+                    variant="info"
+                    size="sm"
+                    class="p-1 w-8 h-8"
+                    @click="viewBantuan(text)"
+                    title="Lihat"
+                  >
+                    <Icon name="ic:outline-visibility" class="ic:outline-visibility" size="18" />
+                  </rs-button>
                 </div>
               </template>
             </rs-table>
           </RsTabItem>
 
-          <RsTabItem title="Ditolak">
+          <RsTabItem title="Rework">
             <rs-table
-              :data="filteredBantuanList('Ditolak')"
+              :data="filteredBantuanList('Rework')"
               :columns="columns"
               :pageSize="pageSize"
               :showNoColumn="true"
@@ -241,22 +251,17 @@
                 </rs-badge>
               </template>
 
-              <template v-slot:actions="{ text, index }">
-                <div class="flex justify-center items-center gap-2">
-                  <div class="relative flex items-center justify-center" @mouseenter="tooltips['view'+index] = true" @mouseleave="tooltips['view'+index] = false">
-                    <rs-button 
-                      variant="info-text" 
-                      class="p-1 w-8 h-8"
-                      @click="viewBantuan(text)"
-                    >
-                      <Icon name="ic:outline-visibility" size="18" />
-                    </rs-button>
-                    <transition name="tooltip">
-                      <span v-if="tooltips['view'+index]" class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-max">
-                        Lihat
-                      </span>
-                    </transition>
-                  </div>
+              <template v-slot:actions="{ text}">
+                <div class="flex justify-center items-center">
+                  <rs-button
+                    variant="info"
+                    size="sm"
+                    class="p-1 w-8 h-8"
+                    @click="viewBantuan(text)"
+                    title="Lihat"
+                  >
+                    <Icon name="ic:outline-visibility" class="ic:outline-visibility" size="18" />
+                  </rs-button>
                 </div>
               </template>
             </rs-table>
@@ -353,7 +358,12 @@ const columns = [
   },
   {
     key: 'status',
-    label: 'Status',
+    label: 'Status Processing',
+    sortable: true,
+  },
+  {
+    key: 'peringkatSemakan',
+    label: 'Peringkat Semakan',
     sortable: true,
   },
   {
@@ -385,6 +395,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM20,000.00',
     tarikhMohon: '01/03/2025',
     status: 'Draf',
+    peringkatSemakan: 'Abd Ghafar bin Ahmad (Pemohon)',
     actions: 'BP-2025-00001'
   },
   {
@@ -395,16 +406,18 @@ const bantuanList = ref([
     jumlahAmaun: 'RM23,000.00',
     tarikhMohon: '01/02/2025',
     status: 'Draf',
+    peringkatSemakan: 'Abd Ghafar bin Ahmad (Pemohon)',
     actions: 'BP-2025-00002'
   },
   {
     id: 'BP-2025-00003',
-    tajuk: 'Wang Saku Miskin Feb 2025',
-    aid: 'B314 - Bantuan Keperluan Pendidikan IPT (Fakir)',
-    aidProduct: '(HQ) KPIPT (Fakir) - Bantuan Wang Saku',
-    jumlahAmaun: 'RM28,000.00',
+    tajuk: 'LZS menyerahkan bantuan sebanyak RM 43,200 kepada 114 keluarga mangsa banjir di daerah Hulu Langat. Selangor',
+    aid: 'B146 - (HQ) BANTUAN BENCANA (FAKIR)',
+    aidProduct: '(HQ) BANTUAN BANJIR (FAKIR)',
+    jumlahAmaun: 'RM43,200.00',
     tarikhMohon: '02/02/2025',
     status: 'Dalam Proses',
+    peringkatSemakan: ' Ahmad Azhar bin Abdullah (Penyemak)',
     actions: 'BP-2025-00003'
   },
   {
@@ -415,6 +428,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM35,000.00',
     tarikhMohon: '25/02/2025',
     status: 'Dalam Proses',
+    peringkatSemakan: ' Ahmad Azhar bin Abdullah (Penyemak)',
     actions: 'BP-2025-00004'
   },
   {
@@ -425,6 +439,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM44,390.00',
     tarikhMohon: '04/05/2025',
     status: 'Lulus',
+    peringkatSemakan: 'Mohd Rizal bin Mohd Fattah (Pelulus)',
     actions: 'BP-2025-01617'
   },
   {
@@ -435,6 +450,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM54,710.00',
     tarikhMohon: '30/04/2025',
     status: 'Lulus',
+    peringkatSemakan: 'Mohd Rizal bin Mohd Fattah (Pelulus)',
     actions: 'BP-2025-01589'
   },
   {
@@ -444,7 +460,8 @@ const bantuanList = ref([
     aidProduct: '(HQ) BANTUAN RUMAH',
     jumlahAmaun: 'RM50,000.00',
     tarikhMohon: '05/01/2025',
-    status: 'Ditolak',
+    status: 'Rework',
+    peringkatSemakan: 'Abd Ghafar bin Ahmad (Pemohon)',
     actions: 'BP-2025-00007'
   },
   {
@@ -454,7 +471,8 @@ const bantuanList = ref([
     aidProduct: '(HQ) BANTUAN MAKANAN',
     jumlahAmaun: 'RM15,000.00',
     tarikhMohon: '20/02/2025',
-    status: 'Ditolak',
+    status: 'Rework',
+    peringkatSemakan: 'Abd Ghafar bin Ahmad (Pemohon)',
     actions: 'BP-2025-00008'
   },
 ]);
@@ -509,6 +527,8 @@ const getStatusVariant = (status) => {
     case 'Lulus':
       return 'success';
     case 'Ditolak':
+      return 'danger';
+    case 'Rework':
       return 'danger';
     case 'Dalam Proses':
       return 'warning';

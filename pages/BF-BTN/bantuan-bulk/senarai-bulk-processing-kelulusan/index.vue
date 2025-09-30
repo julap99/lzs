@@ -76,15 +76,19 @@
             {{ formatCurrency(text) }}
           </template>
 
+          
           <template v-slot:tindakan="{ text}">
-            <rs-button
-              variant="info"
-              size="sm"
-              @click="handleProses(text)"
-              title="Lihat"
-            >
-              <Icon name="ic:outline-visibility" class="w-4 h-4" />
-            </rs-button>
+            <div class="flex justify-center items-center">
+              <rs-button
+                variant="info"
+                size="sm"
+                class="p-1 w-8 h-8"
+                @click="handleProses(text)"
+                title="Lihat"
+              >
+                <Icon name="ic:outline-visibility" class="ic:outline-visibility" size="18" />
+              </rs-button>
+            </div>
           </template>
         </rs-table>
 
@@ -173,6 +177,11 @@ const columns = [
     sortable: true,
   },
   {
+    key: 'peringkatSemakan',
+    label: 'Peringkat Semakan',
+    sortable: true,
+  },
+  {
     key: "tindakan",
     label: "Tindakan",
     sortable: false,
@@ -207,6 +216,7 @@ const bantuanBulkList = ref([
     amaun: 44390.00,
     tarikhHantar: '04/05/2025',
     status: "Lulus",
+    peringkatSemasa:'',
     tindakan: "BP-2025-01617",
   },
   {
@@ -217,6 +227,7 @@ const bantuanBulkList = ref([
     amaun: 54710.00,
     tarikhHantar: '30/04/2025',
     status: "Lulus",
+    peringkatSemasa:'',
     tindakan: "BP-2025-01589",
   },
   {
@@ -227,6 +238,7 @@ const bantuanBulkList = ref([
     amaun: 20000.00,
     tarikhHantar: '03/03/2025',
     status: "Lulus",
+    peringkatSemasa:'',
     tindakan: "BP-2025-00001",
   },
 ]);

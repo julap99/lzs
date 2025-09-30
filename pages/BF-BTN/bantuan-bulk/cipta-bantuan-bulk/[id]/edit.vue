@@ -182,17 +182,33 @@
               v-model="formData.tarikhJangkaanBayaran"
             />
 
-            <FormKit
-              type="radio"
-              name="modeOfPayment"
-              label="Mode Of Payment"
-              v-model="formData.modeOfPayment"
-              :options="[
-                { label: 'Tunai', value: 'Tunai' },
-                { label: 'Profile', value: 'Profile' },
-              ]"
-              validation="required"
-            />
+            
+            <!-- Mode Of Payment -->
+            <div class="space-y-1">
+              <label class="text-sm font-medium text-gray-700">Mode Of Payment</label>
+              <div class="mt-2 space-y-2">
+                <div
+                  v-for="opt in [
+                    { label: 'Tunai', value: 'Tunai' },
+                    { label: 'Profile', value: 'Profile' }
+                  ]"
+                  :key="opt.value"
+                  class="flex items-center"
+                >
+                  <input
+                    :id="`mode-${opt.value}`"
+                    type="radio"
+                    name="modeOfPayment"
+                    :value="opt.value"
+                    v-model="formData.modeOfPayment"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                  />
+                  <label :for="`mode-${opt.value}`" class="ml-2 text-sm text-gray-700 cursor-pointer">
+                    {{ opt.label }}
+                  </label>
+                </div>
+              </div>
+            </div>
 
             <!-- Cawangan (CustomSelect) -->
             <CustomSelect
@@ -363,68 +379,56 @@
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No.</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kod</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bayaran Kepada</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori Asnaf</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contributor</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recipient</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Organization</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amaun</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mode Of Payment</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bank</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Akaun</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Penerima</th>   
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amaun (RM)</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">MOP</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Bank</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Akaun Bank</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Tindakan
                     </th>
                   </tr>
                 </thead>
                 <!-- Table Body -->
-                <tbody class="bg-white divide-y divide-gray-200">
-                  <tr v-for="(payment, index) in cleanPaymentList" :key="payment.kod" 
-                      class="hover:bg-gray-50 transition-colors duration-150">
-                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                      {{ index + 1 }}
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {{ payment.kod }}
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {{ payment.bayaranKepada }}
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {{ payment.asnaf }}
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {{ payment.contributor }}
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {{ payment.recipient }}
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {{ payment.organization }}
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                      {{ formatCurrency(payment.amaun) }}
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {{ payment.modeOfPayment || '-' }}
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {{ payment.bankName }}
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {{ payment.accountNumber || '-' }}
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                      <div class="flex justify-center">
-                        <input
-                          type="checkbox"
-                          :value="payment.kod"
-                          v-model="selectedPayments"
-                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="(payment, index) in cleanPaymentList" :key="payment.kod" 
+                        class="hover:bg-gray-50 transition-colors duration-150">
+                      <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                        {{ index + 1 }}
+                      </td>
+                      <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ payment.kod }}
+                      </td>
+                      <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ payment.bayaranKepada }}
+                      </td>                               
+                      <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ payment.recipient }}
+                      </td>                               
+                      <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                        {{ formatCurrency(payment.amaun) }}
+                      </td>
+                      <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ payment.modeOfPayment || '-' }}
+                      </td>
+                      <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ payment.bankName }}
+                      </td>
+                      <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ payment.accountNumber || '-' }}
+                      </td>
+                      <td class="px-4 py-4 whitespace-nowrap">
+                        <div class="flex justify-center">
+                          <input
+                            type="checkbox"
+                            :value="payment.kod"
+                            v-model="selectedPayments"
+                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
               </table>
             </div>
           </div>
@@ -546,7 +550,7 @@
           </div>
 
           <div v-else class="space-y-3">
-            <rs-table
+            <!-- <rs-table
               :data="recipientList"
               :columns="recipientColumns"
               :pageSize="5"
@@ -569,7 +573,59 @@
                   </rs-button>
                 </div>
               </template>
-            </rs-table>
+            </rs-table> -->
+            <!-- Custom Table -->
+            <div class="overflow-x-auto">
+              <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
+                <!-- Table Header -->
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No.</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Penuh</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amaun (RM)</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Agihan Semula</th>   
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kod BP</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori Asnaf</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bayaran Kepada</th>
+                    <!-- <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Negeri</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Negara</th> -->
+                  </tr>
+                </thead>
+                <!-- Table Body -->
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="(payment, index) in recipientList" :key="payment.id" 
+                        class="hover:bg-gray-50 transition-colors duration-150">
+                      <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                        {{ index + 1 }}
+                      </td>
+                      <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ payment.namaPenuh }}
+                      </td>
+                      <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ formatCurrency(payment.amaun)  }}
+                      </td>                               
+                      <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ payment.agihanSemula }}
+                      </td>                               
+                      <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                        {{ payment.bulkProcessing }}
+                      </td>
+                      <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ payment.kategoriAsnaf }}
+                      </td>
+                      <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ payment.bayaranKepada }}
+                      </td>
+                      <!-- <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ payment.negeri }}
+                      </td>
+                      <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ payment.negara }}
+                      </td>                                -->
+                    </tr>
+                  </tbody>
+              </table>
+            </div>
           </div>
         </template>
       </rs-card>
@@ -608,7 +664,7 @@
               </div>
             </div>
             <div>
-              <h2 class="text-xl font-semibold text-gray-900">Maklumat Dokumen Sokongan</h2>
+              <h2 class="text-xl font-semibold text-gray-900">Dokumen Sokongan</h2>
               <p class="text-sm text-gray-500">Fail dan dokumen berkaitan</p>
             </div>
           </div>
@@ -1337,12 +1393,13 @@ const getBantuanData = (id) => {
       catatan: 'Tuntutan wang saku pelajar untuk bulan Mac 2025. Program ini bertujuan membantu pelajar fakir dalam memenuhi keperluan asas mereka.',
       namaPegawai: 'Ahmad bin Ali',
       tarikhMohon: '01/03/2025',
-      aid: 'B314',
-      aidProduct: 'Wang Saku',
-      productPackage: 'KPIPT (Fakir)',
-      productEntitlement: ['Bantuan Wang Saku'],
+      aid: '(HQ) BANTUAN BENCANA (FAKIR)',
+      aidProduct: 'BANTUAN RIBUT/TANAH RUNTUH(FAKIR)',
+      productPackage: 'BANTUAN RIBUT/TANAH RUNTUH - RUMAH SETINGGAN (FAKIR)',
+      productEntitlement: ['BANTUAN RIBUT/TANAH RUNTUH - RUMAH SETINGGAN (FAKIR)'],
       penyiasat: 'ahmad_hassan',
       cawangan: 'hq',
+      modeOfPayment: 'Tunai',
       tarikhJangkaanBayaran: '2025-05-04'
     },
     'BP-2025-00002': {
@@ -1360,6 +1417,7 @@ const getBantuanData = (id) => {
       productEntitlement: ['Bantuan Wang Saku'],
       penyiasat: 'ahmad_hassan',
       cawangan: 'hq',
+      modeOfPayment: 'Tunai',
       tarikhJangkaanBayaran: '2025-05-04'
     },
     'BP-2025-00003': {
@@ -1377,6 +1435,7 @@ const getBantuanData = (id) => {
       productEntitlement: ['Bantuan Wang Saku'],
       penyiasat: 'ahmad_hassan',
       cawangan: 'hq',
+      modeOfPayment: 'Tunai',
       tarikhJangkaanBayaran: '2025-05-04'
     },
     'BP-2025-00004': {
@@ -1394,6 +1453,7 @@ const getBantuanData = (id) => {
       productEntitlement: ['Bantuan Banjir'],
       penyiasat: 'ahmad_hassan',
       cawangan: 'hq',
+      modeOfPayment: 'Tunai',
       tarikhJangkaanBayaran: '2025-05-04'
     },
     'BP-2025-00005': {
@@ -1427,13 +1487,15 @@ const getBantuanData = (id) => {
       productPackage: 'BANTUAN KESIHATAN',
       productEntitlement: ['Bantuan Kesihatan',],
       penyiasat: 'ahmad_hassan',
-      cawangan: 'hq'
+      cawangan: 'hq',
+      modeOfPayment: 'Tunai',
+      tarikhJangkaanBayaran: '2025-05-04'
     },
     'BP-2025-00007': {
       kodBP: 'BP-2025-00007',
       tajuk: 'Bantuan Rumah Jan 2025',
       kategoriAsnaf: 'fakir',
-      status: 'Ditolak',
+      status: 'Rework',
       jumlahAmaun: 'RM50,000.00',
       catatan: 'Tuntutan bantuan rumah untuk bulan Jan 2025. Program ini bertujuan membantu keluarga fakir dalam memenuhi keperluan asas mereka.',
       namaPegawai: 'Ahmad bin Ali',
@@ -1444,13 +1506,14 @@ const getBantuanData = (id) => {
       productEntitlement: ['Bantuan Rumah'],
       penyiasat: 'ahmad_hassan',
       cawangan: 'hq',
+      modeOfPayment: 'Tunai',
       tarikhJangkaanBayaran: '2025-05-04'
     },
     'BP-2025-00008': {
       kodBP: 'BP-2025-00008',
       tajuk: 'Bantuan Makanan Feb 2025',
       kategoriAsnaf: 'fakir',
-      status: 'Ditolak',
+      status: 'Rework',
       jumlahAmaun: 'RM15,000.00',
       catatan: 'Tuntutan bantuan makanan untuk bulan Feb 2025. Program ini bertujuan membantu keluarga fakir dalam memenuhi keperluan asas mereka.',
       namaPegawai: 'Ahmad bin Ali',
@@ -1461,6 +1524,7 @@ const getBantuanData = (id) => {
       productEntitlement: ['Bantuan Makanan'],
       penyiasat: 'ahmad_hassan',
       cawangan: 'hq',
+      modeOfPayment: 'Tunai',
       tarikhJangkaanBayaran: '2025-05-04'
     }
   };
@@ -2649,6 +2713,8 @@ const getStatusVariant = (status) => {
     case 'Dalam Proses':
       return 'warning';
     case 'Ditolak':
+      return 'danger';
+    case 'Rework':
       return 'danger';
     case 'Baru':
       return 'primary';
