@@ -142,7 +142,7 @@
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold">Tanggungan</h2>
           <div class="text-sm text-gray-600">
-            Langkah {{ currentStepB }} dari {{ totalStepsB }}
+            Langkah {{ currentStepBPosition }} dari {{ totalVisibleStepsB }}
           </div>
         </div>
       </template>
@@ -153,7 +153,7 @@
           <div class="mb-6">
             <div class="flex justify-between mb-2">
               <div
-                v-for="step in stepsB"
+                v-for="step in visibleStepsB"
                 :key="step.id"
                 class="text-center flex-1 cursor-pointer flex items-center justify-center gap-1"
                 :class="{ 'font-semibold': currentStepB >= step.id }"
@@ -166,9 +166,9 @@
               <div
                 class="bg-primary h-2.5 rounded-full transition-all duration-300"
                 :style="`width: ${
-                  currentStepB >= totalStepsB
+                  currentStepBPosition >= totalVisibleStepsB
                     ? 100
-                    : (currentStepB / totalStepsB) * 100
+                    : (currentStepBPosition / totalVisibleStepsB) * 100
                 }%`"
               ></div>
             </div>
@@ -254,6 +254,7 @@
           <TanggunganKesihatanForms
             v-if="currentStepB === 5"
             :get-current-tanggungan="getCurrentTanggungan"
+            :next-label="nextVisibleStepLabel"
             @prev-step="prevStepB"
             @next-step="nextStepB"
             @save-step="handleSaveStepB"
@@ -637,21 +638,75 @@ const stepsB = [
   { id: 13, label: "Pegawai Pendaftar" },
 ];
 
+// Determine if current tanggungan is under 18
+const isUnder18 = computed(() => {
+  const t = getCurrentTanggungan();
+  if (!t) return false;
+  const ageFromField = parseInt(t.umur_tanggungan, 10);
+  let ageNum = Number.isNaN(ageFromField)
+    ? parseInt(calculateAge?.(t.tarikh_lahir_tanggungan) || "", 10)
+    : ageFromField;
+  if (Number.isNaN(ageNum)) return false;
+  return ageNum < 18;
+});
+
+// Steps to hide for under 18
+const hiddenStepsUnder18 = new Set([6, 7, 8, 9]);
+
+// Visible steps based on age
+const visibleStepsB = computed(() => {
+  if (!isUnder18.value) return stepsB;
+  return stepsB.filter((s) => !hiddenStepsUnder18.has(s.id));
+});
+
+// Total visible steps and current position among visible steps
+const totalVisibleStepsB = computed(() => visibleStepsB.value.length);
+const currentStepBPosition = computed(() => {
+  const idx = visibleStepsB.value.findIndex((s) => s.id === currentStepB.value);
+  return idx === -1 ? 1 : idx + 1;
+});
+
+// Navigation helpers to skip hidden steps
+const getNextVisibleStepId = (fromId) => {
+  const ids = visibleStepsB.value.map((s) => s.id);
+  const greater = ids.filter((id) => id > fromId);
+  return greater.length ? greater[0] : fromId;
+};
+
+const getPrevVisibleStepId = (fromId) => {
+  const ids = visibleStepsB.value.map((s) => s.id);
+  const smaller = ids.filter((id) => id < fromId);
+  return smaller.length ? smaller[smaller.length - 1] : fromId;
+};
+
 const goToStepB = (stepId) => {
-  currentStepB.value = stepId;
+  const allowed = visibleStepsB.value.some((s) => s.id === stepId);
+  if (allowed) currentStepB.value = stepId;
 };
 
 const nextStepB = () => {
-  if (currentStepB.value < totalStepsB) {
-    currentStepB.value++;
+  const nextId = getNextVisibleStepId(currentStepB.value);
+  if (nextId !== currentStepB.value) {
+    currentStepB.value = nextId;
   }
 };
 
 const prevStepB = () => {
-  if (currentStepB.value > 1) {
-    currentStepB.value--;
+  const prevId = getPrevVisibleStepId(currentStepB.value);
+  if (prevId !== currentStepB.value) {
+    currentStepB.value = prevId;
   }
 };
+
+// Next visible step label for dynamic button text
+const nextVisibleStepLabel = computed(() => {
+  const ids = visibleStepsB.value.map((s) => s.id);
+  const greater = ids.filter((id) => id > currentStepB.value);
+  if (!greater.length) return '';
+  const nextId = greater[0];
+  const next = visibleStepsB.value.find((s) => s.id === nextId);
+  return next?.label || '';
+});
 
 // Simple handlers for Section B actions
 const handleSaveStepB = () => {
