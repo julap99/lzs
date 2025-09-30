@@ -85,6 +85,21 @@
                     />
                   </div>
 
+                  <div class="space-y-1" v-if="route.params.bantuanId !== 'B134'">
+                    <FormKit
+                      type="text"
+                      name="aidProduct"
+                      label="Aid Product"
+                      placeholder="Contoh: Bantuan Sewaan/Ansuran Rumah (Miskin)"
+                      validation="required"
+                      :validation-messages="{
+                        required: 'Aid Product diperlukan'
+                      }"
+                      :classes="{ outer: 'mb-0' }"
+                      v-model="formData.aidProduct"
+                    />
+                  </div>
+
                   <div class="space-y-1" v-if="route.params.bantuanId === 'B134'">
                     <FormKit
                       type="select"
@@ -150,25 +165,32 @@
                   </div>
 
                   <!-- === Template: Entitlement (B134) === -->
-                  <div
-                      class="space-y-1"
-                      v-if="route.params.bantuanId === 'B134' && filteredEntitlements.length"
-                    >
-                      <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Entitlement Product
-                      </label>
+                  <!-- Entitlement Product (B134) – checkbox auto selaras dengan Product Package -->
+                  <div class="space-y-1" v-if="route.params.bantuanId === 'B134'">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                      Entitlement Product
+                    </label>
 
-                      <div v-for="item in filteredEntitlements" :key="item.id" class="flex items-center">
-                        <input
-                          type="checkbox"
-                          :id="item.id"
-                          :checked="!!item.dipilih"
-                          @change="onToggle(item, $event)"
-                          class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                        />
-                        <label :for="item.id" class="ml-2 text-sm text-gray-700">{{ item.nama }}</label>
-                      </div>
+                    <div class="flex items-start gap-2 p-3 rounded-lg border"
+                        :class="entitlementForSelectedPackage ? 'bg-white border-gray-300' : 'bg-gray-50 border-gray-200'">
+                      <input
+                        id="entitlement-auto"
+                        type="checkbox"
+                        class="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        :disabled="!entitlementForSelectedPackage"
+                        v-model="entitlementChecked"
+                      />
+                      <label for="entitlement-auto" class="text-sm text-gray-700">
+                        {{ entitlementForSelectedPackage?.nama || '— pilih Product Package dahulu —' }}
+                      </label>
                     </div>
+
+                    <p v-if="!entitlementForSelectedPackage" class="text-xs text-gray-500 mt-1">
+                      Pilih <b>Product Package</b> untuk mengaktifkan entitlement.
+                    </p>
+                  </div>
+
+
 
 
 
@@ -506,114 +528,515 @@
             </template>
           </rs-card>
 
-          <rs-card v-if="route.params.bantuanId === 'B134' " class="shadow-sm border-0 bg-white">
-            <template #header>
-              <div class="flex items-center space-x-3">
-                <div class="flex-shrink-0">
-                  <div
-                    class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center"
-                  >
-                    <Icon name="ph:gift" class="w-6 h-6 text-indigo-600" />
+<!-- Senarai Entitlement Product -->
+<rs-card v-if="route.params.bantuanId === 'B134'" class="shadow-sm border-0 bg-white">
+  <template #header>
+    <div class="flex items-center space-x-3">
+      <div class="flex-shrink-0">
+        <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+          <Icon name="ph:gift" class="w-6 h-6 text-indigo-600" />
+        </div>
+      </div>
+      <div>
+        <h2 class="text-lg font-semibold text-gray-900">Senarai Entitlement Product</h2>
+        <p class="text-sm text-gray-500">Bantuan yang dipilih berdasarkan checkbox</p>
+      </div>
+    </div>
+  </template>
+
+  <template #body>
+    <div class="space-y-4">
+      <!-- Show cards when Entitlement Product is checked -->
+      <div v-if="formData.entitlementProduct === true">
+        <!-- Entitlement Product Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div
+            v-for="(product, index) in selectedEntitlements"
+            :key="product.id || index"
+            class="relative border rounded-lg p-4 transition-all duration-200 hover:shadow-md"
+            :class="{
+              'border-green-200 bg-green-50': product.status === 'Aktif' && !isProductEditing(index),
+              'border-blue-200 bg-blue-50': isProductEditing(index) || (product.status === 'Tersedia' && !isProductEditing(index)),
+              'border-gray-200 bg-white': product.status === 'Tidak Aktif' && !isProductEditing(index)
+            }"
+          >
+            <!-- Status Badge -->
+            <div class="absolute top-2 right-2">
+              <rs-badge
+                :variant="isProductEditing(index) ? 'primary' : getProductStatusVariant(product.status)"
+                class="text-xs"
+              >
+                {{ isProductEditing(index) ? 'Sedang Edit' : product.status }}
+              </rs-badge>
+            </div>
+
+            <!-- Product Info -->
+            <div class="pr-16">
+              <h3 class="font-semibold text-gray-900 text-sm mb-2">{{ product.nama }}</h3>
+              <p class="text-xs text-gray-600 mb-3">{{ product.penerangan }}</p>
+            </div>
+
+            <!-- Inline Editable Sections (only when editing)
+                 Hidden for:
+                 - B112 + (Sewaan_Rumah | Belian_Rumah)
+                 - B103 + (HEMODIALISIS | SUNTIKAN_EPO)
+                 - B400 + [DIRECT_/GL_ Institusi/ Sekolah/ Surau_Sekolah]
+            -->
+            <div
+              v-if="
+                isProductEditing(index) && !(
+                  (isB112 && (product.code === 'Sewaan_Rumah' || product.code === 'Belian_Rumah')) ||
+                  (isB103 && (product.code === 'HEMODIALISIS' || product.code === 'SUNTIKAN_EPO')) ||
+                  (isB400 && ['DIRECT_INSTITUSI_AGAMA','GL_INSTITUSI_AGAMA','DIRECT_SEKOLAH_AGAMA','GL_SEKOLAH_AGAMA','DIRECT_SURAU_SEKOLAH','GL_SURAU_SEKOLAH'].includes(product.code))
+                )
+              "
+              class="mt-4 space-y-4"
+            >
+              <!-- Maklumat Kadar Bantuan -->
+              <div class="bg-gray-50 p-3 rounded-lg">
+                <div class="flex items-center space-x-2 mb-3">
+                  <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                    <Icon name="ph:currency-dollar" class="w-4 h-4 text-green-600" />
+                  </div>
+                  <div>
+                    <h4 class="text-sm font-semibold text-gray-700">Maklumat Kadar Bantuan</h4>
+                    <p class="text-xs text-gray-500">Nilai kadar bantuan yang dicadangkan</p>
                   </div>
                 </div>
-                <div>
-                  <h2 class="text-lg font-semibold text-gray-900">
-                    Senarai Entitlement Product
-                  </h2>
-                  <p class="text-sm text-gray-500">
-                    Bantuan yang dipilih berdasarkan entitlement product
-                  </p>
+
+                <div class="space-y-3">
+                  <!-- Special case for yuran_pengajian: only editable total -->
+                  <div v-if="product.code === 'yuran_pengajian'">
+                    <label class="text-xs font-medium text-gray-600">Jumlah Keseluruhan Bantuan akan Diterima</label>
+                    <input
+                      v-model="getCurrentEditData().jumlahKeseluruhan"
+                      type="text"
+                      class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Masukkan jumlah keseluruhan bantuan"
+                    />
+                  </div>
+
+                  <!-- Regular form -->
+                  <div v-else>
+                    <!-- Row 1 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label class="text-xs font-medium text-gray-600">Kadar Bantuan</label>
+                        <input
+                          v-model="getCurrentEditData().kadarBantuan"
+                          type="number"
+                          class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          placeholder="Masukkan kadar bantuan"
+                          @input="calculateCurrentProductTotal()"
+                        />
+                      </div>
+                      <div>
+                        <label class="text-xs font-medium text-gray-600">Tempoh/Kekerapan</label>
+                        <input
+                          v-model="getCurrentEditData().tempohKekerapan"
+                          type="number"
+                          class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          placeholder="Bilangan tempoh/kekerapan"
+                          @input="calculateCurrentProductTotal()
+                        "
+                        />
+                      </div>
+                    </div>
+
+                    <!-- Row 2 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label class="text-xs font-medium text-gray-600">Tarikh Mula</label>
+                        <div class="relative">
+                          <input
+                            v-model="getCurrentEditData().tarikhMula"
+                            type="date"
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                          <Icon name="ph:calendar" class="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none" />
+                        </div>
+                      </div>
+                      <div>
+                        <label class="text-xs font-medium text-gray-600">Tarikh Tamat</label>
+                        <div class="relative">
+                          <input
+                            v-model="getCurrentEditData().tarikhTamat"
+                            type="date"
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                          <Icon name="ph:calendar" class="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Row 3 -->
+                    <div>
+                      <label class="text-xs font-medium text-gray-600">Jumlah Keseluruhan Bantuan akan Diterima</label>
+                      <div class="w-full px-3 py-2 text-sm bg-gray-100 border border-gray-300 rounded-md text-gray-700 font-medium">
+                        {{ getCurrentEditData().jumlahKeseluruhan }}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </template>
 
-            <template #body>
-              <div class="space-y-4">
-                <!-- Show cards when Entitlement Product is checked -->
-                <div v-if="formData.entitlementProduct  === true">
-                  <!-- Entitlement Product Cards -->
-                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div 
-                      v-for="(product, index) in selectedEntitlements" 
-                      :key="product.id || index"
-                    class="relative border rounded-lg p-4 transition-all duration-200 hover:shadow-md"
-                    :class="{
-                      'border-green-200 bg-green-50': product.status === 'Aktif' && !isProductEditing(index),
-                      'border-blue-200 bg-blue-50': isProductEditing(index) || (product.status === 'Tersedia' && !isProductEditing(index)),
-                      'border-gray-200 bg-white': product.status === 'Tidak Aktif' && !isProductEditing(index)
-                    }"
+              <!-- Maklumat Penerima Bayaran -->
+              <div class="bg-gray-50 p-3 rounded-lg">
+                <h4 class="text-sm font-semibold text-gray-700 mb-3">Maklumat Penerima Bayaran</h4>
+                <div class="space-y-3">
+                  <!-- Kategori Penerima -->
+                  <div>
+                    <label class="text-xs font-medium text-gray-600">Kategori Penerima <span class="text-red-500">*</span></label>
+                    <select
+                      v-model="getCurrentEditData().kategoriPenerima"
+                      @change="loadPenerimaData()"
+                      class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
-                      <!-- Status Badge -->
-                      <div class="absolute top-2 right-2">
-                        <rs-badge 
-                          :variant="isProductEditing(index) ? 'primary' : getProductStatusVariant(product.status)"
-                          class="text-xs"
-                        >
-                          {{ isProductEditing(index) ? 'Sedang Edit' : product.status }}
-                        </rs-badge>
-                      </div>
+                      <option value="">-- Sila Pilih --</option>
+                      <option value="asnaf">Asnaf</option>
+                      <option value="lain_lain">Lain-lain</option>
+                    </select>
+                  </div>
 
-                      <!-- Product Info -->
-                      <div class="pr-16">
-                        <h3 class="font-semibold text-gray-900 text-sm mb-2">{{ product.nama }}</h3>
-                        <p class="text-xs text-gray-600 mb-3">{{ product.penerangan }}</p>
-                      </div>
+                  <!-- No Pendaftaran (Lain-lain) -->
+                  <div v-if="getCurrentEditData().kategoriPenerima === 'lain_lain'">
+                    <label class="text-xs font-medium text-gray-600">No Pendaftaran <span class="text-red-500">*</span></label>
+                    <select
+                      v-model="getCurrentEditData().noPendaftaran"
+                      @change="loadPenerimaByRegistration()"
+                      class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="">-- Sila Pilih --</option>
+                      <option value="ABA1234">ABA1234 - SM Sains Kuala Selangor</option>
+                      <option value="WBA5678">WBA5678 - SM Sains Hulu Selangor</option>
+                      <option value="CBA9012">CBA9012 - Sekolah Seri Puteri, Cyberjaya</option>
+                      <option value="DGA3456">DGA3456 - KISAS</option>
+                      <option value="EHA7890">EHA7890 - SBPI Gombak</option>
+                      <option value="UMA1122">UMA1122 - Universiti Malaya (UM)</option>
+                      <option value="UPM3344">UPM3344 - Universiti Putra Malaysia (UPM)</option>
+                      <option value="UKM5566">UKM5566 - Universiti Kebangsaan Malaysia (UKM)</option>
+                      <option value="UITM7788">UITM7788 - UiTM</option>
+                      <option value="USM9900">USM9900 - Universiti Sains Malaysia (USM)</option>
+                      <!-- Dialysis for B103 -->
+                      <option v-if="isB103" value="DDC001">DDC001 - PUSAT DIALISIS DAVITA TANJUNG KARANG</option>
+                      <option v-if="isB103" value="FDB002">FDB002 - FORESIGHT DIALYSIS BANDAR PUNCAK ALAM</option>
+                      <option v-if="isB103" value="WAN003">WAN003 - KLINIK & PUSAT DIALISIS WAQAF AN NUR</option>
+                    </select>
+                  </div>
 
+                  <!-- Kaedah Pembayaran -->
+                  <div>
+                    <label class="text-xs font-medium text-gray-600">Kaedah Pembayaran <span class="text-red-500">*</span></label>
+                    <select
+                      v-model="getCurrentEditData().kaedahPembayaran"
+                      class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="">-- Sila Pilih --</option>
+                      <option value="EFT">EFT</option>
+                      <option value="CASH">CASH</option>
+                      <option value="CHEQUE">CHEQUE</option>
+                      <option value="Vcash">Vcash</option>
+                      <option value="TT">TT</option>
+                      <option value="eWallet">eWallet</option>
+                      <option value="Tunai">Tunai</option>
+                      <option value="Tunai (Kaunter Ekspres)">Tunai (Kaunter Ekspres)</option>
+                      <option value="Tunai (Lapangan)">Tunai (Lapangan)</option>
+                    </select>
+                  </div>
 
-                      <!-- Action Buttons -->
-                      <div class="flex items-center justify-between mt-4 pt-3 border-t border-gray-200">
-                        <div v-if="isProductEditing(index)" class="flex space-x-2">
-                          <rs-button 
-                            variant="success" 
-                            size="sm"
-                            @click="saveProduct(index)"
-                          >
-                            Simpan
-                          </rs-button>
-                          <rs-button 
-                            variant="secondary" 
-                            size="sm"
-                            @click="cancelEdit"
-                          >
-                            Batal
-                          </rs-button>
-                        </div>
-                        <div v-else class="flex space-x-2">
-                          <rs-button
-                            variant="primary-outline"
-                            size="sm"
-                            @click="editProducts(index)"
-                            class="!px-2 !py-1"
-                          >
-                            <Icon name="ph:pencil" class="w-3 h-3 mr-1" />
-                            Edit
-                          </rs-button>
-                          <button
-                            @click="deleteEntitlement(product, index)"
-                            class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
-                          >
-                            <Icon name="ph:trash" class="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
+                  <!-- Row 1 -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label class="text-xs font-medium text-gray-600">No Kad Pengenalan/No Pendaftaran <span class="text-red-500">*</span></label>
+                      <input
+                        v-model="getCurrentEditData().noKadPengenalan"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Masukkan no. kad pengenalan"
+                      />
                     </div>
-
-                    <!-- Empty State when checked but no items selected -->
-                    <div v-if="selectedEntitlements.length === 0" class="col-span-full text-center py-8 text-gray-500">
-                      <Icon name="ph:gift" class="w-12 h-12 mx-auto mb-2 text-gray-400" />
-                      <p class="text-sm">Tiada entitlement product dipilih. Pilih entitlement di atas untuk menambah.</p>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600">Nama Penerima <span class="text-red-500">*</span></label>
+                      <input
+                        v-model="getCurrentEditData().namaPenerima"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Masukkan nama penerima"
+                      />
                     </div>
                   </div>
-                </div>
 
-                <!-- Show message when Entitlement Product is unchecked -->
-                <div v-else class="text-center py-8 text-gray-500">
-                  <Icon name="ph:gift" class="w-12 h-12 mx-auto mb-2 text-gray-400" />
-                  <p class="text-sm">Tiada entitlement product dipilih. Pilih checkbox di atas untuk menambah.</p>
+                  <!-- Row 2 -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3" v-if="!['Tunai','Tunai (Kaunter Ekspres)','Tunai (Lapangan)'].includes(getCurrentEditData().kaedahPembayaran)">
+                    <div>
+                      <label class="text-xs font-medium text-gray-600">Nama Pemegang Akaun <span class="text-red-500">*</span></label>
+                      <input
+                        v-model="getCurrentEditData().namaPemegangAkaun"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Nama pemegang akaun"
+                      />
+                    </div>
+                    <div>
+                      <label class="text-xs font-medium text-gray-600">Bank <span class="text-red-500">*</span></label>
+                      <select
+                        v-model="getCurrentEditData().bank"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        <option value="">Pilih Bank</option>
+                        <option value="Maybank">Maybank</option>
+                        <option value="CIMB Bank">CIMB Bank</option>
+                        <option value="Public Bank">Public Bank</option>
+                        <option value="RHB Bank">RHB Bank</option>
+                        <option value="Hong Leong Bank">Hong Leong Bank</option>
+                        <option value="AmBank">AmBank</option>
+                        <option value="Bank Islam">Bank Islam</option>
+                        <option value="Bank Muamalat">Bank Muamalat</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Row 3 -->
+                  <div v-if="!['Tunai','Tunai (Kaunter Ekspres)','Tunai (Lapangan)'].includes(getCurrentEditData().kaedahPembayaran)">
+                    <label class="text-xs font-medium text-gray-600">No. Akaun Bank <span class="text-red-500">*</span></label>
+                    <input
+                      v-model="getCurrentEditData().noAkaunBank"
+                      class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="1234567890"
+                    />
+                  </div>
                 </div>
               </div>
-            </template>
-          </rs-card>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-between mt-4 pt-3 border-t border-gray-200">
+              <div v-if="isProductEditing(index)" class="flex space-x-2">
+                <rs-button variant="success" size="sm" @click="saveProduct(index)">Simpan</rs-button>
+                <rs-button variant="secondary" size="sm" @click="cancelEdit">Batal</rs-button>
+              </div>
+              <div v-else class="flex space-x-2">
+                <rs-button variant="primary" size="sm" @click="editProducts(index)">Edit</rs-button>
+                <button @click="deleteEntitlement(product, index)" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded">
+                  <Icon name="ph:trash" class="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div v-if="selectedEntitlements.length === 0" class="col-span-full text-center py-8 text-gray-500">
+            <Icon name="ph:gift" class="w-12 h-12 mx-auto mb-2 text-gray-400" />
+            <p class="text-sm">Tiada entitlement product dipilih. Pilih checkbox di atas untuk menambah.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Show message when Entitlement Product is unchecked -->
+      <div v-else class="text-center py-8 text-gray-500">
+        <Icon name="ph:gift" class="w-12 h-12 mx-auto mb-2 text-gray-400" />
+        <p class="text-sm">Tiada entitlement product dipilih. Pilih checkbox di atas untuk menambah.</p>
+      </div>
+    </div>
+  </template>
+</rs-card>
+
+<!-- Editor: Maklumat Kadar Bantuan (external box appears only for excluded cases while editing) -->
+<rs-card
+  v-if="
+    route.params.bantuanId === 'B134' &&
+    editingProductIndex >= 0 &&
+    (
+      (isB112 && (selectedEntitlements[editingProductIndex]?.code === 'Sewaan_Rumah' || selectedEntitlements[editingProductIndex]?.code === 'Belian_Rumah')) ||
+      (isB103 && (selectedEntitlements[editingProductIndex]?.code === 'HEMODIALISIS' || selectedEntitlements[editingProductIndex]?.code === 'SUNTIKAN_EPO')) ||
+      (isB400 && ['DIRECT_INSTITUSI_AGAMA','GL_INSTITUSI_AGAMA','DIRECT_SEKOLAH_AGAMA','GL_SEKOLAH_AGAMA','DIRECT_SURAU_SEKOLAH','GL_SURAU_SEKOLAH'].includes(selectedEntitlements[editingProductIndex]?.code))
+    )
+  "
+  ref="externalEditorEl"
+  class="shadow-sm border-0 bg-white"
+>
+  <template #header>
+    <div class="flex items-center space-x-3">
+      <div class="flex-shrink-0">
+        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+          <Icon name="ph:currency-dollar" class="w-6 h-6 text-green-600" />
+        </div>
+      </div>
+      <div>
+        <h2 class="text-lg font-semibold text-gray-900">Maklumat Kadar Bantuan</h2>
+        <p class="text-sm text-gray-500">Nilai kadar bantuan yang dicadangkan</p>
+      </div>
+    </div>
+  </template>
+
+  <template #body>
+    <div class="space-y-6 p-4">
+      <!-- Maklumat Kadar Bantuan -->
+      <div class="bg-gray-50 p-4 rounded-lg border">
+        <div class="flex items-center space-x-2 mb-3">
+          <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+            <Icon name="ph:currency-dollar" class="w-6 h-6 text-green-600" />
+          </div>
+          <div>
+            <h4 class="text-sm font-semibold text-gray-700">Maklumat Kadar Bantuan</h4>
+            <p class="text-xs text-gray-500">Nilai kadar bantuan yang dicadangkan</p>
+          </div>
+        </div>
+
+        <!-- Regular fields -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs font-medium text-gray-600">Kadar Bantuan</label>
+            <input
+              v-model="getCurrentEditData().kadarBantuan"
+              type="number"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="0"
+              @input="calculateCurrentProductTotal()"
+            />
+          </div>
+          <div>
+            <label class="text-xs font-medium text-gray-600">Tempoh/Kekerapan</label>
+            <input
+              v-model="getCurrentEditData().tempohKekerapan"
+              type="number"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="0"
+              @input="calculateCurrentProductTotal()"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+          <div>
+            <label class="text-xs font-medium text-gray-600">Tarikh Mula</label>
+            <input
+              v-model="getCurrentEditData().tarikhMula"
+              type="date"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <div>
+            <label class="text-xs font-medium text-gray-600">Tarikh Tamat</label>
+            <input
+              v-model="getCurrentEditData().tarikhTamat"
+              type="date"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+        </div>
+
+        <div class="mt-3">
+          <label class="text-xs font-medium text-gray-600">Jumlah Keseluruhan Bantuan akan Diterima</label>
+          <div class="mt-1 p-3 bg-white border rounded-md text-sm">
+            {{ getCurrentEditData().jumlahKeseluruhan }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Maklumat Penerima Bayaran -->
+      <div class="bg-gray-50 p-4 rounded-lg border">
+        <h4 class="text-sm font-semibold text-gray-700 mb-3">Maklumat Penerima Bayaran</h4>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="md:col-span-2">
+            <label class="text-xs font-medium text-gray-600">Kategori Penerima</label>
+            <select
+              v-model="getCurrentEditData().kategoriPenerima"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              @change="loadPenerimaData()"
+            >
+              <option value="">Pilih kategori penerima</option>
+              <option value="asnaf">Asnaf</option>
+              <option value="vendor">Organisasi</option>
+              <option value="institusi">Recipient</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-xs font-medium text-gray-600">Kaedah Pembayaran</label>
+            <select
+              v-model="getCurrentEditData().kaedahPembayaran"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">Pilih kaedah pembayaran</option>
+              <option value="EFT">EFT</option>
+              <option value="Vcash">Vcash</option>
+              <option value="Cheque">Cheque</option>
+              <option value="TT">TT</option>
+              <option value="eWallet">eWallet</option>
+              <option value="Tunai">Tunai</option>
+              <option value="Tunai (Kaunter Ekspres)">Tunai (Kaunter Ekspres)</option>
+              <option value="Tunai (Lapangan)">Tunai (Lapangan)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-xs font-medium text-gray-600">No. Kad Pengenalan</label>
+            <input
+              v-model="getCurrentEditData().noKadPengenalan"
+              type="text"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="010101-01-0101"
+            />
+          </div>
+
+          <div>
+            <label class="text-xs font-medium text-gray-600">Nama Penerima</label>
+            <input
+              v-model="getCurrentEditData().namaPenerima"
+              type="text"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus-border-blue-500"
+              placeholder="Nama Penerima"
+            />
+          </div>
+
+          <div v-if="!['Tunai','Tunai (Kaunter Ekspres)','Tunai (Lapangan)'].includes(getCurrentEditData().kaedahPembayaran)">
+            <label class="text-xs font-medium text-gray-600">Nama Pemegang Akaun</label>
+            <input
+              v-model="getCurrentEditData().namaPemegangAkaun"
+              type="text"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Nama Pemegang Akaun"
+            />
+          </div>
+
+          <div v-if="!['Tunai','Tunai (Kaunter Ekspres)','Tunai (Lapangan)'].includes(getCurrentEditData().kaedahPembayaran)">
+            <label class="text-xs font-medium text-gray-600">Bank</label>
+            <select
+              v-model="getCurrentEditData().bank"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">Pilih Bank</option>
+              <option value="Maybank">Maybank</option>
+              <option value="CIMB Bank">CIMB Bank</option>
+              <option value="Public Bank">Public Bank</option>
+              <option value="RHB Bank">RHB Bank</option>
+              <option value="Hong Leong Bank">Hong Leong Bank</option>
+              <option value="AmBank">AmBank</option>
+              <option value="Bank Islam">Bank Islam</option>
+              <option value="Bank Muamalat">Bank Muamalat</option>
+            </select>
+          </div>
+
+          <div v-if="!['Tunai','Tunai (Kaunter Ekspres)','Tunai (Lapangan)'].includes(getCurrentEditData().kaedahPembayaran)">
+            <label class="text-xs font-medium text-gray-600">No. Akaun Bank</label>
+            <input
+              v-model="getCurrentEditData().noAkaunBank"
+              type="text"
+              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="1234567890"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2">
+        <rs-button variant="success" @click="saveProduct(editingProductIndex)">Simpan</rs-button>
+        <rs-button variant="secondary" @click="cancelEdit">Batal</rs-button>
+      </div>
+    </div>
+  </template>
+</rs-card>
+
+
 
           <!-- External Edit Panel for B135 -->
           <rs-card
@@ -808,197 +1231,8 @@
             </template>
           </rs-card>
 
-          <rs-card
-            v-if="route.params.bantuanId === 'B134' && editingProductIndex >= 0"
-            ref="externalEditorEl"
-            class="shadow-sm border-0 bg-white"
-          >
-            <template #header>
-              <div class="flex items-center space-x-3">
-                <div class="flex-shrink-0">
-                  <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                    <Icon name="ph:currency-dollar" class="w-6 h-6 text-green-600" />
-                  </div>
-                </div>
-                <div>
-                  <h2 class="text-lg font-semibold text-gray-900">
-                    Maklumat Kadar Bantuan
-                  </h2>
-                  <p class="text-sm text-gray-500">
-                    Nilai kadar bantuan yang dicadangkan
-                  </p>
-                </div>
-              </div>
-            </template>
 
-            <template #body>
-              <div class="space-y-6 p-4">
-                <!-- Maklumat Kadar Bantuan -->
-                <div class="bg-gray-50 p-4 rounded-lg border">
-                  <div class="flex items-center space-x-2 mb-3">
-                    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                      <Icon name="ph:currency-dollar" class="w-6 h-6 text-green-600" />
-                    </div>
-                    <div>
-                      <h4 class="text-sm font-semibold text-gray-700">Maklumat Kadar Bantuan</h4>
-                      <p class="text-xs text-gray-500">Nilai kadar bantuan yang dicadangkan</p>
-                    </div>
-                  </div>
-
-                  <div v-if="route.params.bantuanId !== 'B134'" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div>
-                      <label class="text-xs font-medium text-gray-600">Kadar Bantuan</label>
-                      <input
-                        v-model="getCurrentEditData().kadarBantuan"
-                        type="number"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="0"
-                        @input="calculateCurrentProductTotal()"
-                      />
-                    </div>
-                    <div>
-                      <label class="text-xs font-medium text-gray-600">Tempoh/Kekerapan</label>
-                      <input
-                        v-model="getCurrentEditData().tempohKekerapan"
-                        type="number"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="0"
-                        @input="calculateCurrentProductTotal()"
-                      />
-                    </div>
-                  </div>
-
-                  <div v-if="route.params.bantuanId !== 'B134'" class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
-                    <div>
-                      <label class="text-xs font-medium text-gray-600">Tarikh Mula</label>
-                      <input
-                        v-model="getCurrentEditData().tarikhMula"
-                        type="date"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label class="text-xs font-medium text-gray-600">Tarikh Tamat</label>
-                      <input
-                        v-model="getCurrentEditData().tarikhTamat"
-                        type="date"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="mt-3">
-                    <label class="text-xs font-medium text-gray-600">Jumlah Keseluruhan Bantuan akan Diterima</label>
-                    <div class="mt-1 p-3 bg-white border rounded-md text-sm">
-                      {{ getCurrentEditData().jumlahKeseluruhan }}
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Maklumat Penerima Bayaran -->
-                <div class="bg-gray-50 p-4 rounded-lg border">
-                  <h4 class="text-sm font-semibold text-gray-700 mb-3">Maklumat Penerima Bayaran</h4>
-
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div class="md:col-span-2">
-                      <label class="text-xs font-medium text-gray-600">Kategori Penerima</label>
-                      <select
-                        v-model="getCurrentEditData().kategoriPenerima"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        @change="loadPenerimaData()"
-                      >
-                        <option value="">Pilih kategori penerima</option>
-                        <option value="asnaf">Asnaf</option>
-                        <option value="vendor">Organisasi</option>
-                        <option value="institusi">Recipient</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label class="text-xs font-medium text-gray-600">Kaedah Pembayaran</label>
-                      <select
-                        v-model="getCurrentEditData().kaedahPembayaran"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      >
-                        <option value="">Pilih kaedah pembayaran</option>
-                        <option value="EFT">EFT</option>
-                        <option value="Vcash">Vcash</option>
-                        <option value="Cheque">Cheque</option>
-                        <option value="TT">TT</option>
-                        <option value="eWallet">eWallet</option>
-                        <option value="Tunai">Tunai</option>
-                        <option value="Tunai (Kaunter Ekspres)">Tunai (Kaunter Ekspres)</option>
-                        <option value="Tunai (Lapangan)">Tunai (Lapangan)</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label class="text-xs font-medium text-gray-600">No. Kad Pengenalan</label>
-                      <input
-                        v-model="getCurrentEditData().noKadPengenalan"
-                        type="text"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="010101-01-0101"
-                      />
-                    </div>
-
-                    <div>
-                      <label class="text-xs font-medium text-gray-600">Nama Penerima</label>
-                      <input
-                        v-model="getCurrentEditData().namaPenerima"
-                        type="text"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Nama Penerima"
-                      />
-                    </div>
-
-                    <div v-if="getCurrentEditData().kaedahPembayaran !== 'Tunai' && getCurrentEditData().kaedahPembayaran !== 'Tunai (Kaunter Ekspres)' && getCurrentEditData().kaedahPembayaran !== 'Tunai (Lapangan)'">
-                      <label class="text-xs font-medium text-gray-600">Nama Pemegang Akaun</label>
-                      <input
-                        v-model="getCurrentEditData().namaPemegangAkaun"
-                        type="text"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Nama Pemegang Akaun"
-                      />
-                    </div>
-
-                    <div v-if="getCurrentEditData().kaedahPembayaran !== 'Tunai' && getCurrentEditData().kaedahPembayaran !== 'Tunai (Kaunter Ekspres)' && getCurrentEditData().kaedahPembayaran !== 'Tunai (Lapangan)'">
-                      <label class="text-xs font-medium text-gray-600">Bank</label>
-                      <select
-                        v-model="getCurrentEditData().bank"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      >
-                        <option value="">Pilih Bank</option>
-                        <option value="Maybank">Maybank</option>
-                        <option value="CIMB Bank">CIMB Bank</option>
-                        <option value="Public Bank">Public Bank</option>
-                        <option value="RHB Bank">RHB Bank</option>
-                        <option value="Hong Leong Bank">Hong Leong Bank</option>
-                        <option value="AmBank">AmBank</option>
-                        <option value="Bank Islam">Bank Islam</option>
-                        <option value="Bank Muamalat">Bank Muamalat</option>
-                      </select>
-                    </div>
-
-                    <div v-if="getCurrentEditData().kaedahPembayaran !== 'Tunai' && getCurrentEditData().kaedahPembayaran !== 'Tunai (Kaunter Ekspres)' && getCurrentEditData().kaedahPembayaran !== 'Tunai (Lapangan)'">
-                      <label class="text-xs font-medium text-gray-600">No. Akaun Bank</label>
-                      <input
-                        v-model="getCurrentEditData().noAkaunBank"
-                        type="text"
-                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="1234567890"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="flex items-center justify-end gap-2">
-                  <rs-button variant="success" @click="saveProduct(editingProductIndex)">Simpan</rs-button>
-                  <rs-button variant="secondary" @click="cancelEdit">Batal</rs-button>
-                </div>
-              </div>
-            </template>
-          </rs-card>
+           
 
 
           <!-- Section 4: Dokumen Sokongan -->
@@ -1564,15 +1798,15 @@
                       <div class="space-y-3">
                         <div>
                           <label class="block text-sm font-medium text-gray-600 mb-1">Permohonan Dibuat Oleh</label>
-                          <p class="text-sm text-gray-900">{{ permohonanDetails.dibuatOleh }}</p>
+                          <p class="text-sm text-gray-900">{{ permohonanDetails1.dibuatOleh }}</p>
                         </div>
                         <div>
                           <label class="block text-sm font-medium text-gray-600 mb-1">Tarikh Permohonan</label>
-                          <p class="text-sm text-gray-900">{{ formatDateTime(permohonanDetails.tarikhPermohonan) }}</p>
+                          <p class="text-sm text-gray-900">{{ formatDateTime(permohonanDetails1.tarikhPermohonan) }}</p>
                         </div>
                         <div>
                           <label class="block text-sm font-medium text-gray-600 mb-1">Sebab Memohon Bantuan</label>
-                          <p class="text-sm text-gray-900 leading-relaxed">{{ permohonanDetails.sebabMemohon }}</p>
+                          <p class="text-sm text-gray-900 leading-relaxed">{{ permohonanDetails1.sebabMemohon }}</p>
                         </div>
                       </div>
                     </div>
@@ -1676,18 +1910,7 @@
             </template>
 
             <template #body>
-              <div class="space-y-4">
-                <!-- Ringkasan Profil -->
-                <div class="bg-gray-50 p-4 rounded-lg border">
-                  <h3 class="text-sm font-semibold text-gray-700 mb-3">Ringkasan Profil</h3>
-                  <ul class="space-y-2 text-sm text-gray-600">
-                    <li>• Jenis Pekerjaan: Suri rumah sepenuh masa</li>
-                    <li>• Status Kediaman: Rumah Sendiri</li>
-                    <li>• Jumlah bayaran rumah: RM0</li>
-                    <li>• Bil Tanggungan: 3 Orang (2 Anak + Suami)</li>
-                    <li>• Status Tanggungan: Anak sakit kronik, Suami tidak bekerja</li>
-                  </ul>
-                </div>
+              <div class="space-y-4">              
 
                 <!-- Kaedah Siasatan -->
                 <div class="space-y-3">
@@ -2135,6 +2358,12 @@ const permohonanDetails = ref({
   dibuatOleh: 'Ahmad bin Abdullah',
   tarikhPermohonan: '2024-01-01 09:00:00',
   sebabMemohon: 'Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan bantuan bina baru rumah'
+})
+
+const permohonanDetails1 = ref({
+  dibuatOleh: 'Muhammad Haziq bin Sujaini',
+  tarikhPermohonan: '2024-01-01 09:00:00',
+  sebabMemohon: 'Pemohon membuat permohonan dari MAIS untuk program penerapan nilai islam kepada pelajar-pelajar di sekolah. Pemohon memerlukan bantuan untuk menampung kos penginapan dan makan bagi pelajar-pelajar yang terlibat dalam program ini.'
 })
 
 // Section: Catatan Lapangan
@@ -2605,161 +2834,272 @@ const mockByBantuanId = {
     tarikhSemak: new Date(),
   },
   B134: {
-    jenisBantuan: "B134 - BANTUAN PROGRAM PENERAPAN NILAI ISLAM",
-    aid: "B134 - BANTUAN PROGRAM PENERAPAN NILAI ISLAM",
-    aidProduct: "JAIS / MAIS - HONORARIUM",
-    productPackage: "JAIS / MAIS - HONORARIUM",
-    entitlementProduct: true,
-    adakahMualaf: "yes",
-    tarikhMasukIslam: "2024-03-15",
-    namaLain: "Mary Catherine Johnson",
-    tarikhMasukKFAM: "2024-04-01",
-    dokumenPengislaman: null,
-    entitlementProducts: [
-      {
-        id: "ent-001",
-        nama: "MODERATOR (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM",
-        penerangan: "Honorarium bagi moderator peringkat bahagian/daerah di bawah JAIS/MAIS.",
-        kategori: "Moderator",
-        jumlah: 0,
-        tempoh: "Sekali",
-        status: "Aktif",
-        dipilih: false
-      },
-      {
-        id: "ent-002",
-        nama: "MODERATOR (MUKIM) - JAIS / MAIS - HONORARIUM",
-        penerangan: "Honorarium bagi moderator peringkat mukim di bawah JAIS/MAIS.",
-        kategori: "Moderator",
-        jumlah: 0,
-        tempoh: "Sekali",
-        status: "Tersedia",
-        dipilih: false
-      },
-      {
-        id: "ent-003",
-        nama: "MODERATOR (NEGERI) - JAIS / MAIS - HONORARIUM",
-        penerangan: "Honorarium bagi moderator peringkat negeri di bawah JAIS/MAIS.",
-        kategori: "Moderator",
-        jumlah: 0,
-        tempoh: "Sekali",
-        status: "Tersedia",
-        dipilih: false
-      },
-      {
-        id: "ent-004",
-        nama: "PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM",
-        penerangan: "Honorarium bagi pembimbing program ibadah dan kuliah peringkat bahagian/daerah.",
-        kategori: "Pembimbing",
-        jumlah: 0,
-        tempoh: "Sekali",
-        status: "Tersedia",
-        dipilih: false
-      },
-      {
-        id: "ent-005",
-        nama: "PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (MUKIM) - JAIS / MAIS - HONORARIUM",
-        penerangan: "Honorarium bagi pembimbing program ibadah dan kuliah peringkat mukim.",
-        kategori: "Pembimbing",
-        jumlah: 0,
-        tempoh: "Sekali",
-        status: "Tersedia",
-        dipilih: false
-      },
-      {
-        id: "ent-006",
-        nama: "PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (NEGERI) - JAIS / MAIS - HONORARIUM",
-        penerangan: "Honorarium bagi pembimbing program ibadah dan kuliah peringkat negeri.",
-        kategori: "Pembimbing",
-        jumlah: 0,
-        tempoh: "Sekali",
-        status: "Tersedia",
-        dipilih: false
-      },
-      {
-        id: "ent-007",
-        nama: "PENCERAMAH (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM",
-        penerangan: "Honorarium bagi penceramah untuk semua peringkat program JAIS/MAIS.",
-        kategori: "Penceramah",
-        jumlah: 0,
-        tempoh: "Sekali",
-        status: "Tersedia",
-        dipilih: false
-      },
-      {
-        id: "ent-008",
-        nama: "PENCERAMAH TOKOH AWAM (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM",
-        penerangan: "Honorarium bagi penceramah tokoh awam untuk semua peringkat program.",
-        kategori: "Penceramah",
-        jumlah: 0,
-        tempoh: "Sekali",
-        status: "Tersedia",
-        dipilih: false 
-      },
-      {
-        id: "ent-009",
-        nama: "PENGERUSI MAJILIS (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM",
-        penerangan: "Honorarium bagi pengerusi majlis peringkat bahagian/daerah.",
-        kategori: "Pengerusi",
-        jumlah: 0,
-        tempoh: "Sekali",
-        status: "Tersedia",
-        dipilih: false
-      },
-      {
-        id: "ent-010",
-        nama: "SUMBANGAN - HONORARIUM",
-        penerangan: "Sumbangan berbentuk honorarium untuk penglibatan program.",
-        kategori: "Sumbangan",
-        jumlah: 0,
-        tempoh: "Sekali",
-        status: "Tersedia",
-        dipilih: false
-      }
-    ]
-,
-    segera: false,
-    kelulusanKhas: false,
-    tarikhPermohonan: new Date().toISOString(),
-    sla: "3h",
-    dokumenSokongan: [
-      {
-        id: "kertas-kerja-pelaksanaan",
-        nama: "Kertas Kerja Pelaksanaan/Cadangan Permohonan Agihan Lembaga Zakat Selangor oleh Agensi.",
-        status: "",
-        url: ""
-      },
-      {
-        id: "penyata-bank-terkini",
-        nama: "Penyata bank terkini pemohon (Selain Agensi sahaja).",
-        status: "",
-        url: ""
-      },
-      {
-        id: "surat-pengesahan-aktiviti",
-        nama: "Surat pengesahan menjalankan aktiviti dari pihak berkaitan (Selain Agensi sahaja).",
-        status: "",
-        url: ""
-      }
-    ],
+  jenisBantuan: "B134 - BANTUAN PROGRAM PENERAPAN NILAI ISLAM",
+  aid: "B134 - BANTUAN PROGRAM PENERAPAN NILAI ISLAM",
+  aidProduct: "JAIS / MAIS - HONORARIUM",
+  productPackage: "JAIS / MAIS - HONORARIUM",
+  entitlementProduct: true,
+  adakahMualaf: "yes",
+  tarikhMasukIslam: "2024-03-15",
+  namaLain: "Mary Catherine Johnson",
+  tarikhMasukKFAM: "2024-04-01",
+  dokumenPengislaman: null,
+  entitlementProducts: [
+    {
+      id: "ent-001",
+      nama: "MODERATOR (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM",
+      penerangan: "Honorarium bagi moderator peringkat bahagian/daerah di bawah JAIS/MAIS.",
+      kategori: "Moderator",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Aktif",
+      dipilih: false
+    },
+    {
+      id: "ent-002",
+      nama: "MODERATOR (MUKIM) - JAIS / MAIS - HONORARIUM",
+      penerangan: "Honorarium bagi moderator peringkat mukim di bawah JAIS/MAIS.",
+      kategori: "Moderator",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false
+    },
+    {
+      id: "ent-003",
+      nama: "MODERATOR (NEGERI) - JAIS / MAIS - HONORARIUM",
+      penerangan: "Honorarium bagi moderator peringkat negeri di bawah JAIS/MAIS.",
+      kategori: "Moderator",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false
+    },
+    {
+      id: "ent-004",
+      nama: "PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM",
+      penerangan: "Honorarium bagi pembimbing program ibadah dan kuliah peringkat bahagian/daerah.",
+      kategori: "Pembimbing",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false
+    },
+    {
+      id: "ent-005",
+      nama: "PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (MUKIM) - JAIS / MAIS - HONORARIUM",
+      penerangan: "Honorarium bagi pembimbing program ibadah dan kuliah peringkat mukim.",
+      kategori: "Pembimbing",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false
+    },
+    {
+      id: "ent-006",
+      nama: "PEMBIMBING QIAMULLAIL, KULIAH SUBUH, DHUHA DAN MAGHRIB (NEGERI) - JAIS / MAIS - HONORARIUM",
+      penerangan: "Honorarium bagi pembimbing program ibadah dan kuliah peringkat negeri.",
+      kategori: "Pembimbing",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false
+    },
+    {
+      id: "ent-007",
+      nama: "PENCERAMAH (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM",
+      penerangan: "Honorarium bagi penceramah untuk semua peringkat program JAIS/MAIS.",
+      kategori: "Penceramah",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false
+    },
+    {
+      id: "ent-008",
+      nama: "PENCERAMAH TOKOH AWAM (SEMUA PERINGKAT) - JAIS / MAIS - HONORARIUM",
+      penerangan: "Honorarium bagi penceramah tokoh awam untuk semua peringkat program.",
+      kategori: "Penceramah",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false 
+    },
+    {
+      id: "ent-009",
+      nama: "PENGERUSI MAJILIS (BAHAGIAN /DAERAH) - JAIS / MAIS - HONORARIUM",
+      penerangan: "Honorarium bagi pengerusi majlis peringkat bahagian/daerah.",
+      kategori: "Pengerusi",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false
+    },
+    {
+      id: "ent-010",
+      nama: "SUMBANGAN - HONORARIUM",
+      penerangan: "Sumbangan berbentuk honorarium untuk penglibatan program.",
+      kategori: "Sumbangan",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false
+    },
 
-    statusSokongan: "",
-    catatanPengesyoran: ``,
-    kadarBantuan: null,
-    tempohBantuan: "",
-    jumlahKeseluruhan: 0,
-    tarikhMula: "",
-    tarikhTamat: "",
-    penerima: "",
-    namaPenerima: "",
-    kaedahPembayaran: "",
-    namaBank: "",
-    noAkaunBank: "",
-    statusPermohonan: "Dalam Semakan",
-    statusPermohonanBaru: "",
-    catatanPegawai: "",
-    tarikhSemak: new Date(),
-  },
+    /* ===== Tambahan: SELAIN JAIS / MAIS ===== */
+    {
+      id: "ent-011",
+      nama: "(GL) KOLEJ / UNIVERSITI / BADAN PERSATUAN - SELAIN JAIS / MAIS (GL)",
+      penerangan: "Sumbangan/honorarium melalui geran (GL) bagi kolej/universiti/badan persatuan selain JAIS/MAIS.",
+      kategori: "Institusi (GL)",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false
+    },
+    {
+      id: "ent-012",
+      nama: "KOLEJ / UNIVERSITI / BADAN PERSATUAN - SELAIN JAIS / MAIS",
+      penerangan: "Sumbangan/honorarium kepada kolej/universiti/badan persatuan selain JAIS/MAIS.",
+      kategori: "Institusi",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false
+    },
+    {
+      id: "ent-013",
+      nama: "(GL) MASJID - SELAIN JAIS / MAIS",
+      penerangan: "Sumbangan/honorarium melalui geran (GL) kepada masjid selain JAIS/MAIS.",
+      kategori: "Masjid (GL)",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false
+    },
+    {
+      id: "ent-014",
+      nama: "MASJID - SELAIN JAIS / MAIS",
+      penerangan: "Sumbangan/honorarium kepada masjid selain JAIS/MAIS.",
+      kategori: "Masjid",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false
+    },
+    {
+      id: "ent-015",
+      nama: "(GL) SEK. MEN. KEB. / AGAMA - SELAIN JAIS / MAIS",
+      penerangan: "Sumbangan/honorarium melalui geran (GL) kepada sekolah menengah kebangsaan/agama selain JAIS/MAIS.",
+      kategori: "Sek. Menengah (GL)",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false
+    },
+    {
+      id: "ent-016",
+      nama: "SEK. MEN. KEB. / AGAMA - SELAIN JAIS / MAIS",
+      penerangan: "Sumbangan/honorarium kepada sekolah menengah kebangsaan/agama selain JAIS/MAIS.",
+      kategori: "Sek. Menengah",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false
+    },
+    {
+      id: "ent-017",
+      nama: "(GL) SEK. REN. KEB / AGAMA - SELAIN JAIS / MAIS",
+      penerangan: "Sumbangan/honorarium melalui geran (GL) kepada sekolah rendah kebangsaan/agama selain JAIS/MAIS.",
+      kategori: "Sek. Rendah (GL)",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false
+    },
+    {
+      id: "ent-018",
+      nama: "SEK. REN. KEB / AGAMA - SELAIN JAIS / MAIS",
+      penerangan: "Sumbangan/honorarium kepada sekolah rendah kebangsaan/agama selain JAIS/MAIS.",
+      kategori: "Sek. Rendah",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false
+    },
+    {
+      id: "ent-019",
+      nama: "SUMBANGAN - SELAIN JAIS / MAIS",
+      penerangan: "Sumbangan umum bagi penganjuran/penglibatan program selain JAIS/MAIS.",
+      kategori: "Sumbangan",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false
+    },
+    {
+      id: "ent-020",
+      nama: "(GL) SURAU - SELAIN JAIS / MAIS",
+      penerangan: "Sumbangan/honorarium melalui geran (GL) kepada surau selain JAIS/MAIS.",
+      kategori: "Surau (GL)",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false
+    },
+    {
+      id: "ent-021",
+      nama: "SURAU - SELAIN JAIS / MAIS",
+      penerangan: "Sumbangan/honorarium kepada surau selain JAIS/MAIS.",
+      kategori: "Surau",
+      jumlah: 0,
+      tempoh: "Sekali",
+      status: "Tersedia",
+      dipilih: false
+    }
+  ],
+  segera: false,
+  kelulusanKhas: false,
+  tarikhPermohonan: new Date().toISOString(),
+  sla: "3h",
+  dokumenSokongan: [
+    {
+      id: "kertas-kerja-pelaksanaan",
+      nama: "Kertas Kerja Pelaksanaan/Cadangan Permohonan Agihan Lembaga Zakat Selangor oleh Agensi.",
+      status: "",
+      url: ""
+    },
+    {
+      id: "penyata-bank-terkini",
+      nama: "Penyata bank terkini pemohon (Selain Agensi sahaja).",
+      status: "",
+      url: ""
+    },
+    {
+      id: "surat-pengesahan-aktiviti",
+      nama: "Surat pengesahan menjalankan aktiviti dari pihak berkaitan (Selain Agensi sahaja).",
+      status: "",
+      url: ""
+    }
+  ],
+  statusSokongan: "",
+  catatanPengesyoran: ``,
+  kadarBantuan: null,
+  tempohBantuan: "",
+  jumlahKeseluruhan: 0,
+  tarikhMula: "",
+  tarikhTamat: "",
+  penerima: "",
+  namaPenerima: "",
+  kaedahPembayaran: "",
+  namaBank: "",
+  noAkaunBank: "",
+  statusPermohonan: "Dalam Semakan",
+  statusPermohonanBaru: "",
+  catatanPegawai: "",
+  tarikhSemak: new Date(),
+},
+
 };
 
 onMounted(() => {
@@ -3380,87 +3720,184 @@ if (!Array.isArray(formData.entitlementProduct)) {
   formData.value.entitlementProduct = []; // ensure it's an array, not boolean
 }
 
- const onToggle = (item, ev) => {
-   const checked = !!ev?.target?.checked
-   ;(formData.value.entitlementProducts || []).forEach(e => { e.dipilih = false })
-   if (checked) {
-     item.dipilih = true
-     formData1.productPackage = item.nama
-   } else {
-     formData1.productPackage = ''
-   }
- }
 
 const AID_NAME = 'BANTUAN PROGRAM PENERAPAN NILAI ISLAM'
 
+// Util: jadikan string kepada id ringkas
 const toId = (s) =>
-  s.toLowerCase()
-   .replace(/\s+/g, '_')
-   .replace(/[^\w]/g, '_')
-   .replace(/_+/g, '_')
-   .replace(/^_|_$/g, '')
+  String(s || '')
+    .toLowerCase()
+    .replace(/\s+/g, '_')
+    .replace(/[^\w]/g, '_')
+    .replace(/_+/g, '_')
+    .replace(/^_|_$/g, '')
 
-const aidNode = computed(() => (aidData?.aids || []).find(a => a.aid === AID_NAME) || null)
+// Dapatkan node AID
+const aidNode = computed(() =>
+  (aidData?.aids || []).find(a => a.aid === AID_NAME) || null
+)
+
+// Senarai Aid Product (daripada aid.json)
 const aidProducts = computed(() => aidNode.value?.aid_products || [])
 
+// State kaskad B134
 const formData1 = reactive({
   aidProduct: '',
   productPackage: '',
-  entitlementSelected: [] // ← plain array, no `as string[]`
 })
 
+// Opsi Aid Product
 const aidProductOptions = computed(() => [
   { label: '-- Pilih Aid Product --', value: '', disabled: true },
   ...aidProducts.value.map(p => ({ label: p.name, value: p.name }))
 ])
 
-const currentAidProduct = computed(() =>
-  aidProducts.value.find(p => p.name === formData1.aidProduct) || null
-)
-
- const productPackageOptions = computed(() => [
-   { label: '-- Pilih Product Package --', value: '', disabled: true },
-   ...((formData.value.entitlementProducts || []).map(e => ({
-     label: e.nama,
-     value: e.nama, // store by name to match your checkbox names
-   })))
- ])
-
-const entitlementList = computed(() => {
-  const items = currentAidProduct.value?.items || []
-  return items.map(it => ({ id: toId(it.entitlement_product), nama: it.entitlement_product }))
+// Items (baris) di bawah Aid Product terpilih (setiap item ada product_package & entitlement_product)
+const currentAidProductItems = computed(() => {
+  const ap = aidProducts.value.find(p => p.name === formData1.aidProduct)
+  return Array.isArray(ap?.items) ? ap.items : []
 })
 
-const entitlementIdByPackageId = computed(() => {
-  const items = currentAidProduct.value?.items || []
-  return Object.fromEntries(items.map(it => [toId(it.product_package), toId(it.entitlement_product)]))
+// Opsi Product Package (unik)
+const productPackageOptions = computed(() => {
+  const seen = new Set()
+  const opts = currentAidProductItems.value
+    .map(it => it.product_package)
+    .filter(n => {
+      const key = toId(n)
+      if (!key || seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+    .map(n => ({ label: n, value: n }))
+  return [{ label: '-- Pilih Product Package --', value: '', disabled: true }, ...opts]
 })
 
-watch(() => formData1.aidProduct, () => {
-  formData1.productPackage = ''
-  formData1.entitlementSelected = []
-})
-
-watch(() => formData1.productPackage, (newPkgId) => {
-  if (!newPkgId) return
-  const entId = entitlementIdByPackageId.value[newPkgId]
-  if (entId && !formData1.entitlementSelected.includes(entId)) {
-    formData1.entitlementSelected.push(entId)
+// Entitlement untuk Product Package terpilih (1-ke-1)
+const entitlementForSelectedPackage = computed(() => {
+  const pkg = formData1.productPackage
+  if (!pkg) return null
+  const it = currentAidProductItems.value.find(x => x.product_package === pkg)
+  if (!it) return null
+  return {
+    id: toId(it.entitlement_product),
+    nama: it.entitlement_product,
+    penerangan: '',     // boleh diisi jika ada dalam aid.json
+    kategori: '',       // boleh diisi jika ada
+    jumlah: 0,
+    tempoh: 'Sekali',
+    status: 'Aktif',
+    dipilih: true,
+    code: toId(it.entitlement_product),
   }
 })
 
- const filteredEntitlements = computed(() => {
-   const selected = formData1.productPackage || ''
-   const list = formData.value.entitlementProducts || []
-   if (!selected) return []
-   return list.filter(e => e.nama === selected)
- })
-
-watch(() => formData1.productPackage, (newNama) => {
-  (formData.value.entitlementProducts || []).forEach(e => {
-    e.dipilih = (e.nama === newNama && !!newNama)
-  })
+// Reset bila Aid Product berubah
+watch(() => formData1.aidProduct, () => {
+  formData1.productPackage = ''
+  // kosongkan pilihan entitlement untuk B134
+  formData.value.entitlementProducts = Array.isArray(formData.value.entitlementProducts)
+    ? formData.value.entitlementProducts.filter(e => false) // kosongkan
+    : []
 })
+
+// Sync apabila Product Package berubah → set entitlement dipilih (unik, tiada duplikasi)
+watch(() => formData1.productPackage, (pkgBaru) => {
+  if (!pkgBaru) return
+  const ent = entitlementForSelectedPackage.value
+  if (!ent) return
+
+  // pastikan array wujud
+  if (!Array.isArray(formData.value.entitlementProducts)) {
+    formData.value.entitlementProducts = []
+  }
+
+  // cari jika entitlement sedia ada
+  const idx = formData.value.entitlementProducts.findIndex(e => toId(e.nama) === toId(ent.nama))
+  if (idx >= 0) {
+    // hidupkan semula & lock
+    formData.value.entitlementProducts[idx].dipilih = true
+    formData.value.entitlementProducts[idx].status = formData.value.entitlementProducts[idx].status || 'Aktif'
+  } else {
+    // tambah baru (dipilih = true)
+    formData.value.entitlementProducts.push(ent)
+  }
+
+  // (Pilihan) jika anda mahu hanya 1 entitlement aktif pada satu masa untuk B134:
+  // nyahaktifkan entitlement lain
+  formData.value.entitlementProducts = formData.value.entitlementProducts.map(e => ({
+    ...e,
+    dipilih: toId(e.nama) === toId(ent.nama)
+  }))
+
+  // pastikan flag untuk memaparkan seksyen kad aktif
+  formData.value.entitlementProduct = true
+})
+
+// Checkbox state yang sentiasa selaras dengan entitlement terpilih (B134)
+const entitlementChecked = computed({
+  get () {
+    const ent = entitlementForSelectedPackage.value
+    if (!ent) return false
+
+    const list = Array.isArray(formData.value.entitlementProducts)
+      ? formData.value.entitlementProducts
+      : []
+
+    const toKey = typeof toId === 'function' ? toId : _toId
+    return list.some(e => toKey(e.nama) === toKey(ent.nama) && e.dipilih === true)
+  },
+
+  set (checked) {
+    const ent = entitlementForSelectedPackage.value
+    if (!ent) return
+
+    // pastikan array wujud
+    if (!Array.isArray(formData.value.entitlementProducts)) {
+      formData.value.entitlementProducts = []
+    }
+
+    const toKey = typeof toId === 'function' ? toId : _toId
+    const list = formData.value.entitlementProducts
+    const idx = list.findIndex(e => toKey(e.nama) === toKey(ent.nama))
+
+    if (checked) {
+      if (idx >= 0) {
+        // hidupkan semula
+        list[idx].dipilih = true
+        list[idx].status = list[idx].status || 'Aktif'
+      } else {
+        // tambah baru (pastikan ada dipilih/status)
+        list.push({
+          ...ent,
+          dipilih: true,
+          status: ent.status || 'Aktif'
+        })
+      }
+
+      // B134: hanya satu entitlement aktif pada satu masa
+      const key = toKey(ent.nama)
+      formData.value.entitlementProducts = list.map(e => ({
+        ...e,
+        dipilih: toKey(e.nama) === key
+      }))
+
+      // flag paparan seksyen kad (kekalkan boolean ikut flow asal)
+      formData.value.entitlementProduct = true
+    } else {
+      // nyahpilih entitlement & kosongkan Product Package (ikut flow asal B134)
+      if (idx >= 0) {
+        list[idx] = { ...list[idx], dipilih: false }
+      }
+
+      formData1.productPackage = ''   // reset package
+      formData.value.entitlementProduct = false
+    }
+  }
+})
+
+
+
 /* (Optional) expose for parent usage */
 // defineExpose({
 //   dokumenSokonganRows, addDokumenRow, removeDokumenRow, getTemplateUrl, downloadTemplate, onFileChange,

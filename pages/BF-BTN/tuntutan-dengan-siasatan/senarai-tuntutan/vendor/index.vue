@@ -42,11 +42,13 @@
           <RsTabItem title="Draf">
             <rs-table
                 :data="filteredTuntutan('Draf')"
+                :field="['noTuntutan', 'noGL', 'namaPemohon', 'maklumatBantuan', 'tarikhTuntutan', 'amaunTuntutan', 'statusPermohonan', 'tindakan']"
                 :columns="columns"
                 :pageSize="pageSize"
-                :showNoColumn="true"
+                :showNoColumn="false"
                 :show-filter="true"
                 :show-search="true"
+                :autoFields="false"
                 :options="{
                   variant: 'default',
                   hover: true,
@@ -111,11 +113,13 @@
           <RsTabItem title="Dalam Semakan">
             <rs-table
               :data="filteredTuntutan('Dalam Semakan')"
+              :field="['noTuntutan', 'noGL', 'namaPemohon', 'maklumatBantuan', 'tarikhTuntutan', 'amaunTuntutan', 'statusPermohonan', 'tindakan']"
               :columns="columns"
               :pageSize="pageSize"
-              :showNoColumn="true"
+              :showNoColumn="false"
               :show-filter="true"
               :show-search="true"
+              :autoFields="false"
               :options="{
                 variant: 'default',
                 hover: true,
@@ -168,11 +172,13 @@
           <RsTabItem title="Lulus">
                 <rs-table
               :data="filteredTuntutan('Lulus')"
+              :field="['noTuntutan', 'noGL', 'namaPemohon', 'maklumatBantuan', 'tarikhTuntutan', 'amaunTuntutan', 'statusPermohonan', 'tindakan']"
               :columns="columns"
               :pageSize="pageSize"
-              :showNoColumn="true"
+              :showNoColumn="false"
               :show-filter="true"
               :show-search="true"
+              :autoFields="false"
               :options="{
                 variant: 'default',
                 hover: true,
@@ -225,11 +231,13 @@
           <RsTabItem title="Ditolak">
             <rs-table
               :data="filteredTuntutan('Ditolak')"
+              :field="['noTuntutan', 'noGL', 'namaPemohon', 'maklumatBantuan', 'tarikhTuntutan', 'amaunTuntutan', 'statusPermohonan', 'tindakan']"
               :columns="columnsDitolak"
               :pageSize="pageSizeDitolak"
-              :showNoColumn="true"
+              :showNoColumn="false"
               :show-filter="true"
               :show-search="true"
+              :autoFields="false"
               :options="{
                 variant: 'default',
                 hover: true,

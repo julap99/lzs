@@ -12,7 +12,7 @@
     <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- Perbelanjaan Column -->
       <div>
-        <h5 class="text-md font-medium mb-2">Perbelanjaan</h5>
+        <h5 class="text-md font-medium mb-2">Perbelanjaan Bulanan</h5>
           <div :class="getFieldClasses('perbelanjaan_makanan_minuman')" class="p-2 rounded">
             <FormKit
               type="number"
@@ -126,7 +126,7 @@
 
       <!-- Pendapatan Column -->
       <div>
-        <h5 class="text-md font-medium mb-2">Pendapatan</h5>
+        <h5 class="text-md font-medium mb-2">Pendapatan Bulanan</h5>
           <div :class="getFieldClasses('gaji_elaun_pendapatan')" class="p-2 rounded">
             <FormKit
               type="number"

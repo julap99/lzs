@@ -235,6 +235,9 @@
           </div>
               <!-- Step 1: Maklumat Peribadi -->
               <FormKit v-if="currentStepA === 1" type="form" :actions="false" @submit="nextStepA">
+                <!-- <rs-collapse ref="peribadiCollapse" class="mb-4">
+                  <rs-collapse-item :open="isPeribadiAsnafOpen" type="card" title="A. Maklumat Peribadi Asnaf">
+                    <div> -->
                 <h3 v-if="!shouldHideSections" class="text-lg font-semibold mb-4">A. Maklumat Peribadi Asnaf</h3>
                 <h3 v-if="!shouldHideSections" class="text-lg font-semibold mb-4">Maklumat Peribadi</h3>
 
@@ -305,6 +308,9 @@
                 </div>
 
                 </div> <!-- End of shouldHideSections conditional -->
+              <!-- </div>
+                  </rs-collapse-item>
+                </rs-collapse> -->
               </FormKit>
 
               <rs-collapse v-if="!shouldHideSections" class="mt-6">
@@ -795,6 +801,110 @@
                 </FormKit>
               </rs-collapse-item>
 
+              <!-- Syor Status -->
+              <rs-collapse-item type="card" title="Syor Status">
+                <div class="p-4 space-y-6">
+                  <h4 class="text-md font-semibold text-gray-900 mb-2 flex items-center">
+                    <Icon name="ph:clipboard-text" class="w-5 h-5 mr-2 text-green-600" />
+                    Maklumat Syor
+                  </h4>
+                  <!-- Summary Information -->
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div>
+                      <label class="block text-xs uppercase tracking-wide font-bold">Peratusan Perbezaan</label>
+                      <p class="text-gray-900 font-medium">{{ profilingData.peratusanPerbezaan }}</p>
+                    </div>
+                    <div>
+                      <label class="block text-xs uppercase tracking-wide font-bold">Kategori Keluarga Asnaf</label>
+                      <p class="text-gray-900 font-medium">{{ profilingData.kategoriKeluargaAsnaf }}</p>
+                    </div>
+                    <div>
+                      <label class="block text-xs uppercase tracking-wide font-bold">Kategori Asnaf</label>
+                      <p class="text-gray-900 font-medium">{{ profilingData.kategoriAsnaf }}</p>
+                    </div>
+                  </div>
+
+                  <!-- Table for Individual Data -->
+                  <rs-table
+                    :headers="tableHeaders"
+                    :data="tableData"
+                    :classes="{
+                      table: 'min-w-full',
+                      thead: 'bg-gray-50',
+                      tbody: 'bg-white divide-y divide-gray-200',
+                      th: 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                      td: 'px-6 py-4 whitespace-nowrap text-sm text-gray-900',
+                    }"
+                  />
+
+                  <!-- Ringkasan Keluarga (Syor) -->
+                  <div class="mt-4">
+                    <label class="block text-xs uppercase tracking-wide font-bold">Merit Keluarga(Syor)</label>
+                    <p class="text-gray-900 font-medium">{{ profilingData.meritKeluargaSyor }}</p>
+
+                    <label class="block text-xs uppercase tracking-wide mt-4 font-bold">Status Multidimensi Keluarga(Syor)</label>
+                    <p class="text-gray-900 font-medium">{{ profilingData.statusMultidimensiKeluargaSyor }}</p>
+
+                    <label class="block text-xs uppercase tracking-wide mt-4 font-bold">Quadrant Multidimensi Keluarga(Syor)</label>
+                    <p class="text-gray-900 font-medium">{{ profilingData.quadrantMultidimensiKeluargaSyor }}</p>
+                  </div>
+                </div>
+              </rs-collapse-item>
+
+              <!-- Pengesahan Status (relocated to Maklumat Pemohon) -->
+              <rs-collapse-item type="card" title="Pengesahan Status">
+                <div class="p-4">
+                  <rs-table
+                    :data="pengesahanRows"
+                    :columns="pengesahanColumns"
+                    :showNoColumn="true"
+                    :options="{ variant: 'default', striped: false, hover: false }"
+                    :options-advanced="{ sortable: false, filterable: false }"
+                    advanced
+                  >
+                    <template v-slot:nama="{ value }">
+                      <FormKit type="text" v-model="value.nama" outer-class="mb-0" />
+                    </template>
+                    <template v-slot:kategori="{ value }">
+                      <FormKit type="select" :options="kategoriIndividuOptions" v-model="value.kategori" outer-class="mb-0" />
+                    </template>
+                    <template v-slot:meritIndividu="{ value }">
+                      <FormKit type="text" v-model="value.meritIndividu" outer-class="mb-0" />
+                    </template>
+                    <template v-slot:statusMultidimensi="{ value }">
+                      <FormKit type="select" :options="statusMultidimensiOptions" v-model="value.statusMultidimensi" outer-class="mb-0" />
+                    </template>
+                    <template v-slot:pelarasan="{ value }">
+                      <FormKit type="checkbox" v-model="value.pelarasan" outer-class="mb-0" />
+                    </template>
+                  </rs-table>
+                </div>
+              </rs-collapse-item>
+
+              <!-- Had Kifayah & Multidimensi (relocated to Maklumat Pemohon) -->
+              <rs-collapse-item type="card" title="Had Kifayah & Multidimensi">
+                <div class="p-4">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Had Kifayah Summary -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                      <h3 class="text-lg font-semibold mb-2">Had Kifayah</h3>
+                      <div class="mb-2">Baki Pendapatan: <span class="font-bold">RM-968</span></div>
+                      <div class="mb-2">Peratusan Perbezaan: <span class="font-bold">50.81%</span></div>
+                      <div class="mb-2">Kategori Keluarga Asnaf: <span class="font-bold">Miskin</span></div>
+                      <div class="mb-2">Kategori Asnaf: <span class="font-bold">Miskin</span></div>
+                      <div class="mb-2">Jumlah Had Kifayah: <span class="font-bold">RM1968.00</span></div>
+                    </div>
+                    <!-- Multidimensi Summary -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                      <h3 class="text-lg font-semibold mb-2">Multidimensi</h3>
+                      <div class="mb-2">Merit Keluarga: <span class="font-bold">0.55</span></div>
+                      <div class="mb-2">Status Multidimensi: <span class="font-bold">Produktif C</span></div>
+                      <div class="mb-2">Quadrant: <span class="font-bold">Asnaf Produktif Sementara</span></div>
+                    </div>
+                  </div>
+                </div>
+              </rs-collapse-item>
+
               </rs-collapse>
               <!-- END: Section A stepper -->
               </template>
@@ -893,7 +1003,7 @@
                       </rs-collapse-item>
 
                       <!-- Syor -->
-                      <rs-collapse-item v-if="!shouldHideSections" type="card" title="Syor" v-model="isSyorOpen">
+                      <rs-collapse-item v-if="!shouldHideSections" type="card" title="Syor AI" v-model="isSyorOpen">
                         <div class="p-4 space-y-4" @click.stop @change.stop @input.stop>
                           <div @click.stop @change.stop @input.stop @focus.stop @blur.stop>
                           <rs-table
@@ -1059,29 +1169,7 @@
                         </template>
                       </rs-card>
 
-                      <!-- Had Kifayah & Multidimensi -->
-                      <rs-collapse-item v-if="!shouldHideSections" type="card" title="Had Kifayah & Multidimensi">
-                        <div class="p-4">
-                          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Had Kifayah Summary -->
-                            <div class="bg-white rounded-lg shadow-md p-6">
-                              <h3 class="text-lg font-semibold mb-2">Had Kifayah</h3>
-                              <div class="mb-2">Baki Pendapatan: <span class="font-bold">RM-968</span></div>
-                              <div class="mb-2">Peratusan Perbezaan: <span class="font-bold">50.81%</span></div>
-                              <div class="mb-2">Kategori Keluarga Asnaf: <span class="font-bold">Miskin</span></div>
-                              <div class="mb-2">Kategori Asnaf: <span class="font-bold">Miskin</span></div>
-                              <div class="mb-2">Jumlah Had Kifayah: <span class="font-bold">RM1968.00</span></div>
-                            </div>
-                            <!-- Multidimensi Summary -->
-                            <div class="bg-white rounded-lg shadow-md p-6">
-                              <h3 class="text-lg font-semibold mb-2">Multidimensi</h3>
-                              <div class="mb-2">Merit Keluarga: <span class="font-bold">0.55</span></div>
-                              <div class="mb-2">Status Multidimensi: <span class="font-bold">Produktif C</span></div>
-                              <div class="mb-2">Quadrant: <span class="font-bold">Asnaf Produktif Sementara</span></div>
-                            </div>
-                          </div>
-                        </div>
-                      </rs-collapse-item>
+                      
   
                     </rs-collapse>
                   </div>
@@ -2577,6 +2665,108 @@
   // Section A (PRF) stepper state
   const currentStepA = ref(1);
   const totalStepsA = 11;
+    // Accordion state management - only one can be open except Bantuan Baru and A. Maklumat Peribadi Asnaf
+    const isPeribadiAsnafOpen = ref(true); // Always open
+  const isPendidikanOpen = ref(false);
+  const isPengislamanOpen = ref(false);
+  const isPerbankanOpen = ref(false);
+  const isKesihatanOpen = ref(false);
+  const isKemahiranOpen = ref(false);
+  const isAlamatOpen = ref(false);
+  const isPinjamanHartaOpen = ref(false);
+  const isPemilikanOpen = ref(false);
+  const isPekerjaanOpen = ref(false);
+  const isPendapatanOpen = ref(false);
+  const isSyorStatusOpen = ref(false);
+  const isPengesahanStatusOpen = ref(false);
+  const isHadKifayahOpen = ref(false);
+  const isBantuanAgensiOpen = ref(false);
+  const isBantuanSediaAdaOpen = ref(false);
+  //const isSyorOpen = ref(false);
+  //const isPerubahanBantuanOpen = ref(false);
+  const isBantuanBaruOpen = ref(true); // Always open
+  
+  // Prevent infinite loops with a flag
+  let isUpdatingAccordions = false;
+
+  // Function to close all accordions except the specified one
+  const closeOtherAccordions = (exceptAccordion) => {
+    if (isUpdatingAccordions) return;
+    isUpdatingAccordions = true;
+
+    if (exceptAccordion !== 'pendidikan') isPendidikanOpen.value = false;
+    if (exceptAccordion !== 'pengislaman') isPengislamanOpen.value = false;
+    if (exceptAccordion !== 'perbankan') isPerbankanOpen.value = false;
+    if (exceptAccordion !== 'kesihatan') isKesihatanOpen.value = false;
+    if (exceptAccordion !== 'kemahiran') isKemahiranOpen.value = false;
+    if (exceptAccordion !== 'alamat') isAlamatOpen.value = false;
+    if (exceptAccordion !== 'pinjamanHarta') isPinjamanHartaOpen.value = false;
+    if (exceptAccordion !== 'pemilikan') isPemilikanOpen.value = false;
+    if (exceptAccordion !== 'pekerjaan') isPekerjaanOpen.value = false;
+    if (exceptAccordion !== 'pendapatan') isPendapatanOpen.value = false;
+    if (exceptAccordion !== 'syorStatus') isSyorStatusOpen.value = false;
+    if (exceptAccordion !== 'pengesahanStatus') isPengesahanStatusOpen.value = false;
+    if (exceptAccordion !== 'hadKifayah') isHadKifayahOpen.value = false;
+    if (exceptAccordion !== 'bantuanAgensi') isBantuanAgensiOpen.value = false;
+    if (exceptAccordion !== 'bantuanSediaAda') isBantuanSediaAdaOpen.value = false;
+    if (exceptAccordion !== 'syor') isSyorOpen.value = false;
+    if (exceptAccordion !== 'perubahanBantuan') isPerubahanBantuanOpen.value = false;
+
+    nextTick(() => {
+      isUpdatingAccordions = false;
+    });
+  };
+
+  // Watchers removed - accordions will stay open until manually closed
+
+  // Watch for when currentStepA changes to 1 and force open accordion
+  watch(currentStepA, (newStep) => {
+    if (newStep === 1) {
+      nextTick(() => {
+        isPeribadiAsnafOpen.value = true;
+        setTimeout(() => {
+          openPeribadiAsnafAccordion();
+        }, 100);
+      });
+    }
+  });
+  
+  // Open "A. Maklumat Peribadi Asnaf" accordion by default
+  const peribadiCollapse = ref(null);
+  const openPeribadiAsnafAccordion = () => {
+    try {
+      // Try multiple approaches to find and open the accordion
+      const root = peribadiCollapse?.value?.$el || peribadiCollapse?.value || null;
+      if (!root) return;
+      
+      // Method 1: Look for rs-collapse-item structure
+      const collapseItems = root.querySelectorAll('[data-rs-collapse-item]');
+      if (collapseItems.length > 0) {
+        const firstItem = collapseItems[0];
+        const button = firstItem.querySelector('button, .rs-collapse-item-header, [role="button"]');
+        if (button && !firstItem.classList.contains('rs-collapse-item--open')) {
+          button.click();
+          return;
+        }
+      }
+      
+      // Method 2: Look for any clickable header elements
+      const headers = root.querySelectorAll('button, [role="button"], .collapse-header, .accordion-header');
+      if (headers.length > 0) {
+        const firstHeader = headers[0];
+        firstHeader.click();
+        return;
+      }
+      
+      // Method 3: Force open by setting the open state directly
+      isPeribadiAsnafOpen.value = true;
+      
+    } catch (e) {
+      console.log('Accordion opening error:', e);
+      // Fallback: just set the reactive property
+      isPeribadiAsnafOpen.value = true;
+    }
+  };
   const stepsA = [
     { id: 1, label: "Peribadi" },
     { id: 2, label: "Pendidikan" },
@@ -2851,6 +3041,89 @@
   const bandarOptions = ["Shah Alam", "Subang Jaya", "Rawang"].map((n) => ({ label: n, value: n }));
   const poskodOptions = ["40100", "40000", "47810"].map((n) => ({ label: n, value: n }));
   const kariahOptions = ["Masjid Al-Taqwa", "Masjid Negeri", "Masjid Al-Ikhlas"].map((n) => ({ label: n, value: n }));
+  const kategoriTanggunganOptions = [
+    { label: "Tanggungan Utama", value: "Tanggungan Utama" },
+    { label: "Tanggungan Sekunder", value: "Tanggungan Sekunder" },
+    { label: "Lain-lain", value: "Lain-lain" },
+  ];
+  const statusMultidimensiOptions = [
+    { label: "Tidak Produktif", value: "Tidak Produktif" },
+    { label: "Produktif C", value: "Produktif C" },
+    { label: "Produktif B", value: "Produktif B" },
+    { label: "Produktif A", value: "Produktif A" },
+  ];
+  const quadrantMultidimensiOptions = [
+    { label: "Asnaf Produktif Sementara", value: "Asnaf Produktif Sementara" },
+    { label: "Asnaf Produktif", value: "Asnaf Produktif" },
+    { label: "Bukan Asnaf", value: "Bukan Asnaf" },
+  ];
+  const kategoriKeluargaOptions = [
+    { label: "Fakir", value: "Fakir" },
+    { label: "Miskin", value: "Miskin" },
+    { label: "Mampu", value: "Mampu" },
+  ];
+  const kategoriAsnafOptions = [
+    { label: "Fakir", value: "Fakir" },
+    { label: "Miskin", value: "Miskin" },
+    { label: "Amil", value: "Amil" },
+  ];
+  const kategoriIndividuOptions = [
+    { label: "Miskin", value: "Miskin" },
+    { label: "Fakir", value: "Fakir" },
+  ];
+  const tableHeaders = [
+    { key: 'pengenalanId', label: 'Pengenalan Id' },
+    { key: 'nama', label: 'Nama' },
+    { key: 'kategori', label: 'Kategori Asnaf(Syor)' },
+    { key: 'meritIndividu', label: 'Merit Individu(Syor)' },
+    { key: 'statusMultidimensi', label: 'Status Multidimensi(Syor)' },
+  ];
+  const tableData = [
+    {
+      pengenalanId: '060802030272',
+      nama: 'NUR NAJWA BINTI ADNAN',
+      kategori: 'Miskin',
+      meritIndividu: '0.38',
+      statusMultidimensi: 'Tidak Produktif',
+    },
+    {
+      pengenalanId: '091108030442',
+      nama: 'NUR QISTINA BINTI ADNAN',
+      kategori: 'Miskin',
+      meritIndividu: '0.40',
+      statusMultidimensi: 'Tidak Produktif',
+    },
+    {
+      pengenalanId: '770319035991',
+      nama: 'Adnan bin Abu',
+      kategori: 'Miskin',
+      meritIndividu: '0.69',
+      statusMultidimensi: 'Produktif C',
+    },
+    {
+      pengenalanId: '801004035672',
+      nama: 'ROHANA BINTI AHMAD',
+      kategori: 'Miskin',
+      meritIndividu: '0.64',
+      statusMultidimensi: 'Produktif C',
+    },
+  ];
+
+  // Pengesahan Status table schema & data
+  const pengesahanColumns = [
+    { key: 'pengenalanId', label: 'Pengenalan ID' },
+    { key: 'nama', label: 'Nama' },
+    { key: 'kategori', label: 'Kategori' },
+    { key: 'meritIndividu', label: 'Merit Individu' },
+    { key: 'statusMultidimensi', label: 'Status Multidimensi' },
+    { key: 'pelarasan', label: 'Pelarasan' },
+  ];
+  const pengesahanRows = [
+    { pengenalanId: '060802030272', nama: 'NUR NAJWA BINTI ADNAN', kategori: 'Miskin', meritIndividu: '0.38', statusMultidimensi: 'Tidak Produktif', pelarasan: false },
+    { pengenalanId: '091108030442', nama: 'NUR QISTINA BINTI ADNAN', kategori: 'Miskin', meritIndividu: '0.40', statusMultidimensi: 'Tidak Produktif', pelarasan: false },
+    { pengenalanId: '770319035991', nama: 'Adnan bin Abu', kategori: 'Miskin', meritIndividu: '0.69', statusMultidimensi: 'Produktif C', pelarasan: false },
+    { pengenalanId: '801004035672', nama: 'ROHANA BINTI AHMAD', kategori: 'Miskin', meritIndividu: '0.64', statusMultidimensi: 'Produktif C', pelarasan: false },
+  ];
   const getLocation = () => {};
   
   const router = useRouter();
@@ -3396,6 +3669,8 @@
     { key: "jan", label: "JAN", sortable: true },
     { key: "kadar", label: "KADAR (RM)", sortable: true },
     { key: "frekuensi", label: "FREKUENSI", sortable: true },
+    { key:"tarikhMula", label: "TARIKH MULA", sortable: true },
+    { key: "tarikhTamat", label: "TARIKH TAMAT", sortable: true },
     { key: "jumlah", label: "JUMLAH (RM)", sortable: true },
     { key: "status", label: "STATUS", sortable: true },
   ];
@@ -3470,6 +3745,8 @@
       jan: "Jan Sewaan/Ansuran Rumah (Fakir)",
       kadar: "800",
       frekuensi: "12",
+      tarikhMula: "01/01/2024",
+      tarikhTamat: "31/12/2024",
       jumlah: "9,600",
       status: "Lulus",
     },
@@ -3477,8 +3754,10 @@
       jan: "Jan Pendidikan Dialisis (Fakir)",
       kadar: "2,800",
       frekuensi: "6",
+      tarikhMula: "01/01/2024",
+      tarikhTamat: "31/12/2024",
       jumlah: "16,800",
-      status: "Lulus",
+      status: "Tidak Lulus",
     },
   ]);
   
@@ -3600,17 +3879,17 @@
       justifikasiSyor: "Bantuan Asasi untuk Fakir",
       terimaCadangan: false,
     },
-    {
-      aid: "[B400] BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA",
-      aidProduct: "BANTUAN SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA",
-      productPackage: "SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA, SUMBANGAN BINA/BAIKPULIH SEKOLAH AGAMA, SUMBANGAN BINA/BAIKPULIH SURAU SEKOLAH",
-      entitlementProduct: "(DIRECT) SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA, (GL) SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA",
-      kadarDicadangkan: "5000.00",
-      skorAI: 88,
-      tarikhSyor: "2025-09-26",
-      justifikasiSyor: "Bantuan untuk pembinaan dan baik pulih institusi agama",
-      terimaCadangan: false,
-    },
+    // {
+    //   aid: "[B400] BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA",
+    //   aidProduct: "BANTUAN SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA",
+    //   productPackage: "SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA, SUMBANGAN BINA/BAIKPULIH SEKOLAH AGAMA, SUMBANGAN BINA/BAIKPULIH SURAU SEKOLAH",
+    //   entitlementProduct: "(DIRECT) SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA, (GL) SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA",
+    //   kadarDicadangkan: "5000.00",
+    //   skorAI: 88,
+    //   tarikhSyor: "2025-09-26",
+    //   justifikasiSyor: "Bantuan untuk pembinaan dan baik pulih institusi agama",
+    //   terimaCadangan: false,
+    // },
   ]);
   
   // Move selected Syor items to Bantuan Baru and remove from Syor
@@ -3656,13 +3935,13 @@
       entitlementProduct: "(EFT) YURAN PENDIDIKAN TINGGI (FAKIR)",
       terimaCadangan: false,
     },
-    {
-      aid: "[B400] BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA",
-      aidProduct: "BANTUAN SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA",
-      productPackage: "SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA, SUMBANGAN BINA/BAIKPULIH SEKOLAH AGAMA, SUMBANGAN BINA/BAIKPULIH SURAU SEKOLAH",
-      entitlementProduct: "(DIRECT) SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA, (GL) SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA",
-      terimaCadangan: false,
-    },
+    // {
+    //   aid: "[B400] BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA",
+    //   aidProduct: "BANTUAN SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA",
+    //   productPackage: "SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA, SUMBANGAN BINA/BAIKPULIH SEKOLAH AGAMA, SUMBANGAN BINA/BAIKPULIH SURAU SEKOLAH",
+    //   entitlementProduct: "(DIRECT) SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA, (GL) SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA",
+    //   terimaCadangan: false,
+    // },
     // {
     //   aid: "[B503] BANTUAN MAKANAN BULANAN (FAKIR)",
     //   aidProduct: "MAKANAN BULANAN (FAKIR)",

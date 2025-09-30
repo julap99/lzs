@@ -179,70 +179,116 @@ const AYAH = 'ALI BIN MOHAMED'
 const TARIKH_NOW = new Date().toISOString()
 
 const bantuanList = ref([
+  // 1. BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA
   {
     noBantuan: 'APP-2025-001481',
-    maklumatBantuan: '(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS',
-    pemohon: AYAH,
-    // Penerima Manfaat:
+    maklumatBantuan: 'BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA',
+    pemohon: 'ALI BIN MOHAMED',
     namaPenerimaManfaat: 'MOHD FARHAN BIN ALI',
     noKPPemohon: '940511146045',
-    // Nama Penerima (organisasi/universiti)
-    namaPenerima: 'UPM',
-    tarikhMohon: TARIKH_NOW,
+    namaPenerima: 'MASJID AL-HIDAYAH',
+    tarikhMohon: '2025-03-20T00:00:00.000Z',
     tindakan: { noBantuan: 'APP-2025-001481' },
   },
   {
-    noBantuan: 'APP-2025-001482',
-    maklumatBantuan: '(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS',
-    pemohon: AYAH,
-    namaPenerimaManfaat: 'MOHD FARHAN BIN ALI',
-    noKPPemohon: '940511146045',
-    namaPenerima: 'MOHD FARHAN BIN ALI',
-    tarikhMohon: new Date(Date.now() - 86400000).toISOString(),
-    tindakan: { noBantuan: 'APP-2025-001482' },
+    noBantuan: 'APP-2025-001487',
+    maklumatBantuan: 'BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA',
+    pemohon: 'HASSAN BIN ABDULLAH',
+    namaPenerimaManfaat: 'ZAINAB BINTI HASSAN',
+    noKPPemohon: '920511146555',
+    namaPenerima: 'SURAU KAMPUNG BARU',
+    tarikhMohon: '2025-03-18T00:00:00.000Z',
+    tindakan: { noBantuan: 'APP-2025-001487' },
   },
+
+  // 2. BANTUAN PERUBATAN DIALISI
   {
     noBantuan: 'APP-2025-001483',
-    maklumatBantuan: '(HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)',
-    pemohon: AYAH,
-    namaPenerimaManfaat: 'ZAINAB BINTI ALI',
-    noKPPemohon: '920511146555',
-    namaPenerima: 'SEKOLAH MENENGAH SAINS BANTING',
-    tarikhMohon: new Date(Date.now() - 172800000).toISOString(),
+    maklumatBantuan: 'BANTUAN PERUBATAN DIALISI',
+    pemohon: 'ALI BIN MOHAMED',
+    namaPenerimaManfaat: 'AHMAD BIN HASSAN',
+    noKPPemohon: '850315123456',
+    namaPenerima: 'PUSAT HEMODIALISIS PERMATA SDN. BHD.',
+    tarikhMohon: '2025-03-15T00:00:00.000Z',
     tindakan: { noBantuan: 'APP-2025-001483' },
   },
   {
-    noBantuan: 'APP-2025-001484',
-    maklumatBantuan: '(HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)',
-    pemohon: AYAH,
-    namaPenerimaManfaat: 'ZAINAB BINTI ALI',
-    noKPPemohon: '920511146555',
-    namaPenerima: 'ALI BIN MOHAMED',
-    tarikhMohon: new Date(Date.now() - 259200000).toISOString(),
-    tindakan: { noBantuan: 'APP-2025-001484' },
+    noBantuan: 'APP-2025-001488',
+    maklumatBantuan: 'BANTUAN PERUBATAN DIALISI',
+    pemohon: 'FATIMAH BINTI MOHAMED',
+    namaPenerimaManfaat: 'FARID BIN ABDUL',
+    noKPPemohon: '880420234567',
+    namaPenerima: 'KLINIK KASIH',
+    tarikhMohon: '2025-03-12T00:00:00.000Z',
+    tindakan: { noBantuan: 'APP-2025-001488' },
   },
-  // Tuntutan Dialisis mock data
+
+  // 3. BANTUAN HUTANG PERUBATAN
   {
     noBantuan: 'APP-2025-001485',
-    maklumatBantuan: '(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)',
-    pemohon: AYAH,
-    namaPenerimaManfaat: 'AHMAD BIN HASSAN',
-    noKPPemohon: '850315123456',
-    namaPenerima: 'HOSPITAL SELAYANG',
-    tarikhMohon: new Date(Date.now() - 345600000).toISOString(),
+    maklumatBantuan: 'BANTUAN HUTANG PERUBATAN',
+    pemohon: 'ALI BIN MOHAMED',
+    namaPenerimaManfaat: 'MOHD YUSRI BIN ABDULLAH',
+    noKPPemohon: '810101145678',
+    namaPenerima: 'PERSATUAN PESAKIT KRONIK',
+    tarikhMohon: '2025-03-10T00:00:00.000Z',
     tindakan: { noBantuan: 'APP-2025-001485' },
   },
   {
+    noBantuan: 'APP-2025-001489',
+    maklumatBantuan: 'BANTUAN HUTANG PERUBATAN',
+    pemohon: 'AHMAD BIN HASSAN',
+    namaPenerimaManfaat: 'SITI NUR BINTI HASSAN',
+    noKPPemohon: '820212145679',
+    namaPenerima: 'PUSAT RAWATAN ISLAM',
+    tarikhMohon: '2025-03-08T00:00:00.000Z',
+    tindakan: { noBantuan: 'APP-2025-001489' },
+  },
+
+  // 4. BANTUAN PROGRAM PENERAPAN NILAI ISLAM
+  {
     noBantuan: 'APP-2025-001486',
-    maklumatBantuan: '(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)',
-    pemohon: AYAH,
-    namaPenerimaManfaat: 'FATIMAH BINTI MOHAMED',
-    noKPPemohon: '880420234567',
-    namaPenerima: 'HOSPITAL KUALA LUMPUR',
-    tarikhMohon: new Date(Date.now() - 432000000).toISOString(),
+    maklumatBantuan: 'BANTUAN PROGRAM PENERAPAN NILAI ISLAM',
+    pemohon: 'ALI BIN MOHAMED',
+    namaPenerimaManfaat: 'NURUL AIN BINTI MOHD',
+    noKPPemohon: '900202145432',
+    namaPenerima: 'SEKOLAH RENDAH ISLAM INTEGRASI',
+    tarikhMohon: '2025-03-08T00:00:00.000Z',
     tindakan: { noBantuan: 'APP-2025-001486' },
   },
-])
+  {
+    noBantuan: 'APP-2025-001490',
+    maklumatBantuan: 'BANTUAN PROGRAM PENERAPAN NILAI ISLAM',
+    pemohon: 'FATIMAH BINTI MOHAMED',
+    namaPenerimaManfaat: 'AMIR BIN MOHD',
+    noKPPemohon: '910303145433',
+    namaPenerima: 'SEKOLAH MENENGAH ISLAM',
+    tarikhMohon: '2025-03-05T00:00:00.000Z',
+    tindakan: { noBantuan: 'APP-2025-001490' },
+  },
+
+  // 5. Add duplicate rows for realism
+  {
+    noBantuan: 'APP-2025-001491',
+    maklumatBantuan: 'BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA',
+    pemohon: 'MUHAMMAD BIN SALLEH',
+    namaPenerimaManfaat: 'ZAKARIA BIN SALLEH',
+    noKPPemohon: '930101145440',
+    namaPenerima: 'MASJID AN-NAIM',
+    tarikhMohon: '2025-03-03T00:00:00.000Z',
+    tindakan: { noBantuan: 'APP-2025-001491' },
+  },
+  {
+    noBantuan: 'APP-2025-001492',
+    maklumatBantuan: 'BANTUAN PERUBATAN DIALISI',
+    pemohon: 'AHMAD BIN SALLEH',
+    namaPenerimaManfaat: 'FARAH BINTI SALLEH',
+    noKPPemohon: '940202145441',
+    namaPenerima: 'KLINIK HIDAYAH',
+    tarikhMohon: '2025-03-02T00:00:00.000Z',
+    tindakan: { noBantuan: 'APP-2025-001492' },
+  },
+]);
 
 /** =========================
  *  Carian & Pagination ringkas

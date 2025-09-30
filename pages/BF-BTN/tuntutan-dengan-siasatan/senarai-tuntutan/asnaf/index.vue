@@ -42,11 +42,13 @@
           <RsTabItem title="Draf">
             <rs-table
                 :data="filteredTuntutan('Draf')"
+                :field="['noTuntutan', 'noGL', 'namaPemohon', 'jenisBantuan', 'tarikhTuntutan', 'amaunTuntutan', 'statusPermohonan', 'tindakan']"
                 :columns="columns"
                 :pageSize="pageSize"
-                :showNoColumn="true"
+                :showNoColumn="false"
                 :show-filter="true"
                 :show-search="true"
+                :autoFields="false"
                 :options="{
                   variant: 'default',
                   hover: true,
@@ -111,11 +113,13 @@
           <RsTabItem title="Dalam Semakan">
             <rs-table
               :data="filteredTuntutan('Dalam Semakan')"
+              :field="['noTuntutan', 'noGL', 'namaPemohon', 'jenisBantuan', 'tarikhTuntutan', 'amaunTuntutan', 'statusPermohonan', 'tindakan']"
               :columns="columns"
               :pageSize="pageSize"
-              :showNoColumn="true"
+              :showNoColumn="false"
               :show-filter="true"
               :show-search="true"
+              :autoFields="false"
               :options="{
                 variant: 'default',
                 hover: true,
@@ -167,11 +171,13 @@
           <RsTabItem title="Lulus">
                 <rs-table
               :data="filteredTuntutan('Lulus')"
+              :field="['noTuntutan', 'noGL', 'namaPemohon', 'jenisBantuan', 'tarikhTuntutan', 'amaunTuntutan', 'statusPermohonan', 'tindakan']"
               :columns="columns"
               :pageSize="pageSize"
-              :showNoColumn="true"
+              :showNoColumn="false"
               :show-filter="true"
               :show-search="true"
+              :autoFields="false"
               :options="{
                 variant: 'default',
                 hover: true,
@@ -223,11 +229,13 @@
           <RsTabItem title="Ditolak">
             <rs-table
               :data="filteredTuntutan('Ditolak')"
+              :field="['noTuntutan', 'noGL', 'namaPemohon', 'jenisBantuan', 'tarikhTuntutan', 'amaunTuntutan', 'statusPermohonan', 'tindakan']"
               :columns="columnsDitolak"
               :pageSize="pageSizeDitolak"
-              :showNoColumn="true"
+              :showNoColumn="false"
               :show-filter="true"
               :show-search="true"
+              :autoFields="false"
               :options="{
                 variant: 'default',
                 hover: true,
@@ -355,89 +363,77 @@ const pageSizeDitolak = ref(5);
 
 // ⚠️ Replace all four sample arrays with this single one:
 const allTuntutan = ref([
-  // Draf
   {
-    id: "TUN-2024-001",
-    noTuntutan: "TUN-2024-001",
+    id: "TUN-2025-001",
+    noTuntutan: "TUN-2025-001",
     noGL: "GL-001",
-    namaPemohon: "Ahmad bin Abdullah",
-    jenisBantuan: "Bantuan Pendidikan",
-    amaunTuntutan: 5000.0,
-    tarikhTuntutan: "2024-03-20",
-    statusPermohonan: "Draf",
-    tindakan: "TUN-2024-001",
-  },
-  {
-    id: "TUN-2024-002",
-    noTuntutan: "TUN-2024-002",
-    noGL: "GL-002",
     namaPemohon: "Masjid Al-Hidayah",
-    jenisBantuan: "Bantuan Perubatan",
-    amaunTuntutan: 8000.0,
-    tarikhTuntutan: "2024-03-18",
-    statusPermohonan: "Draf",
-    tindakan: "TUN-2024-002",
-  },
-
-  // Dalam Semakan
-  {
-    id: "TUN-2024-003",
-    noTuntutan: "TUN-2024-003",
-    noGL: "GL-003",
-    namaPemohon: "PUSAT HEMODIALISIS PERMATA SDN. BHD.",
-    jenisBantuan: "Bantuan Perubatan Dialisis",
+    jenisBantuan: "BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA",
+    produkBantuan: "BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA",
     amaunTuntutan: 12000.0,
-    tarikhTuntutan: "2024-03-15",
-    statusPermohonan: "Dalam Semakan",
-    tindakan: "TUN-2024-003",
+    tarikhTuntutan: "2025-03-20",
+    statusPermohonan: "Draf",
+    tindakan: "TUN-2025-001",
   },
   {
-    id: "TUN-2024-004",
-    noTuntutan: "TUN-2024-004",
-    noGL: "GL-004",
-    namaPemohon: "Surau Kampung Baru",
-    jenisBantuan: "Bantuan Perubatan",
-    amaunTuntutan: 3500.0,
-    tarikhTuntutan: "2024-03-12",
+    id: "TUN-2025-002",
+    noTuntutan: "TUN-2025-002",
+    noGL: "GL-002",
+    namaPemohon: "Surau Al-Amin",
+    jenisBantuan: "BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA",
+    produkBantuan: "BANTUAN SUMBANGAN BINA/BAIKPULIH INSTITUSI AGAMA",
+    amaunTuntutan: 9500.0,
+    tarikhTuntutan: "2025-03-19",
     statusPermohonan: "Dalam Semakan",
-    tindakan: "TUN-2024-004",
+    tindakan: "TUN-2025-002",
   },
-
-  // Lulus
   {
-    id: "TUN-2024-005",
-    noTuntutan: "TUN-2024-005",
-    noGL: "GL-005",
-    namaPemohon: "Pusat Tahfiz Al-Quran",
-    jenisBantuan: "Bantuan Pendidikan",
+    id: "TUN-2025-003",
+    noTuntutan: "TUN-2025-003",
+    noGL: "GL-003",
+    namaPemohon: "Pusat Hemodialisis Permata Sdn. Bhd.",
+    jenisBantuan: "BANTUAN PERUBATAN DIALISI",
+    produkBantuan: "KATEGORI HEMODIALISIS (FAKIR)",
     amaunTuntutan: 15000.0,
-    tarikhTuntutan: "2024-03-10",
+    tarikhTuntutan: "2025-03-15",
     statusPermohonan: "Lulus",
-    tindakan: "TUN-2024-005",
+    tindakan: "TUN-2025-003",
   },
-
-  // Ditolak
   {
-    id: "TUN-2024-006",
-    noTuntutan: "TUN-2024-006",
+    id: "TUN-2025-004",
+    noTuntutan: "TUN-2025-004",
+    noGL: "GL-004",
+    namaPemohon: "Klinik Kasih",
+    jenisBantuan: "BANTUAN PERUBATAN DIALISI",
+    produkBantuan: "KATEGORI RAWATAN AIR (FAKIR)",
+    amaunTuntutan: 9000.0,
+    tarikhTuntutan: "2025-03-14",
+    statusPermohonan: "Ditolak",
+    tindakan: "TUN-2025-004",
+  },
+  {
+    id: "TUN-2025-005",
+    noTuntutan: "TUN-2025-005",
+    noGL: "GL-005",
+    namaPemohon: "Persatuan Pesakit Kronik",
+    jenisBantuan: "BANTUAN HUTANG PERUBATAN",
+    produkBantuan: "BANTUAN PERUBATAN KLINIKAL",
+    amaunTuntutan: 20000.0,
+    tarikhTuntutan: "2025-03-13",
+    statusPermohonan: "Lulus",
+    tindakan: "TUN-2025-005",
+  },
+  {
+    id: "TUN-2025-006",
+    noTuntutan: "TUN-2025-006",
     noGL: "GL-006",
-    namaPemohon: "Kumpulan Belia Islam",
-    jenisBantuan: "Bantuan Perubatan",
-    amaunTuntutan: 25000.0,
-    tarikhTuntutan: "2024-03-22",
-    statusPermohonan: "Ditolak",
-    tindakan: "TUN-2024-006",
-  },
-  {
-    id: "TUN-2024-007",
-    noTuntutan: "TUN-2024-007",
-    noGL: "GL-007",
-    namaPemohon: "Persatuan Islam Kampung Melayu",
-    jenisBantuan: "Bantuan Pendidikan",
-    amaunTuntutan: 18000.0,
-    tarikhTuntutan: "2024-03-19",
-    statusPermohonan: "Ditolak",
-    tindakan: "TUN-2024-007",
+    namaPemohon: "Sekolah Rendah Islam Integrasi",
+    jenisBantuan: "BANTUAN PROGRAM PENERAPAN NILAI ISLAM",
+    produkBantuan: "JAIS / MAIS - HONORARIUM",
+    amaunTuntutan: 7000.0,
+    tarikhTuntutan: "2025-03-08",
+    statusPermohonan: "Dalam Semakan",
+    tindakan: "TUN-2025-006",
   },
 ]);
 

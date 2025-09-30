@@ -25,10 +25,6 @@
                 <p class="mt-1 text-gray-600">{{ formData.emailPemohon }}</p>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700">Kategori Asnaf</label>
-                <p class="mt-1 text-gray-600">{{ formData.kategoriAsnaf }}</p>
-              </div>
-              <div>
                 <label class="block text-sm font-medium text-gray-700">Status Household</label>
                 <rs-badge :variant="getStatusVariant(formData.statusHousehold)">{{ formData.statusHousehold }}</rs-badge>
               </div>
@@ -82,7 +78,14 @@
               </template>
               <template #tindakan="{ value }">
                 <div class="flex items-center gap-2">
-                  <rs-button variant="ghost" size="sm" class="group relative p-1 bg-transparent border-0 shadow-none text-blue-600 hover:text-blue-800" @click.stop="openInvoiceModal(value.glNo)" title="Cipta Invoice">
+                  <rs-button 
+                    variant="ghost" 
+                    size="sm" 
+                    class="group relative p-1 bg-transparent border-0 shadow-none text-blue-600 hover:text-blue-800" 
+                    :disabled="getGlBalance(value.glNo) <= 0"
+                    @click.stop="openInvoiceModal(value.glNo)" 
+                    :title="getGlBalance(value.glNo) <= 0 ? 'Tiada baki untuk cipta invoice' : 'Cipta Invoice'"
+                  >
                     <Icon name="material-symbols:add" size="22" />
                   </rs-button>
                 </div>
@@ -104,10 +107,10 @@
               </template>
               <template #tindakan="{ value }">
                 <div class="flex items-center gap-1">
-                  <rs-button variant="ghost" size="sm" class="!px-1 !py-1 text-blue-600 hover:text-blue-800" title="Edit Invoice" @click.stop="editInvoice(value)">
+                  <rs-button variant="ghost" size="sm" class="!px-1 !py-1 text-blue-600 hover:text-blue-800" title="Kemaskini Invoice" @click.stop="editInvoice(value)">
                     <Icon name="material-symbols:edit" class="w-5 h-5" />
                   </rs-button>
-                  <rs-button variant="ghost" size="sm" class="!px-1 !py-1 text-red-600 hover:text-red-800" title="Hapus Invoice" @click.stop="deleteInvoice(value)">
+                  <rs-button variant="ghost" size="sm" class="!px-1 !py-1 text-red-600 hover:text-red-800" title="Padam Invoice" @click.stop="deleteInvoice(value)">
                     <Icon name="material-symbols:delete" class="w-5 h-5" />
                   </rs-button>
                 </div>
@@ -115,6 +118,21 @@
             </RsTable>
           </RsTabItem>
 
+          <RsTabItem title="Payment Advice">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-lg font-medium">Payment Advice</h3>
+            </div>
+            <RsTable :data="paymentAdviceData" :columns="paymentAdviceColumns" advanced :showSearch="false" :showFilter="false" :options="{ variant: 'default', striped: true, bordered: false, borderless: false, hover: true }" :optionsAdvanced="{ sortable: true, filterable: false, responsive: true, outsideBorder: true }" :pageSize="10" :showNoColumn="true" :sort="{ column: 'createdDate', direction: 'desc' }">
+              <template #amaun="{ text }">RM {{ text?.toLocaleString('ms-MY', { minimumFractionDigits: 2 }) || '0.00' }}</template>
+              <template #status="{ text }"><rs-badge :variant="text === 'SAH' ? 'success' : text === 'DITOLAK' ? 'danger' : 'warning'">{{ text || '—' }}</rs-badge></template>
+              <template #tindakan="{ value }">
+                <rs-button size="sm" variant="ghost" @click="openPaymentAdviceModal(value.paNo)">
+                  <Icon name="material-symbols:visibility" class="w-5 h-5" />
+                </rs-button>
+              </template>
+            </RsTable>
+          </RsTabItem>
+          
           <RsTabItem title="Dokumen Sokongan">
             <h3 class="text-lg font-medium mb-4">Dokumen Sokongan</h3>
             <RsTable :data="documents" :field="fieldsDoc" :columns="columnsDoc" advanced :showSearch="true" :showFilter="false" :options="{ variant: 'default', striped: true, bordered: false, borderless: false, hover: true }" :optionsAdvanced="{ sortable: true, filterable: true, responsive: true, outsideBorder: true }" :pageSize="10" :showNoColumn="true" :sort="{ column: 'uploadDate', direction: 'desc' }" :autoFields="false">
@@ -132,7 +150,7 @@
         <div class="border-t border-gray-200 my-6"></div>
         <div class="flex items-center justify-between mt-4">
           <div>
-            <rs-button type="button" variant="primary-outline" @click="navigateTo('/BF-BTN/tuntutan-dengan-siasatan')">
+            <rs-button type="button" variant="primary-outline" @click="navigateTo('/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/asnaf')">
               <Icon name="material-symbols:arrow-back" class="w-4 h-4 mr-1" /> Kembali
             </rs-button>
           </div>
@@ -145,7 +163,7 @@
     </rs-card>
 
     <!-- Modal: Cipta Invoice -->
-    <RsModal v-model="showInvoiceModal" title="Cipta Invoice" size="lr">
+    <RsModal v-model="showInvoiceModal" :title="isEditingInvoice ? 'Kemaskini Invoice' : 'Cipta Invoice'" size="lr">
       <template #body>
         <div class="grid grid-cols-1 gap-6">
           <FormKit v-model="newInvoice.invoiceNo" type="text" label="No. Invois" disabled />
@@ -161,7 +179,14 @@
           <FormKit v-model="newInvoice.noAkaun" type="text" label="No. Akaun" readonly />
           <FormKit v-model="newInvoice.tarikhJangkaanPembayaran" type="date" label="Expected Payment Date" />
           <FormKit v-model="newInvoice.amaun" type="number" label="Amaun (RM)" validation="required|number|min:0" :validation-messages="{ required: 'Sila masukkan amaun', number: 'Sila masukkan nilai yang sah', min: 'Amaun tidak boleh negatif' }" step="0.01" min="0" />
-          <div v-if="amountExceedsGL" class="text-sm text-red-600 -mt-2">Amaun (RM) telah melebihi Amaun GL (RM).</div>
+          <div v-if="amountExceedsLimit && newInvoice.amaun" class="text-sm text-red-600 -mt-2">
+            <span v-if="isEditingInvoice">
+              Amaun baru melebihi baki yang tersedia. Sila kurangkan amaun atau pilih amaun yang lebih rendah.
+            </span>
+            <span v-else>
+              Amaun (RM) telah melebihi baki GL yang tersedia.
+            </span>
+          </div>
           <FormKit v-model="newInvoice.lampiran" type="file" label="Muat Naik Lampiran" accept=".pdf,.doc,.docx" multiple help="Lampiran apa yang perlu dimasukkan (boleh muat naik berbilang fail)" />
           <div v-if="newInvoice.lampiran && newInvoice.lampiran.length > 0" class="mt-2">
             <p class="text-sm text-gray-600 mb-2">Fail yang dipilih ({{ newInvoice.lampiran.length }}):</p>
@@ -177,7 +202,9 @@
       </template>
       <template #footer>
         <rs-button @click="showInvoiceModal = false">Batal</rs-button>
-        <rs-button :disabled="getGlBalance(selectedGlNo) <= 0 || !newInvoice.amaun || Number(newInvoice.amaun) <= 0 || amountExceedsGL" @click="createInvoice">Simpan</rs-button>
+        <rs-button :disabled="!newInvoice.amaun || Number(newInvoice.amaun) <= 0 || !isAmountValid" @click="createInvoice">
+          {{ isEditingInvoice ? 'Kemaskini' : 'Simpan' }}
+        </rs-button>
       </template>
     </RsModal>
   </div>
@@ -191,6 +218,19 @@ definePageMeta({ title: 'Mohon Tuntutan (Asnaf)' })
 
 const { $swal } = useNuxtApp()
 
+
+// Payment Advice table schema (mimic vendor)
+const fieldsPA = ['paNo', 'createdDate', 'penerimaBayaran', 'status', 'bulan', 'tahun', 'amaun']
+const columnsPA = [
+  { key: 'paNo', label: 'PA No' },
+  { key: 'createdDate', label: 'Tarikh Dicipta' },
+  { key: 'penerimaBayaran', label: 'Penerima Bayaran' },
+  { key: 'status', label: 'Status' },
+  { key: 'bulan', label: 'Bulan' },
+  { key: 'tahun', label: 'Tahun' },
+  { key: 'amaun', label: 'Amaun (RM)' }
+]
+
 const breadcrumb = ref([
   { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus' },
   { name: 'Tuntutan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus' },
@@ -200,10 +240,10 @@ const breadcrumb = ref([
 const route = useRoute()
 
 const formData = ref({
-  namaPemohon: '',
-  noPengenalan: '',
-  emailPemohon: '',
-  noTelefonPemohon: '',
+  namaPemohon: 'Ahmad bin Abdullah',
+  noPengenalan: '800101-10-1111',
+  emailPemohon: 'ahmad.abdullah@email.com',
+  noTelefonPemohon: '012-3456789',
   kategoriAsnaf: 'Fakir',
   statusHousehold: 'Fakir',
   statusIndividu: 'Fakir',
@@ -231,6 +271,8 @@ const formData = ref({
   tarikhDicipta: '04/04/2025 03:45 PM'
 })
 
+
+// DI table schema
 const fieldsDI = ['diNo', 'entitlementProduct', 'penerima', 'bulan', 'tahun', 'status', 'amaun']
 const columnsDI = [
   { key: 'diNo', label: 'DI No' },
@@ -242,6 +284,7 @@ const columnsDI = [
   { key: 'amaun', label: 'Amaun (RM)' }
 ]
 
+// GL table schema
 const fieldsGL = ['glNo', 'diNo', 'createdDate', 'penerimaBayaran', 'status', 'bulan', 'tahun', 'amaun', 'invoiceCount', 'invoiceTotal', 'currentBalance', 'tindakan']
 const columnsGL = [
   { key: 'glNo', label: 'GL No' },
@@ -258,30 +301,33 @@ const columnsGL = [
   { key: 'tindakan', label: 'Tindakan' }
 ]
 
-const fieldsInv = ['invoiceNo', 'title', 'tahun', 'semester', 'diNo', 'glNo', 'paNo', 'statusKelulusan', 'amaun', 'tindakan']
-const columnsInvVisible = computed(() => {
-  const base = [
-    { key: 'invoiceNo', label: 'Invoice No' },
-    { key: 'title', label: 'Tajuk' },
-    { key: 'tahun', label: 'Tahun' },
-    { key: 'semester', label: 'Semester' },
-    { key: 'diNo', label: 'DI No' },
-    { key: 'glNo', label: 'GL No' }
-  ]
-  const hasLulus = filteredInvoices.value.some(r => (r.statusKelulusan || '').toUpperCase() === 'APPROVED')
-  const mid = hasLulus
-    ? [
-        { key: 'paNo', label: 'PA No' },
-        { key: 'statusKelulusan', label: 'Status Kelulusan' }
-      ]
-    : []
-  const tail = [
-    { key: 'amaun', label: 'Amaun (RM)' },
-    { key: 'tindakan', label: 'Tindakan' }
-  ]
-  return [...base, ...mid, ...tail]
-})
+// Invoice table schema
+const fieldsInv = [
+  'invoiceNo',
+  'title',
+  'tahun',
+  'semester',
+  'diNo',
+  'glNo',
+  'paNo',
+  'statusKelulusan',
+  'amaun',
+  'tindakan'
+]
 
+const columnsInv = [
+  { key: 'invoiceNo', label: 'Invoice No' },
+  { key: 'title', label: 'Tajuk' },
+  { key: 'tahun', label: 'Tahun' },
+  { key: 'semester', label: 'Semester' },
+  { key: 'diNo', label: 'DI No' },
+  { key: 'glNo', label: 'GL No' },
+  { key: 'paNo', label: 'PA No' },
+  { key: 'statusKelulusan', label: 'Status Kelulusan' },
+  { key: 'amaun', label: 'Amaun (RM)' }
+]
+
+// Dokumen table schema
 const fieldsDoc = ['name', 'nameFile', 'uploadDate', 'tindakan']
 const columnsDoc = [
   { key: 'name', label: 'Nama Dokumen' },
@@ -291,15 +337,62 @@ const columnsDoc = [
 ]
 
 const distributionItems = ref([
-  { diNo: 'DI-001', entitlementProduct: '(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS', penerima: 'IPTA', bulan: 'MAC', tahun: '2025', status: 'Aktif', amaun: '1500.00' }
+  {
+    diNo: 'DI-001',
+    entitlementProduct: '(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS',
+    penerima: 'IPTA',
+    bulan: 'MAC',
+    tahun: '2025',
+    status: 'Aktif',
+    amaun: '1500.00'
+  }
 ])
 
 const documents = ref([])
 const guaranteeLetters = ref([
-  { glNo: 'GL-001', diNo: 'DI-001', createdDate: '15/01/2025', penerimaBayaran: 'IPTA', status: 'AKTIF', bulan: 'MAC', tahun: '2025', amaun: '1500.00' }
+  {
+    glNo: 'GL-001',
+    diNo: 'DI-001',
+    createdDate: '15/01/2025',
+    penerimaBayaran: 'IPTA',
+    status: 'AKTIF',
+    bulan: 'MAC',
+    tahun: '2025',
+    amaun: '1500.00'
+  }
 ])
 const invoices = ref([])
 
+// Modal state
+const showInvoiceModal = ref(false)
+const selectedGlNo = ref('')
+const isEditingInvoice = ref(false)
+const editingInvoiceIndex = ref(-1)
+const newInvoice = ref({
+  invoiceNo: 'INV-2025-00124',
+  noInvoisPelanggan: '',
+  tahun: '2025',
+  semester: '',
+  tajuk: '',
+  cgpa: '',
+  penerimaBayaran: 'IPTA',
+  mop: 'EFT',
+  namaPenerima: 'IPTA',
+  bank: 'CIMB',
+  noAkaun: '8001234567',
+  tarikhJangkaanPembayaran: '',
+  amaun: '',
+  lampiran: [],
+  catatan: ''
+})
+
+const semesterOptions = [
+  { label: 'Semester 1', value: '1' },
+  { label: 'Semester 2', value: '2' },
+  { label: 'Semester 3', value: '3' }
+]
+
+// Computed properties
 const glRows = computed(() =>
   guaranteeLetters.value.map((gl) => {
     const glTotal = toNum(gl.amaun)
@@ -314,130 +407,279 @@ const glRows = computed(() =>
   })
 )
 
-const filteredInvoices = computed(() => (selectedGlNo.value ? invoices.value.filter((r) => r.glNo === selectedGlNo.value) : invoices.value))
+const filteredInvoices = computed(() => {
+  if (!selectedGlNo.value) return invoices.value
+  return invoices.value.filter(inv => inv.glNo === selectedGlNo.value)
+})
 
+const columnsInvVisible = computed(() => {
+  return columnsInv.concat([{ key: 'tindakan', label: 'Tindakan' }])
+})
+
+// Helper functions
 const toMYR = (n) => {
   if (n == null || n === '') return '0.00'
   const num = typeof n === 'number' ? n : Number(String(n).replace(/,/g, ''))
   return isNaN(num) ? '0.00' : num.toLocaleString('ms-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
-const isIPT = computed(() => ((formData.value.aidProduct || '').toUpperCase().includes('IPT')))
-const amountExceedsGL = computed(() => {
-  const amt = Number(newInvoice.value.amaun || 0)
-  const bal = getGlBalance(selectedGlNo.value)
-  return Number.isFinite(amt) && Number.isFinite(bal) && amt > bal
-})
-const toNum = (v) => {
-  if (v == null || v === '') return 0
-  const n = typeof v === 'number' ? v : Number(String(v).replace(/,/g, ''))
-  return Number.isFinite(n) ? n : 0
+
+const toNum = (n) => {
+  if (n == null || n === '') return 0
+  const num = typeof n === 'number' ? n : Number(String(n).replace(/,/g, ''))
+  return isNaN(num) ? 0 : num
 }
-const sumInvoicesByGL = (glNo) => invoices.value.filter((i) => i.glNo === glNo).reduce((s, r) => s + toNum(r.amaun), 0)
+
+const sumInvoicesByGL = (glNo) => {
+  return invoices.value
+    .filter(inv => inv.glNo === glNo)
+    .reduce((sum, inv) => sum + toNum(inv.amaun), 0)
+}
+
 const getGlBalance = (glNo) => {
-  const gl = guaranteeLetters.value.find((g) => g.glNo === glNo)
+  const gl = guaranteeLetters.value.find(g => g.glNo === glNo)
   if (!gl) return 0
   const glTotal = toNum(gl.amaun)
   const invTotal = sumInvoicesByGL(glNo)
   return Math.max(glTotal - invTotal, 0)
 }
 
-const showInvoiceModal = ref(false)
-const selectedGlNo = ref(null)
-const semesterOptions = [ { label: 'Semester 1', value: '1' }, { label: 'Semester 2', value: '2' } ]
-const newInvoice = ref({ invoiceNo: 'AUTO', noInvoisPelanggan: '', tahun: '', semester: '1', tajuk: '', cgpa: null, penerimaBayaran: '', mop: '', namaPenerima: '', bank: '', noAkaun: '', tarikhJangkaanPembayaran: '', amaun: null, lampiran: [] })
+const formatSemester = (sem) => {
+  const map = { '1': 'Semester 1', '2': 'Semester 2', '3': 'Semester 3' }
+  return map[sem] || sem
+}
 
-function openInvoiceModal(glNo) {
-  selectedGlNo.value = glNo
-  const gl = guaranteeLetters.value.find((g) => g.glNo === glNo)
-  const base = {
-    invoiceNo: `INV-${new Date().getFullYear()}-${Math.floor(Math.random() * 90000 + 10000)}`,
-    tahun: String(new Date().getFullYear()),
-    semester: newInvoice.value.semester || '',
-    tajuk: '',
-    cgpa: newInvoice.value.cgpa ?? null,
-    penerimaBayaran: formData.value.penerimaBayaran || gl?.penerimaBayaran || 'PENERIMA',
-    mop: formData.value.mop || 'EFT',
-    namaPenerima: formData.value.namaPenerima || gl?.penerimaBayaran || 'PENERIMA',
-    bank: formData.value.bank || 'CIMB',
-    noAkaun: formData.value.noAkaun || '8001234567',
-    amaun: null,
-    lampiran: null,
-    catatan: newInvoice.value.catatan || ''
+// Derived flags & validations
+const isIPT = computed(() => {
+  const p = (formData.value.aidProduct || '').toUpperCase()
+  return p.includes('IPT')
+})
+const amountExceedsGL = computed(() => {
+  const amt = Number(newInvoice.value.amaun || 0)
+  const bal = getGlBalance(selectedGlNo.value)
+  return Number.isFinite(amt) && Number.isFinite(bal) && amt > bal
+})
+
+// More sophisticated validation for edit scenarios
+const isAmountValid = computed(() => {
+  const amt = Number(newInvoice.value.amaun || 0)
+  
+  if (!Number.isFinite(amt) || amt <= 0) return false
+  
+  if (isEditingInvoice.value) {
+    // For editing: calculate what the total would be after this edit
+    const currentInvoice = invoices.value[editingInvoiceIndex.value]
+    const currentAmount = Number(currentInvoice?.amaun || 0)
+    
+    // If reducing amount, always allow (this fixes the over-allocation issue)
+    if (amt <= currentAmount) {
+      return true
+    }
+    
+    // If increasing amount, check if the resulting total would exceed GL limit
+    const gl = guaranteeLetters.value.find(g => g.glNo === selectedGlNo.value)
+    if (!gl) return false
+    
+    const glTotal = toNum(gl.amaun)
+    const otherInvoicesTotal = invoices.value
+      .filter(inv => inv.glNo === selectedGlNo.value && inv.invoiceNo !== currentInvoice.invoiceNo)
+      .reduce((sum, inv) => sum + toNum(inv.amaun), 0)
+    
+    // Calculate what the total would be after this edit
+    const newTotal = otherInvoicesTotal + amt
+    
+    // Only allow if the new total doesn't exceed GL limit
+    return newTotal <= glTotal
+  } else {
+    // For new invoices: amount must not exceed balance
+    const bal = getGlBalance(selectedGlNo.value)
+    return amt <= bal
   }
-  newInvoice.value = { ...base }
-  showInvoiceModal.value = true
-}
+})
 
-function createInvoice() {
-  const gl = guaranteeLetters.value.find((g) => g.glNo === selectedGlNo.value) || {}
-  const amount = Number(newInvoice.value.amaun ?? 0)
-  if (!Number.isFinite(amount) || amount <= 0) {
-    $swal.fire({ icon: 'error', title: 'Amaun Tidak Sah', text: 'Amaun invois mesti lebih besar daripada 0.' })
-    return
+// Computed property to check if amount exceeds limit for warning message
+const amountExceedsLimit = computed(() => {
+  const amt = Number(newInvoice.value.amaun || 0)
+  
+  if (!Number.isFinite(amt) || amt <= 0) return false
+  
+  if (isEditingInvoice.value) {
+    const currentInvoice = invoices.value[editingInvoiceIndex.value]
+    const currentAmount = Number(currentInvoice?.amaun || 0)
+    
+    // If reducing amount, no warning needed
+    if (amt <= currentAmount) {
+      return false
+    }
+    
+    // If increasing amount, check if the resulting total would exceed GL limit
+    const gl = guaranteeLetters.value.find(g => g.glNo === selectedGlNo.value)
+    if (!gl) return false
+    
+    const glTotal = toNum(gl.amaun)
+    const otherInvoicesTotal = invoices.value
+      .filter(inv => inv.glNo === selectedGlNo.value && inv.invoiceNo !== currentInvoice.invoiceNo)
+      .reduce((sum, inv) => sum + toNum(inv.amaun), 0)
+    
+    // Calculate what the total would be after this edit
+    const newTotal = otherInvoicesTotal + amt
+    
+    return newTotal > glTotal
+  } else {
+    // For new invoices: check if exceeds balance
+    const bal = getGlBalance(selectedGlNo.value)
+    return amt > bal
   }
-
-  const invRow = {
-    invoiceNo: newInvoice.value.invoiceNo,
-    title: newInvoice.value.tajuk,
-    tahun: newInvoice.value.tahun || String(new Date().getFullYear()),
-    semester: newInvoice.value.semester,
-    diNo: gl.diNo || '',
-    glNo: gl.glNo || selectedGlNo.value || '',
-    paNo: '',
-    statusKelulusan: '',
-    amaun: amount
-  }
-  invoices.value = [invRow, ...invoices.value]
-
-  newInvoice.value.lampiran = []
-  showInvoiceModal.value = false
-}
-
-function editInvoice(row) {
-  // Simple edit: reopen modal prefilled for amount/title update
-  if (!row?.invoiceNo) return
-  newInvoice.value = {
-    invoiceNo: row.invoiceNo,
-    tahun: row.tahun,
-    semester: row.semester,
-    tajuk: row.title,
-    cgpa: null,
-    penerimaBayaran: formData.value.penerimaBayaran || '',
-    mop: formData.value.mop || 'EFT',
-    namaPenerima: formData.value.namaPenerima || '',
-    bank: formData.value.bank || 'CIMB',
-    noAkaun: formData.value.noAkaun || '8001234567',
-    amaun: row.amaun,
-    lampiran: []
-  }
-  showInvoiceModal.value = true
-}
-
-function deleteInvoice(row) {
-  if (!row?.invoiceNo) return
-  invoices.value = invoices.value.filter(r => r.invoiceNo !== row.invoiceNo)
-}
-
-function viewDocument(id) {
-  console.log('View doc id:', id)
-  $swal.fire({ icon: 'info', title: 'Dokumen', text: `Buka dokumen ID: ${id}` })
-}
+})
 
 const getStatusVariant = (status) => {
   const variants = {
     'Fakir': 'danger',
     'Miskin': 'warning', 
-    'Non-Fakir Miskin': 'secondary',
+    'Non-Fakir Miskin': 'success',
     'Produktif': 'success',
     'Tidak Produktif': 'danger',
     'Produktif Sementara': 'warning',
-    'Produktif Tegar': 'primary'
+    'Produktif Tegar': 'info'
   }
-  return variants[status] || 'default'
+  return variants[status] || 'secondary'
 }
 
-const activeGlFilter = ref(null)
-const applyGlFilter = (glNo) => { activeGlFilter.value = glNo }
+const applyGlFilter = (glNo) => {
+  selectedGlNo.value = glNo
+}
+
+const openInvoiceModal = (glNo) => {
+  selectedGlNo.value = glNo
+  showInvoiceModal.value = true
+  newInvoice.value.glNo = glNo
+}
+
+const createInvoice = () => {
+  const invoice = {
+    invoiceNo: newInvoice.value.invoiceNo,
+    title: newInvoice.value.tajuk,
+    tahun: newInvoice.value.tahun,
+    semester: newInvoice.value.semester,
+    diNo: 'DI-001',
+    glNo: selectedGlNo.value,
+    paNo: '',
+    statusKelulusan: '',
+    amaun: newInvoice.value.amaun,
+    tindakan: newInvoice.value.invoiceNo // Use invoiceNo as the tindakan value for the template
+  }
+
+  if (isEditingInvoice.value) {
+    // Update existing invoice
+    invoices.value[editingInvoiceIndex.value] = invoice
+    $swal.fire({
+      title: 'Berjaya!',
+      text: 'Invoice telah dikemaskini.',
+      icon: 'success'
+    })
+  } else {
+    // Create new invoice
+    invoices.value.push(invoice)
+    $swal.fire({
+      title: 'Berjaya!',
+      text: 'Invoice telah dicipta.',
+      icon: 'success'
+    })
+  }
+
+  // Add uploaded files to documents
+  if (newInvoice.value.lampiran && newInvoice.value.lampiran.length > 0) {
+    newInvoice.value.lampiran.forEach((file, index) => {
+      documents.value.push({
+        name: `Lampiran Invoice ${documents.value.length + 1}`,
+        nameFile: file.name,
+        uploadDate: new Date().toLocaleDateString('ms-MY'),
+        tindakan: documents.value.length + 1
+      })
+    })
+  }
+  
+  // Reset modal state
+  showInvoiceModal.value = false
+  isEditingInvoice.value = false
+  editingInvoiceIndex.value = -1
+  newInvoice.value = {
+    invoiceNo: 'INV-2025-00124',
+    tahun: '2025',
+    semester: '',
+    tajuk: '',
+    cgpa: '',
+    penerimaBayaran: 'IPTA',
+    mop: 'EFT',
+    namaPenerima: 'IPTA',
+    bank: 'CIMB',
+    noAkaun: '8001234567',
+    amaun: '',
+    lampiran: [],
+    catatan: ''
+  }
+}
+
+
+const editInvoice = (invoice) => {
+  // Find the index of the invoice to edit
+  const index = invoices.value.findIndex(inv => inv.invoiceNo === invoice.invoiceNo)
+  
+  if (index > -1) {
+    // Set editing flags
+    isEditingInvoice.value = true
+    editingInvoiceIndex.value = index
+    
+    // Open the invoice modal for editing
+    selectedGlNo.value = invoice.glNo
+    newInvoice.value = {
+      invoiceNo: invoice.invoiceNo,
+      noInvoisPelanggan: '',
+      tahun: invoice.tahun,
+      semester: invoice.semester,
+      tajuk: invoice.title,
+      cgpa: '',
+      penerimaBayaran: 'IPTA',
+      mop: 'EFT',
+      namaPenerima: 'IPTA',
+      bank: 'CIMB',
+      noAkaun: '8001234567',
+      tarikhJangkaanPembayaran: '',
+      amaun: invoice.amaun,
+      lampiran: [],
+      catatan: ''
+    }
+    showInvoiceModal.value = true
+  }
+}
+
+const deleteInvoice = (invoice) => {
+  $swal.fire({
+    title: 'Adakah anda pasti?',
+    text: 'Anda tidak akan dapat mengembalikan tindakan ini!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Ya, hapus!',
+    cancelButtonText: 'Batal'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const index = invoices.value.findIndex(inv => inv.invoiceNo === invoice.invoiceNo)
+      if (index > -1) {
+        invoices.value.splice(index, 1)
+        $swal.fire({
+          title: 'Dihapus!',
+          text: 'Invoice telah dihapus.',
+          icon: 'success'
+        })
+      }
+    }
+  })
+}
+
+const viewDocument = (doc) => {
+  console.log('View document:', doc)
+}
 
 function hydrateFromSelectedBantuan(preset) {
   formData.value.namaPemohon = preset.pemohon || formData.value.namaPemohon
@@ -452,14 +694,26 @@ onMounted(() => {
   // Mock hydrate based on id if needed; in real impl, fetch data by id
 })
 
-function handleSaveDraft() {
-  // Implement save draft (no alerts as requested)
-navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus')
+
+const handleSaveDraft = () => {
+  $swal.fire({
+    title: 'Draf Disimpan',
+    text: 'Tuntutan telah disimpan sebagai draf.',
+    icon: 'success',
+    confirmButtonText: 'OK'
+  })
 }
+
 function handleSubmit() {
-  // Submit without extra alerts as No. Bantuan is display only
-navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus')
+  $swal.fire({
+    icon: 'success',
+    title: 'Permohonan tuntutan berjaya dihantar',
+    showConfirmButton: true,
+  }).then(() => {
+    navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/asnaf')
+  })
 }
+
 </script>
 
 <style lang="scss" scoped>
