@@ -211,8 +211,7 @@
             </div>
           </div>
         </template>
-      </rs-card> -->
-
+      </rs-card>
       <!-- Section 5: Semakan Maklumat (removed per backlog) -->
 
       <!-- Section 6: Maklumat Kelulusan (3.6) -->
@@ -233,9 +232,10 @@
               <FormKit type="text" label="Tarikh" :modelValue="today" :disabled="true" />
             </div>
             <div class="flex justify-start gap-3 pt-6">
-              <rs-button type="button" variant="secondary" @click="handleCancel">Kembali</rs-button>
-              <rs-button type="button" variant="default" :disabled="isSubmitting || !form.keputusan" @click="handleSave">Simpan</rs-button>
-              <rs-button type="button" :variant="form.keputusan === 'Lulus' ? 'primary' : 'danger'" :disabled="isSubmitting || !form.keputusan" @click="handleSubmit">Hantar Tuntutan</rs-button>
+              <rs-button type="button" variant="secondary-outline" @click="handleCancel">Kembali</rs-button>
+              <rs-button type="button" variant="primary-outline" :disabled="isSubmitting || !form.keputusan" @click="handleSave">Simpan</rs-button>
+              <rs-button type="button" :variant="form.keputusan === 'Lulus' ? 'primary' : 'primary'" 
+              :disabled="isSubmitting || !form.keputusan" @click="handleSubmit">Hantar Tuntutan</rs-button>
             </div>
           </form>
         </template>
@@ -378,7 +378,7 @@ const _items = ref<TuntutanItem[]>([
     dokumenPerkhidmatan: [{ name: 'Surat Pengesahan Perkhidmatan.pdf', url: '#' }], lampiranLain: [{ name: 'Gambar Lokasi.jpg', url: '#' }],
     bantuanData: { kodBantuan: 'B400', jenisBantuan: '(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA', bahanBantuan: '(HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA', pakejBantuan: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA', kelayakanBantuan: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA' },
   vendor: createVendorMock({ nama: 'Masjid As-Salam', noId: 'VND-10001', telefon: '03-1234 5678', email: 'admin@assalam.my', alamat: 'Lot 12, Jalan Masjid, 43000 Kajang, Selangor'}),
-    siasatan: { kaedah: 'Semak Dokumen Sahaja', status: 'Sokong', catatan: 'Dokumen lengkap dan sah.', tarikh: '2024-03-18T10:00:00' },
+    siasatan: { kaedah: 'Semak Dokumen Sahaja', status: 'Sokong', catatan: 'Dokumen lengkap dan sah.', tarikh: '2024-03-18T10:00:00', namaPegawai: 'Sarah binti Omar' },
     catatanTambahan: 'Pembelian karpet dewan solat utama.', statusKelulusan: 'Belum Diputus',
   },
   {
@@ -387,7 +387,7 @@ const _items = ref<TuntutanItem[]>([
     dokumenSokongan: [{ name: 'Resit Pembelian.pdf', url: '#' }], dokumenPerkhidmatan: [], lampiranLain: [],
     bantuanData: { kodBantuan: 'B210', jenisBantuan: '(HQ) BANTUAN TUNAI KECEMASAN', bahanBantuan: '(HQ) BANTUAN WANG TUNAI', pakejBantuan: 'Pakej Tunai', kelayakanBantuan: 'Kecemasan - Maks RM2500' },
   vendor: createVendorMock({ nama: 'Syarikat Berkat Niaga', noId: 'VND-20002', telefon: '012-345 6789', email: 'akaun@berkatniaga.com', alamat: 'No. 8, Jalan Perniagaan 3, 81200 Johor Bahru, Johor'}),
-    siasatan: { kaedah: 'Telefon', status: 'Tidak Sokong', catatan: 'Amaun tuntutan melebihi amaun GL.', tarikh: '2024-04-01T16:30:00' },
+    siasatan: { kaedah: 'Telefon', status: 'Tidak Sokong', catatan: 'Amaun tuntutan melebihi amaun GL.', tarikh: '2024-04-01T16:30:00', namaPegawai: 'Ahmad Faiz' },
     catatan: 'Amaun tuntutan melebihi amaun GL.', catatanTambahan: 'Kecemasan tidak dibuktikan mencukupi.', statusKelulusan: 'Tidak Lulus',
   },
   {
@@ -396,7 +396,7 @@ const _items = ref<TuntutanItem[]>([
     dokumenSokongan: [{ name: 'Invoice Barang.pdf', url: '#' }], dokumenPerkhidmatan: [{ name: 'Surat Syor.pdf', url: '#' }], lampiranLain: [],
     bantuanData: { kodBantuan: 'B330', jenisBantuan: '(HQ) BANTUAN BARANGAN KEGUNAAN HARIAN', bahanBantuan: 'BARANGAN DAPUR', pakejBantuan: 'Pakej Barangan RM2000', kelayakanBantuan: 'Isi Rumah' },
   pemohon: createPemohonMock({ nama: 'Ali bin Ahmad', noId: '910101-14-5677', telefon: '013-888 1122', email: 'ali.ahmad@example.com', alamat: 'No. 21, Jalan Mawar 2, Taman Mawar, 40400 Shah Alam, Selangor', statusHousehold: 'Produktif', statusIndividu: 'Produktif', statusMultidimensi: 'Produktif Tegar' }),
-    siasatan: { kaedah: 'Lapangan', status: 'Sokong', catatan: 'Lawatan lapangan: keadaan memerlukan.', tarikh: '2024-04-07T09:15:00' },
+    siasatan: { kaedah: 'Lapangan', status: 'Sokong', catatan: 'Lawatan lapangan: keadaan memerlukan.', tarikh: '2024-04-07T09:15:00', namaPegawai: 'Noraini Zulkifli' },
     catatan: 'Diluluskan penuh.', catatanTambahan: 'Barang dapur asas selama sebulan.', statusKelulusan: 'Lulus',
   },
   {
@@ -405,7 +405,7 @@ const _items = ref<TuntutanItem[]>([
     dokumenSokongan: [{ name: 'Quotation Peralatan.pdf', url: '#' }], dokumenPerkhidmatan: [{ name: 'Surat Pengesahan.pdf', url: '#' }], lampiranLain: [{ name: 'Gambar Lokasi.jpg', url: '#' }],
     bantuanData: { kodBantuan: 'B500', jenisBantuan: '(HQ) BANTUAN PEMBINAAN RUMAH', bahanBantuan: 'BAHAN BINAAN', pakejBantuan: 'Pakej Rumah Asnaf', kelayakanBantuan: 'Keluarga Asnaf Fakir Miskin' },
   pemohon: createPemohonMock({ nama: 'Keluarga Pn. Zainab', noId: '800202-10-2233', telefon: '017-222 3344', email: 'zainab.keluarga@example.com', alamat: 'Kg. Seri Makmur, 27000 Jerantut, Pahang', statusHousehold: 'Miskin', statusIndividu: 'Tidak Produktif', statusMultidimensi: 'Produktif Sementara' }),
-    siasatan: { kaedah: 'Lapangan', status: 'Sokong', catatan: 'Penilaian struktur asas memadai untuk bina baharu.', tarikh: '2024-05-03T15:45:00' },
+    siasatan: { kaedah: 'Lapangan', status: 'Sokong', catatan: 'Penilaian struktur asas memadai untuk bina baharu.', tarikh: '2024-05-03T15:45:00', namaPegawai: 'Mohd Yazid' },
     catatanTambahan: 'Permohonan bina semula ruang dapur.', statusKelulusan: 'Belum Diputus',
   },
   {
@@ -414,7 +414,7 @@ const _items = ref<TuntutanItem[]>([
     dokumenSokongan: [], dokumenPerkhidmatan: [], lampiranLain: [],
     bantuanData: { kodBantuan: 'B110', jenisBantuan: '(HQ) BANTUAN PERUBATAN', bahanBantuan: 'RAWATAN KLINIK', pakejBantuan: 'Rawatan Kesihatan', kelayakanBantuan: 'Asnaf - Pesakit Kronik' },
   vendor: createVendorMock({ nama: 'Klinik Kasih', noId: 'VND-30005', telefon: '03-7788 9090', email: 'akaun@klinikkasih.my', alamat: '19, Jalan Sehat, 46050 Petaling Jaya, Selangor'}),
-    siasatan: { kaedah: 'Semak Dokumen Sahaja', status: 'Sokong', catatan: 'Bill rawatan disahkan.', tarikh: '2024-05-13T11:20:00' },
+    siasatan: { kaedah: 'Semak Dokumen Sahaja', status: 'Sokong', catatan: 'Bill rawatan disahkan.', tarikh: '2024-05-13T11:20:00', namaPegawai: 'Siti Aminah' },
     catatanTambahan: 'Pesakit perlu rawatan susulan.', statusKelulusan: 'Belum Diputus',
   },
 ])
@@ -483,7 +483,7 @@ const breadcrumb = ref([
 const currentUser = computed(() => ({ name: row.value?.pegawaiETD || '-', role: 'Pelulus' }))
 
 const statusOptions = [ { label: 'Lulus', value: 'Lulus' }, { label: 'Tidak Lulus', value: 'Tidak Lulus' } ]
-const form = ref<{ keputusan: 'Lulus' | 'Tidak Lulus' | ''; catatan: string }>({ keputusan: '', catatan: '' })
+const form = ref<{ keputusan: 'Lulus' | 'Tidak Lulus' | ''; catatan: string }>({ keputusan: 'Lulus', catatan: '' })
 
 const isSubmitting = ref(false)
 const showConfirmationModal = ref(false)
@@ -509,7 +509,7 @@ const handleSave = async () => {
     await $swal.fire({
       icon: 'success',
       title: 'Berjaya!',
-      text: 'Permohanan Tuntutan telah berjaya "disemak/diluluskan"',
+      text: 'Permohanan Tuntutan telah berjaya disimpan!',
     })
   } finally {
     isSubmitting.value = false
