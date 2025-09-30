@@ -1130,6 +1130,7 @@ const paymentAdviceData = ref([
     status: "Selesai",
     invoiceNo: "INV-0001",
     amaun: "500.00",
+    clearancedate: "2024-02-05",
     tindakan: "PA-2024-001",
   },
   {
@@ -1140,6 +1141,7 @@ const paymentAdviceData = ref([
     status: "Dalam Proses",
     invoiceNo: "INV-0002",
     amaun: "500.00",
+    clearancedate: "2024-03-03",
     tindakan: "PA-2024-002",
   },
 ]);
@@ -1152,6 +1154,7 @@ const paymentAdviceColumns = [
   { key: "status", label: "Status" },
   { key: "invoiceNo", label: "Invoice No" },
   { key: "amaun", label: "Amaun (RM)" },
+  {key: "clearancedate", label: "Clearance Date" },
   { key: "tindakan", label: "Tindakan" },
 ];
 
