@@ -202,28 +202,18 @@ definePageMeta({ title: 'Mohon Tuntutan (Asnaf)' })
 
 const { $swal } = useNuxtApp()
 
-// Payment Advice data mock (you can replace it with real data later)
-const paymentAdviceData = ref([
-  { paNo: 'PA-2025-001', createdDate: '2025-09-01', amaun: 1500.0, status: 'SAH' },
-  { paNo: 'PA-2025-002', createdDate: '2025-09-05', amaun: 1200.0, status: 'SAH' },
-  { paNo: 'PA-2025-003', createdDate: '2025-09-10', amaun: 1800.0, status: 'DITOLAK' }
-])
 
-// Payment Advice columns definition
-const paymentAdviceColumns = [
+// Payment Advice table schema (mimic vendor)
+const fieldsPA = ['paNo', 'createdDate', 'penerimaBayaran', 'status', 'bulan', 'tahun', 'amaun']
+const columnsPA = [
   { key: 'paNo', label: 'PA No' },
   { key: 'createdDate', label: 'Tarikh Dicipta' },
-  { key: 'amaun', label: 'Amaun (RM)' },
+  { key: 'penerimaBayaran', label: 'Penerima Bayaran' },
   { key: 'status', label: 'Status' },
-  { key: 'tindakan', label: 'Tindakan' }
+  { key: 'bulan', label: 'Bulan' },
+  { key: 'tahun', label: 'Tahun' },
+  { key: 'amaun', label: 'Amaun (RM)' }
 ]
-
-// Function to open Payment Advice details
-function openPaymentAdviceModal(paNo) {
-  // Placeholder for handling when a user clicks on 'view' action
-  console.log('View Payment Advice:', paNo)
-  // You can trigger a modal or further actions here
-}
 
 const breadcrumb = ref([
   { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus' },
@@ -265,6 +255,8 @@ const formData = ref({
   tarikhDicipta: '04/04/2025 03:45 PM'
 })
 
+
+// DI table schema
 const fieldsDI = ['diNo', 'entitlementProduct', 'penerima', 'bulan', 'tahun', 'status', 'amaun']
 const columnsDI = [
   { key: 'diNo', label: 'DI No' },
@@ -276,6 +268,7 @@ const columnsDI = [
   { key: 'amaun', label: 'Amaun (RM)' }
 ]
 
+// GL table schema
 const fieldsGL = ['glNo', 'diNo', 'createdDate', 'penerimaBayaran', 'status', 'bulan', 'tahun', 'amaun', 'invoiceCount', 'invoiceTotal', 'currentBalance', 'tindakan']
 const columnsGL = [
   { key: 'glNo', label: 'GL No' },
@@ -292,30 +285,32 @@ const columnsGL = [
   { key: 'tindakan', label: 'Tindakan' }
 ]
 
-const fieldsInv = ['invoiceNo', 'title', 'tahun', 'semester', 'diNo', 'glNo', 'paNo', 'statusKelulusan', 'amaun', 'tindakan']
-const columnsInvVisible = computed(() => {
-  const base = [
-    { key: 'invoiceNo', label: 'Invoice No' },
-    { key: 'title', label: 'Tajuk' },
-    { key: 'tahun', label: 'Tahun' },
-    { key: 'semester', label: 'Semester' },
-    { key: 'diNo', label: 'DI No' },
-    { key: 'glNo', label: 'GL No' }
-  ]
-  const hasLulus = filteredInvoices.value.some(r => (r.statusKelulusan || '').toUpperCase() === 'APPROVED')
-  const mid = hasLulus
-    ? [
-        { key: 'paNo', label: 'PA No' },
-        { key: 'statusKelulusan', label: 'Status Kelulusan' }
-      ]
-    : []
-  const tail = [
-    { key: 'amaun', label: 'Amaun (RM)' },
-    { key: 'tindakan', label: 'Tindakan' }
-  ]
-  return [...base, ...mid, ...tail]
-})
+// Invoice table schema
+const fieldsInv = [
+  'invoiceNo',
+  'title',
+  'tahun',
+  'semester',
+  'diNo',
+  'glNo',
+  'paNo',
+  'statusKelulusan',
+  'amaun'
+]
 
+const columnsInv = [
+  { key: 'invoiceNo', label: 'Invoice No' },
+  { key: 'title', label: 'Tajuk' },
+  { key: 'tahun', label: 'Tahun' },
+  { key: 'semester', label: 'Semester' },
+  { key: 'diNo', label: 'DI No' },
+  { key: 'glNo', label: 'GL No' },
+  { key: 'paNo', label: 'PA No' },
+  { key: 'statusKelulusan', label: 'Status Kelulusan' },
+  { key: 'amaun', label: 'Amaun (RM)' }
+]
+
+// Dokumen table schema
 const fieldsDoc = ['name', 'nameFile', 'uploadDate', 'tindakan']
 const columnsDoc = [
   { key: 'name', label: 'Nama Dokumen' },
@@ -325,15 +320,60 @@ const columnsDoc = [
 ]
 
 const distributionItems = ref([
-  { diNo: 'DI-001', entitlementProduct: '(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS', penerima: 'IPTA', bulan: 'MAC', tahun: '2025', status: 'Aktif', amaun: '1500.00' }
+  {
+    diNo: 'DI-001',
+    entitlementProduct: '(HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS',
+    penerima: 'IPTA',
+    bulan: 'MAC',
+    tahun: '2025',
+    status: 'Aktif',
+    amaun: '1500.00'
+  }
 ])
 
 const documents = ref([])
 const guaranteeLetters = ref([
-  { glNo: 'GL-001', diNo: 'DI-001', createdDate: '15/01/2025', penerimaBayaran: 'IPTA', status: 'AKTIF', bulan: 'MAC', tahun: '2025', amaun: '1500.00' }
+  {
+    glNo: 'GL-001',
+    diNo: 'DI-001',
+    createdDate: '15/01/2025',
+    penerimaBayaran: 'IPTA',
+    status: 'AKTIF',
+    bulan: 'MAC',
+    tahun: '2025',
+    amaun: '1500.00'
+  }
 ])
 const invoices = ref([])
 
+// Modal state
+const showInvoiceModal = ref(false)
+const selectedGlNo = ref('')
+const newInvoice = ref({
+  invoiceNo: 'INV-2025-00124',
+  noInvoisPelanggan: '',
+  tahun: '2025',
+  semester: '',
+  tajuk: '',
+  cgpa: '',
+  penerimaBayaran: 'IPTA',
+  mop: 'EFT',
+  namaPenerima: 'IPTA',
+  bank: 'CIMB',
+  noAkaun: '8001234567',
+  tarikhJangkaanPembayaran: '',
+  amaun: '',
+  lampiran: [],
+  catatan: ''
+})
+
+const semesterOptions = [
+  { label: 'Semester 1', value: '1' },
+  { label: 'Semester 2', value: '2' },
+  { label: 'Semester 3', value: '3' }
+]
+
+// Computed properties
 const glRows = computed(() =>
   guaranteeLetters.value.map((gl) => {
     const glTotal = toNum(gl.amaun)
@@ -348,130 +388,125 @@ const glRows = computed(() =>
   })
 )
 
-const filteredInvoices = computed(() => (selectedGlNo.value ? invoices.value.filter((r) => r.glNo === selectedGlNo.value) : invoices.value))
+const filteredInvoices = computed(() => {
+  if (!selectedGlNo.value) return invoices.value
+  return invoices.value.filter(inv => inv.glNo === selectedGlNo.value)
+})
 
+// Helper functions
 const toMYR = (n) => {
   if (n == null || n === '') return '0.00'
   const num = typeof n === 'number' ? n : Number(String(n).replace(/,/g, ''))
   return isNaN(num) ? '0.00' : num.toLocaleString('ms-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
-const isIPT = computed(() => ((formData.value.aidProduct || '').toUpperCase().includes('IPT')))
-const amountExceedsGL = computed(() => {
-  const amt = Number(newInvoice.value.amaun || 0)
-  const bal = getGlBalance(selectedGlNo.value)
-  return Number.isFinite(amt) && Number.isFinite(bal) && amt > bal
-})
-const toNum = (v) => {
-  if (v == null || v === '') return 0
-  const n = typeof v === 'number' ? v : Number(String(v).replace(/,/g, ''))
-  return Number.isFinite(n) ? n : 0
+
+const toNum = (n) => {
+  if (n == null || n === '') return 0
+  const num = typeof n === 'number' ? n : Number(String(n).replace(/,/g, ''))
+  return isNaN(num) ? 0 : num
 }
-const sumInvoicesByGL = (glNo) => invoices.value.filter((i) => i.glNo === glNo).reduce((s, r) => s + toNum(r.amaun), 0)
+
+const sumInvoicesByGL = (glNo) => {
+  return invoices.value
+    .filter(inv => inv.glNo === glNo)
+    .reduce((sum, inv) => sum + toNum(inv.amaun), 0)
+}
+
 const getGlBalance = (glNo) => {
-  const gl = guaranteeLetters.value.find((g) => g.glNo === glNo)
+  const gl = guaranteeLetters.value.find(g => g.glNo === glNo)
   if (!gl) return 0
   const glTotal = toNum(gl.amaun)
   const invTotal = sumInvoicesByGL(glNo)
   return Math.max(glTotal - invTotal, 0)
 }
 
-const showInvoiceModal = ref(false)
-const selectedGlNo = ref(null)
-const semesterOptions = [ { label: 'Semester 1', value: '1' }, { label: 'Semester 2', value: '2' } ]
-const newInvoice = ref({ invoiceNo: 'AUTO', noInvoisPelanggan: '', tahun: '', semester: '1', tajuk: '', cgpa: null, penerimaBayaran: '', mop: '', namaPenerima: '', bank: '', noAkaun: '', tarikhJangkaanPembayaran: '', amaun: null, lampiran: [] })
-
-function openInvoiceModal(glNo) {
-  selectedGlNo.value = glNo
-  const gl = guaranteeLetters.value.find((g) => g.glNo === glNo)
-  const base = {
-    invoiceNo: `INV-${new Date().getFullYear()}-${Math.floor(Math.random() * 90000 + 10000)}`,
-    tahun: String(new Date().getFullYear()),
-    semester: newInvoice.value.semester || '',
-    tajuk: '',
-    cgpa: newInvoice.value.cgpa ?? null,
-    penerimaBayaran: formData.value.penerimaBayaran || gl?.penerimaBayaran || 'PENERIMA',
-    mop: formData.value.mop || 'EFT',
-    namaPenerima: formData.value.namaPenerima || gl?.penerimaBayaran || 'PENERIMA',
-    bank: formData.value.bank || 'CIMB',
-    noAkaun: formData.value.noAkaun || '8001234567',
-    amaun: 1500 || null,
-    lampiran: null,
-    catatan: newInvoice.value.catatan || ''
-  }
-  newInvoice.value = { ...base }
-  showInvoiceModal.value = true
+const formatSemester = (sem) => {
+  const map = { '1': 'Semester 1', '2': 'Semester 2', '3': 'Semester 3' }
+  return map[sem] || sem
 }
 
-function createInvoice() {
-  const gl = guaranteeLetters.value.find((g) => g.glNo === selectedGlNo.value) || {}
-  const amount = Number(newInvoice.value.amaun ?? 0)
-  if (!Number.isFinite(amount) || amount <= 0) {
-    $swal.fire({ icon: 'error', title: 'Amaun Tidak Sah', text: 'Amaun invois mesti lebih besar daripada 0.' })
-    return
-  }
-
-  const invRow = {
-    invoiceNo: newInvoice.value.invoiceNo,
-    title: newInvoice.value.tajuk,
-    tahun: newInvoice.value.tahun || String(new Date().getFullYear()),
-    semester: newInvoice.value.semester,
-    diNo: gl.diNo || '',
-    glNo: gl.glNo || selectedGlNo.value || '',
-    paNo: '',
-    statusKelulusan: '',
-    amaun: amount
-  }
-  invoices.value = [invRow, ...invoices.value]
-
-  newInvoice.value.lampiran = []
-  showInvoiceModal.value = false
-}
-
-function editInvoice(row) {
-  // Simple edit: reopen modal prefilled for amount/title update
-  if (!row?.invoiceNo) return
-  newInvoice.value = {
-    invoiceNo: row.invoiceNo,
-    tahun: row.tahun,
-    semester: row.semester,
-    tajuk: row.title,
-    cgpa: null,
-    penerimaBayaran: formData.value.penerimaBayaran || '',
-    mop: formData.value.mop || 'EFT',
-    namaPenerima: formData.value.namaPenerima || '',
-    bank: formData.value.bank || 'CIMB',
-    noAkaun: formData.value.noAkaun || '8001234567',
-    amaun: row.amaun,
-    lampiran: []
-  }
-  showInvoiceModal.value = true
-}
-
-function deleteInvoice(row) {
-  if (!row?.invoiceNo) return
-  invoices.value = invoices.value.filter(r => r.invoiceNo !== row.invoiceNo)
-}
-
-function viewDocument(id) {
-  console.log('View doc id:', id)
-  $swal.fire({ icon: 'info', title: 'Dokumen', text: `Buka dokumen ID: ${id}` })
-}
+// Derived flags & validations
+const isIPT = computed(() => {
+  const p = (formData.value.aidProduct || '').toUpperCase()
+  return p.includes('IPT')
+})
+const amountExceedsGL = computed(() => {
+  const amt = Number(newInvoice.value.amaun || 0)
+  const bal = getGlBalance(selectedGlNo.value)
+  return Number.isFinite(amt) && Number.isFinite(bal) && amt > bal
+})
 
 const getStatusVariant = (status) => {
   const variants = {
     'Fakir': 'danger',
     'Miskin': 'warning', 
-    'Non-Fakir Miskin': 'secondary',
+    'Non-Fakir Miskin': 'success',
     'Produktif': 'success',
     'Tidak Produktif': 'danger',
     'Produktif Sementara': 'warning',
-    'Produktif Tegar': 'primary'
+    'Produktif Tegar': 'info'
   }
-  return variants[status] || 'default'
+  return variants[status] || 'secondary'
 }
 
-const activeGlFilter = ref(null)
-const applyGlFilter = (glNo) => { activeGlFilter.value = glNo }
+const applyGlFilter = (glNo) => {
+  selectedGlNo.value = glNo
+}
+
+const openInvoiceModal = (glNo) => {
+  selectedGlNo.value = glNo
+  showInvoiceModal.value = true
+  newInvoice.value.glNo = glNo
+}
+
+const createInvoice = () => {
+  const invoice = {
+    invoiceNo: newInvoice.value.invoiceNo,
+    title: newInvoice.value.tajuk,
+    tahun: newInvoice.value.tahun,
+    semester: newInvoice.value.semester,
+    diNo: 'DI-001',
+    glNo: selectedGlNo.value,
+    paNo: '',
+    statusKelulusan: '',
+    amaun: newInvoice.value.amaun
+  }
+
+  invoices.value.push(invoice)
+
+  // Add uploaded files to documents
+  if (newInvoice.value.lampiran && newInvoice.value.lampiran.length > 0) {
+    newInvoice.value.lampiran.forEach((file, index) => {
+      documents.value.push({
+        name: `Lampiran Invoice ${documents.value.length + 1}`,
+        nameFile: file.name,
+        uploadDate: new Date().toLocaleDateString('ms-MY'),
+        tindakan: documents.value.length + 1
+      })
+    })
+  }
+  
+  showInvoiceModal.value = false
+  newInvoice.value = {
+    invoiceNo: 'INV-2025-00124',
+    tahun: '2025',
+    semester: '',
+    tajuk: '',
+    cgpa: '',
+    penerimaBayaran: 'IPTA',
+    mop: 'EFT',
+    namaPenerima: 'IPTA',
+    bank: 'CIMB',
+    noAkaun: '8001234567',
+    amaun: '',
+    lampiran: [],
+    catatan: ''
+  }
+}
+
+const viewDocument = (doc) => {
+  console.log('View document:', doc)
+}
 
 function hydrateFromSelectedBantuan(preset) {
   formData.value.namaPemohon = preset.pemohon || formData.value.namaPemohon
@@ -486,11 +521,13 @@ onMounted(() => {
   // Mock hydrate based on id if needed; in real impl, fetch data by id
 })
 
-function handleSaveDraft() {
+
+const handleSaveDraft = () => {
   $swal.fire({
+    title: 'Draf Disimpan',
+    text: 'Tuntutan telah disimpan sebagai draf.',
     icon: 'success',
-    title: 'Draft berjaya disimpan',
-    showConfirmButton: true,
+    confirmButtonText: 'OK'
   })
 }
 
