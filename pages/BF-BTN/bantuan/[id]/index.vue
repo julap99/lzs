@@ -209,13 +209,25 @@
                     </p>
                   </div>
 
-                  <div class="md:col-span-2 lg:col-span-3">
+                  <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
                       Catatan Sebab Memohon Bantuan
                     </label>
                     <p class="text-gray-900">
                       {{ aidInfo.catatanSebabMemohon }}
                     </p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                      Info Status Bantuan
+                    </label>
+                    <p class="text-gray-900">Tidak Aktif</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                      Justifikasi Pembatalan
+                    </label>
+                    <p class="text-gray-900">Dibatalkan</p>
                   </div>
 
                   <div>
@@ -481,6 +493,7 @@
 
               <rs-table
                 :data="paymentAdviceData"
+                :field="paymentAdviceFieldKeys"
                 :columns="paymentAdviceColumns"
                 :showNoColumn="true"
                 :options="{
@@ -858,30 +871,30 @@ const getAidInfo = (id) => {
 const defaultDistributionItems = [
   {
     diNo: "DI-2024-001",
-    entitlementProduct: "Bantuan RM 500/bulan",
-    penerima: "Ahmad bin Abdullah",
     bulan: "Januari",
     tahun: "2024",
     status: "Dibayar",
     amaun: "500.00",
+    noPa: "PA-2025-0001",
+    statusPa: "Selesai",
   },
   {
     diNo: "DI-2024-002",
-    entitlementProduct: "Bantuan RM 500/bulan",
-    penerima: "Ahmad bin Abdullah",
     bulan: "Februari",
     tahun: "2024",
     status: "Dibayar",
     amaun: "500.00",
+    noPa: "PA-2025-0002",
+    statusPa: "Selesai",
   },
   {
     diNo: "DI-2024-003",
-    entitlementProduct: "Bantuan RM 500/bulan",
-    penerima: "Ahmad bin Abdullah",
     bulan: "Mac",
     tahun: "2024",
     status: "Menunggu",
     amaun: "500.00",
+    noPa: "PA-2025-0003",
+    statusPa: "Selesai",
   },
 ];
 
@@ -889,93 +902,84 @@ const defaultDistributionItems = [
 const b010DistributionItems = [
   {
     diNo: "DI-2025-123456",
-    entitlementProduct:
-      "(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)",
-    penerima: "Asnaf",
     bulan: "1",
     tahun: "2025",
     status: "lulus",
     amaun: "80",
+    noPa: "PA-2025-0001",
+    statusPa: "Selesai",
   },
   {
     diNo: "DI-2025-123457",
-    entitlementProduct:
-      "(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)",
-    penerima: "Asnaf",
     bulan: "2",
     tahun: "2025",
     status: "lulus",
     amaun: "80",
+    noPa: "PA-2025-0002",
+    statusPa: "Selesai",
   },
   {
     diNo: "DI-2025-123458",
-    entitlementProduct:
-      "(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)",
-    penerima: "Asnaf",
     bulan: "3",
     tahun: "2025",
     status: "lulus",
     amaun: "80",
+    noPa: "PA-2025-0003",
+    statusPa: "Selesai",
   },
   {
     diNo: "DI-2025-123459",
-    entitlementProduct:
-      "(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)",
-    penerima: "Asnaf",
     bulan: "4",
     tahun: "2025",
     status: "lulus",
     amaun: "80",
+    noPa: "PA-2025-0004",
+    statusPa: "Selesai",
   },
   {
     diNo: "DI-2025-123460",
-    entitlementProduct:
-      "(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)",
-    penerima: "Asnaf",
     bulan: "5",
     tahun: "2025",
     status: "lulus",
     amaun: "80",
+    noPa: "PA-2025-0005",
+    statusPa: "Selesai",
   },
   {
     diNo: "DI-2025-123461",
-    entitlementProduct:
-      "(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)",
-    penerima: "Asnaf",
     bulan: "6",
     tahun: "2025",
     status: "lulus",
     amaun: "80",
+    noPa: "PA-2025-0006",
+    statusPa: "Selesai",
   },
   {
     diNo: "DI-2025-123462",
-    entitlementProduct:
-      "(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)",
-    penerima: "Asnaf",
     bulan: "7",
     tahun: "2025",
     status: "lulus",
     amaun: "80",
+    noPa: "PA-2025-0007",
+    statusPa: "Selesai",
   },
   {
     diNo: "DI-2025-123463",
-    entitlementProduct:
-      "(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)",
-    penerima: "Asnaf",
     bulan: "8",
     tahun: "2025",
     status: "lulus",
     amaun: "80",
+    noPa: "PA-2025-0008",
+    statusPa: "Selesai",
   },
   {
     diNo: "DI-2025-123464",
-    entitlementProduct:
-      "(HQ) TUNTUTAN KEPERLUAN PENDIDIKAN (BIASISWA KECIL) (FAKIR)",
-    penerima: "Asnaf",
     bulan: "9",
     tahun: "2025",
     status: "lulus",
     amaun: "80",
+    noPa: "PA-2025-0009",
+    statusPa: "Dalam Proses",
   },
 ];
 
@@ -1000,22 +1004,22 @@ const paginatedDistributionItems = computed(() => {
 
 const distributionItemFields = [
   { key: "diNo", label: "DI No" },
-  { key: "entitlementProduct", label: "Entitlement Product" },
-  { key: "penerima", label: "Penerima" },
   { key: "bulan", label: "Bulan" },
   { key: "tahun", label: "Tahun" },
   { key: "status", label: "Status" },
   { key: "amaun", label: "Amaun (RM)" },
+  { key: "noPa", label: "No PA" },
+  { key: "statusPa", label: "Status PA" },
 ];
 
 const distributionItemFieldKeys = [
   "diNo",
-  "entitlementProduct",
-  "penerima",
   "bulan",
   "tahun",
   "status",
   "amaun",
+  "noPa",
+  "statusPa",
 ];
 
 // Default process flow for most IDs
@@ -1127,9 +1131,10 @@ const paymentAdviceData = ref([
     diNo: "DI-2024-001",
     dateCreated: "2024-02-01",
     penerimaBayaran: "Ahmad bin Abdullah",
-    status: "Selesai",
+    
     invoiceNo: "INV-0001",
     amaun: "500.00",
+    status: "Selesai",
     clearancedate: "2024-02-05",
     tindakan: "PA-2024-001",
   },
@@ -1138,9 +1143,10 @@ const paymentAdviceData = ref([
     diNo: "DI-2024-002",
     dateCreated: "2024-03-01",
     penerimaBayaran: "Ahmad bin Abdullah",
-    status: "Dalam Proses",
+    
     invoiceNo: "INV-0002",
     amaun: "500.00",
+    status: "Dalam Proses",
     clearancedate: "2024-03-03",
     tindakan: "PA-2024-002",
   },
@@ -1151,10 +1157,10 @@ const paymentAdviceColumns = [
   { key: "diNo", label: "DI No" },
   { key: "dateCreated", label: "Date Created" },
   { key: "penerimaBayaran", label: "Penerima Bayaran" },
-  { key: "status", label: "Status" },
   { key: "invoiceNo", label: "Invoice No" },
   { key: "amaun", label: "Amaun (RM)" },
-  {key: "clearancedate", label: "Clearance Date" },
+  { key: "status", label: "Status" },
+  { key: "clearancedate", label: "Clearance Date" },
   { key: "tindakan", label: "Tindakan" },
 ];
 
