@@ -126,6 +126,7 @@
                   </div>
                 </div>
               </rs-collapse-item>
+              
 
               <!-- Maklumat Perhubungan -->
               <rs-collapse-item type="card" title="Maklumat Perhubungan">
@@ -947,6 +948,69 @@
                 </div>
               </rs-collapse-item>
 
+              <!-- Personaliti Asnaf -->
+              <rs-collapse-item type="card" title="Personaliti Asnaf">
+                <div class="p-4">
+                  <!-- Sejarah Tingkah Laku Asnaf -->
+                  <div v-if="!shouldHideSections">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">
+                      Personaliti Asnaf
+                    </label>
+                    
+                    <div class="overflow-x-auto">
+                      <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                        <thead class="bg-gray-50">
+                          <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                              Tingkah Laku Asnaf
+                            </th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                              Nama Pegawai
+                            </th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                              Masa
+                            </th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                              Tarikh
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                          <tr v-for="(record, index) in asnafHistoryData" :key="index" class="hover:bg-gray-50">
+                            <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200">
+                              {{ record.tingkahLaku }}
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-600 border-b border-gray-200">
+                              {{ record.namaPegawai }}
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-600 border-b border-gray-200">
+                              {{ record.masa }}
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-600 border-b border-gray-200">
+                              {{ record.tarikh }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- Tingkah Laku Asnaf -->
+                  <div v-if="!shouldHideSections" class="mt-6">
+                    <FormKit
+                      type="text"
+                      name="tingkahLakuAsnaf"
+                      label="Tingkah Laku Asnaf"
+                      placeholder="Masukkan tingkah laku asnaf..."
+                      validation="required"
+                      :validation-messages="{
+                        required: 'Sila masukkan tingkah laku asnaf untuk meneruskan',
+                      }"
+                    />
+                  </div>
+                </div>
+              </rs-collapse-item>
+
               </rs-collapse>
               <!-- END: Section A stepper -->
               </template>
@@ -1457,57 +1521,7 @@
                     </div>
                   </div>
 
-                  <!-- Sejarah Tingkah Laku Asnaf -->
-                  <div v-if="!shouldHideSections">
-                    <label class="block text-sm font-medium text-gray-700 mb-3">
-                      Sejarah Tingkah Laku Asnaf
-                    </label>
-                    
-                    <div class="overflow-x-auto">
-                      <table class="min-w-full bg-white border border-gray-200 rounded-lg">
-                        <thead class="bg-gray-50">
-                          <tr>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-                              Tingkah Laku Asnaf
-                            </th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-                              Masa
-                            </th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-                              Tarikh
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200">
-                          <tr v-for="(record, index) in asnafHistoryData" :key="index" class="hover:bg-gray-50">
-                            <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200">
-                              {{ record.tingkahLaku }}
-                            </td>
-                            <td class="px-4 py-3 text-sm text-gray-600 border-b border-gray-200">
-                              {{ record.masa }}
-                            </td>
-                            <td class="px-4 py-3 text-sm text-gray-600 border-b border-gray-200">
-                              {{ record.tarikh }}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
 
-                  <!-- Tingkah Laku Asnaf -->
-                  <div v-if="!shouldHideSections">
-                    <FormKit
-                      type="text"
-                      name="tingkahLakuAsnaf"
-                      label="Tingkah Laku Asnaf"
-                      placeholder="Masukkan tingkah laku asnaf..."
-                      validation="required"
-                      :validation-messages="{
-                        required: 'Sila masukkan tingkah laku asnaf untuk meneruskan',
-                      }"
-                    />
-                  </div>
   
   
                   <!-- Catatan Penilaian Awal -->
@@ -3687,16 +3701,19 @@
   const asnafHistoryData = ref([
     {
       tingkahLaku: "Sangat Sopan - Bersikap hormat, menjawab soalan dengan jelas dan membawa dokumen lengkap",
+      namaPegawai: "Ahmad Firdaus Bin Azman",
       masa: "10:30 AM",
       tarikh: "15/01/2024"
     },
     {
       tingkahLaku: "Baik - Kooperatif semasa temuduga, memberikan maklumat yang diperlukan dengan jujur",
+      namaPegawai: "Siti Khadijah Binti Othman",
       masa: "02:15 PM", 
       tarikh: "08/12/2023"
     },
     {
       tingkahLaku: "Agak Gelisah - Nampak nervous tetapi masih dapat menjawab soalan dengan baik",
+      namaPegawai: "Khalid Bin Zainal",
       masa: "09:45 AM",
       tarikh: "22/10/2023"
     }
