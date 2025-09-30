@@ -233,7 +233,7 @@
             </div>
             <div class="flex justify-start gap-3 pt-6">
               <rs-button type="button" variant="secondary-outline" @click="handleCancel">Kembali</rs-button>
-              <rs-button type="button" variant="primary-outline" :disabled="isSubmitting || !form.keputusan" @click="handleSave">Simpan</rs-button>
+              <rs-button type="button" variant="secondary" :disabled="isSubmitting || !form.keputusan" @click="handleSave">Simpan</rs-button>
               <rs-button type="button" :variant="form.keputusan === 'Lulus' ? 'primary' : 'primary'" 
               :disabled="isSubmitting || !form.keputusan" @click="handleSubmit">Hantar Tuntutan</rs-button>
             </div>
