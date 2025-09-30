@@ -471,8 +471,8 @@
               name="nama_baitul_tanggungan"
               label="Nama Baitul"
               :options="[
-                { label: 'Hasanah', value: 'Hasanah' },
-                { label: 'Salam', value: 'Salam' }
+                { label: 'Baitul Hasanah', value: 'baitul_hasanah' },
+                { label: 'Baitul Salam', value: 'baitul_salam' }
               ]"
               placeholder="Pilih Nama Baitul"
               :disabled="readOnly"
