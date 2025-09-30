@@ -111,6 +111,21 @@
             </RsTable>
           </RsTabItem>
 
+          <RsTabItem title="Payment Advice">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-lg font-medium">Payment Advice</h3>
+            </div>
+            <RsTable :data="paymentAdviceData" :columns="paymentAdviceColumns" advanced :showSearch="false" :showFilter="false" :options="{ variant: 'default', striped: true, bordered: false, borderless: false, hover: true }" :optionsAdvanced="{ sortable: true, filterable: false, responsive: true, outsideBorder: true }" :pageSize="10" :showNoColumn="true" :sort="{ column: 'createdDate', direction: 'desc' }">
+              <template #amaun="{ text }">RM {{ text?.toLocaleString('ms-MY', { minimumFractionDigits: 2 }) || '0.00' }}</template>
+              <template #status="{ text }"><rs-badge :variant="text === 'SAH' ? 'success' : text === 'DITOLAK' ? 'danger' : 'warning'">{{ text || '—' }}</rs-badge></template>
+              <template #tindakan="{ value }">
+                <rs-button size="sm" variant="ghost" @click="openPaymentAdviceModal(value.paNo)">
+                  <Icon name="material-symbols:visibility" class="w-5 h-5" />
+                </rs-button>
+              </template>
+            </RsTable>
+          </RsTabItem>
+          
           <RsTabItem title="Dokumen Sokongan">
             <h3 class="text-lg font-medium mb-4">Dokumen Sokongan</h3>
             <RsTable :data="documents" :field="fieldsDoc" :columns="columnsDoc" advanced :showSearch="true" :showFilter="false" :options="{ variant: 'default', striped: true, bordered: false, borderless: false, hover: true }" :optionsAdvanced="{ sortable: true, filterable: true, responsive: true, outsideBorder: true }" :pageSize="10" :showNoColumn="true" :sort="{ column: 'uploadDate', direction: 'desc' }" :autoFields="false">
@@ -186,6 +201,29 @@ import { useNuxtApp, navigateTo, useRoute } from '#app'
 definePageMeta({ title: 'Mohon Tuntutan (Asnaf)' })
 
 const { $swal } = useNuxtApp()
+
+// Payment Advice data mock (you can replace it with real data later)
+const paymentAdviceData = ref([
+  { paNo: 'PA-2025-001', createdDate: '2025-09-01', amaun: 1500.0, status: 'SAH' },
+  { paNo: 'PA-2025-002', createdDate: '2025-09-05', amaun: 1200.0, status: 'SAH' },
+  { paNo: 'PA-2025-003', createdDate: '2025-09-10', amaun: 1800.0, status: 'DITOLAK' }
+])
+
+// Payment Advice columns definition
+const paymentAdviceColumns = [
+  { key: 'paNo', label: 'PA No' },
+  { key: 'createdDate', label: 'Tarikh Dicipta' },
+  { key: 'amaun', label: 'Amaun (RM)' },
+  { key: 'status', label: 'Status' },
+  { key: 'tindakan', label: 'Tindakan' }
+]
+
+// Function to open Payment Advice details
+function openPaymentAdviceModal(paNo) {
+  // Placeholder for handling when a user clicks on 'view' action
+  console.log('View Payment Advice:', paNo)
+  // You can trigger a modal or further actions here
+}
 
 const breadcrumb = ref([
   { name: 'Pengurusan Bantuan', type: 'link', path: '/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus' },
@@ -356,7 +394,7 @@ function openInvoiceModal(glNo) {
     namaPenerima: formData.value.namaPenerima || gl?.penerimaBayaran || 'PENERIMA',
     bank: formData.value.bank || 'CIMB',
     noAkaun: formData.value.noAkaun || '8001234567',
-    amaun: null,
+    amaun: 1500 || null,
     lampiran: null,
     catatan: newInvoice.value.catatan || ''
   }
@@ -462,7 +500,7 @@ function handleSubmit() {
     title: 'Permohonan tuntutan berjaya dihantar',
     showConfirmButton: true,
   }).then(() => {
-    navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/vendor')
+    navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/asnaf')
   })
 }
 
