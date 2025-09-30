@@ -28,34 +28,53 @@
           </div>
         </template>
         <template #body>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6" v-if="row.pemohon">
+            <div v-if="pemohonView.nama">
               <label class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
               <p class="text-gray-900">{{ pemohonView.nama }}</p>
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">No. Kad Pengenalan / No. Institusi</label>
+            <div v-if="pemohonView.noId">
+              <label class="block text-sm font-medium text-gray-700 mb-1">No. Kad Pengenalan</label>
               <p class="text-gray-900">{{ pemohonView.noId }}</p>
             </div>
-            <div>
+            <div v-if="pemohonView.telefon">
               <label class="block text-sm font-medium text-gray-700 mb-1">No. Telefon</label>
               <p class="text-gray-900">{{ pemohonView.telefon }}</p>
             </div>
-            <div>
+            <div v-if="pemohonView.email">
               <label class="block text-sm font-medium text-gray-700 mb-1">Emel</label>
               <p class="text-gray-900">{{ pemohonView.email || '-' }}</p>
             </div>
-            <div>
+            <div v-if="pemohonView.statusHousehold">
               <label class="block text-sm font-medium text-gray-700 mb-1">Status Household</label>
               <rs-badge :variant="getStatusVariant(pemohonView.statusHousehold)">{{ pemohonView.statusHousehold || '-' }}</rs-badge>
             </div>
-            <div>
+            <div v-if="pemohonView.statusIndividu">
               <label class="block text-sm font-medium text-gray-700 mb-1">Status Individu</label>
               <rs-badge :variant="getStatusVariant(pemohonView.statusIndividu)">{{ pemohonView.statusIndividu || '-' }}</rs-badge>
             </div>
-            <div>
+            <div v-if="pemohonView.statusMultidimensi">
               <label class="block text-sm font-medium text-gray-700 mb-1">Status Multidimensi</label>
               <rs-badge :variant="getStatusVariant(pemohonView.statusMultidimensi)">{{ pemohonView.statusMultidimensi || '-' }}</rs-badge>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6" v-if="row.vendor">
+            <div v-if="vendorView.nama">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
+              <p class="text-gray-900">{{ vendorView.nama }}</p>
+            </div>
+            <div v-if="pemohonView.noId">
+              <label class="block text-sm font-medium text-gray-700 mb-1">No. Vendor</label>
+              <p class="text-gray-900">{{ vendorView.noId }}</p>
+            </div>
+            <div v-if="pemohonView.telefon">
+              <label class="block text-sm font-medium text-gray-700 mb-1">No. Telefon</label>
+              <p class="text-gray-900">{{ vendorView.telefon }}</p>
+            </div>
+            <div v-if="pemohonView.email">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Emel</label>
+              <p class="text-gray-900">{{ vendorView.email || '-' }}</p>
             </div>
           </div>
         </template>
@@ -104,7 +123,7 @@
 
       <!-- Section 3: Maklumat Dokumen Sokongan (3.4) -->
       <!-- Ensure the document links display the same way -->
-      <rs-card>
+      <!-- <rs-card>
         <template #header><h2 class="text-xl font-semibold">Maklumat Pemohon</h2></template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -126,7 +145,7 @@
             </div>
           </div>
         </template>
-      </rs-card>
+      </rs-card> -->
 
       <!-- Section 5: Semakan Maklumat (removed per backlog) -->
 
@@ -147,10 +166,14 @@
               </div>
               <FormKit type="text" label="Tarikh" :modelValue="today" :disabled="true" />
             </div>
-            <div class="flex justify-end gap-3 pt-6">
-              <rs-button type="button" variant="secondary" @click="handleCancel">Batal</rs-button>
-              <rs-button type="button" variant="default" :disabled="isSubmitting || !form.keputusan" @click="handleSave">Simpan</rs-button>
-              <rs-button type="button" :variant="form.keputusan === 'Lulus' ? 'primary' : 'danger'" :disabled="isSubmitting || !form.keputusan" @click="handleSubmit">Hantar Tuntutan</rs-button>
+            <div class="flex justify-between pt-6">
+              <div class="flex justify-start gap-3">
+                <rs-button type="button" variant="secondary" @click="handleCancel">Kembali</rs-button>
+              </div>
+              <div class="flex justify-end gap-3">
+                <rs-button type="button" variant="default" :disabled="isSubmitting || !form.keputusan" @click="handleSave">Simpan</rs-button>
+                <rs-button type="button" :variant="form.keputusan === 'Lulus' ? 'primary' : 'danger'" :disabled="isSubmitting || !form.keputusan" @click="handleSubmit">Hantar Tuntutan</rs-button>
+              </div>
             </div>
           </form>
         </template>
@@ -227,6 +250,14 @@ type Pemohon = {
   statusMultidimensi?: string
 }
 
+type Vendor = {
+  nama: string
+  noId: string
+  telefon: string
+  email: string
+  alamat: string
+}
+
 type SiasatanInfoStrict = {
   kaedah: 'Semak Dokumen Sahaja' | 'Telefon' | 'Lapangan'
   status: 'Sokong' | 'Tidak Sokong'
@@ -238,7 +269,7 @@ type SiasatanInfoStrict = {
 type SiasatanInfoView = Partial<SiasatanInfoStrict>
 
 type TuntutanItem = {
-  id: string            // route id
+  id: string
   idPermohonan: string
   noBantuan?: string
   noGL: string
@@ -260,18 +291,22 @@ type TuntutanItem = {
     pakejBantuan: string
     kelayakanBantuan: string
   }
-  pemohon: Pemohon
+  pemohon?: Pemohon  // Make pemohon optional
+  vendor?: Vendor  // Make vendor optional
   catatan?: string
   catatanTambahan?: string
   siasatan?: SiasatanInfoStrict
   statusKelulusan?: 'Lulus' | 'Tidak Lulus' | 'Belum Diputus'
 }
 
+
 // =============================
 // Inline Mock Store (self-contained)
 // =============================
 const pemohonMockTemplate: Pemohon = { nama: '-', noId: '-', telefon: '-', email: '-', alamat: '-' }
 const createPemohonMock = (overrides: Partial<Pemohon> = {}): Pemohon => ({ ...pemohonMockTemplate, ...overrides })
+const vendorMockTemplate: Vendor = { nama: '-', noId: '-', telefon: '-', email: '-', alamat: '-' }
+const createVendorMock = (overrides: Partial<Vendor> = {}): Vendor => ({ ...vendorMockTemplate, ...overrides })
 
 const _items = ref<TuntutanItem[]>([
   {
@@ -280,7 +315,7 @@ const _items = ref<TuntutanItem[]>([
     dokumenSokongan: [{ name: 'GL_Report_2024.pdf', url: '#' }, { name: 'Invoice_INV-2024-001.pdf', url: '#' }],
     dokumenPerkhidmatan: [{ name: 'Surat Pengesahan Perkhidmatan.pdf', url: '#' }], lampiranLain: [{ name: 'Gambar Lokasi.jpg', url: '#' }],
     bantuanData: { kodBantuan: 'B400', jenisBantuan: '(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA', bahanBantuan: '(HQ) BANTUAN SUMBANGAN PERALATAN INSTITUSI AGAMA', pakejBantuan: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA', kelayakanBantuan: '(GL) (HQ) BANTUAN SUMBANGAN KARPET INSTITUSI AGAMA' },
-  pemohon: createPemohonMock({ nama: 'Masjid As-Salam', noId: 'VND-10001', telefon: '03-1234 5678', email: 'admin@assalam.my', alamat: 'Lot 12, Jalan Masjid, 43000 Kajang, Selangor', statusHousehold: 'Fakir', statusIndividu: 'Miskin', statusMultidimensi: 'Produktif' }),
+  vendor: createVendorMock({ nama: 'Masjid As-Salam', noId: 'VND-10001', telefon: '03-1234 5678', email: 'admin@assalam.my', alamat: 'Lot 12, Jalan Masjid, 43000 Kajang, Selangor'}),
     siasatan: { kaedah: 'Semak Dokumen Sahaja', status: 'Sokong', catatan: 'Dokumen lengkap dan sah.', tarikh: '2024-03-18T10:00:00' },
     catatanTambahan: 'Pembelian karpet dewan solat utama.', statusKelulusan: 'Belum Diputus',
   },
@@ -289,7 +324,7 @@ const _items = ref<TuntutanItem[]>([
     amaunTuntutan: 3000, amaunGL: 2500, bakiAmaun: -500, tarikhPermohonan: '2024-04-02T11:00:00', pegawaiETD: 'Ahmad Faiz', statusGL: 'Tidak Lulus', tarikhPerkhidmatan: '2024-03-29T00:00:00',
     dokumenSokongan: [{ name: 'Resit Pembelian.pdf', url: '#' }], dokumenPerkhidmatan: [], lampiranLain: [],
     bantuanData: { kodBantuan: 'B210', jenisBantuan: '(HQ) BANTUAN TUNAI KECEMASAN', bahanBantuan: '(HQ) BANTUAN WANG TUNAI', pakejBantuan: 'Pakej Tunai', kelayakanBantuan: 'Kecemasan - Maks RM2500' },
-  pemohon: createPemohonMock({ nama: 'Syarikat Berkat Niaga', noId: 'VND-20002', telefon: '012-345 6789', email: 'akaun@berkatniaga.com', alamat: 'No. 8, Jalan Perniagaan 3, 81200 Johor Bahru, Johor', statusHousehold: 'Non-Fakir Miskin', statusIndividu: 'Produktif Sementara', statusMultidimensi: 'Produktif' }),
+  vendor: createVendorMock({ nama: 'Syarikat Berkat Niaga', noId: 'VND-20002', telefon: '012-345 6789', email: 'akaun@berkatniaga.com', alamat: 'No. 8, Jalan Perniagaan 3, 81200 Johor Bahru, Johor'}),
     siasatan: { kaedah: 'Telefon', status: 'Tidak Sokong', catatan: 'Amaun tuntutan melebihi amaun GL.', tarikh: '2024-04-01T16:30:00' },
     catatan: 'Amaun tuntutan melebihi amaun GL.', catatanTambahan: 'Kecemasan tidak dibuktikan mencukupi.', statusKelulusan: 'Tidak Lulus',
   },
@@ -316,7 +351,7 @@ const _items = ref<TuntutanItem[]>([
     amaunTuntutan: 1200, amaunGL: 1500, bakiAmaun: 300, tarikhPermohonan: '2024-05-15T09:00:00', pegawaiETD: 'Siti Aminah', statusGL: 'Lulus', tarikhPerkhidmatan: '2024-05-12T00:00:00',
     dokumenSokongan: [], dokumenPerkhidmatan: [], lampiranLain: [],
     bantuanData: { kodBantuan: 'B110', jenisBantuan: '(HQ) BANTUAN PERUBATAN', bahanBantuan: 'RAWATAN KLINIK', pakejBantuan: 'Rawatan Kesihatan', kelayakanBantuan: 'Asnaf - Pesakit Kronik' },
-  pemohon: createPemohonMock({ nama: 'Klinik Kasih', noId: 'VND-30005', telefon: '03-7788 9090', email: 'akaun@klinikkasih.my', alamat: '19, Jalan Sehat, 46050 Petaling Jaya, Selangor', statusHousehold: 'Fakir', statusIndividu: 'Produktif', statusMultidimensi: 'Produktif' }),
+  vendor: createVendorMock({ nama: 'Klinik Kasih', noId: 'VND-30005', telefon: '03-7788 9090', email: 'akaun@klinikkasih.my', alamat: '19, Jalan Sehat, 46050 Petaling Jaya, Selangor'}),
     siasatan: { kaedah: 'Semak Dokumen Sahaja', status: 'Sokong', catatan: 'Bill rawatan disahkan.', tarikh: '2024-05-13T11:20:00' },
     catatanTambahan: 'Pesakit perlu rawatan susulan.', statusKelulusan: 'Belum Diputus',
   },
@@ -362,6 +397,17 @@ const pemohonView = computed(() => {
     statusHousehold: p?.statusHousehold ?? '-', // Add fallback
     statusIndividu: p?.statusIndividu ?? '-',   // Add fallback
     statusMultidimensi: p?.statusMultidimensi ?? '-', // Add fallback
+  }
+})
+
+const vendorView = computed(() => {
+  const v = row.value?.vendor
+  return {
+    nama: v?.nama ?? '-',
+    noId: v?.noId ?? '-',
+    telefon: v?.telefon ?? '-',
+    email: v?.email ?? '-',
+    alamat: v?.alamat ?? '-',
   }
 })
 
@@ -430,7 +476,7 @@ const handleConfirmSend = async () => {
   }
 }
 
-const handleCancel = () => navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-pelulus')
+const handleCancel = () => navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus')
 
 // ===== Local atoms (inline components) =====
 // (Delete the entire FieldRow block if unused)
