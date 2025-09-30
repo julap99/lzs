@@ -449,6 +449,15 @@
                           <rs-button 
                             variant="primary" 
                             size="sm"
+                            @click="mohonBantuan(profile)"
+                            class="text-xs"
+                          >
+                            <Icon name="mdi:help" size="1rem" class="mr-1" />
+                            Mohon Bantuan
+                          </rs-button>
+                          <rs-button 
+                            variant="primary" 
+                            size="sm"
                             @click="updateProfile(profile)"
                             class="text-xs"
                           >
@@ -1391,7 +1400,10 @@ const printResults = () => {
   window.print();
 };
 
-
+const mohonBantuan = (profile) => {
+  // Navigate to new assistance application page with profile data
+  navigateTo("/BF-BTN/mohon-bantuan");
+};
 
 const updateProfile = (profile) => {
   // Navigate to update profile page with profile data

@@ -64,48 +64,8 @@
               </template>
             </rs-card>
 
-            <!-- 3.2 Maklumat Penerima Manfaat (jika tanggungan) -->
-            <rs-card>
-              <template #header>
-                <h3 class="text-lg font-medium">Maklumat Penerima Manfaat (jika tanggungan)</h3>
-              </template>
-              <template #body>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormKit
-                  type="select"
-                  name="penerimaManfaatNama"
-                  label="Nama"
-                  :options="dependentsOptions"
-                  v-model="selectedDependentId"
-                  @input="onDependentChange"
-                />
-                <FormKit
-                  type="text"
-                  name="penerimaManfaatJenisPengenalan"
-                  label="Jenis Pengenalan"
-                  v-model="penerimaManfaatJenisPengenalan"
-                  disabled
-                />
-                <FormKit
-                  type="text"
-                  name="penerimaManfaatNoPengenalan"
-                  label="No. Pengenalan"
-                  v-model="penerimaManfaatNoPengenalan"
-                  disabled
-                />
-                <FormKit
-                  type="text"
-                  name="penerimaManfaatHubungan"
-                  label="Hubungan"
-                  v-model="penerimaManfaatHubungan"
-                  disabled
-                />
-                </div>
-              </template>
-            </rs-card>
-  
-            <!-- 3.3 Maklumat Permohonan Bantuan -->
-            <rs-card>
+               <!-- 3.2 Maklumat Permohonan Bantuan -->
+               <rs-card>
               <template #header>
                 <h3 class="text-lg font-medium">Maklumat Permohonan Bantuan</h3>
               </template>
@@ -241,6 +201,46 @@
               </template>
             </rs-card>
 
+            <!-- 3.3 Maklumat Penerima Manfaat (jika tanggungan) -->
+            <rs-card>
+              <template #header>
+                <h3 class="text-lg font-medium">Maklumat Penerima Manfaat (jika tanggungan)</h3>
+              </template>
+              <template #body>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormKit
+                  type="select"
+                  name="penerimaManfaatNama"
+                  label="Nama"
+                  :options="dependentsOptions"
+                  v-model="selectedDependentId"
+                  @input="onDependentChange"
+                />
+                <FormKit
+                  type="text"
+                  name="penerimaManfaatJenisPengenalan"
+                  label="Jenis Pengenalan"
+                  v-model="penerimaManfaatJenisPengenalan"
+                  disabled
+                />
+                <FormKit
+                  type="text"
+                  name="penerimaManfaatNoPengenalan"
+                  label="No. Pengenalan"
+                  v-model="penerimaManfaatNoPengenalan"
+                  disabled
+                />
+                <FormKit
+                  type="text"
+                  name="penerimaManfaatHubungan"
+                  label="Hubungan"
+                  v-model="penerimaManfaatHubungan"
+                  disabled
+                />
+                </div>
+              </template>
+            </rs-card>
+  
             <!-- 3.4 Maklumat Kadar Bantuan -->
             <rs-card>
               <template #header>
