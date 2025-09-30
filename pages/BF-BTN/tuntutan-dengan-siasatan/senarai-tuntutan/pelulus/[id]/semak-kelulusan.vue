@@ -33,7 +33,7 @@
               <label class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
               <p class="text-gray-900">{{ pemohonView.nama }}</p>
             </div>
-            <div v-if="pemohonView.noId">
+            <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">No. Kad Pengenalan</label>
               <p class="text-gray-900">{{ pemohonView.noId }}</p>
             </div>
@@ -94,6 +94,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormKit type="text" label="No. Bantuan" :modelValue="row.bantuanData?.kodBantuan || '-'" :disabled="true" />
               <FormKit type="text" label="Aid" :modelValue="row.bantuanData?.jenisBantuan || '-'" :disabled="true" />
+              <FormKit type="text" label="Aid Product" :modelValue="row.bantuanData?.bahanBantuan || '-'" :disabled="true" />
               <FormKit type="text" label="Product Package" :modelValue="row.bantuanData?.pakejBantuan || '-'" :disabled="true" />
               <FormKit type="text" label="Entitlement Product" :modelValue="row.bantuanData?.kelayakanBantuan || '-'" :disabled="true" />
             </div>
@@ -110,38 +111,103 @@
         </template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormKit type="text" label="Nombor GL" :modelValue="row.noGL" :disabled="true" />
-            <FormKit type="text" label="Nombor Invoice" :modelValue="noInvois" :disabled="true" />
-            <FormKit type="text" label="Amaun GL (RM)" :modelValue="`RM ${formatNumber(row.amaunGL)}`" :disabled="true" />
-            <FormKit type="text" label="Amaun Tuntutan (RM)" :modelValue="`RM ${formatNumber(row.amaunTuntutan)}`" :disabled="true" />
-            <FormKit type="text" label="Baki Amaun (RM)" :modelValue="`RM ${formatNumber(row.bakiAmaun)}`" :disabled="true" />
-            <FormKit type="text" label="Tarikh Mohon Tuntutan" :modelValue="formatDate(row.tarikhPermohonan)" :disabled="true" />
-            <FormKit type="text" label="Catatan Tambahan" :modelValue="catatanTambahan" :disabled="true" />
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">No. GL</label>
+              <p class="text-gray-900">{{ row.noGL }}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Amaun Tuntutan (RM)</label>
+              <p class="text-gray-900">RM {{ formatNumber(row.amaunTuntutan) }}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Amaun GL (RM)</label>
+              <p class="text-gray-900">RM {{ formatNumber(row.amaunGL) }}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Baki Amaun (RM)</label>
+              <p class="text-gray-900">RM {{ formatNumber(row.bakiAmaun) }}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Tarikh</label>
+              <p class="text-gray-900">{{ formatDate(row.tarikhPermohonan) }}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Catatan Tambahan</label>
+              <p class="text-gray-900">{{ catatanTambahan || '-' }}</p>
+            </div>
           </div>
         </template>
       </rs-card>
 
       <!-- Section 3: Maklumat Dokumen Sokongan (3.4) -->
-      <!-- Ensure the document links display the same way -->
-      <!-- <rs-card>
-        <template #header><h2 class="text-xl font-semibold">Maklumat Pemohon</h2></template>
+      <rs-card>
+        <template #header>
+          <div class="flex items-center">
+            Dokumen Sokongan
+          </div>
+        </template>
+        <template #body>
+          <div class="space-y-2">
+            <div
+              v-for="(doc, index) in row.dokumenSokongan"
+              :key="index"
+              class="flex items-center justify-between bg-gray-50 p-3 rounded-lg"
+            >
+              <span class="text-gray-900">{{ doc.name }}</span>
+              <div class="flex space-x-2">
+                <rs-button
+                  variant="secondary"
+                  size="sm"
+                  @click="viewDocument(doc)"
+                >
+                  <Icon name="material-symbols:visibility" class="mr-1" />
+                  Lihat
+                </rs-button>
+                <rs-button
+                  variant="secondary"
+                  size="sm"
+                  @click="downloadDocument(doc)"
+                >
+                  <Icon name="material-symbols:download" class="mr-1" />
+                  Muat Turun
+                </rs-button>
+              </div>
+            </div>
+            <div v-if="row.dokumenSokongan.length === 0" class="text-center text-gray-500 py-4">
+              Tiada dokumen sokongan
+            </div>
+          </div>
+        </template>
+      </rs-card>
+
+      <!-- Section 4: Keputusan Siasatan (3.5) - Only show if bantuan involves siasatan -->
+      <rs-card v-if="row.siasatan">
+        <template #header>
+          <div class="flex items-center">
+            Keputusan Siasatan
+          </div>
+        </template>
         <template #body>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div><label class="block text-sm font-medium text-gray-700 mb-1">Nama</label><p class="text-gray-900">{{ pemohonView.nama }}</p></div>
-            <div><label class="block text-sm font-medium text-gray-700 mb-1">No. Kad Pengenalan / No. Institusi</label><p class="text-gray-900">{{ pemohonView.noId }}</p></div>
-            <div><label class="block text-sm font-medium text-gray-700 mb-1">No. Telefon</label><p class="text-gray-900">{{ pemohonView.telefon }}</p></div>
-            <div><label class="block text-sm font-medium text-gray-700 mb-1">Emel</label><p class="text-gray-900">{{ pemohonView.email || '-' }}</p></div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Status Household</label>
-              <rs-badge :variant="getStatusVariant(pemohonView.statusHousehold)">{{ pemohonView.statusHousehold || '-' }}</rs-badge>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Kaedah Siasatan</label>
+              <p class="text-gray-900">{{ siasatan.kaedah || '-' }}</p>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Status Individu</label>
-              <rs-badge :variant="getStatusVariant(pemohonView.statusIndividu)">{{ pemohonView.statusIndividu || '-' }}</rs-badge>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Status Siasatan</label>
+              <rs-badge :variant="siasatan.status === 'Sokong' ? 'success' : 'danger'">{{ siasatan.status || '-' }}</rs-badge>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Status Multidimensi</label>
-              <rs-badge :variant="getStatusVariant(pemohonView.statusMultidimensi)">{{ pemohonView.statusMultidimensi || '-' }}</rs-badge>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Nama Pegawai</label>
+              <p class="text-gray-900">{{ siasatan.namaPegawai || '-' }}</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Tarikh</label>
+              <p class="text-gray-900">{{ siasatan.tarikh ? formatDate(siasatan.tarikh) : '-' }}</p>
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Catatan Siasatan</label>
+              <p class="text-gray-900">{{ siasatan.catatan || '-' }}</p>
             </div>
           </div>
         </template>
@@ -166,14 +232,10 @@
               </div>
               <FormKit type="text" label="Tarikh" :modelValue="today" :disabled="true" />
             </div>
-            <div class="flex justify-between pt-6">
-              <div class="flex justify-start gap-3">
-                <rs-button type="button" variant="secondary" @click="handleCancel">Kembali</rs-button>
-              </div>
-              <div class="flex justify-end gap-3">
-                <rs-button type="button" variant="default" :disabled="isSubmitting || !form.keputusan" @click="handleSave">Simpan</rs-button>
-                <rs-button type="button" :variant="form.keputusan === 'Lulus' ? 'primary' : 'danger'" :disabled="isSubmitting || !form.keputusan" @click="handleSubmit">Hantar Tuntutan</rs-button>
-              </div>
+            <div class="flex justify-start gap-3 pt-6">
+              <rs-button type="button" variant="secondary" @click="handleCancel">Kembali</rs-button>
+              <rs-button type="button" variant="default" :disabled="isSubmitting || !form.keputusan" @click="handleSave">Simpan</rs-button>
+              <rs-button type="button" :variant="form.keputusan === 'Lulus' ? 'primary' : 'danger'" :disabled="isSubmitting || !form.keputusan" @click="handleSubmit">Hantar Tuntutan</rs-button>
             </div>
           </form>
         </template>
@@ -477,6 +539,18 @@ const handleConfirmSend = async () => {
 }
 
 const handleCancel = () => navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus')
+
+// Document handling functions
+const viewDocument = (doc: Dok) => window.open(doc.url, '_blank')
+
+const downloadDocument = (doc: Dok) => {
+  const link = document.createElement('a')
+  link.href = doc.url
+  link.download = doc.name
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
 
 // ===== Local atoms (inline components) =====
 // (Delete the entire FieldRow block if unused)
