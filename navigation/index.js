@@ -1666,14 +1666,14 @@ export default [
             meta: {},
           },
           {
-            title: "Semakan Tuntutan (EOAD)",
+            title: "Semakan Tuntutan",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/eoad",
             child: [],
             meta: {},
           },
           {
-            title: "Kelulusan Tuntutan (Pelulus)",
+            title: "Kelulusan Tuntutan",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus",
             child: [],

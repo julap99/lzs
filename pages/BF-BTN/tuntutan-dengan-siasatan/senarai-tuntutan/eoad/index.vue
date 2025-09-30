@@ -236,7 +236,7 @@ const getTindakanFrom = (slotValue: unknown): { noTuntutan: string; status: stri
 const { $swal } = useNuxtApp() as any
 
 const viewTuntutan = (noTuntutan: string) => {
-  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan-eoad/${noTuntutan}/pengesahan`)
+  navigateTo(`/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/eoad/${noTuntutan}/pengesahan`)
 }
 const handleSemakPengesahan = (noTuntutan: string) => viewTuntutan(noTuntutan)
 
