@@ -221,7 +221,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">
                       Info Status Bantuan
                     </label>
-                    <p class="text-gray-900">Tidak Aktif</p>
+                    <rs-badge variant="danger">Tidak Aktif</rs-badge>
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -345,7 +345,13 @@
                     hover: true,
                   }"
                   :showNoColumn="true"
-                />
+                >
+                  <template v-slot:statusPa="{ text }">
+                    <rs-badge :variant="getPaStatusVariant(text)">
+                      {{ text }}
+                    </rs-badge>
+                  </template>
+                </rs-table>
 
                 <!-- Pagination Controls -->
                 <div
@@ -1112,6 +1118,15 @@ const getRecipientVariant = (recipient) => {
     PAK: "success",
   };
   return variants[recipient] || "primary";
+};
+
+// Badge variant for Status PA in distribution items
+const getPaStatusVariant = (status) => {
+  const variants = {
+    Selesai: "success",
+    "Dalam Proses": "warning",
+  };
+  return variants[status] || "primary";
 };
 
 const getProcessStatusVariant = (status) => {
