@@ -272,7 +272,6 @@ const tableData = computed(() => {
   const mainApplicant = {
     pengenalanId: profilingData.value.pengenalanId,
     nama: profilingData.value.nama,
-    merit: profilingData.value.merit,
     multidimensi: profilingData.value.multidimensi,
   };
 
@@ -281,7 +280,6 @@ const tableData = computed(() => {
     pengenalanId: person.pengenalanId,
     nama: person.nama,
     kategori: profilingData.value.kategoriAsnafSyor,
-    meritIndividu: person.merit,
     statusMultidimensi: person.multidimensi,
   }));
 });
@@ -290,7 +288,6 @@ const tableHeaders = ref([
   { key: "pengenalanId", label: "Pengenalan ID" },
   { key: "nama", label: "Nama" },
   { key: "kategori", label: "Kategori" },
-  { key: "meritIndividu", label: "Merit Individu" },
   { key: "statusMultidimensi", label: "Status Multidimensi" },
 ]);
 
