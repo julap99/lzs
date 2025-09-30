@@ -1,5 +1,3 @@
-																	  
-
 <template>
     <div>
         <LayoutsBreadcrumb :items="breadcrumb" />
@@ -812,15 +810,15 @@
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div>
                       <label class="block text-xs uppercase tracking-wide font-bold">Peratusan Perbezaan</label>
-                      <p class="text-gray-900 font-medium">{{ profilingData.peratusanPerbezaan }}</p>
+                      <p class="text-gray-900 font-medium">50.81%</p>
                     </div>
                     <div>
                       <label class="block text-xs uppercase tracking-wide font-bold">Kategori Keluarga Asnaf</label>
-                      <p class="text-gray-900 font-medium">{{ profilingData.kategoriKeluargaAsnaf }}</p>
+                      <p class="text-gray-900 font-medium">Miskin</p>
                     </div>
                     <div>
                       <label class="block text-xs uppercase tracking-wide font-bold">Kategori Asnaf</label>
-                      <p class="text-gray-900 font-medium">{{ profilingData.kategoriAsnaf }}</p>
+                      <p class="text-gray-900 font-medium">Miskin</p>
                     </div>
                   </div>
 
@@ -838,7 +836,7 @@
                   />
 
                   <!-- Ringkasan Keluarga (Syor) -->
-                  <div class="mt-4">
+                  <!-- <div class="mt-4">
                     <label class="block text-xs uppercase tracking-wide font-bold">Merit Keluarga(Syor)</label>
                     <p class="text-gray-900 font-medium">{{ profilingData.meritKeluargaSyor }}</p>
 
@@ -847,12 +845,47 @@
 
                     <label class="block text-xs uppercase tracking-wide mt-4 font-bold">Quadrant Multidimensi Keluarga(Syor)</label>
                     <p class="text-gray-900 font-medium">{{ profilingData.quadrantMultidimensiKeluargaSyor }}</p>
-                  </div>
+                  </div> -->
                 </div>
               </rs-collapse-item>
 
               <!-- Pengesahan Status (relocated to Maklumat Pemohon) -->
               <rs-collapse-item type="card" title="Pengesahan Status">
+                <!-- Summary Information -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <div>
+                    <label
+                      class="block text-xs uppercase tracking-wide font-bold">
+                      Peratusan Perbezaan
+                    </label>
+                    <p class="text-gray-900 font-medium">
+                      50.81%
+                    </p>
+                  </div>
+                  <FormKit
+                      type="select"
+                      name="kategoriKeluargaAsnaf"
+                      label="Kategori Keluarga Asnaf"
+                      :options="[
+                        { label: 'Fakir', value: 'fakir' },
+                        { label: 'Miskin', value: 'miskin' },
+                        { label: 'Non Fakir Miskin', value: 'non_fakir_miskin' },
+                        { label: 'Fakir Miskin', value: 'fakir_miskin' }
+                      ]"
+                      v-model="kategoriKeluargaAsnaf"
+                      placeholder="Pilih kategori"
+                      :classes="{ input: '!py-2.5' }"
+                    />
+                  <div>
+                    <label
+                      class="block text-xs uppercase tracking-wide font-bold">
+                      Kategori Asnaf
+                    </label>
+                    <p class="text-gray-900 font-medium">
+                      Miskin
+                    </p>
+                  </div>
+                </div>
                 <div class="p-4">
                   <rs-table
                     :data="pengesahanRows"
@@ -867,9 +900,6 @@
                     </template>
                     <template v-slot:kategori="{ value }">
                       <FormKit type="select" :options="kategoriIndividuOptions" v-model="value.kategori" outer-class="mb-0" />
-                    </template>
-                    <template v-slot:meritIndividu="{ value }">
-                      <FormKit type="text" v-model="value.meritIndividu" outer-class="mb-0" />
                     </template>
                     <template v-slot:statusMultidimensi="{ value }">
                       <FormKit type="select" :options="statusMultidimensiOptions" v-model="value.statusMultidimensi" outer-class="mb-0" />
@@ -1335,7 +1365,7 @@
                         type="button"
                                   title="Preview"
                                 >
-                                  <Icon name="ph:eye" class="w-4 h-4" />
+                                  <Icon name="ph:eye" class="w-4 h-4 mr-1" />
                       </button>
                                 <button
                                   @click.stop="removeImage(index)"
@@ -1534,8 +1564,8 @@
                   variant="success"
                   @click="handleSimpan"
                   :disabled="processing"
-                      :loading="processing && actionType === 'save'"
-                      class="flex-1 !py-3 text-sm font-medium"
+                  :loading="processing && actionType === 'save'"
+                  class="flex-1 !py-3 text-sm font-medium"
                 >
                       <Icon name="ph:floppy-disk" class="w-5 h-5 mr-2" />
                   Simpan
@@ -1957,8 +1987,8 @@
                       multiple="true"
                       accept=".pdf,.jpg,.jpeg,.png"
                       help="Format yang diterima: PDF, JPG, JPEG, PNG"
-                      value="sijil_pendidikan_sample.pdf"
-                    />
+                      v-model="formDataPRF.sijil_pendidikan"
+                        />
                   </div>
                 </div>
   
@@ -2363,9 +2393,9 @@
                         type="file"
                         name="dokumen_perjanjian_pinjaman"
                         label="Dokumen Perjanjian Pinjaman"
-                        help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                         accept=".pdf,.jpg,.jpeg,.png"
-                        value="dokumen_pinjaman.pdf"
+                        help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                        v-model="formDataPRF.dokumen_perjanjian_pinjaman"
                       />
                     </div>
                   </div>
@@ -2686,6 +2716,8 @@
   //const isPerubahanBantuanOpen = ref(false);
   const isBantuanBaruOpen = ref(true); // Always open
   
+  const kategoriKeluargaAsnaf = ref('miskin');
+
   // Prevent infinite loops with a flag
   let isUpdatingAccordions = false;
 
@@ -3075,7 +3107,6 @@
     { key: 'pengenalanId', label: 'Pengenalan Id' },
     { key: 'nama', label: 'Nama' },
     { key: 'kategori', label: 'Kategori Asnaf(Syor)' },
-    { key: 'meritIndividu', label: 'Merit Individu(Syor)' },
     { key: 'statusMultidimensi', label: 'Status Multidimensi(Syor)' },
   ];
   const tableData = [
@@ -3083,28 +3114,24 @@
       pengenalanId: '060802030272',
       nama: 'NUR NAJWA BINTI ADNAN',
       kategori: 'Miskin',
-      meritIndividu: '0.38',
       statusMultidimensi: 'Tidak Produktif',
     },
     {
       pengenalanId: '091108030442',
       nama: 'NUR QISTINA BINTI ADNAN',
       kategori: 'Miskin',
-      meritIndividu: '0.40',
       statusMultidimensi: 'Tidak Produktif',
     },
     {
       pengenalanId: '770319035991',
       nama: 'Adnan bin Abu',
       kategori: 'Miskin',
-      meritIndividu: '0.69',
       statusMultidimensi: 'Produktif C',
     },
     {
       pengenalanId: '801004035672',
       nama: 'ROHANA BINTI AHMAD',
       kategori: 'Miskin',
-      meritIndividu: '0.64',
       statusMultidimensi: 'Produktif C',
     },
   ];
@@ -3114,15 +3141,14 @@
     { key: 'pengenalanId', label: 'Pengenalan ID' },
     { key: 'nama', label: 'Nama' },
     { key: 'kategori', label: 'Kategori' },
-    { key: 'meritIndividu', label: 'Merit Individu' },
     { key: 'statusMultidimensi', label: 'Status Multidimensi' },
     { key: 'pelarasan', label: 'Pelarasan' },
   ];
   const pengesahanRows = [
-    { pengenalanId: '060802030272', nama: 'NUR NAJWA BINTI ADNAN', kategori: 'Miskin', meritIndividu: '0.38', statusMultidimensi: 'Tidak Produktif', pelarasan: false },
-    { pengenalanId: '091108030442', nama: 'NUR QISTINA BINTI ADNAN', kategori: 'Miskin', meritIndividu: '0.40', statusMultidimensi: 'Tidak Produktif', pelarasan: false },
-    { pengenalanId: '770319035991', nama: 'Adnan bin Abu', kategori: 'Miskin', meritIndividu: '0.69', statusMultidimensi: 'Produktif C', pelarasan: false },
-    { pengenalanId: '801004035672', nama: 'ROHANA BINTI AHMAD', kategori: 'Miskin', meritIndividu: '0.64', statusMultidimensi: 'Produktif C', pelarasan: false },
+    { pengenalanId: '060802030272', nama: 'NUR NAJWA BINTI ADNAN', kategori: 'Miskin', statusMultidimensi: 'Tidak Produktif', pelarasan: false },
+    { pengenalanId: '091108030442', nama: 'NUR QISTINA BINTI ADNAN', kategori: 'Miskin', statusMultidimensi: 'Tidak Produktif', pelarasan: false },
+    { pengenalanId: '770319035991', nama: 'Adnan bin Abu', kategori: 'Miskin', statusMultidimensi: 'Produktif C', pelarasan: false },
+    { pengenalanId: '801004035672', nama: 'ROHANA BINTI AHMAD', kategori: 'Miskin', statusMultidimensi: 'Produktif C', pelarasan: false },
   ];
   const getLocation = () => {};
   
@@ -3262,7 +3288,7 @@
       noBantuan: "NAS-2025-0005",
       nama: "Faridah binti Rahman",
       alamat: "Jalan Seri Melati, Kampung Baru, 45800 Kuala Selangor",
-      kariah: "Masjid At-Taqwa",
+      kariah: "Masjid Al-Taqwa",
       daerah: "Kuala Selangor",
       jenisPengenalan: "MyKad",
       noPengenalan: "881015127890",
@@ -3296,18 +3322,7 @@
       masaLawatan: "",
       StatusPengesahanLawatan: "belum_sah",
       catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
-      gambarLokasi: [],
-      catatanLawatanETD: "",
-      statusLawatan: "",
-      assistanceApplications: [
-        {
-          id: "B102",
-          jenisBantuan: "B102 - BANTUAN BINAAN RUMAH (Fakir)",
-          status: "Perlu Diproses",
-          sla: "3 hari lagi",
-          actions: "/",
-        }
-      ]
+      gambarLokasi: null,
     },
     "NAS-2025-0002": {
       jenisPekerjaan: "Suri rumah sepenuh masa",
@@ -3320,25 +3335,7 @@
       masaLawatan: "",
       StatusPengesahanLawatan: "belum_sah",
       catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
-      gambarLokasi: [],
-      catatanLawatanETD: "",
-      statusLawatan: "",
-      assistanceApplications: [
-        {
-          id: "B300",
-          jenisBantuan: "B300 - (HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA} (FAKIR)",
-          status: "Perlu Diproses",
-          sla: "5 hari lagi",
-          actions: "/",
-        },
-        {
-          id: "B307",
-          jenisBantuan: "B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
-          status: "Perlu Diproses",
-          sla: "2 hari lagi",
-          actions: "/",
-        }
-      ]
+      gambarLokasi: null,
     },
      "NAS-2025-0003": {
       jenisPekerjaan: "Pesara guru",
@@ -3351,25 +3348,7 @@
       masaLawatan: "",
       StatusPengesahanLawatan: "belum_sah",
       catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
-      gambarLokasi: [],
-      catatanLawatanETD: "",
-      statusLawatan: "",
-      assistanceApplications: [
-        {
-          id: "B112",
-          jenisBantuan: "B112 - Bantuan Sewaan/Ansuran Rumah (Fakir)",
-          status: "Perlu Diproses",
-          sla: "5 hari lagi",
-          actions: "/",
-        },
-        // {
-        //   id: "B307",
-        //   jenisBantuan: "B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
-        //   status: "Perlu Diproses",
-        //   sla: "2 hari lagi",
-        //   actions: "/",
-        // }
-      ]
+      gambarLokasi: null,
     },
      "NAS-2025-0004": {
       jenisPekerjaan: "Pesara guru",
@@ -3382,25 +3361,7 @@
       masaLawatan: "",
       StatusPengesahanLawatan: "belum_sah",
       catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
-      gambarLokasi: [],
-      catatanLawatanETD: "",
-      statusLawatan: "",
-      assistanceApplications: [
-        {
-          id: "B103",
-          jenisBantuan: "B103 - Bantuan Perubatan Dialisis (Fakir)",
-          status: "Perlu Diproses",
-          sla: "5 hari lagi",
-          actions: "/",
-        },
-        // {
-        //   id: "B307",
-        //   jenisBantuan: "B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
-        //   status: "Perlu Diproses",
-        //   sla: "2 hari lagi",
-        //   actions: "/",
-        // }
-      ]
+      gambarLokasi: null,
     },
     "NAS-2025-0005": {
       jenisPekerjaan: "Tidak Bekerja (Janda)",
@@ -3413,18 +3374,7 @@
       masaLawatan: "",
       StatusPengesahanLawatan: "belum_sah",
       catatanPenilaianAwal: "Permohonan bantuan untuk pembinaan/baik pulih institusi agama. Pemohon memerlukan bantuan untuk masjid tempatan yang memerlukan penyelenggaraan.",
-      gambarLokasi: [],
-      catatanLawatanETD: "",
-      statusLawatan: "",
-      assistanceApplications: [
-        {
-          id: "B400",
-          jenisBantuan: "B400 - BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA",
-          status: "Perlu Diproses",
-          sla: "7 hari lagi",
-          actions: "/",
-        }
-      ]
+      gambarLokasi: null,
     }
   };
   
@@ -3611,7 +3561,7 @@
     const variants = {
       baru: "info",
       "tidak lengkap": "danger",
-      "untuk siasatan": "secondary",
+      "untuk siasatan": "warning",
       "menunggu siasatan": "warning",
       "selesai siasatan": "success",
       "menunggu pengesahan": "info",
@@ -4755,9 +4705,9 @@
       }
     }
   });
-  </script>
-  
-  <style lang="scss" scoped>
+</script>
+
+<style lang="scss" scoped>
   /* Table responsive enhancements */
   .scrollbar-thin {
     scrollbar-width: thin;
@@ -4868,5 +4818,4 @@
     outline: none;
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
   }
-  </style>
-  
+</style>
