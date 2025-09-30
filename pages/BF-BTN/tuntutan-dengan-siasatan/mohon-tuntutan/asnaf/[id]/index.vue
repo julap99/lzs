@@ -25,10 +25,6 @@
                 <p class="mt-1 text-gray-600">{{ formData.emailPemohon }}</p>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700">Kategori Asnaf</label>
-                <p class="mt-1 text-gray-600">{{ formData.kategoriAsnaf }}</p>
-              </div>
-              <div>
                 <label class="block text-sm font-medium text-gray-700">Status Household</label>
                 <rs-badge :variant="getStatusVariant(formData.statusHousehold)">{{ formData.statusHousehold }}</rs-badge>
               </div>
@@ -132,7 +128,7 @@
         <div class="border-t border-gray-200 my-6"></div>
         <div class="flex items-center justify-between mt-4">
           <div>
-            <rs-button type="button" variant="primary-outline" @click="navigateTo('/BF-BTN/tuntutan-dengan-siasatan')">
+            <rs-button type="button" variant="primary-outline" @click="navigateTo('/BF-BTN/tuntutan-dengan-siasatan/mohon-tuntutan/asnaf')">
               <Icon name="material-symbols:arrow-back" class="w-4 h-4 mr-1" /> Kembali
             </rs-button>
           </div>
@@ -453,13 +449,23 @@ onMounted(() => {
 })
 
 function handleSaveDraft() {
-  // Implement save draft (no alerts as requested)
-navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus')
+  $swal.fire({
+    icon: 'success',
+    title: 'Draft berjaya disimpan',
+    showConfirmButton: true,
+  })
 }
+
 function handleSubmit() {
-  // Submit without extra alerts as No. Bantuan is display only
-navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/pelulus')
+  $swal.fire({
+    icon: 'success',
+    title: 'Permohonan tuntutan berjaya dihantar',
+    showConfirmButton: true,
+  }).then(() => {
+    navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/vendor')
+  })
 }
+
 </script>
 
 <style lang="scss" scoped>
