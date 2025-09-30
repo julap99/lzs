@@ -549,9 +549,9 @@ const mockByNoRujukan = {
     noPengenalan: '920815082567',
     noTelefon: '0176543210',
     email: 'maryam@email.com',
-    statusKeluarga: 'Mualaf',
+    statusKeluarga: 'Miskin',
     statusIndividu: 'Mualaf',
-    statusMultidimensi: 'Asnaf Mualaf',
+    statusMultidimensi: 'Asnaf Produktif Sementara',
     status: 'Dalam Semakan',
           senaraiBantuan: [
             { id: 'B135', jenisBantuan: 'B135 - (HQ) SAGUHATI GALAKAN SAUDARA BARU (MUALAF)', status: 'Dalam Semakan', sla: '3h', tindakan: '' },
