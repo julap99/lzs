@@ -13,53 +13,34 @@
                 <p class="mt-1 text-gray-600">{{ formData.namaPemohon }}</p>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700">No. Vendor</label>
+                <label class="block text-sm font-medium text-gray-700">No. Kad Pengenalan</label>
                 <p class="mt-1 text-gray-600">{{ formData.noPengenalan }}</p>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700">No. Telefon</label>
                 <p class="mt-1 text-gray-600">{{ formData.noTelefonPemohon }}</p>
               </div>
-              
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Emel</label>
+                <p class="mt-1 text-gray-600">{{ formData.emailPemohon }}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Status Household</label>
+                <rs-badge :variant="getStatusVariant(formData.statusHousehold)">{{ formData.statusHousehold }}</rs-badge>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Status Individu</label>
+                <rs-badge :variant="getStatusVariant(formData.statusIndividu)">{{ formData.statusIndividu }}</rs-badge>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Status Multidimensi</label>
+                <rs-badge :variant="getStatusVariant(formData.statusMultidimensi)">{{ formData.statusMultidimensi }}</rs-badge>
+              </div>
             </div>
           </RsTabItem>
 
           <RsTabItem title="Maklumat Bantuan">
             <h3 class="text-lg font-medium mb-4">Maklumat Bantuan</h3>
-            <div class="bg-gray-50 p-4 rounded-lg mb-6">
-              <h4 class="text-lg font-medium mb-4">Maklumat Asnaf</h4>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700">Nama</label>
-                  <p class="mt-1 text-gray-600">{{ formData.namaPemohon }}</p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700">No. Kad Pengenalan</label>
-                  <p class="mt-1 text-gray-600">{{ formData.noPengenalan }}</p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700">No. Telefon</label>
-                  <p class="mt-1 text-gray-600">{{ formData.noTelefonPemohon }}</p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700">Emel</label>
-                  <p class="mt-1 text-gray-600">{{ formData.emailPemohon }}</p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700">Status Household</label>
-                  <rs-badge :variant="getStatusVariant(formData.statusHousehold)">{{ formData.statusHousehold }}</rs-badge>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700">Status Individu</label>
-                  <rs-badge :variant="getStatusVariant(formData.statusIndividu)">{{ formData.statusIndividu }}</rs-badge>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700">Status Multidimensi</label>
-                  <rs-badge :variant="getStatusVariant(formData.statusMultidimensi)">{{ formData.statusMultidimensi }}</rs-badge>
-                </div>
-              </div>
-            </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormKit v-model="formData.noBtn" type="text" label="No. Bantuan" readonly :classes="{ input: 'bg-gray-100 cursor-not-allowed' }" />
               <FormKit v-model="formData.aidProduct" type="text" label="Jenis Bantuan" readonly :classes="{ input: 'bg-gray-100 cursor-not-allowed' }" />
@@ -147,7 +128,8 @@
         <div class="border-t border-gray-200 my-6"></div>
         <div class="flex items-center justify-between mt-4">
           <div>
-            <rs-button type="button" variant="primary-outline" @click="navigateTo('/BF-BTN/tuntutan-dengan-siasatan')">
+            <rs-button type="button" variant="primary-outline" @click="navigateTo('/BF-BTN/tuntutan-dengan-siasatan/carian-tuntutan/')">
+              
               <Icon name="material-symbols:arrow-back" class="w-4 h-4 mr-1" /> Kembali
             </rs-button>
           </div>
@@ -216,15 +198,15 @@ const route = useRoute()
 
 // Form data
 const formData = ref({
-  namaPemohon: '',
-  noPengenalan: '',
-  emailPemohon: '',
-  noTelefonPemohon: '',
+  namaPemohon: 'Ahmad bin Abdullah',
+  noPengenalan: '800101-10-1111',
+  emailPemohon: 'ahmad.abdullah@email.com',
+  noTelefonPemohon: '012-3456789',
   kategoriAsnaf: 'Fakir',
   statusHousehold: 'Fakir',
   statusIndividu: 'Fakir',
   statusMultidimensi: 'Produktif',
-  noBtn: '',
+  noBtn: 'BTN-2025-00012',
   noGL: '',
   noInvois: 'INV-2025-00124',
   kodBantuan: '',
@@ -619,18 +601,15 @@ const handleSaveDraft = () => {
   })
 }
 
-const handleSubmit = () => {}
-
-// Hydrate entirely from :id preset, fallback to default session mock if unknown
-onMounted(() => {
-  const id = String(route.params.id || '')
-  const preset = mockData[id]
-  if (preset) {
-    hydrateFromSelectedBantuan(preset)
-  } else {
-    populateFormDataFromSession()
-  }
-})
+function handleSubmit() {
+  $swal.fire({
+    icon: 'success',
+    title: 'Permohonan tuntutan berjaya dihantar',
+    showConfirmButton: true,
+  }).then(() => {
+    navigateTo('/BF-BTN/tuntutan-dengan-siasatan/senarai-tuntutan/vendor')
+  })
+}
 </script>
 
 
