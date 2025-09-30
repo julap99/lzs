@@ -110,15 +110,31 @@
                 </div>
 
                 <div class="space-y-2 lg:col-span-2">
-                  <label class="block text-sm font-medium text-gray-700"
-                    >Alamat Tapak</label
-                  >
-                  <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <span
-                      class="text-sm text-gray-900 break-words leading-relaxed"
-                      >{{ formData.alamat }}</span
+                  <div class="flex items-center space-x-4">
+                    <label class="block text-sm font-medium text-gray-700"
+                      >Alamat Tapak</label
                     >
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        v-model="formData.gunakanAlamatProfil"
+                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <span class="text-sm text-gray-600">
+                        Gunakan Alamat Profil
+                      </span>
+                    </label>
                   </div>
+                  <FormKit
+                    type="textarea"
+                    v-model="formData.alamat"
+                    rows="3"
+                    :classes="{ 
+                      input: 'text-sm !p-3 !border-gray-300 focus:!border-blue-500 focus:!ring-blue-500',
+                      wrapper: 'mb-0'
+                    }"
+                    placeholder="Masukkan alamat tapak atau tanda kotak 'Gunakan Alamat Profil' untuk menggunakan alamat profil..."
+                  />
                 </div>
               </div>
             </template>
@@ -1246,6 +1262,9 @@ const showPDFModal = ref(false);
 // Check if current bantuan is B400
 const isB400 = computed(() => String(route.params.id || '').toUpperCase() === 'B400');
 
+// Profile address constant
+const profileAddress = "Jalan Rajawali, Kampung Bukit Kuching, 45800 Jeram";
+
 // B400 Dokumen Sokongan data
 const b400DokumenSokongan = ref([
   {
@@ -1507,6 +1526,8 @@ const formData = ref({
   noBR: "",
   namaPemohon: "",
   alamat: "",
+  backupAlamat: "",
+  gunakanAlamatProfil: false,
   tarikhSiasatan: "",
   itemKerja: [],
   jumlahKeseluruhan: 0,
@@ -1636,6 +1657,35 @@ watch(
   { immediate: true }
 );
 
+// Watch for checkbox changes and handle address filling
+watch(
+  () => formData.value.gunakanAlamatProfil,
+  (isChecked) => {
+    console.log('Checkbox changed to:', isChecked); // Debug log
+    if (isChecked) {
+      // When checkbox is CHECKED: backup current user input and fill with profile address
+      const currentAddress = formData.value.alamat?.trim();
+      if (currentAddress && currentAddress !== profileAddress) {
+        formData.value.backupAlamat = currentAddress;
+        console.log('Backed up address:', currentAddress); // Debug log
+      }
+      formData.value.alamat = profileAddress;
+      console.log('Set address to profile:', profileAddress); // Debug log
+    } else {
+      // When checkbox is UNCHECKED: clear address or restore user's backup
+      const backup = formData.value.backupAlamat?.trim();
+      if (backup && backup !== profileAddress) {
+        formData.value.alamat = backup;  // Restore user's input
+        console.log('Restored backup address:', backup); // Debug log
+      } else {
+        formData.value.alamat = "";      // Make empty for user to type
+        console.log('Cleared address field'); // Debug log
+      }
+      formData.value.backupAlamat = "";   // Clear backup
+    }
+  }
+);
+
 // Update totals function (now mainly for manual triggers)
 const updateTotals = () => {
   // This will trigger the watcher above
@@ -1758,6 +1808,8 @@ const handleSaveAndReturn = async () => {
   }
 };
 
+// Note: Checkbox toggle is now handled automatically by v-model and watcher
+
 const handleBack = () => {
   router.push(`/BF-BTN/tugasan/bantuan/siasatan/${route.params.id}`);
 };
@@ -1788,7 +1840,9 @@ const initializeFormData = () => {
     noBQ: generateBQNumber(),
     noBR: generateBRNumber(),
     namaPemohon: isB400.value ? "Masjid At-Taqwa" : "Mohd Rosli Bin Saad",
-    alamat: isB400.value ? "Jalan Masjid, Kampung Seri Melati, 45800 Kuala Selangor, Selangor" : "Jalan Rajawali, Kampung Bukit Kuching, 45800 Jeram",
+    alamat: "", // Always start empty - user must click checkbox or type manually
+    backupAlamat: "",
+    gunakanAlamatProfil: false,
     tarikhSiasatan: today.toISOString().split("T")[0],
     itemKerja: [],
     jumlahKeseluruhan: 0,
@@ -1805,32 +1859,58 @@ const initializeFormData = () => {
 
   // Add sample data if editing
   if (editingBQ.value) {
-    baseData.itemKerja = [
-      {
-        ref: "CMP",
-        jenisKerja: "roboh_rumah_kayu",
-        keteranganKerja: "Membuka, memecah dan membawa keluar keseluruhan struktur binaan rumah kayu, membuka dan memindahkan meter elektrik TNB, papan agihan termasuk semua pendawaian yang berkaitan, membawa bahan-bahan buangan pembinaan ke lokasi yang ditentukan sehingga sempurna mengikut arahan Pegawai Penguasa.",
-        unit: "Pukal",
-        kuantiti: 1,
-        kadar: 3000,
-      },
-      {
-        ref: "CMP",
-        jenisKerja: "bina_semula_bangunan_bilik",
-        keteranganKerja: "Membina tambahan bilik berukuran 20' x 15' termasuk kerja-kerja asas cerucuk bakau atau raft foundation, penapak konkrit bertetulang (pad footing), rasuk tanah konkrit bertetulang, tiang konkrit bertetulang, dinding bata berlepa, rasuk bumbung konkrit bertetulang, lantai konkrit bertetulang, kemasan siling, kemasan cat luar & dalam serta kelengkapan berikut :",
-        unit: "Pukal",
-        kuantiti: 1,
-        kadar: 40000,
-      },
-             {
-         ref: "CMP",
-        jenisKerja: "baik_pulih_struktur",
-        keteranganKerja: "Baik pulih struktur bangunan termasuk kerja-kerja pembaikan dinding retak, penggantian bumbung rosak, pembaikan lantai, cat dalam dan luar, serta kerja-kerja berkaitan untuk memulihkan keadaan bangunan kepada kondisi yang selamat dan sesuai untuk didiami.",
-        unit: "Pukal",
-        kuantiti: 1,
-        kadar: 15000,
-       },
-    ];
+    // Check the specific route ID to determine which sample data to use
+    const routeId = String(route.params.id || '').toUpperCase();
+    
+    if (routeId === 'B102') {
+      // B102 specific: Only 2 rows (third row removed as requested)
+      baseData.itemKerja = [
+        {
+          ref: "CMP",
+          jenisKerja: "roboh_rumah_kayu",
+          keteranganKerja: "Membuka, memecah dan membawa keluar keseluruhan struktur binaan rumah kayu, membuka dan memindahkan meter elektrik TNB, papan agihan termasuk semua pendawaian yang berkaitan, membawa bahan-bahan buangan pembinaan ke lokasi yang ditentukan sehingga sempurna mengikut arahan Pegawai Penguasa.",
+          unit: "Pukal",
+          kuantiti: 1,
+          kadar: 3000,
+        },
+        {
+          ref: "CMP",
+          jenisKerja: "bina_semula_bangunan_bilik",
+          keteranganKerja: "Membina tambahan bilik berukuran 20' x 15' termasuk kerja-kerja asas cerucuk bakau atau raft foundation, penapak konkrit bertetulang (pad footing), rasuk tanah konkrit bertetulang, tiang konkrit bertetulang, dinding bata berlepa, rasuk bumbung konkrit bertetulang, lantai konkrit bertetulang, kemasan siling, kemasan cat luar & dalam serta kelengkapan berikut :",
+          unit: "Pukal",
+          kuantiti: 1,
+          kadar: 40000,
+        },
+      ];
+    } else {
+      // All other pages (B400, etc.): Keep all 3 rows
+      baseData.itemKerja = [
+        {
+          ref: "CMP",
+          jenisKerja: "roboh_rumah_kayu",
+          keteranganKerja: "Membuka, memecah dan membawa keluar keseluruhan struktur binaan rumah kayu, membuka dan memindahkan meter elektrik TNB, papan agihan termasuk semua pendawaian yang berkaitan, membawa bahan-bahan buangan pembinaan ke lokasi yang ditentukan sehingga sempurna mengikut arahan Pegawai Penguasa.",
+          unit: "Pukal",
+          kuantiti: 1,
+          kadar: 3000,
+        },
+        {
+          ref: "CMP",
+          jenisKerja: "bina_semula_bangunan_bilik",
+          keteranganKerja: "Membina tambahan bilik berukuran 20' x 15' termasuk kerja-kerja asas cerucuk bakau atau raft foundation, penapak konkrit bertetulang (pad footing), rasuk tanah konkrit bertetulang, tiang konkrit bertetulang, dinding bata berlepa, rasuk bumbung konkrit bertetulang, lantai konkrit bertetulang, kemasan siling, kemasan cat luar & dalam serta kelengkapan berikut :",
+          unit: "Pukal",
+          kuantiti: 1,
+          kadar: 40000,
+        },
+        {
+          ref: "CMP",
+          jenisKerja: "baik_pulih_struktur",
+          keteranganKerja: "Baik pulih struktur bangunan termasuk kerja-kerja pembaikan dinding retak, penggantian bumbung rosak, pembaikan lantai, cat dalam dan luar, serta kerja-kerja berkaitan untuk memulihkan keadaan bangunan kepada kondisi yang selamat dan sesuai untuk didiami.",
+          unit: "Pukal",
+          kuantiti: 1,
+          kadar: 15000,
+        },
+      ];
+    }
   }
 
   return baseData;
