@@ -836,16 +836,16 @@
                   />
 
                   <!-- Ringkasan Keluarga (Syor) -->
-                  <!-- <div class="mt-4">
+                  <div class="mt-4">
                     <label class="block text-xs uppercase tracking-wide font-bold">Merit Keluarga(Syor)</label>
-                    <p class="text-gray-900 font-medium">{{ profilingData.meritKeluargaSyor }}</p>
+                    <p class="text-gray-900 font-medium">0.55</p>
 
                     <label class="block text-xs uppercase tracking-wide mt-4 font-bold">Status Multidimensi Keluarga(Syor)</label>
-                    <p class="text-gray-900 font-medium">{{ profilingData.statusMultidimensiKeluargaSyor }}</p>
+                    <p class="text-gray-900 font-medium">Producktif C</p>
 
                     <label class="block text-xs uppercase tracking-wide mt-4 font-bold">Quadrant Multidimensi Keluarga(Syor)</label>
-                    <p class="text-gray-900 font-medium">{{ profilingData.quadrantMultidimensiKeluargaSyor }}</p>
-                  </div> -->
+                    <p class="text-gray-900 font-medium">Asnaf Produktif Sementara</p>
+                  </div>
                 </div>
               </rs-collapse-item>
 
@@ -909,6 +909,18 @@
                     </template>
                   </rs-table>
                 </div>
+
+                <!-- Ringkasan Keluarga (Syor) -->
+                  <div class="mt-4">
+                    <label class="block text-xs uppercase tracking-wide font-bold">Merit Keluarga(Syor)</label>
+                    <p class="text-gray-900 font-medium">0.55</p>
+
+                    <label class="block text-xs uppercase tracking-wide mt-4 font-bold">Status Multidimensi Keluarga(Syor)</label>
+                    <p class="text-gray-900 font-medium">Producktif C</p>
+
+                    <label class="block text-xs uppercase tracking-wide mt-4 font-bold">Quadrant Multidimensi Keluarga(Syor)</label>
+                    <p class="text-gray-900 font-medium">Asnaf Produktif Sementara</p>
+                  </div>
               </rs-collapse-item>
 
               <!-- Had Kifayah & Multidimensi (relocated to Maklumat Pemohon) -->
