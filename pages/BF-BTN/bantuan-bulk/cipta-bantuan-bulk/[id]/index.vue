@@ -192,6 +192,7 @@
                 required: 'Sila pilih tarikh jangkaan bayaran',
               }"
               v-model="formData.tarikhJangkaanBayaran"
+              :disabled="true"
             />
 
             
@@ -213,6 +214,7 @@
                     name="modeOfPayment"
                     :value="opt.value"
                     v-model="formData.modeOfPayment"
+                    :disabled="true"
                     class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
                   />
                   <label :for="`mode-${opt.value}`" class="ml-2 text-sm text-gray-700 cursor-pointer">
@@ -1049,7 +1051,7 @@ const getBantuanData = (id) => {
       kodBP: 'BP-2025-00007',
       tajuk: 'Bantuan Rumah Jan 2025',
       kategoriAsnaf: 'fakir',
-      status: 'Rework',
+      status: 'Ditolak',
       jumlahAmaun: 'RM50,000.00',
       catatan: 'Tuntutan bantuan rumah untuk bulan Jan 2025. Program ini bertujuan membantu keluarga fakir dalam memenuhi keperluan asas mereka.',
       namaPegawai: 'Ahmad bin Ali',
@@ -1067,7 +1069,7 @@ const getBantuanData = (id) => {
       kodBP: 'BP-2025-00008',
       tajuk: 'Bantuan Makanan Feb 2025',
       kategoriAsnaf: 'fakir',
-      status: 'Rework',
+      status: 'Ditolak',
       jumlahAmaun: 'RM15,000.00',
       catatan: 'Tuntutan bantuan makanan untuk bulan Feb 2025. Program ini bertujuan membantu keluarga fakir dalam memenuhi keperluan asas mereka.',
       namaPegawai: 'Ahmad bin Ali',
