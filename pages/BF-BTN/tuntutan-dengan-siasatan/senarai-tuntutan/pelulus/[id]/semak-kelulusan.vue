@@ -403,7 +403,7 @@ const _items = ref<TuntutanItem[]>([
     id: 'TDS-2024-004', idPermohonan: 'TDS-2024-004', noGL: 'GL-2024-004', noInvois: 'INV-2024-417',
     amaunTuntutan: 8000, amaunGL: 10000, bakiAmaun: 2000, tarikhPermohonan: '2024-05-05T10:15:00', pegawaiETD: 'Mohd Yazid', statusGL: 'Lulus', tarikhPerkhidmatan: '2024-05-01T00:00:00',
     dokumenSokongan: [{ name: 'Quotation Peralatan.pdf', url: '#' }], dokumenPerkhidmatan: [{ name: 'Surat Pengesahan.pdf', url: '#' }], lampiranLain: [{ name: 'Gambar Lokasi.jpg', url: '#' }],
-    bantuanData: { kodBantuan: 'B500', jenisBantuan: '(HQ) BANTUAN PEMBINAAN RUMAH', bahanBantuan: 'BAHAN BINAAN', pakejBantuan: 'Pakej Rumah Asnaf', kelayakanBantuan: 'Keluarga Asnaf Fakir Miskin' },
+    bantuanData: { kodBantuan: 'B134', jenisBantuan: 'BANTUAN PROGRAM PENERAPAN NILAI ISLAM', bahanBantuan: 'JAIS / MAIS - HONORARIUM', pakejBantuan: 'MODERATOR (MUKIM) - JAIS / MAIS - HONORARIUM', kelayakanBantuan: 'MODERATOR (MUKIM) - JAIS / MAIS - HONORARIUM' },
   pemohon: createPemohonMock({ nama: 'Keluarga Pn. Zainab', noId: '800202-10-2233', telefon: '017-222 3344', email: 'zainab.keluarga@example.com', alamat: 'Kg. Seri Makmur, 27000 Jerantut, Pahang', statusHousehold: 'Miskin', statusIndividu: 'Tidak Produktif', statusMultidimensi: 'Produktif Sementara' }),
     siasatan: { kaedah: 'Lapangan', status: 'Sokong', catatan: 'Penilaian struktur asas memadai untuk bina baharu.', tarikh: '2024-05-03T15:45:00', namaPegawai: 'Mohd Yazid' },
     catatanTambahan: 'Permohonan bina semula ruang dapur.', statusKelulusan: 'Belum Diputus',

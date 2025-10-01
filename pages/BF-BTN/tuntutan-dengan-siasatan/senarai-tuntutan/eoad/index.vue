@@ -159,7 +159,9 @@ const tuntutanList = ref<Row[]>(
   baseList.value.map((r, idx) => ({
     ...r,
     maklumatBantuan:
-      idx % 2 === 0
+      r.noTuntutan === 'TUN-2024-004'
+        ? 'BANTUAN PROGRAM PENERAPAN NILAI ISLAM (B134)'
+        : idx % 2 === 0
         ? '(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA (B400)'
         : '(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR) (B103)',
     tindakan: { noTuntutan: r.noTuntutan, status: r.statusPermohonan },
