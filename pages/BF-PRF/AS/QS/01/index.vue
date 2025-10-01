@@ -5,9 +5,13 @@
     <!-- Header Section -->
     <div class="bg-white shadow-sm border-b">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div class="flex items-center">
-          <Icon name="mdi:account-search" size="2rem" class="text-blue-600" />
-          <div>
+        <div class="flex items-center space-x-4">
+          <div class="flex-shrink-0">
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Icon name="mdi:account-search" size="1.75rem" class="text-blue-600" />
+            </div>
+          </div>
+          <div class="flex-1">
             <h1 class="text-3xl font-bold text-gray-900">Carian Profil</h1>
           </div>
         </div>
@@ -19,7 +23,7 @@
       <rs-card class="shadow-lg border-0">
         <template #header>
           <div class="flex items-center">
-            <h2 class="text-xl font-semibold text-gray-900">Carian Profil</h2>
+            <h2 class="text-xl font-semibold text-gray-900">Kriteria Carian</h2>
           </div>
         </template>
 
@@ -179,6 +183,7 @@
                 @click="resetForm"
                 class="w-full sm:w-auto"
               >
+                <Icon name="mdi:refresh" size="1rem" class="mr-2" />
                 Reset
               </rs-button>
 
@@ -237,36 +242,24 @@
 
         <!-- Search Result Section -->
         <div v-if="searchCompleted" class="mt-6">
+          <!-- Status card only for 'not_found' -->
           <rs-card
-            :variant="profileStatus === 'found' ? 'success' : profileStatus === 'not_found' ? 'warning' : 'info'"
+            v-if="profileStatus === 'not_found'"
+            variant="warning"
             class="mb-4"
           >
             <template #body>
               <div class="flex items-center">
                 <div class="mr-4">
                   <Icon
-                    :name="
-                      profileStatus === 'found' ? 'mdi:check-circle' : profileStatus === 'not_found' ? 'mdi:alert-circle' : 'mdi:information'
-                    "
+                    name="mdi:alert-circle"
                     size="2rem"
-                    :class="profileStatus === 'found' ? 'text-green-600' : profileStatus === 'not_found' ? 'text-amber-600' : 'text-blue-600'"
+                    class="text-amber-600"
                   />
                 </div>
                 <div>
-                  <h3 class="text-lg font-medium">
-                    {{
-                      profileStatus === 'found' ? "Profil Ditemui" : profileStatus === 'not_found' ? "Profil Tidak Ditemui" : "Lengkapkan Profil"
-                    }}
-                  </h3>
-                  <p class="text-sm mt-1">
-                    {{
-                      profileStatus === 'found'
-                        ? "Profil bagi ID yang dimasukkan telah dijumpai dalam sistem."
-                        : profileStatus === 'not_found'
-                        ? "Tiada profil ditemui bagi ID yang dimasukkan."
-                        : "Profil tidak lengkap. Silakan lengkapkan profil."
-                    }}
-                  </p>
+                  <h3 class="text-lg font-medium">Profil Tidak Ditemui</h3>
+                  <p class="text-sm mt-1">Tiada profil ditemui bagi ID yang dimasukkan.</p>
                 </div>
               </div>
             </template>
@@ -276,11 +269,86 @@
                   variant="primary"
                   @click="navigateNext"
                 >
-                  {{ profileStatus === 'found' ? "Kemaskini Profil" : profileStatus === 'not_found' ? "Pendaftaran Baru" : "Lengkapkan Profil" }}
+                  Pendaftaran Baru
                 </rs-button>
               </div>
             </template>
           </rs-card>
+
+          <!-- Results table for 'found' and 'incomplete' statuses -->
+          <div v-if="(profileStatus === 'found' || profileStatus === 'incomplete') && resultsToShow.length > 0" class="mt-4">
+            <rs-card variant="info" class="shadow-md">
+              <template #header>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium text-gray-900">Senarai Hasil Carian</h3>
+                  <div class="text-sm text-gray-500">
+                    <span class="font-medium">{{ resultsToShow.length }}</span> rekod
+                    <span v-if="resultsComplete.length > 0 && resultsIncomplete.length > 0" class="ml-2">
+                      ({{ resultsComplete.length }} lengkap, {{ resultsIncomplete.length }} tidak lengkap)
+                    </span>
+                    <span v-else-if="resultsComplete.length > 0" class="ml-2 text-green-600">
+                      ({{ resultsComplete.length }} lengkap)
+                    </span>
+                    <span v-else-if="resultsIncomplete.length > 0" class="ml-2 text-orange-600">
+                      ({{ resultsIncomplete.length }} tidak lengkap)
+                    </span>
+                  </div>
+                </div>
+              </template>
+              <template #body>
+                <div class="overflow-x-auto">
+                  <table class="w-full table-fixed divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="w-1/6 px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                        <th class="w-1/6 px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis ID</th>
+                        <th class="w-1/4 px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                        <th class="w-1/6 px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Kariah</th>
+                        <th class="w-1/6 px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="w-1/6 px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <tr v-for="profile in resultsToShow" :key="profile.id" class="hover:bg-gray-50">
+                        <td class="px-3 py-4 text-sm text-gray-900 truncate text-center" :title="profile.id">{{ profile.id }}</td>
+                        <td class="px-3 py-4 text-sm text-gray-900 truncate text-center" :title="getSelectedIdTypeLabel(profile.idType)">{{ getSelectedIdTypeLabel(profile.idType) }}</td>
+                        <td class="px-3 py-4 text-sm font-medium text-gray-900 truncate text-center" :title="profile.name">{{ profile.name }}</td>
+                        <td class="px-3 py-4 text-sm text-gray-900 truncate text-center" :title="profile.kariah">{{ profile.kariah }}</td>
+                        <td class="px-3 py-4 text-center">
+                          <span v-if="profile.isComplete" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                            Lengkap
+                          </span>
+                          <span v-else class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 border border-orange-200">
+                            Tidak Lengkap
+                          </span>
+                        </td>
+                        <td class="flex justify-center gap-2 px-3 py-4 text-sm text-gray-500 text-center">
+                          <rs-button 
+                            v-if="profile.isComplete"
+                            variant="primary" 
+                            size="sm"
+                            @click="updateProfile(profile)"
+                            class="text-xs"
+                          >
+                            Kemaskini Profil
+                          </rs-button>
+                          <rs-button 
+                            v-else
+                            variant="primary" 
+                            size="sm"
+                            @click="completeProfile(profile)"
+                            class="text-xs"
+                          >
+                            Lengkapkan Profil
+                          </rs-button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </template>
+            </rs-card>
+          </div>
         </div>
       </template>
     </rs-card>
@@ -414,7 +482,8 @@ const mockDatabase = [
     kategoriAsnaf: 'Fakir',
     phone: '012-3456789',
     email: 'ali.abu@email.com',
-    registrationDate: '15/01/2023'
+    registrationDate: '15/01/2023',
+    isComplete: true
   },
   { 
     id: '987654321', 
@@ -426,7 +495,8 @@ const mockDatabase = [
     kategoriAsnaf: 'Miskin',
     phone: '019-8765432',
     email: 'fatimah.ahmad@email.com',
-    registrationDate: '22/03/2023'
+    registrationDate: '22/03/2023',
+    isComplete: false
   },
   { 
     id: '555666777', 
@@ -438,7 +508,8 @@ const mockDatabase = [
     kategoriAsnaf: 'Fakir',
     phone: '011-2345678',
     email: 'ahmad.hassan@email.com',
-    registrationDate: '08/07/2023'
+    registrationDate: '08/07/2023',
+    isComplete: true
   },
   { 
     id: '111222333', 
@@ -450,7 +521,8 @@ const mockDatabase = [
     kategoriAsnaf: 'Mualaf',
     phone: '016-7890123',
     email: 'siti.omar@email.com',
-    registrationDate: '12/11/2023'
+    registrationDate: '12/11/2023',
+    isComplete: false
   },
   { 
     id: '888999000', 
@@ -462,7 +534,8 @@ const mockDatabase = [
     kategoriAsnaf: 'Fakir',
     phone: '013-4567890',
     email: 'mohammad.ismail@email.com',
-    registrationDate: '05/02/2023'
+    registrationDate: '05/02/2023',
+    isComplete: true
   },
 ];
 
@@ -513,14 +586,6 @@ const getSelectedIdTypeLabel = (idType) => {
   return option ? option.label : idType;
 };
 
-const getKategoriAsnafBadge = (kategori) => {
-  const badges = {
-    'Fakir': 'bg-red-100 text-red-800 border-red-200',
-    'Miskin': 'bg-orange-100 text-orange-800 border-orange-200', 
-    'Mualaf': 'bg-blue-100 text-blue-800 border-blue-200'
-  };
-  return badges[kategori] || 'bg-gray-100 text-gray-800 border-gray-200';
-};
 
 // Computed properties for search feedback
 const hasSearchCriteria = computed(() => {
@@ -538,6 +603,24 @@ const filteredKariahOptions = computed(() => {
     return [];
   }
   return kariahByDaerah[formData.value.searchDaerah] || [];
+});
+
+// Results filtering for table display
+const resultsComplete = computed(() => searchResults.value.filter(p => p.isComplete));
+const resultsIncomplete = computed(() => searchResults.value.filter(p => !p.isComplete));
+const resultsToShow = computed(() => {
+  // Show all results when there are matches, regardless of status
+  if (profileStatus.value === 'found' || profileStatus.value === 'incomplete') {
+    // Sort by status: complete profiles first, then incomplete
+    return [...searchResults.value].sort((a, b) => {
+      // Complete profiles (true) come before incomplete profiles (false)
+      if (a.isComplete && !b.isComplete) return -1;
+      if (!a.isComplete && b.isComplete) return 1;
+      // If same status, sort by name alphabetically
+      return a.name.localeCompare(b.name);
+    });
+  }
+  return [];
 });
 
 // Real-time validation
@@ -800,16 +883,14 @@ const performFlexibleSearch = async () => {
 
     if (matches.length > 0) {
       searchResults.value = matches;
-      // Determine profile status based on search results
-      // For now, we'll simulate the original logic with random status
-      // In real implementation, this would be determined by the API response
-      const random = Math.random();
-      if (random < 0.33) {
-        profileStatus.value = "found";
-      } else if (random < 0.66) {
-        profileStatus.value = "incomplete";
+      const anyComplete = matches.some(p => p.isComplete);
+      const anyIncomplete = matches.some(p => !p.isComplete);
+      if (anyComplete) {
+        profileStatus.value = 'found';
+      } else if (anyIncomplete) {
+        profileStatus.value = 'incomplete';
       } else {
-        profileStatus.value = "not_found";
+        profileStatus.value = 'not_found';
       }
       searchCompleted.value = true;
       processing.value = false;
