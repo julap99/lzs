@@ -31,7 +31,7 @@
               :class="{ 'font-semibold': currentStep >= step.id }"
               @click="goToStep(step.id)"
             >
-              <span class="cursor-default" :title="step.tooltip">
+              <span :title="step.tooltip">
                 {{ step.label }}
               </span>
               <!-- Tooltip for Bermastautin tab -->
@@ -61,12 +61,11 @@
           <FormKit type="form" :actions="false" @submit="handleSubmit">
             <!-- Step 1: Maklumat Peribadi Asnaf -->
             <div v-if="currentStep === 1">
-              <h3 class="text-lg font-medium mb-4">
-                I) Maklumat Peribadi Asnaf
+              <h3 class="text-lg font-semibold mb-4">
+                1. Maklumat Peribadi Asnaf
               </h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Location Information Section - Moved to top -->
-                <!-- <div class="md:col-span-2">
+              <!-- Location Information Section - Moved to top -->
+              <!-- <div class="md:col-span-2">
                   <h4 class="text-md font-medium mb-3">Maklumat Bencana</h4>
                 </div>
                 <div class="flex gap-2">
@@ -147,8 +146,8 @@
                   />
                 </div> -->
 
-                <!-- Disaster Location (Conditional) -->
-                <!-- <div v-if="formData.healthInfo.status && formData.healthInfo.status !== 'tiada'" class="md:col-span-2">
+              <!-- Disaster Location (Conditional) -->
+              <!-- <div v-if="formData.healthInfo.status && formData.healthInfo.status !== 'tiada'" class="md:col-span-2">
                   <div class="flex gap-2">
                     <FormKit
                       v-model="formData.personalInfo.disasterLocation"
@@ -171,18 +170,403 @@
                   </div>
                 </div> -->
 
-                <!-- Maklumat Peribadi Section -->
-                <div class="mb-6">
-                  <h4 class="text-md font-medium mb-3">Maklumat Peribadi</h4>
+              <!-- Maklumat Peribadi Section -->
+              <div class="mb-6">
+                <h4 class="text-md font-medium mb-3">Maklumat Peribadi</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormKit
+                    type="select"
+                    name="idValue"
+                    label="Jenis ID"
+                    placeholder="Pilih jenis ID"
+                    validation="required"
+                    :options="idTypeOptions"
+                    v-model="formData.personalInfo.idValue"
+                    :validation-messages="{
+                      required: 'Jenis ID adalah wajib',
+                    }"
+                  />
+
+                  <FormKit
+                    type="text"
+                    name="idNumber"
+                    :label="getIdLabel()"
+                    validation="required"
+                    v-model="formData.personalInfo.idNumber"
+                    :validation-messages="{
+                      required: 'Nombor ID adalah wajib',
+                    }"
+                    :placeholder="getPlaceholder()"
+                  />
+
+                  <FormKit
+                    v-if="formData.personalInfo.idValue"
+                    type="file"
+                    name="idDocument"
+                    :label="getDocumentLabel()"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    v-model="formData.personalInfo.idDocument"
+                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Dokumen ID adalah wajib',
+                    }"
+                  />
+
+                  <FormKit
+                    type="text"
+                    name="name"
+                    label="Nama"
+                    validation="required"
+                    v-model="formData.personalInfo.name"
+                    :validation-messages="{
+                      required: 'Nama adalah wajib',
+                    }"
+                  />
+
+                  <FormKit
+                    type="select"
+                    name="citizenship"
+                    label="Warganegara"
+                    validation="required"
+                    :options="citizenshipOptions"
+                    placeholder="Pilih status warganegara"
+                    v-model="formData.personalInfo.citizenship"
+                    :validation-messages="{
+                      required: 'Status warganegara adalah wajib',
+                    }"
+                  />
+
+                  <!-- Country Selection - Show when citizenship is 'Lain-lain' -->
+                  <FormKit
+                    v-if="formData.personalInfo.citizenship === 'lain-lain'"
+                    type="select"
+                    name="country"
+                    label="Negara"
+                    validation="required"
+                    :options="countryOptions"
+                    placeholder="Pilih negara"
+                    v-model="formData.personalInfo.country"
+                    :validation-messages="{
+                      required: 'Negara adalah wajib',
+                    }"
+                  />
+
+                  <!-- Taraf Penduduk Tetap - Show when citizenship is 'Lain-lain' -->
+                  <FormKit
+                    v-if="formData.personalInfo.citizenship === 'lain-lain'"
+                    type="select"
+                    name="residentStatus"
+                    label="Taraf Penduduk Tetap"
+                    validation="required"
+                    :options="[
+                      { label: 'Ya', value: 'Y' },
+                      { label: 'Tidak', value: 'N' },
+                    ]"
+                    v-model="formData.personalInfo.residentStatus"
+                    :validation-messages="{
+                      required: 'Taraf penduduk tetap adalah wajib',
+                    }"
+                  />
+
+                  <!-- Passport Fields - Show when jenis_id is 'foreign-id' AND citizenship is 'Lain-lain' -->
+                  <template
+                    v-if="
+                      formData.personalInfo.citizenship === 'lain-lain' &&
+                      formData.personalInfo.idType === 'foreign-id'
+                    "
+                  >
+                    <FormKit
+                      type="date"
+                      name="passportStartDate"
+                      label="Tarikh Mula Passport"
+                      validation="required"
+                      v-model="formData.personalInfo.passportStartDate"
+                      :validation-messages="{
+                        required: 'Tarikh mula passport adalah wajib',
+                      }"
+                    />
+
+                    <FormKit
+                      type="date"
+                      name="passportEndDate"
+                      label="Tarikh Tamat Passport"
+                      validation="required"
+                      v-model="formData.personalInfo.passportEndDate"
+                      :validation-messages="{
+                        required: 'Tarikh tamat passport adalah wajib',
+                      }"
+                    />
+
+                    <FormKit
+                      type="text"
+                      name="passportNumber"
+                      label="No Passport"
+                      validation="required"
+                      v-model="formData.personalInfo.passportNumber"
+                      :validation-messages="{
+                        required: 'No passport adalah wajib',
+                      }"
+                    />
+                  </template>
+
+                  <FormKit
+                    type="tel"
+                    name="phone"
+                    label="No Telefon Bimbit"
+                    validation="required"
+                    v-model="formData.personalInfo.phone"
+                    :validation-messages="{
+                      required: 'No Telefon Bimbit adalah wajib',
+                    }"
+                  />
+
+                  <FormKit
+                    type="email"
+                    name="email"
+                    label="Emel"
+                    validation="required|email"
+                    v-model="formData.personalInfo.email"
+                    :validation-messages="{
+                      required: 'Emel adalah wajib',
+                      email: 'Sila masukkan emel yang sah',
+                    }"
+                  />
+                </div>
+              </div>
+
+              <!-- Butiran Peribadi Section -->
+              <div class="mb-6">
+                <h4 class="text-md font-medium mb-3">Butiran Peribadi</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormKit
+                    type="date"
+                    name="dateOfBirth"
+                    label="Tarikh Lahir"
+                    validation="required"
+                    v-model="formData.personalInfo.dateOfBirth"
+                    :validation-messages="{
+                      required: 'Tarikh lahir adalah wajib',
+                    }"
+                  />
+
+                  <FormKit
+                    type="select"
+                    name="gender"
+                    label="Jantina"
+                    validation="required"
+                    :options="genderOptions"
+                    placeholder="Pilih jantina"
+                    v-model="formData.personalInfo.gender"
+                    :validation-messages="{
+                      required: 'Jantina adalah wajib',
+                    }"
+                  />
+
+                  <FormKit
+                    type="select"
+                    name="religion"
+                    label="Agama"
+                    validation="required"
+                    :options="religionOptions"
+                    placeholder="Pilih agama"
+                    v-model="formData.personalInfo.religion"
+                    :validation-messages="{
+                      required: 'Agama adalah wajib',
+                    }"
+                  />
+                </div>
+              </div>
+
+              <!-- Islamic Information Section -->
+              <div class="mb-6">
+                <h4 class="text-md font-medium mb-3">Maklumat Islam</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <!-- Adakah anda seorang Muallaf? -->
+                  <div class="md:col-span-2">
+                    <FormKit
+                      type="select"
+                      name="adakah_muallaf"
+                      label="Adakah anda seorang Muallaf?"
+                      validation="required"
+                      :options="[
+                        { label: 'Ya', value: 'Y' },
+                        { label: 'Tidak', value: 'T' },
+                      ]"
+                      v-model="formData.personalInfo.adakah_muallaf"
+                      :validation-messages="{
+                        required:
+                          'Sila pilih sama ada anda seorang muallaf atau tidak',
+                      }"
+                    />
+                  </div>
+
+                  <!-- Tarikh Masuk Islam - Show when Muallaf = Ya -->
+                  <div v-if="formData.personalInfo.adakah_muallaf === 'Y'">
+                    <FormKit
+                      type="date"
+                      name="tarikh_masuk_islam"
+                      label="Tarikh Masuk Islam"
+                      placeholder="DD/MM/YYYY"
+                      validation="required"
+                      v-model="formData.personalInfo.tarikh_masuk_islam"
+                      :validation-messages="{
+                        required: 'Sila masukkan tarikh masuk Islam',
+                      }"
+                    />
+                  </div>
+
+                  <!-- Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM) - Show when Muallaf = Ya -->
+                  <div v-if="formData.personalInfo.adakah_muallaf === 'Y'">
+                    <FormKit
+                      type="date"
+                      name="tarikh_masuk_kfam"
+                      label="Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM)"
+                      placeholder="DD/MM/YYYY"
+                      validation="required"
+                      v-model="formData.personalInfo.tarikh_masuk_kfam"
+                      :validation-messages="{
+                        required:
+                          'Sila masukkan tarikh masuk Kelas Fardu Ain Muallaf (KFAM)',
+                      }"
+                    />
+                  </div>
+
+                  <!-- Nama Selepas Islam(Mualaf) - Show when Muallaf = Ya -->
+                  <div v-if="formData.personalInfo.adakah_muallaf === 'Y'">
+                    <FormKit
+                      type="text"
+                      name="islamName"
+                      label="Nama Selepas Islam(Mualaf)"
+                      validation="required"
+                      v-model="formData.personalInfo.islamName"
+                      :validation-messages="{
+                        required: 'Sila masukkan nama selepas Islam',
+                      }"
+                    />
+                  </div>
+
+                  <!-- Dokumen Pengislaman - Show when Muallaf = Ya -->
+                  <div
+                    v-if="formData.personalInfo.adakah_muallaf === 'Y'"
+                    class="md:col-span-2"
+                  >
+                    <FormKit
+                      type="file"
+                      name="dokumen_pengislaman"
+                      label="Dokumen Pengislaman"
+                      help="Salinan dokumen rasmi pengislaman. Format: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                      multiple
+                      v-model="formData.personalInfo.dokumen_pengislaman"
+                      :validation-messages="{
+                        required: 'Sila muat naik dokumen pengislaman',
+                        max: 'Saiz fail tidak boleh melebihi 5MB',
+                        mime: 'Format fail tidak sah. Sila pilih fail PDF, JPG, atau PNG',
+                      }"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Marital Status Section -->
+              <div class="md:col-span-2">
+                <h4 class="text-md font-medium mb-3">Maklumat Perkahwinan</h4>
+              </div>
+              <FormKit
+                type="select"
+                name="maritalStatus"
+                label="Status Perkahwinan"
+                validation="required"
+                :options="maritalStatusOptions"
+                placeholder="Pilih status perkahwinan"
+                v-model="formData.personalInfo.maritalStatus"
+                :validation-messages="{
+                  required: 'Status perkahwinan adalah wajib',
+                }"
+              />
+
+              <FormKit
+                type="number"
+                name="dependentsCount"
+                label="Bilangan Tanggungan"
+                validation="required|number|min:0"
+                v-model="formData.personalInfo.dependentsCount"
+                :validation-messages="{
+                  required: 'Bilangan tanggungan adalah wajib',
+                  number: 'Sila masukkan nombor yang sah',
+                  min: 'Bilangan tanggungan tidak boleh kurang daripada 0',
+                }"
+              />
+
+              <!-- Spouse/Family Member Information (Conditional) -->
+              <div
+                v-if="formData.personalInfo.maritalStatus === 'berkahwin'"
+                class="md:col-span-2"
+              >
+                <div class="flex justify-between items-center mb-3">
+                  <h4 class="text-md font-medium">
+                    Maklumat Pasangan/Ahli Keluarga
+                  </h4>
+                  <rs-button
+                    type="button"
+                    variant="primary-outline"
+                    @click="addSpouse"
+                    class="text-sm"
+                  >
+                    <i class="fas fa-plus mr-2"></i>Tambah
+                  </rs-button>
+                </div>
+              </div>
+
+              <!-- Spouse/Family Member Entries -->
+              <div
+                v-if="formData.personalInfo.maritalStatus === 'berkahwin'"
+                class="md:col-span-2"
+              >
+                <div
+                  v-for="(spouse, index) in formData.personalInfo.spouses"
+                  :key="index"
+                  class="border rounded-lg p-4 mb-4 bg-gray-50"
+                >
+                  <div class="flex justify-between items-center mb-3">
+                    <h5 class="font-medium text-gray-700">
+                      Ahli Keluarga #{{ index + 1 }}
+                    </h5>
+                    <rs-button
+                      type="button"
+                      variant="danger-outline"
+                      @click="removeSpouse(index)"
+                      class="text-sm"
+                      size="sm"
+                    >
+                      <i class="fas fa-trash mr-1"></i>Padam
+                    </rs-button>
+                  </div>
+
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormKit
                       type="select"
-                      name="idValue"
+                      :name="`relationship_${index}`"
+                      label="Hubungan"
+                      validation="required"
+                      :options="relationshipOptions"
+                      placeholder="Pilih hubungan"
+                      v-model="spouse.relationship"
+                      :validation-messages="{
+                        required: 'Hubungan adalah wajib',
+                      }"
+                    />
+
+                    <FormKit
+                      type="select"
+                      :name="`spouseIdType_${index}`"
                       label="Jenis ID"
                       placeholder="Pilih jenis ID"
                       validation="required"
                       :options="idTypeOptions"
-                      v-model="formData.personalInfo.idValue"
+                      v-model="spouse.spouseIdType"
                       :validation-messages="{
                         required: 'Jenis ID adalah wajib',
                       }"
@@ -190,507 +574,167 @@
 
                     <FormKit
                       type="text"
-                      name="idNumber"
-                      :label="getIdLabel()"
+                      :name="`spouseIdNumber_${index}`"
+                      label="ID Pengenalan"
                       validation="required"
-                      v-model="formData.personalInfo.idNumber"
+                      v-model="spouse.spouseIdNumber"
                       :validation-messages="{
-                        required: 'Nombor ID adalah wajib',
+                        required: 'No ID adalah wajib',
                       }"
-                      :placeholder="getPlaceholder()"
+                      :placeholder="getSpousePlaceholder(index)"
                     />
-
-                <FormKit
-                  v-if="formData.personalInfo.idValue"
-                  type="file"
-                  name="idDocument"
-                  :label="getDocumentLabel()"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  v-model="formData.personalInfo.idDocument"
-                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Dokumen ID adalah wajib',
-                  }"
-                />
 
                     <FormKit
                       type="text"
-                      name="name"
+                      :name="`spouseName_${index}`"
                       label="Nama"
                       validation="required"
-                      v-model="formData.personalInfo.name"
+                      v-model="spouse.spouseName"
                       :validation-messages="{
                         required: 'Nama adalah wajib',
                       }"
                     />
 
-                    <FormKit
-                      type="select"
-                      name="citizenship"
-                      label="Warganegara"
-                      validation="required"
-                      :options="citizenshipOptions"
-                      placeholder="Pilih status warganegara"
-                      v-model="formData.personalInfo.citizenship"
-                      :validation-messages="{
-                        required: 'Status warganegara adalah wajib',
-                      }"
-                    />
-
-                <FormKit type="text" name="nopassport" label="No Passport" />
-
-                <FormKit
-                  type="date"
-                  name="passportStartDate"
-                  label="Tarikh mula passport"
-                  v-model="formData.personalInfo.passportStartDate"
-                />
-
+                    <div v-if="spouse.spouseIdType" class="md:col-span-2">
                       <FormKit
-                        type="date"
-                        name="passportEndDate"
-                        label="Tarikh Tamat Passport"
-                        validation="required"
-                        v-model="formData.personalInfo.passportEndDate"
-                        :validation-messages="{
-                          required: 'Tarikh tamat passport adalah wajib',
-                        }"
+                        type="file"
+                        :name="`spouseIdDocument_${index}`"
+                        :label="getSpouseDocumentLabel(index)"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        v-model="spouse.spouseIdDocument"
+                        help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB (Tidak wajib)"
                       />
-
-                      <FormKit
-                        type="text"
-                        name="passportNumber"
-                        label="No Passport"
-                        validation="required"
-                        v-model="formData.personalInfo.passportNumber"
-                        :validation-messages="{
-                          required: 'No passport adalah wajib',
-                        }"
-                      />
-                    </template>
-
-                    <FormKit
-                      type="tel"
-                      name="phone"
-                      label="No Telefon Bimbit"
-                      validation="required"
-                      v-model="formData.personalInfo.phone"
-                      :validation-messages="{
-                        required: 'No Telefon Bimbit adalah wajib',
-                      }"
-                    />
-
-                    <FormKit
-                      type="email"
-                      name="email"
-                      label="Emel"
-                      validation="required|email"
-                      v-model="formData.personalInfo.email"
-                      :validation-messages="{
-                        required: 'Emel adalah wajib',
-                        email: 'Sila masukkan emel yang sah'
-                      }"
-                    />
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                <!-- Butiran Peribadi Section -->
-                <div class="mb-6">
-                  <h4 class="text-md font-medium mb-3">Butiran Peribadi</h4>
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormKit
-                      type="date"
-                      name="dateOfBirth"
-                      label="Tarikh Lahir"
-                      validation="required"
-                      v-model="formData.personalInfo.dateOfBirth"
-                      :validation-messages="{
-                        required: 'Tarikh lahir adalah wajib',
-                      }"
-                    />
+              <!-- Bank Information Section -->
+              <div class="md:col-span-2">
+                <h4 class="text-md font-medium mb-3">Maklumat Bank</h4>
+              </div>
+              <FormKit
+                type="select"
+                name="bankName"
+                label="Nama Bank"
+                validation="required"
+                :options="bankOptions"
+                placeholder="Pilih bank"
+                v-model="formData.personalInfo.bankName"
+                :validation-messages="{
+                  required: 'Nama Bank adalah wajib',
+                }"
+              />
 
+              <FormKit
+                v-if="formData.personalInfo.bankName"
+                type="text"
+                name="swiftCode"
+                label="SWIFT Code"
+                v-model="formData.personalInfo.swiftCode"
+                :value="selectedBankSwiftCode"
+                readonly
+                help="SWIFT Code untuk bank yang dipilih"
+              />
+
+              <FormKit
+                type="text"
+                name="bankAccount"
+                label="No Akaun Bank"
+                validation="required"
+                v-model="formData.personalInfo.bankAccount"
+                :validation-messages="{
+                  required: 'No Akaun Bank adalah wajib',
+                }"
+              />
+
+              <FormKit
+                type="text"
+                name="bankAccountHolder"
+                label="Penama Bank Akaun"
+                v-model="formData.personalInfo.bankAccountHolder"
+              />
+
+              <FormKit
+                type="select"
+                name="paymentMethod"
+                label="Kaedah Pembayaran"
+                validation="required"
+                :options="paymentMethodOptions"
+                placeholder="Pilih kaedah pembayaran"
+                v-model="formData.personalInfo.paymentMethod"
+                :validation-messages="{
+                  required: 'Kaedah pembayaran adalah wajib',
+                }"
+              />
+
+              <!-- Conditional checkboxes when Tiada is selected -->
+              <div
+                v-if="formData.personalInfo.paymentMethod === 'tiada'"
+                class="md:col-span-2"
+              >
                 <FormKit
-                  type="select"
-                  name="gender"
-                  label="Jantina"
-                  validation="required"
-                  :options="genderOptions"
-                  placeholder="Pilih jantina"
-                  v-model="formData.personalInfo.gender"
+                  type="checkbox"
+                  name="noPaymentReason"
+                  label="Nyatakan sebab"
+                  :options="noPaymentReasonOptions"
+                  v-model="formData.personalInfo.noPaymentReason"
+                  validation="required|min:1"
                   :validation-messages="{
-                    required: 'Jantina adalah wajib',
+                    required: 'Sila pilih sekurang-kurangnya satu sebab',
+                    min: 'Sila pilih sekurang-kurangnya satu sebab',
                   }"
                 />
+              </div>
 
+              <!-- Income Information Section -->
+              <div class="md:col-span-2">
+                <h4 class="text-md font-medium mb-3">Maklumat Pendapatan</h4>
+              </div>
+
+              <FormKit
+                type="number"
+                name="grossIncome"
+                label="Pendapatan Kasar (RM)"
+                validation="required|number|min:0"
+                v-model="formData.personalInfo.grossIncome"
+                :validation-messages="{
+                  required: 'Pendapatan kasar adalah wajib',
+                  number: 'Sila masukkan nombor yang sah',
+                  min: 'Pendapatan kasar tidak boleh kurang daripada 0',
+                }"
+              />
+
+              <div class="md:col-span-2">
                 <FormKit
-                  type="select"
-                  name="citizenship"
-                  label="Warganegara"
-                  validation="required"
-                  :options="citizenshipOptions"
-                  placeholder="Pilih status warganegara"
-                  v-model="formData.personalInfo.citizenship"
-                  :validation-messages="{
-                    required: 'Status warganegara adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="select"
-                  name="religion"
-                  label="Agama"
-                  validation="required"
-                  :options="religionOptions"
-                  placeholder="Pilih agama"
-                  v-model="formData.personalInfo.religion"
-                  :validation-messages="{
-                    required: 'Agama adalah wajib',
-                  }"
-                />
-
-                <!-- <FormKit
-                  type="tel"
-                  name="phone"
-                  label="No Telefon"
-                  validation="required"
-                  v-model="formData.personalInfo.phone"
-                  :validation-messages="{
-                    required: 'No Telefon adalah wajib',
-                  }"
-                />
-
-                    <!-- Tarikh Masuk Islam - Show when Muallaf = Ya -->
-                    <div v-if="formData.personalInfo.adakah_muallaf === 'Y'">
-                      <FormKit
-                        type="date"
-                        name="tarikh_masuk_islam"
-                        label="Tarikh Masuk Islam"
-                        placeholder="DD/MM/YYYY"
-                        validation="required"
-                        v-model="formData.personalInfo.tarikh_masuk_islam"
-                        :validation-messages="{
-                          required: 'Sila masukkan tarikh masuk Islam',
-                        }"
-                      />
-                    </div>
-
-                    <!-- Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM) - Show when Muallaf = Ya -->
-                    <div v-if="formData.personalInfo.adakah_muallaf === 'Y'">
-                      <FormKit
-                        type="date"
-                        name="tarikh_masuk_kfam"
-                        label="Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM)"
-                        placeholder="DD/MM/YYYY"
-                        validation="required"
-                        v-model="formData.personalInfo.tarikh_masuk_kfam"
-                        :validation-messages="{
-                          required: 'Sila masukkan tarikh masuk Kelas Fardu Ain Muallaf (KFAM)',
-                        }"
-                      />
-                    </div>
-
-                <FormKit
-                  type="text"
-                  name="islamName"
-                  label="Nama Selepas Islam(Mualaf)"
-                  v-model="formData.personalInfo.islamName"
-                  :validation-messages="{
-                    required: 'Nama selepas Islam adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="date"
-                  name="islamDate"
-                  label="Tarikh Masuk Islam"
-                  v-model="formData.personalInfo.islamDate"
-                  :validation-messages="{
-                    required: 'Tarikh masuk Islam adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  v-if="formData.personalInfo.islamDate"
                   type="file"
-                  name="islamCertificate"
-                  label="Upload Surat Keislaman dari MAIS"
+                  name="incomeDocument"
+                  label="Upload dokumen pengesahan pendapatan/slip gaji"
                   accept=".pdf,.jpg,.jpeg,.png"
-                  v-model="formData.personalInfo.islamCertificate"
-                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Surat keislaman adalah wajib',
-                  }"
+                  v-model="formData.personalInfo.incomeDocument"
+                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB (Tidak wajib)"
                 />
+              </div>
 
-                <!-- <FormKit
-                  type="date"
-                  name="kfamDate"
-                  label="Tarikh Masuk KFAM"
-                  v-model="formData.personalInfo.kfamDate"
-                  :validation-messages="{
-                    required: 'Tarikh masuk KFAM adalah wajib',
-                  }"
-                /> -->
-
-                <!-- Marital Status Section -->
-                <div class="md:col-span-2">
-                  <h4 class="text-md font-medium mb-3">Maklumat Perkahwinan</h4>
-                </div>
-                <FormKit
-                  type="select"
-                  name="maritalStatus"
-                  label="Status Perkahwinan"
-                  validation="required"
-                  :options="maritalStatusOptions"
-                  placeholder="Pilih status perkahwinan"
-                  v-model="formData.personalInfo.maritalStatus"
-                  :validation-messages="{
-                    required: 'Status perkahwinan adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="number"
-                  name="dependentsCount"
-                  label="Bilangan Tanggungan"
-                  validation="required|number|min:0"
-                  v-model="formData.personalInfo.dependentsCount"
-                  :validation-messages="{
-                    required: 'Bilangan tanggungan adalah wajib',
-                    number: 'Sila masukkan nombor yang sah',
-                    min: 'Bilangan tanggungan tidak boleh kurang daripada 0',
-                  }"
-                />
-
-                <!-- Spouse/Family Member Information (Conditional) -->
-                <div
-                  v-if="formData.personalInfo.maritalStatus === 'berkahwin'"
-                  class="md:col-span-2"
-                >
-                  <div class="flex justify-between items-center mb-3">
-                    <h4 class="text-md font-medium">
-                      Maklumat Pasangan/Ahli Keluarga
-                    </h4>
-                    <rs-button
-                      type="button"
-                      variant="primary-outline"
-                      @click="addSpouse"
-                      class="text-sm"
-                    >
-                      <i class="fas fa-plus mr-2"></i>Tambah
-                    </rs-button>
-                  </div>
-                </div>
-
-                <!-- Spouse/Family Member Entries -->
-                <div
-                  v-if="formData.personalInfo.maritalStatus === 'berkahwin'"
-                  class="md:col-span-2"
-                >
-                  <div
-                    v-for="(spouse, index) in formData.personalInfo.spouses"
-                    :key="index"
-                    class="border rounded-lg p-4 mb-4 bg-gray-50"
-                  >
-                    <div class="flex justify-between items-center mb-3">
-                      <h5 class="font-medium text-gray-700">
-                        Ahli Keluarga #{{ index + 1 }}
-                      </h5>
-                      <rs-button
-                        type="button"
-                        variant="danger-outline"
-                        @click="removeSpouse(index)"
-                        class="text-sm"
-                        size="sm"
-                      >
-                        <i class="fas fa-trash mr-1"></i>Padam
-                      </rs-button>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <FormKit
-                        type="select"
-                        :name="`relationship_${index}`"
-                        label="Hubungan"
-                        validation="required"
-                        :options="relationshipOptions"
-                        placeholder="Pilih hubungan"
-                        v-model="spouse.relationship"
-                        :validation-messages="{
-                          required: 'Hubungan adalah wajib',
-                        }"
-                      />
-
-                      <FormKit
-                        type="select"
-                        :name="`spouseIdType_${index}`"
-                        label="Jenis ID"
-                        placeholder="Pilih jenis ID"
-                        validation="required"
-                        :options="idTypeOptions"
-                        v-model="spouse.spouseIdType"
-                        :validation-messages="{
-                          required: 'Jenis ID adalah wajib',
-                        }"
-                      />
-
-                      <FormKit
-                        type="text"
-                        :name="`spouseIdNumber_${index}`"
-                        label="ID Pengenalan"
-                        validation="required"
-                        v-model="spouse.spouseIdNumber"
-                        :validation-messages="{
-                          required: 'No ID adalah wajib',
-                        }"
-                        :placeholder="getSpousePlaceholder(index)"
-                      />
-
-                      <FormKit
-                        type="text"
-                        :name="`spouseName_${index}`"
-                        label="Nama"
-                        validation="required"
-                        v-model="spouse.spouseName"
-                        :validation-messages="{
-                          required: 'Nama adalah wajib',
-                        }"
-                      />
-
-                      <div v-if="spouse.spouseIdType" class="md:col-span-2">
-                        <FormKit
-                          type="file"
-                          :name="`spouseIdDocument_${index}`"
-                          :label="getSpouseDocumentLabel(index)"
-                          accept=".pdf,.jpg,.jpeg,.png"
-                          v-model="spouse.spouseIdDocument"
-                          help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB (Tidak wajib)"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Bank Information Section -->
-                <div class="md:col-span-2">
-                  <h4 class="text-md font-medium mb-3">Maklumat Bank</h4>
-                </div>
-                <FormKit
-                  type="select"
-                  name="bankName"
-                  label="Nama Bank"
-                  validation="required"
-                  :options="bankOptions"
-                  placeholder="Pilih bank"
-                  v-model="formData.personalInfo.bankName"
-                  :validation-messages="{
-                    required: 'Nama Bank adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  v-if="formData.personalInfo.bankName"
-                  type="text"
-                  name="swiftCode"
-                  label="SWIFT Code"
-                  v-model="formData.personalInfo.swiftCode"
-                  :value="selectedBankSwiftCode"
-                  readonly
-                  help="SWIFT Code untuk bank yang dipilih"
-                />
-
-                <FormKit
-                  type="text"
-                  name="bankAccount"
-                  label="No Akaun Bank"
-                  validation="required"
-                  v-model="formData.personalInfo.bankAccount"
-                  :validation-messages="{
-                    required: 'No Akaun Bank adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="text"
-                  name="bankAccountHolder"
-                  label="Penama Bank Akaun"
-                  v-model="formData.personalInfo.bankAccountHolder"
-                />
-
-                <FormKit
-                  type="select"
-                  name="paymentMethod"
-                  label="Kaedah Pembayaran"
-                  validation="required"
-                  :options="paymentMethodOptions"
-                  placeholder="Pilih kaedah pembayaran"
-                  v-model="formData.personalInfo.paymentMethod"
-                  :validation-messages="{
-                    required: 'Kaedah pembayaran adalah wajib',
-                  }"
-                />
-
-                <!-- Conditional checkboxes when Tiada is selected -->
-                <div
-                  v-if="formData.personalInfo.paymentMethod === 'tiada'"
-                  class="md:col-span-2"
-                >
-                  <FormKit
-                    type="checkbox"
-                    name="noPaymentReason"
-                    label="Nyatakan sebab"
-                    :options="noPaymentReasonOptions"
-                    v-model="formData.personalInfo.noPaymentReason"
-                    validation="required|min:1"
-                    :validation-messages="{
-                      required: 'Sila pilih sekurang-kurangnya satu sebab',
-                      min: 'Sila pilih sekurang-kurangnya satu sebab',
-                    }"
-                  />
-                </div>
-
-                <!-- Income Information Section -->
-                <div class="md:col-span-2">
-                  <h4 class="text-md font-medium mb-3">Maklumat Pendapatan</h4>
-                </div>
-
-                <FormKit
-                  type="number"
-                  name="grossIncome"
-                  label="Pendapatan Kasar (RM)"
-                  validation="required|number|min:0"
-                  v-model="formData.personalInfo.grossIncome"
-                  :validation-messages="{
-                    required: 'Pendapatan kasar adalah wajib',
-                    number: 'Sila masukkan nombor yang sah',
-                    min: 'Pendapatan kasar tidak boleh kurang daripada 0',
-                  }"
-                />
-
-                <div class="md:col-span-2">
-                  <FormKit
-                    type="file"
-                    name="incomeDocument"
-                    label="Upload dokumen pengesahan pendapatan/slip gaji"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    v-model="formData.personalInfo.incomeDocument"
-                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB (Tidak wajib)"
-                  />
-                </div>
-
-              <div class="flex justify-end gap-3 mt-6">
+              <div class="flex justify-between gap-3 mt-6">
                 <rs-button
                   type="button"
-                  variant="secondary"
-                  @click="handleSaveStep1"
+                  variant="primary-outline"
+                  @click="goBack"
+                  >Kembali</rs-button
                 >
-                  Simpan
-                </rs-button>
-                <rs-button type="submit" variant="primary" @click="nextStep"
-                  >Seterusnya ke Alamat</rs-button
-                >
+                <div class="flex gap-3">
+                  <rs-button
+                    type="button"
+                    variant="secondary"
+                    @click="handleSaveStep1"
+                  >
+                    Simpan
+                  </rs-button>
+                  <rs-button type="submit" variant="primary" @click="nextStep"
+                    >Seterusnya ke Alamat</rs-button
+                  >
+                </div>
               </div>
             </div>
 
@@ -785,14 +829,6 @@
                     min: 'Tempoh Bermastautin tidak boleh kurang daripada 0',
                     max: 'Tempoh Bermastautin tidak boleh melebihi 99',
                   }"
-                />
-
-                <FormKit
-                  type="text"
-                  name="state"
-                  label="Negeri"
-                  v-model="formData.addressInfo.state"
-                  disabled
                 />
 
                 <div class="md:col-span-2">
@@ -1070,29 +1106,36 @@
                 </div>
               </div>
 
-              <!-- PDPA Consent -->
-              <div
-                class="bg-blue-50 border border-blue-200 rounded-lg p-4 h-full flex flex-col justify-between"
-              >
-                <p class="text-sm leading-relaxed text-gray-800">
-                  Dengan nama Allah S.W.T, saya mengesahkan bahawa segala
-                  maklumat dan data yang diberikan di dalam Borang Permohonan
-                  Agihan dan lampiran adalah BENAR, TEPAT, LENGKAP dan TERKINI.
-                  Saya dengan ini bersetuju memberi persetujuan secara nyata
-                  (explicit consent) kepada Zakat Selangor untuk mengumpul,
-                  memproses, menggunakan data peribadi saya dan tanggungan saya
-                  (jika ada) bagi tujuan pentadbiran, kajian, dakwah, promosi
-                  dan aktiviti-aktiviti lain berkaitan fungsi Zakat Selangor
-                  seperti yang dinyatakan di dalam Notis Privasi Zakat Selangor
-                  di https://www.zakatselangor.com.my.
-                </p>
-                <div class="mt-4">
-                  <label class="font-medium">Saya setuju</label>
-                  <FormKit
-                    type="checkbox"
-                    name="pdpa_consent"
-                    validation="required"
-                  />
+              <!-- PDPA Statement -->
+              <div class="mb-6">
+                <h4 class="font-medium mb-3">
+                  Pengesahan PDPA (Akta Perlindungan Data Peribadi)
+                </h4>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div class="flex items-start gap-3">
+                    <FormKit
+                      type="checkbox"
+                      name="pdpa_consent"
+                      label=""
+                      validation="required"
+                      v-model="formData.verification.pdpaConsent"
+                    />
+                    <div class="text-sm text-gray-700">
+                      <p class="text-sm leading-relaxed text-gray-800">
+                        Dengan nama Allah S.W.T, saya mengesahkan bahawa segala
+                        maklumat dan data yang diberikan di dalam Borang
+                        Permohonan Agihan dan lampiran adalah BENAR, TEPAT,
+                        LENGKAP dan TERKINI. Saya dengan ini bersetuju memberi
+                        persetujuan secara nyata (explicit consent) kepada Zakat
+                        Selangor untuk mengumpul, memproses, menggunakan data
+                        peribadi saya dan tanggungan saya (jika ada) bagi tujuan
+                        pentadbiran, kajian, dakwah, promosi dan
+                        aktiviti-aktiviti lain berkaitan fungsi Zakat Selangor
+                        seperti yang dinyatakan di dalam Notis Privasi Zakat
+                        Selangor di https://www.zakatselangor.com.my.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -1120,8 +1163,8 @@
 
             <!-- Step 4: Maklumat Pengesah Bermastautin -->
             <div v-if="currentStep === 4">
-              <h3 class="text-lg font-medium mb-4">
-                IV) Maklumat Pengesah Bermastautin
+              <h3 class="text-lg font-semibold mb-4">
+                4. Maklumat Pengesah Bermastautin
               </h3>
               <!-- <p class="text-sm text-gray-600 mb-4">
                 *(Wakil Rakyat/Penghulu/Ketua Kampung/Ketua Penduduk/Nazir Masjid/Pengerusi Surau/Penolong Amil/Guru Pembimbing Asnaf Muallaf/Eksekutif LZS/Ketua Operasi Agihan Daerah LZS/Ketua Jabatan LZS/Pengurus LZS/Ketua Cawangan LZS.)
@@ -1172,7 +1215,10 @@
               <!-- Document Information (Readonly) -->
               <div class="mb-6">
                 <h4 class="font-medium mb-3">Dokumen yang Dimuat Naik</h4>
-                <div v-if="uploadedDocuments.length === 0" class="text-center py-8 text-gray-500">
+                <div
+                  v-if="uploadedDocuments.length === 0"
+                  class="text-center py-8 text-gray-500"
+                >
                   <p>Tiada dokumen yang dimuat naik</p>
                 </div>
                 <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1206,7 +1252,9 @@
                   label="Nama"
                   validation="required"
                   v-model="formData.verification.namaPengesah"
-                  :value="getPakOfficerLabel(formData.verification.selectedPakOfficer)"
+                  :value="
+                    getPakOfficerLabel(formData.verification.selectedPakOfficer)
+                  "
                   disabled
                 />
 
@@ -1282,8 +1330,8 @@
 
             <!-- Step 5: Pegawai Pendaftar -->
             <div v-if="currentStep === 5">
-              <h3 class="text-lg font-medium mb-4">
-                V) Maklumat Pegawai Pendaftar
+              <h3 class="text-lg font-semibold mb-4">
+                5. Maklumat Pegawai Pendaftar
               </h3>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1411,37 +1459,57 @@ const steps = [
 // Form Data
 const formData = ref({
   personalInfo: {
-    idValue: "",
-    idNumber: "",
-    idDocument: null,
-    name: "",
-    islamName: "",
-    phone: "",
-    religion: "",
-    bankName: "",
-    bankAccount: "",
-    bankAccountHolder: "",
-    swiftCode: "",
-    paymentMethod: "",
+    idValue: "ic",
+    idType: "ic",
+    idNumber: "123456789",
+    idDocument: {
+      name: "kad_pengenalan_ahmad.jpg",
+      size: 1536000,
+      type: "image/jpeg",
+      lastModified: new Date("2024-01-05").getTime(),
+    },
+    name: "Ahmad bin Abdullah",
+    nopassport: "A12345678",
+    passportStartDate: "2020-01-15",
+    passportEndDate: "2030-01-15",
+    phone: "0123456789",
+    religion: "islam",
+    bankName: "maybank",
+    bankAccount: "123456789",
+    bankAccountHolder: "Ahmad bin Abdullah",
+    swiftCode: "MBBEMYKL",
+    paymentMethod: "akaun",
     noPaymentReason: [],
-    maritalStatus: "",
-    healthStatus: "",
-    islamDate: "",
-    islamCertificate: null,
-    kfamDate: "",
-    email: "",
-    citizenship: "",
-    dateOfBirth: "",
-    gender: "",
-    assistanceType: "",
-    disasterLocation: "",
-    polygamyStatus: "",
+    maritalStatus: "berkahwin",
+    healthStatus: "sihat",
+    adakah_muallaf: "T",
+    tarikh_masuk_islam: "",
+    tarikh_masuk_kfam: "",
+    islamName: "",
+    dokumen_pengislaman: [],
+    email: "ahmad.abdullah@email.com",
+    citizenship: "malaysia",
+    country: "",
+    residentStatus: "",
+    passportNumber: "",
+    passportStartDate: "",
+    passportEndDate: "",
+    dateOfBirth: "1990-12-31",
+    gender: "L",
+    assistanceType: "bantuan_rumah",
+    disasterLocation: "Kuala Lumpur",
+    polygamyStatus: "tidak",
     wivesCount: "",
     wives: [],
-    dependentsCount: "",
-    grossIncome: "",
-    incomeDocument: null,
-    location: "",
+    dependentsCount: "3",
+    grossIncome: "2500",
+    incomeDocument: {
+      name: "slip_gaji_ahmad.pdf",
+      size: 512000,
+      type: "application/pdf",
+      lastModified: new Date("2024-01-08").getTime(),
+    },
+    location: "Kuala Lumpur, Selangor",
     // Spouse/Family member fields - now as array
     spouses: [
       {
@@ -1450,11 +1518,11 @@ const formData = ref({
         spouseIdNumber: "123456789",
         spouseName: "Siti binti Mohamed",
         spouseIdDocument: {
-          name: 'kad_pengenalan_siti.jpg',
+          name: "kad_pengenalan_siti.jpg",
           size: 1456000,
-          type: 'image/jpeg',
-          lastModified: new Date('2024-01-05').getTime()
-        }
+          type: "image/jpeg",
+          lastModified: new Date("2024-01-05").getTime(),
+        },
       },
       {
         relationship: "anak",
@@ -1462,42 +1530,52 @@ const formData = ref({
         spouseIdNumber: "202012310001",
         spouseName: "Mohd Ali bin Ahmad",
         spouseIdDocument: {
-          name: 'sijil_lahir_ali.pdf',
+          name: "sijil_lahir_ali.pdf",
           size: 890000,
-          type: 'application/pdf',
-          lastModified: new Date('2024-01-05').getTime()
-        }
-      }
+          type: "application/pdf",
+          lastModified: new Date("2024-01-05").getTime(),
+        },
+      },
     ],
   },
   healthInfo: {
-    status: "",
+    status: "tiada",
     details: "",
     chronicIllnessDoc: null,
     disabilityDoc: null,
     disasterDocument: null,
-    noDisasterNotes: "",
-    noDisasterDocument: null,
+    noDisasterNotes: "Tiada bencana yang berlaku dalam tempoh 5 tahun lepas",
+    noDisasterDocument: {
+      name: "report_polis_tiada_bencana.pdf",
+      size: 756000,
+      type: "application/pdf",
+      lastModified: new Date("2024-01-10").getTime(),
+    },
   },
   addressInfo: {
-    alamat1: "",
-    alamat2: "",
-    alamat3: "",
-    district: "",
-    postcode: "",
-    kariah: "",
+    alamat1: "No. 123, Jalan Merdeka",
+    alamat2: "Taman Seri Indah",
+    alamat3: "Seksyen 15",
+    district: "shah-alam",
+    postcode: "40000",
+    kariah: "masjid-negeri",
     state: "Selangor",
-    residenceYears: "",
-    residenceStatus: "",
+    residenceYears: "5",
+    residenceStatus: "sewa",
     paymentStatus: "",
     monthlyPayment: "",
-    rentAmount: "",
+    rentAmount: "800",
     otherResidenceDetail: "",
-    addressSupportDoc: null,
-    location: "",
+    addressSupportDoc: {
+      name: "surat_sewa_rumah.pdf",
+      size: 1234000,
+      type: "application/pdf",
+      lastModified: new Date("2024-01-03").getTime(),
+    },
+    location: "Shah Alam, Selangor",
   },
   verification: {
-    hubunganKakitanganLZS: "",
+    hubunganKakitanganLZS: "Tidak",
     namaKakitangan: "",
     jawatanKakitangan: "",
     pejabatKakitangan: "",
@@ -1513,16 +1591,16 @@ const formData = ref({
       lastModified: new Date("2024-01-15").getTime(),
       type: "application/pdf",
     },
-    pdpaConsent: false,
+    pdpaConsent: true,
     selectedKariah: "masjid-negeri",
     selectedPakOfficer: "ustaz-ahmad-abdullah",
     // New PAK relationship fields
-    hubunganPAK: "",
+    hubunganPAK: "Tidak",
     selectedKariahPAK: "",
     selectedPakOfficerPAK: "",
-    pakAssistance: "",
-    selectedKariahAssistance: "",
-    selectedPakOfficerAssistance: "",
+    pakAssistance: "Ya",
+    selectedKariahAssistance: "masjid-negeri",
+    selectedPakOfficerAssistance: "ustaz-ahmad-abdullah",
   },
   pegawaiPendaftar: {
     nama: "Ahmad bin Abi",
@@ -1556,9 +1634,8 @@ const bankOptions = [
 ];
 
 const idTypeOptions = [
-  { label: "Kad Pengenalan", value: "ic" },
+  { label: "MyKad", value: "ic" },
   { label: "Foreign ID", value: "foreign-id" },
-  { label: "Sijil Lahir", value: "sijil-lahir" },
 ];
 
 const genderOptions = [
@@ -1566,9 +1643,85 @@ const genderOptions = [
   { label: "Perempuan", value: "P" },
 ];
 
-const citizenshipOptions = [
-  { label: "Warganegara", value: "warganegara" },
-  { label: "Bukan Warganegara", value: "bukan-warganegara" },
+// Dynamic citizenship options based on ID type
+const citizenshipOptions = computed(() => {
+  if (formData.value.personalInfo.idValue === "ic") {
+    // MyKad - only Malaysia option
+    return [{ label: "Malaysia", value: "malaysia" }];
+  } else if (formData.value.personalInfo.idValue === "foreign-id") {
+    // Foreign ID - Malaysia and Lain-lain options
+    return [
+      { label: "Malaysia", value: "malaysia" },
+      { label: "Lain-lain", value: "lain-lain" },
+    ];
+  }
+  // Default fallback
+  return [
+    { label: "Malaysia", value: "malaysia" },
+    { label: "Lain-lain", value: "lain-lain" },
+  ];
+});
+
+const countryOptions = [
+  { label: "Afghanistan", value: "afghanistan" },
+  { label: "Albania", value: "albania" },
+  { label: "Algeria", value: "algeria" },
+  { label: "Argentina", value: "argentina" },
+  { label: "Australia", value: "australia" },
+  { label: "Austria", value: "austria" },
+  { label: "Bangladesh", value: "bangladesh" },
+  { label: "Belgium", value: "belgium" },
+  { label: "Brazil", value: "brazil" },
+  { label: "Brunei", value: "brunei" },
+  { label: "Cambodia", value: "cambodia" },
+  { label: "Canada", value: "canada" },
+  { label: "Chile", value: "chile" },
+  { label: "China", value: "china" },
+  { label: "Colombia", value: "colombia" },
+  { label: "Denmark", value: "denmark" },
+  { label: "Egypt", value: "egypt" },
+  { label: "Finland", value: "finland" },
+  { label: "France", value: "france" },
+  { label: "Germany", value: "germany" },
+  { label: "India", value: "india" },
+  { label: "Indonesia", value: "indonesia" },
+  { label: "Iran", value: "iran" },
+  { label: "Iraq", value: "iraq" },
+  { label: "Ireland", value: "ireland" },
+  { label: "Israel", value: "israel" },
+  { label: "Italy", value: "italy" },
+  { label: "Japan", value: "japan" },
+  { label: "Jordan", value: "jordan" },
+  { label: "Kuwait", value: "kuwait" },
+  { label: "Lebanon", value: "lebanon" },
+  { label: "Libya", value: "libya" },
+  { label: "Luxembourg", value: "luxembourg" },
+  { label: "Morocco", value: "morocco" },
+  { label: "Netherlands", value: "netherlands" },
+  { label: "New Zealand", value: "new_zealand" },
+  { label: "Norway", value: "norway" },
+  { label: "Pakistan", value: "pakistan" },
+  { label: "Philippines", value: "philippines" },
+  { label: "Poland", value: "poland" },
+  { label: "Portugal", value: "portugal" },
+  { label: "Qatar", value: "qatar" },
+  { label: "Russia", value: "russia" },
+  { label: "Saudi Arabia", value: "saudi_arabia" },
+  { label: "Singapore", value: "singapore" },
+  { label: "South Africa", value: "south_africa" },
+  { label: "South Korea", value: "south_korea" },
+  { label: "Spain", value: "spain" },
+  { label: "Sri Lanka", value: "sri_lanka" },
+  { label: "Sweden", value: "sweden" },
+  { label: "Switzerland", value: "switzerland" },
+  { label: "Syria", value: "syria" },
+  { label: "Thailand", value: "thailand" },
+  { label: "Turkey", value: "turkey" },
+  { label: "United Arab Emirates", value: "uae" },
+  { label: "United Kingdom", value: "uk" },
+  { label: "United States", value: "usa" },
+  { label: "Vietnam", value: "vietnam" },
+  { label: "Yemen", value: "yemen" },
 ];
 
 const religionOptions = [
@@ -1705,33 +1858,80 @@ const pakOfficersOptionsAssistance = computed(() => {
 const uploadedDocuments = computed(() => {
   const documents = [];
 
-  // Add fake documents for demonstration
-  documents.push(
-    {
-      name: "pengesahan_bermastautin_ahmad_bin_ali.pdf",
-      type: "PDF Document",
-      size: "2.00 MB",
+  // Add personal info documents
+  if (formData.value.personalInfo.idDocument) {
+    const doc = formData.value.personalInfo.idDocument;
+    documents.push({
+      name: getDocumentName(doc),
+      type: getDocumentType(doc),
+      size: getDocumentSize(doc),
       url: "#",
-    },
-    {
-      name: "surat_pengesahan_penghulu.jpg",
-      type: "JPEG Image",
-      size: "1.25 MB",
+    });
+  }
+
+  if (
+    formData.value.personalInfo.dokumen_pengislaman &&
+    formData.value.personalInfo.dokumen_pengislaman.length > 0
+  ) {
+    formData.value.personalInfo.dokumen_pengislaman.forEach((doc) => {
+      documents.push({
+        name: getDocumentName(doc),
+        type: getDocumentType(doc),
+        size: getDocumentSize(doc),
+        url: "#",
+      });
+    });
+  }
+
+  if (formData.value.personalInfo.incomeDocument) {
+    const doc = formData.value.personalInfo.incomeDocument;
+    documents.push({
+      name: getDocumentName(doc),
+      type: getDocumentType(doc),
+      size: getDocumentSize(doc),
       url: "#",
-    },
-    {
-      name: "dokumen_sokongan_rumah.pdf",
-      type: "PDF Document",
-      size: "3.45 MB",
+    });
+  }
+
+  // Add spouse documents
+  if (
+    formData.value.personalInfo.spouses &&
+    formData.value.personalInfo.spouses.length > 0
+  ) {
+    formData.value.personalInfo.spouses.forEach((spouse, index) => {
+      if (spouse.spouseIdDocument) {
+        const doc = spouse.spouseIdDocument;
+        documents.push({
+          name: getDocumentName(doc),
+          type: getDocumentType(doc),
+          size: getDocumentSize(doc),
+          url: "#",
+        });
+      }
+    });
+  }
+
+  // Add health info documents
+  if (formData.value.healthInfo.noDisasterDocument) {
+    const doc = formData.value.healthInfo.noDisasterDocument;
+    documents.push({
+      name: getDocumentName(doc),
+      type: getDocumentType(doc),
+      size: getDocumentSize(doc),
       url: "#",
-    }
-    // {
-    //   name: 'gambar_kediaman.png',
-    //   type: 'PNG Image',
-    //   size: '856 KB',
-    //   url: '#'
-    // }
-  );
+    });
+  }
+
+  // Add address documents
+  if (formData.value.addressInfo.addressSupportDoc) {
+    const doc = formData.value.addressInfo.addressSupportDoc;
+    documents.push({
+      name: getDocumentName(doc),
+      type: getDocumentType(doc),
+      size: getDocumentSize(doc),
+      url: "#",
+    });
+  }
 
   // Add the main verification document if it exists
   if (formData.value.verification.dokumenPengesahanPermastautin) {
@@ -1750,7 +1950,7 @@ const uploadedDocuments = computed(() => {
 // Methods
 const getPlaceholder = () => {
   const placeholders = {
-    ic: "Contoh: 901231025678",
+    ic: "Contoh: 123456789",
     "foreign-id": "Contoh: A12345678",
   };
   return placeholders[formData.value.personalInfo.idValue] || "";
@@ -1758,32 +1958,30 @@ const getPlaceholder = () => {
 
 const getDocumentLabel = () => {
   const labels = {
-    ic: "Upload Kad Pengenalan",
-    "foreign-id": "Upload Foreign ID",
-    "sijil-lahir": "Upload Sijil Lahir",
+    ic: "Upload Dokumen MyKad",
+    "foreign-id": "Upload Dokumen Foreign ID",
   };
   return labels[formData.value.personalInfo.idValue] || "";
 };
 
 const getIdLabel = () => {
-  if (formData.value.personalInfo.idValue === 'foreign-id') {
-    return 'Foreign ID';
+  if (formData.value.personalInfo.idValue === "foreign-id") {
+    return "Foreign ID";
   }
-  return 'ID Pengenalan';
+  return "ID Pengenalan";
 };
 
 const getSpouseDocumentLabel = (index) => {
   const labels = {
-    ic: "Upload Kad Pengenalan",
-    "foreign-id": "Upload Foreign ID",
-    "sijil-lahir": "Upload Sijil Lahir",
+    ic: "Upload Dokumen MyKad",
+    "foreign-id": "Upload Dokumen Foreign ID",
   };
   return labels[formData.value.personalInfo.spouses[index]?.spouseIdType] || "";
 };
 
 const getSpousePlaceholder = (index) => {
   const placeholders = {
-    ic: "Contoh: 901231025678",
+    ic: "Contoh: 123456789",
     "foreign-id": "Contoh: A12345678",
     "sijil-lahir": "Contoh: 1234567890",
   };
@@ -1802,7 +2000,6 @@ const handleSubmit = async () => {
     console.log("Form submitted:", formData.value);
     toast.success("Permohonan berjaya dihantar");
     router.push("/BF-PRF/AS/permohonan/list-semakan");
-    
   } catch (error) {
     toast.error("Ralat! Permohonan tidak berjaya dihantar");
     console.error("Submission error:", error);
@@ -1906,6 +2103,20 @@ watch(
   }
 );
 
+// Watch for ID type changes to reset citizenship
+watch(
+  () => formData.value.personalInfo.idValue,
+  (newVal) => {
+    // Reset citizenship when ID type changes
+    formData.value.personalInfo.citizenship = "";
+    formData.value.personalInfo.country = "";
+    formData.value.personalInfo.residentStatus = "";
+    formData.value.personalInfo.passportNumber = "";
+    formData.value.personalInfo.passportStartDate = "";
+    formData.value.personalInfo.passportEndDate = "";
+  }
+);
+
 const addSpouse = () => {
   formData.value.personalInfo.spouses.push({
     relationship: "",
@@ -1943,32 +2154,65 @@ const getDocumentName = (file) => {
 
 const getDocumentSize = (file) => {
   if (!file) return "";
+
+  let sizeInBytes;
+
   if (file instanceof File) {
-    const sizeInBytes = file.size;
-    const sizeInKB = (sizeInBytes / 1024).toFixed(2);
-    const sizeInMB = (sizeInBytes / (1024 * 1024)).toFixed(2);
-    if (sizeInMB >= 1) {
-      return `${sizeInMB} MB`;
-    } else {
-      return `${sizeInKB} KB`;
-    }
+    sizeInBytes = file.size;
+  } else if (file && typeof file.size === "number") {
+    sizeInBytes = file.size;
+  } else {
+    return "";
   }
-  return "";
+
+  const sizeInKB = (sizeInBytes / 1024).toFixed(2);
+  const sizeInMB = (sizeInBytes / (1024 * 1024)).toFixed(2);
+
+  if (sizeInMB >= 1) {
+    return `${sizeInMB} MB`;
+  } else {
+    return `${sizeInKB} KB`;
+  }
 };
 
 const getDocumentType = (file) => {
   if (!file) return "";
+
+  let fileName = "";
+  let fileType = "";
+
   if (file instanceof File) {
-    const extension = file.name.split(".").pop().toUpperCase();
-    const typeMap = {
-      PDF: "PDF Document",
-      JPG: "JPEG Image",
-      JPEG: "JPEG Image",
-      PNG: "PNG Image",
-    };
-    return typeMap[extension] || extension;
+    fileName = file.name;
+    fileType = file.type;
+  } else if (file && file.name) {
+    fileName = file.name;
+    fileType = file.type || "";
+  } else {
+    return "";
   }
-  return "";
+
+  // Try to get type from MIME type first
+  if (fileType) {
+    const typeMap = {
+      "application/pdf": "PDF Document",
+      "image/jpeg": "JPEG Image",
+      "image/jpg": "JPEG Image",
+      "image/png": "PNG Image",
+    };
+    if (typeMap[fileType]) {
+      return typeMap[fileType];
+    }
+  }
+
+  // Fallback to file extension
+  const extension = fileName.split(".").pop().toUpperCase();
+  const extensionMap = {
+    PDF: "PDF Document",
+    JPG: "JPEG Image",
+    JPEG: "JPEG Image",
+    PNG: "PNG Image",
+  };
+  return extensionMap[extension] || extension;
 };
 
 const getDocumentUploadDate = (file) => {
