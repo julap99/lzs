@@ -1490,10 +1490,26 @@ const genderOptions = [
   { label: 'Perempuan', value: 'P' }
 ];
 
-const citizenshipOptions = [
-  { label: 'Malaysia', value: 'malaysia' },
-  { label: 'Lain-lain', value: 'lain-lain' }
-];
+// Dynamic citizenship options based on ID type
+const citizenshipOptions = computed(() => {
+  if (formData.value.personalInfo.idValue === 'ic') {
+    // MyKad - only Malaysia option
+    return [
+      { label: 'Malaysia', value: 'malaysia' }
+    ];
+  } else if (formData.value.personalInfo.idValue === 'foreign-id') {
+    // Foreign ID - Malaysia and Lain-lain options
+    return [
+      { label: 'Malaysia', value: 'malaysia' },
+      { label: 'Lain-lain', value: 'lain-lain' }
+    ];
+  }
+  // Default fallback
+  return [
+    { label: 'Malaysia', value: 'malaysia' },
+    { label: 'Lain-lain', value: 'lain-lain' }
+  ];
+});
 
 const countryOptions = [
   { label: 'Afghanistan', value: 'afghanistan' },
@@ -1819,6 +1835,17 @@ watch(() => formData.value.verification.selectedKariahPAK, (newVal) => {
 watch(() => formData.value.verification.selectedKariahAssistance, (newVal) => {
   // Clear selected PAK officer when Kariah changes for PAK assistance
   formData.value.verification.selectedPakOfficerAssistance = '';
+});
+
+// Watch for ID type changes to reset citizenship
+watch(() => formData.value.personalInfo.idValue, (newVal) => {
+  // Reset citizenship when ID type changes
+  formData.value.personalInfo.citizenship = '';
+  formData.value.personalInfo.country = '';
+  formData.value.personalInfo.residentStatus = '';
+  formData.value.personalInfo.passportNumber = '';
+  formData.value.personalInfo.passportStartDate = '';
+  formData.value.personalInfo.passportEndDate = '';
 });
 
 const addSpouse = () => {
