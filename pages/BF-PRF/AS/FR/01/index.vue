@@ -5,13 +5,13 @@
     <!-- Header Section -->
     <div class="bg-white shadow-sm border-b">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div class="flex items-center justify-between">
-          <div>
-            <h1 class="text-3xl font-bold text-gray-900">Carian Profil</h1>
-            <p class="mt-2 text-gray-600">Cari dan kelola profil asnaf dalam sistem</p>
-          </div>
+        <div class="flex items-center">
           <div class="flex items-center space-x-3">
             <Icon name="mdi:account-search" size="2rem" class="text-blue-600" />
+            <div>
+              <h1 class="text-3xl font-bold text-gray-900">Carian Profil</h1>
+              <p class="mt-2 text-gray-600">Cari dan kelola profil asnaf dalam sistem</p>
+            </div>
           </div>
         </div>
       </div>

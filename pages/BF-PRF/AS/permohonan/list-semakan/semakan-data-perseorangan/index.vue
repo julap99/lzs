@@ -1196,7 +1196,7 @@ const handleSubmit = async () => {
   try {
     console.log("Form submitted:", dokumenLengkapSteps.value);
     toast.success("Semakan berjaya diselesaikan");
-    navigateTo("/BF-PRF/AS/permohonan/list-semakan");
+    navigateTo("/BF-PRF/AS/QS/04");
     
   } catch (error) {
     toast.error("Ralat! Semakan tidak berjaya diselesaikan");
