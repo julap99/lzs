@@ -9,7 +9,7 @@
       <template #header>
         <div class="flex justify-between items-center">
           <div class="flex items-center">
-            <h2 class="text-xl font-semibold">Pendaftaran Baru - Borang Permohonan Online</h2>
+            <h2 class="text-xl font-semibold">Pendaftaran Pantas Baharu</h2>
           </div>
           <div class="flex items-center gap-3">
             <div class="text-sm text-gray-600">
