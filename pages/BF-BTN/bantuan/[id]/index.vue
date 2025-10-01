@@ -229,6 +229,12 @@
                     </label>
                     <p class="text-gray-900">Dibatalkan</p>
                   </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                      Tarikh Pembatalan
+                    </label>
+                    <p class="text-gray-900">30/09/2025</p>
+                  </div>
 
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -334,10 +340,11 @@
                 </h4>
 
                 <rs-table
-                  :key="`distribution-table-${currentPage}-${distributionItems.length}`"
-                  :data="paginatedDistributionItems"
+                  :key="`distribution-table-${distributionItems.length}`"
+                  :data="distributionItems"
                   :field="distributionItemFieldKeys"
                   :columns="distributionItemFields"
+                  :pageSize="1000"
                   :options="{
                     variant: 'default',
                     striped: true,
@@ -354,7 +361,7 @@
                 </rs-table>
 
                 <!-- Pagination Controls -->
-                <div
+                <!-- <div
                   v-if="totalPages > 1"
                   class="flex items-center justify-between mt-4 px-4 py-3 bg-white border-t border-gray-200 sm:px-6"
                 >
@@ -474,7 +481,7 @@
                       </nav>
                     </div>
                   </div>
-                </div>
+                </div> -->
               </div>
             </div>
 
@@ -902,6 +909,60 @@ const defaultDistributionItems = [
     noPa: "PA-2025-0003",
     statusPa: "Selesai",
   },
+  {
+    diNo: "DI-2024-004",
+    bulan: "April",
+    tahun: "2024",
+    status: "Dibayar",
+    amaun: "500.00",
+    noPa: "PA-2025-0004",
+    statusPa: "Selesai",
+  },
+  {
+    diNo: "DI-2024-005",
+    bulan: "Mei",
+    tahun: "2024",
+    status: "Dibayar",
+    amaun: "500.00",
+    noPa: "PA-2025-0005",
+    statusPa: "Selesai",
+  },
+  {
+    diNo: "DI-2024-006",
+    bulan: "Jun",
+    tahun: "2024",
+    status: "Menunggu",
+    amaun: "500.00",
+    noPa: "PA-2025-0006",
+    statusPa: "Dalam Proses",
+  },
+  {
+    diNo: "DI-2024-007",
+    bulan: "Julai",
+    tahun: "2024",
+    status: "Dibayar",
+    amaun: "500.00",
+    noPa: "PA-2025-0007",
+    statusPa: "Selesai",
+  },
+  {
+    diNo: "DI-2024-008",
+    bulan: "Ogos",
+    tahun: "2024",
+    status: "Dibayar",
+    amaun: "500.00",
+    noPa: "PA-2025-0008",
+    statusPa: "Selesai",
+  },
+  {
+    diNo: "DI-2024-009",
+    bulan: "September",
+    tahun: "2024",
+    status: "Menunggu",
+    amaun: "500.00",
+    noPa: "PA-2025-0009",
+    statusPa: "Dalam Proses",
+  },
 ];
 
 // B010 specific distribution items
@@ -985,7 +1046,7 @@ const b010DistributionItems = [
     status: "lulus",
     amaun: "80",
     noPa: "PA-2025-0009",
-    statusPa: "Dalam Proses",
+    statusPa: "Selesai",
   },
 ];
 
@@ -994,19 +1055,7 @@ const applicantInfo = ref({ ...defaultApplicantInfo });
 const aidInfo = ref(getAidInfo(aidId));
 const distributionItems = ref([...defaultDistributionItems]);
 
-// Pagination for distribution items
-const currentPage = ref(1);
-const itemsPerPage = ref(5);
-const totalItems = computed(() => distributionItems.value.length);
-const totalPages = computed(() =>
-  Math.ceil(totalItems.value / itemsPerPage.value)
-);
-
-const paginatedDistributionItems = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage.value;
-  const end = start + itemsPerPage.value;
-  return distributionItems.value.slice(start, end);
-});
+// Distribution items - no pagination needed
 
 const distributionItemFields = [
   { key: "diNo", label: "DI No" },
@@ -1325,8 +1374,6 @@ const loadDataForId = (id) => {
     distributionItems.value = [...defaultDistributionItems];
     processFlow.value = [...defaultProcessFlow];
   }
-  // Reset pagination to first page when data changes
-  currentPage.value = 1;
 };
 
 // Fetch data on mount
