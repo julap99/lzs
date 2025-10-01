@@ -3349,6 +3349,17 @@
       StatusPengesahanLawatan: "belum_sah",
       catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
       gambarLokasi: null,
+      catatanLawatanETD: "",
+      statusLawatan: "",
+      assistanceApplications: [
+        {
+          id: "B102",
+          jenisBantuan: "B102 - BANTUAN BINAAN RUMAH (Fakir)",
+          status: "Perlu Diproses",
+          sla: "3 hari lagi",
+          actions: "/",
+        }
+      ]
     },
     "NAS-2025-0002": {
       jenisPekerjaan: "Suri rumah sepenuh masa",
@@ -3362,6 +3373,25 @@
       StatusPengesahanLawatan: "belum_sah",
       catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
       gambarLokasi: null,
+      gambarLokasi: [],
+      catatanLawatanETD: "",
+      statusLawatan: "",
+      assistanceApplications: [
+        {
+          id: "B300",
+          jenisBantuan: "B300 - (HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA} (FAKIR)",
+          status: "Perlu Diproses",
+          sla: "5 hari lagi",
+          actions: "/",
+        },
+        {
+          id: "B307",
+          jenisBantuan: "B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
+          status: "Perlu Diproses",
+          sla: "2 hari lagi",
+          actions: "/",
+        }
+      ]
     },
      "NAS-2025-0003": {
       jenisPekerjaan: "Pesara guru",
@@ -3375,6 +3405,24 @@
       StatusPengesahanLawatan: "belum_sah",
       catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
       gambarLokasi: null,
+      catatanLawatanETD: "",
+      statusLawatan: "",
+      assistanceApplications: [
+        {
+          id: "B112",
+          jenisBantuan: "B112 - Bantuan Sewaan/Ansuran Rumah (Fakir)",
+          status: "Perlu Diproses",
+          sla: "5 hari lagi",
+          actions: "/",
+        },
+        // {
+        //   id: "B307",
+        //   jenisBantuan: "B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
+        //   status: "Perlu Diproses",
+        //   sla: "2 hari lagi",
+        //   actions: "/",
+        // }
+      ]
     },
      "NAS-2025-0004": {
       jenisPekerjaan: "Pesara guru",
@@ -3388,6 +3436,24 @@
       StatusPengesahanLawatan: "belum_sah",
       catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
       gambarLokasi: null,
+      catatanLawatanETD: "",
+      statusLawatan: "",
+      assistanceApplications: [
+        {
+          id: "B103",
+          jenisBantuan: "B103 - Bantuan Perubatan Dialisis (Fakir)",
+          status: "Perlu Diproses",
+          sla: "5 hari lagi",
+          actions: "/",
+        },
+        // {
+        //   id: "B307",
+        //   jenisBantuan: "B307 - (HQ) DERMASISWA IPT DALAM NEGARA (FAKIR) - IPTA/IPTS",
+        //   status: "Perlu Diproses",
+        //   sla: "2 hari lagi",
+        //   actions: "/",
+        // }
+      ]
     },
     "NAS-2025-0005": {
       jenisPekerjaan: "Tidak Bekerja (Janda)",
@@ -3401,6 +3467,17 @@
       StatusPengesahanLawatan: "belum_sah",
       catatanPenilaianAwal: "Permohonan bantuan untuk pembinaan/baik pulih institusi agama. Pemohon memerlukan bantuan untuk masjid tempatan yang memerlukan penyelenggaraan.",
       gambarLokasi: null,
+      catatanLawatanETD: "",
+      statusLawatan: "",
+      assistanceApplications: [
+        {
+          id: "B400",
+          jenisBantuan: "B400 - BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA",
+          status: "Perlu Diproses",
+          sla: "7 hari lagi",
+          actions: "/",
+        }
+      ]
     }
   };
   
