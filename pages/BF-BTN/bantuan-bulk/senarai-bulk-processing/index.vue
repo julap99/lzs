@@ -16,241 +16,97 @@
               <p class="text-sm text-gray-500">Senarai bantuan bulk processing</p>
             </div>
           </div>
-          <rs-button variant="primary" @click="navigateTo('senarai-bulk-processing/tambah')">
+          <rs-button variant="primary" @click="navigateTo('cipta-bantuan-bulk/tambah')">
             <Icon name="material-symbols:add" class="mr-1" /> Tambah
           </rs-button>
         </div>
       </template>
 
-     <template #body>
-        <!-- Tabs for different statuses -->
-        <RsTab variant="primary" type="default">
-          <RsTabItem title="Draf">
-            <rs-table
-              :data="filteredBantuanList('Draf')"
-              :columns="columns"
-              :pageSize="pageSize"
-              :showNoColumn="true"
-              :show-filter="true"
-              :show-search="true"
-              :options="{
-                variant: 'default',
-                hover: true,
-                striped: true,
-              }"
-              advanced
-            >
-              <template v-slot:id="data">
-                <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewBantuan(data.text)">
-                  {{ data.text }}
-                </a>
-              </template>
-
-              <template v-slot:tarikhMohon="data">
-                {{ formatDate(data.text) }}
-              </template>
-
-              <template v-slot:jumlahAmaun="data">
-                <div class="font-medium text-left">
-                  {{ data.text }}
-                </div>
-              </template>
-
-              <template v-slot:status="data">
-                <rs-badge :variant="getStatusVariant(data.text)">
-                  {{ data.text }}
-                </rs-badge>
-              </template>
-
-              <template v-slot:actions="{ text}">
-                <div class="flex justify-center items-center gap-2">
-                  <!-- Edit -->
-                  
-              <rs-button
-                variant="primary"
-                size="sm"
-                @click="editBantuan(text)"
-                title="Kemaskini"
+      <template #body>
+              <rs-table
+                :data="filteredBantuanBulk"
+                :columns="columns"
+                :pageSize="pageSize"
+                :showNoColumn="true"
+                :show-filter="true"
+                :show-search="true"
+                :options="{
+                  variant: 'default',
+                  hover: true,
+                  striped: true,
+                }"
+                advanced
               >
-                <Icon name="ic:baseline-edit" class="w-4 h-4" />
-              </rs-button>
-
-
-                  <!-- Delete -->
-                  <rs-button
-                variant="danger"
-                size="sm"
-                @click="confirmDelete(text)"
-                :disabled="!canDeleteUser(text)"
-                title="Hapus"
-              >
-                <Icon name="ic:baseline-delete" class="w-4 h-4" />
-              </rs-button>
-
-                </div>
-              </template>
-            </rs-table>
-          </RsTabItem>
-
-          <RsTabItem title="Dalam Proses">
-            <rs-table
-              :data="filteredBantuanList('Dalam Proses')"
-              :columns="columns"
-              :pageSize="pageSize"
-              :showNoColumn="true"
-              :show-filter="true"
-              :show-search="true"
-              :options="{
-                variant: 'default',
-                hover: true,
-                striped: true,
-              }"
-              advanced
-            >
+                <!-- inside <rs-table> -->
               <template v-slot:id="data">
                 <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewBantuan(data.text)">
                   {{ data.text }}
                 </a>
               </template>
 
-              <template v-slot:tarikhMohon="data">
-                {{ formatDate(data.text) }}
-              </template>
+                <template v-slot:tarikhMohon="data">
+                  {{ formatDate(data.text) }}
+                </template>
 
-              <template v-slot:jumlahAmaun="data">
-                <div class="font-medium text-left">
-                  {{ data.text }}
-                </div>
-              </template>
+                <template v-slot:jumlahAmaun="data">
+                  <div class="font-medium text-left">
+                    {{ data.text }}
+                  </div>
+                </template>
 
-              <template v-slot:status="data">
-                <rs-badge :variant="getStatusVariant(data.text)">
-                  {{ data.text }}
-                </rs-badge>
-              </template>
+                <template v-slot:status="data">
+                  <rs-badge :variant="getStatusVariant(data.text)">
+                    {{ data.text }}
+                  </rs-badge>
+                </template>
 
-              <template v-slot:actions="{ text}">
-                <div class="flex justify-center items-center gap-2">
-                  <rs-button
-                    variant="info"
-                    size="sm"
-                    @click="viewBantuan(text)"
-                    title="Lihat"
-                  >
-                    <Icon name="ic:outline-visibility" class="w-4 h-4" />
-                  </rs-button>
-                </div>
-              </template>
-            </rs-table>
-          </RsTabItem>
+                <!-- Tindakan: show Edit + Delete only for Draf, else View -->
+                  <!-- BP code column (clickable) -->
+                <!-- <template #id="{ text: kodBP }">
+                  <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewBantuan(kodBP)">
+                    {{ kodBP }}
+                  </a>
+                </template> -->
 
-          <RsTabItem title="Lulus">
-            <rs-table
-              :data="filteredBantuanList('Lulus')"
-              :columns="columns"
-              :pageSize="pageSize"
-              :showNoColumn="true"
-              :show-filter="true"
-              :show-search="true"
-              :options="{
-                variant: 'default',
-                hover: true,
-                striped: true,
-              }"
-              advanced
-            >
-              <template v-slot:id="data">
-                <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewBantuan(data.text)">
-                  {{ data.text }}
-                </a>
-              </template>
+                <!-- Actions column -->
+                    <template v-slot:actions="{ text, row}">
+                    <div  class="flex justify-center items-center gap-2">
+                      <!-- Edit -->
+                      <rs-button
+                        variant="primary"
+                        size="sm"
+                        @click="editBantuan(text)"
+                        title="Edit"
+                      >
+                        <Icon name="ic:outline-edit" class="w-4 h-4" />
+                      </rs-button>
 
-              <template v-slot:tarikhMohon="data">
-                {{ formatDate(data.text) }}
-              </template>
+                      <rs-button
+                        variant="info"
+                        size="sm"
+                        class="p-1 w-8 h-8"
+                        @click="viewBantuan(text)"
+                        title="Lihat"
+                      >
+                        <Icon name="ic:outline-visibility" class="ic:outline-visibility" size="18" />
+                      </rs-button>
 
-              <template v-slot:jumlahAmaun="data">
-                <div class="font-medium text-left">
-                  {{ data.text }}
-                </div>
-              </template>
+                      <!-- Delete -->
+                      <rs-button
+                        variant="danger"
+                        size="sm"
+                        @click="confirmDelete(text)"
+                        title="Hapus"
+                      >
+                        <Icon name="ic:outline-delete" class="w-4 h-4" />
+                      </rs-button>
 
-              <template v-slot:status="data">
-                <rs-badge variant="success">
-                  {{ data.text }}
-                </rs-badge>
-              </template>
-
-              <template v-slot:actions="{ text}">
-                <div class="flex justify-center items-center gap-2">
-                  <rs-button
-                    variant="info"
-                    size="sm"
-                    @click="viewBantuan(text)"
-                    title="Lihat"
-                  >
-                    <Icon name="ic:outline-visibility" class="w-4 h-4" />
-                  </rs-button>
-                </div>
-              </template>
-            </rs-table>
-          </RsTabItem>
-
-          <RsTabItem title="Rework">
-            <rs-table
-              :data="filteredBantuanList('Rework')"
-              :columns="columns"
-              :pageSize="pageSize"
-              :showNoColumn="true"
-              :show-filter="true"
-              :show-search="true"
-              :options="{
-                variant: 'default',
-                hover: true,
-                striped: true,
-              }"
-              advanced
-            >
-              <template v-slot:id="data">
-                <a href="#" class="text-primary-600 hover:text-primary-800" @click.prevent="viewBantuan(data.text)">
-                  {{ data.text }}
-                </a>
-              </template>
-
-              <template v-slot:tarikhMohon="data">
-                {{ formatDate(data.text) }}
-              </template>
-
-              <template v-slot:jumlahAmaun="data">
-                <div class="font-medium text-left">
-                  {{ data.text }}
-                </div>
-              </template>
-
-              <template v-slot:status="data">
-                <rs-badge variant="danger">
-                  {{ data.text }}
-                </rs-badge>
-              </template>
-
-              <template v-slot:actions="{ text}">
-                <div class="flex justify-center items-center gap-2">
-                  <rs-button
-                    variant="info"
-                    size="sm"
-                    @click="viewBantuan(text)"
-                    title="Lihat"
-                  >
-                    <Icon name="ic:outline-visibility" class="w-4 h-4" />
-                  </rs-button>
-                </div>
-              </template>
-            </rs-table>
-          </RsTabItem>
-        </RsTab>
+                      
+                    </div>
+                  </template>
+              </rs-table> 
       </template>
     </rs-card>
-
     <!-- Delete Confirmation Modal -->
     <rs-modal
       v-model="showDeleteModal"
@@ -338,8 +194,8 @@ const columns = [
     sortable: true,
   },
   {
-    key: 'peringkatSemakan',
-    label: 'Peringkat Semakan',
+    key: 'peringkatSemasa',
+    label: 'Peringkat Semasa',
     sortable: true,
   },
   {
@@ -350,6 +206,12 @@ const columns = [
     width: "120px",
   },
 ];
+
+// Put this in <script setup> with your other helpers
+const isDrafByKod = (kod) => {
+  const row = bantuanList.value.find(r => r.id === kod)
+  return String(row?.status ?? '').trim().toLowerCase() === 'draf'
+}
 
 // State management
 const searchQuery = ref('');
@@ -371,7 +233,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM20,000.00',
     tarikhMohon: '01/03/2025',
     status: 'Draf',
-    peringkatSemakan: 'Abd Ghafar bin Ahmad (Pemohon)',
+    peringkatSemasa: 'Abd Ghafar bin Ahmad (Pemohon)',
     actions: 'BP-2025-00001'
   },
   {
@@ -382,7 +244,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM23,000.00',
     tarikhMohon: '01/02/2025',
     status: 'Draf',
-    peringkatSemakan: 'Abd Ghafar bin Ahmad (Pemohon)',
+    peringkatSemasa: 'Abd Ghafar bin Ahmad (Pemohon)',
     actions: 'BP-2025-00002'
   },
   {
@@ -393,7 +255,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM43,200.00',
     tarikhMohon: '02/02/2025',
     status: 'Dalam Proses',
-    peringkatSemakan: ' Ahmad Azhar bin Abdullah (Penyemak)',
+    peringkatSemasa: ' Ahmad Azhar bin Abdullah (Penyemak)',
     actions: 'BP-2025-00003'
   },
   {
@@ -404,7 +266,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM35,000.00',
     tarikhMohon: '25/02/2025',
     status: 'Dalam Proses',
-    peringkatSemakan: ' Ahmad Azhar bin Abdullah (Penyemak)',
+    peringkatSemasa: ' Ahmad Azhar bin Abdullah (Penyemak)',
     actions: 'BP-2025-00004'
   },
   {
@@ -415,7 +277,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM44,390.00',
     tarikhMohon: '04/05/2025',
     status: 'Lulus',
-    peringkatSemakan: 'Mohd Rizal bin Mohd Fattah (Pelulus)',
+    peringkatSemasa: 'Mohd Rizal bin Mohd Fattah (Pelulus)',
     actions: 'BP-2025-01617'
   },
   {
@@ -426,7 +288,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM54,710.00',
     tarikhMohon: '30/04/2025',
     status: 'Lulus',
-    peringkatSemakan: 'Mohd Rizal bin Mohd Fattah (Pelulus)',
+    peringkatSemasa: 'Mohd Rizal bin Mohd Fattah (Pelulus)',
     actions: 'BP-2025-01589'
   },
   {
@@ -437,7 +299,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM50,000.00',
     tarikhMohon: '05/01/2025',
     status: 'Rework',
-    peringkatSemakan: 'Abd Ghafar bin Ahmad (Pemohon)',
+    peringkatSemasa: 'Abd Ghafar bin Ahmad (Pemohon)',
     actions: 'BP-2025-00007'
   },
   {
@@ -448,7 +310,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM15,000.00',
     tarikhMohon: '20/02/2025',
     status: 'Rework',
-    peringkatSemakan: 'Abd Ghafar bin Ahmad (Pemohon)',
+    peringkatSemasa: 'Abd Ghafar bin Ahmad (Pemohon)',
     actions: 'BP-2025-00008'
   },
 ]);
@@ -459,6 +321,32 @@ const statusOptions = [
   { label: 'Draf', value: 'Draf' },
   { label: 'Aktif', value: 'Aktif' }
 ];
+
+// Computed properties
+const filteredBantuanBulk = computed(() => {
+  let result = [...bantuanList.value]
+
+  // Apply search (use existing fields on your rows)
+  if (searchQuery.value) {
+    const q = searchQuery.value.toLowerCase()
+    result = result.filter(
+      (item) =>
+        String(item.id).toLowerCase().includes(q) ||
+        String(item.tajuk).toLowerCase().includes(q)
+    )
+  }
+
+  // Apply filters
+  if (filters.value.status) {
+    result = result.filter((item) => item.status === filters.value.status)
+  }
+
+  // Apply pagination
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  return result.slice(start, end)
+})
+
 
 // Computed properties
 const filteredBantuanList = (status) => {

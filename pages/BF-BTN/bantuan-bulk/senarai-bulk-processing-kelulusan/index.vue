@@ -7,8 +7,8 @@
         <div class="flex justify-between items-center">
           <div class="flex items-center space-x-3">
             <div class="flex-shrink-0">
-              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <Icon name="material-symbols:check-circle" class="w-6 h-6 text-green-600" />
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:list" class="w-6 h-6 text-blue-600" />
               </div>
             </div>
             <div>

@@ -214,9 +214,9 @@
             </rs-table>
           </RsTabItem>
 
-          <RsTabItem title="Rework">
+          <RsTabItem title="Ditolak">
             <rs-table
-              :data="filteredBantuanList('Rework')"
+              :data="filteredBantuanList('Ditolak')"
               :columns="columns"
               :pageSize="pageSize"
               :showNoColumn="true"
@@ -362,8 +362,8 @@ const columns = [
     sortable: true,
   },
   {
-    key: 'peringkatSemakan',
-    label: 'Peringkat Semakan',
+    key: 'peringkatSemasa',
+    label: 'Peringkat Semasa',
     sortable: true,
   },
   {
@@ -374,6 +374,10 @@ const columns = [
     width: "120px",
   },
 ];
+
+function statusIs(row, expected) {
+  return String((row && row.status) || '').trim().toLowerCase() === expected
+}
 
 // State management
 const searchQuery = ref('');
@@ -395,7 +399,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM20,000.00',
     tarikhMohon: '01/03/2025',
     status: 'Draf',
-    peringkatSemakan: 'Abd Ghafar bin Ahmad (Pemohon)',
+    peringkatSemasa: 'Abd Ghafar bin Ahmad (Pemohon)',
     actions: 'BP-2025-00001'
   },
   {
@@ -406,7 +410,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM23,000.00',
     tarikhMohon: '01/02/2025',
     status: 'Draf',
-    peringkatSemakan: 'Abd Ghafar bin Ahmad (Pemohon)',
+    peringkatSemasa: 'Abd Ghafar bin Ahmad (Pemohon)',
     actions: 'BP-2025-00002'
   },
   {
@@ -417,7 +421,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM43,200.00',
     tarikhMohon: '02/02/2025',
     status: 'Dalam Proses',
-    peringkatSemakan: ' Ahmad Azhar bin Abdullah (Penyemak)',
+    peringkatSemasa: ' Ahmad Azhar bin Abdullah (Penyemak)',
     actions: 'BP-2025-00003'
   },
   {
@@ -428,7 +432,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM35,000.00',
     tarikhMohon: '25/02/2025',
     status: 'Dalam Proses',
-    peringkatSemakan: ' Ahmad Azhar bin Abdullah (Penyemak)',
+    peringkatSemasa: ' Ahmad Azhar bin Abdullah (Penyemak)',
     actions: 'BP-2025-00004'
   },
   {
@@ -439,7 +443,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM44,390.00',
     tarikhMohon: '04/05/2025',
     status: 'Lulus',
-    peringkatSemakan: 'Mohd Rizal bin Mohd Fattah (Pelulus)',
+    peringkatSemasa: 'Mohd Rizal bin Mohd Fattah (Pelulus)',
     actions: 'BP-2025-01617'
   },
   {
@@ -450,7 +454,7 @@ const bantuanList = ref([
     jumlahAmaun: 'RM54,710.00',
     tarikhMohon: '30/04/2025',
     status: 'Lulus',
-    peringkatSemakan: 'Mohd Rizal bin Mohd Fattah (Pelulus)',
+    peringkatSemasa: 'Mohd Rizal bin Mohd Fattah (Pelulus)',
     actions: 'BP-2025-01589'
   },
   {
@@ -460,8 +464,8 @@ const bantuanList = ref([
     aidProduct: '(HQ) BANTUAN RUMAH',
     jumlahAmaun: 'RM50,000.00',
     tarikhMohon: '05/01/2025',
-    status: 'Rework',
-    peringkatSemakan: 'Abd Ghafar bin Ahmad (Pemohon)',
+    status: 'Ditolak',
+    peringkatSemasa: 'Abd Ghafar bin Ahmad (Pemohon)',
     actions: 'BP-2025-00007'
   },
   {
@@ -471,8 +475,8 @@ const bantuanList = ref([
     aidProduct: '(HQ) BANTUAN MAKANAN',
     jumlahAmaun: 'RM15,000.00',
     tarikhMohon: '20/02/2025',
-    status: 'Rework',
-    peringkatSemakan: 'Abd Ghafar bin Ahmad (Pemohon)',
+    status: 'Ditolak',
+    peringkatSemasa: 'Abd Ghafar bin Ahmad (Pemohon)',
     actions: 'BP-2025-00008'
   },
 ]);
@@ -483,6 +487,16 @@ const statusOptions = [
   { label: 'Draf', value: 'Draf' },
   { label: 'Aktif', value: 'Aktif' }
 ];
+
+const normStatus = (s) => String(s ?? '').trim().toLowerCase()
+
+// Build once from your full source list (not the paginated slice).
+const statusByKod = computed(() => {
+  const map = Object.create(null)
+  const src = Array.isArray(bantuanList.value) ? bantuanList.value : []
+  for (const r of src) map[r.kodBP] = normStatus(r.status)
+  return map
+})
 
 // Computed properties
 const filteredBantuanList = (status) => {

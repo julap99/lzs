@@ -9,7 +9,7 @@
           <div class="flex items-center space-x-3">
             <div class="flex-shrink-0">
               <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Icon name="material-symbols:info" class="w-6 h-6 text-blue-600" />
+                <Icon name="material-symbols:list" class="w-6 h-6 text-blue-600" />
               </div>
             </div>
             <div>
@@ -192,6 +192,7 @@
                 required: 'Sila pilih tarikh jangkaan bayaran',
               }"
               v-model="formData.tarikhJangkaanBayaran"
+              :disabled="true"
             />
 
             
@@ -213,6 +214,7 @@
                     name="modeOfPayment"
                     :value="opt.value"
                     v-model="formData.modeOfPayment"
+                    :disabled="true"
                     class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
                   />
                   <label :for="`mode-${opt.value}`" class="ml-2 text-sm text-gray-700 cursor-pointer">
@@ -2048,6 +2050,8 @@ const getStatusVariant = (status) => {
     case 'Dalam Proses':
       return 'warning';
     case 'Ditolak':
+      return 'danger';
+    case 'Rework':
       return 'danger';
     case 'Baru':
       return 'primary';
