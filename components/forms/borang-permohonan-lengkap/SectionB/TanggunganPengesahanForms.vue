@@ -6,49 +6,6 @@
     id="sectionB10">
     <h3 class="text-lg font-semibold mb-4">Maklumat Perakuan Pemohon</h3>
 
-    <div class="mb-6">
-      <h4 class="font-medium mb-3">Bantuan Penolong Amil</h4>
-      <div class="flex flex-col gap-2">
-        <label class="font-medium"
-          >Adakah anda dibantu oleh penolong Amil</label
-        >
-        <FormKit
-          type="radio"
-          name="dibantu_penolong_amil"
-          :options="['Ya', 'Tidak']"
-          validation="required"
-          v-model="dibantuPenolongAmil" />
-      </div>
-
-      <div
-        v-if="dibantuPenolongAmil === 'Ya'"
-        class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-        <FormKit
-          type="select"
-          name="kariah_bantuan"
-          label="Kariah"
-          :options="kariahOptions"
-          placeholder="Pilih kariah"
-          validation="required"
-          v-model="formData.pengesahan.kariah_bantuan" />
-        <FormKit
-          type="select"
-          name="nama_penolong_amil_bantuan"
-          label="Nama Penolong Amil"
-          :options="pakOfficersOptionsBantuan"
-          placeholder="Pilih nama penolong amil"
-          validation="required"
-          v-model="formData.pengesahan.nama_penolong_amil_bantuan" />
-
-        <FormKit
-          type="date"
-          name="tarikh_bantuan"
-          label="Tarikh Bantuan"
-          validation="required"
-          v-model="formData.pengesahan.tarikh_bantuan" />
-      </div>
-    </div>
-
     <div class="mb-6" v-if="screenType === 'selfservice'">
       <h4 class="font-medium mb-3">Bantuan Penolong Amil</h4>
       <div class="flex flex-col gap-2">
