@@ -134,6 +134,7 @@ type TuntutanListItem = {
   tarikhTuntutan: string
   amaunTuntutan: number
   statusPermohonan: StatusPermohonan
+  maklumatBantuan?: string
 }
 
 type TindakanCell = { noTuntutan: string; status: string }
@@ -149,8 +150,8 @@ const breadcrumb = ref([
 /** ========== Seed list (local only to this file) ========== */
 const baseList = ref<TuntutanListItem[]>([
   { noTuntutan: 'TUN-2024-001', noGL: 'GL-001-2024', namaPemohon: 'Masjid Al-Fatonah', tarikhTuntutan: new Date().toISOString(), amaunTuntutan: 5000.0, statusPermohonan: 'Dalam Semakan' },
-  { noTuntutan: 'TUN-2024-002', noGL: 'GL-002-2024', namaPemohon: 'PUSAT HEMODIALISIS PERMATA SDN. BHD.', tarikhTuntutan: new Date(Date.now() - 86400000).toISOString(), amaunTuntutan: 8000.0, statusPermohonan: 'Dalam Semakan' },
-  { noTuntutan: 'TUN-2024-003', noGL: 'GL-003-2024', namaPemohon: 'Mohd Fazlan bin Mohd Fazli', tarikhTuntutan: new Date(Date.now() - 172800000).toISOString(), amaunTuntutan: 12000.0, statusPermohonan: 'Dalam Semakan' },
+  { noTuntutan: 'TUN-2024-002', noGL: 'GL-002-2024', namaPemohon: 'Masjid Al-Hidayah', tarikhTuntutan: new Date(Date.now() - 86400000).toISOString(), amaunTuntutan: 8000.0, statusPermohonan: 'Dalam Semakan' },
+  { noTuntutan: 'TUN-2024-003', noGL: 'GL-003-2024', namaPemohon: '(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR) (B103)', tarikhTuntutan: new Date(Date.now() - 172800000).toISOString(), amaunTuntutan: 12000.0, statusPermohonan: 'Dalam Semakan' },
   { noTuntutan: 'TUN-2024-004', noGL: 'GL-004-2024', namaPemohon: 'Surau Kampung Baru', tarikhTuntutan: new Date(Date.now() - 259200000).toISOString(), amaunTuntutan: 3500.0, statusPermohonan: 'Dalam Semakan' },
   { noTuntutan: 'TUN-2024-005', noGL: 'GL-005-2024', namaPemohon: 'Pusat Tahfiz Al-Quran', tarikhTuntutan: new Date(Date.now() - 345600000).toISOString(), amaunTuntutan: 15000.0, statusPermohonan: 'Dalam Semakan' },
 ])
@@ -159,7 +160,11 @@ const tuntutanList = ref<Row[]>(
   baseList.value.map((r, idx) => ({
     ...r,
     maklumatBantuan:
-      r.noTuntutan === 'TUN-2024-004'
+      r.noTuntutan === 'TUN-2024-002'
+        ? '(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA (B400)'
+        : r.noTuntutan === 'TUN-2024-003'
+        ? 'PUSAT HEMODIALISIS PERMATA SDN. BHD.'
+        : r.noTuntutan === 'TUN-2024-004'
         ? 'BANTUAN PROGRAM PENERAPAN NILAI ISLAM (B134)'
         : idx % 2 === 0
         ? '(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA (B400)'
@@ -172,6 +177,7 @@ const tuntutanList = ref<Row[]>(
 const columns = [
   { key: 'noTuntutan', label: 'No. Tuntutan', sortable: true },
   { key: 'namaPemohon', label: 'Nama Pemohon / Institusi', sortable: true },
+  { key: 'maklumatBantuan', label: 'Maklumat Bantuan', sortable: true },
   { key: 'tarikhTuntutan', label: 'Tarikh Tuntutan', sortable: true },
   { key: 'amaunTuntutan', label: 'Amaun Tuntutan (RM)', sortable: true },
   { key: 'statusPermohonan', label: 'Status Permohonan', sortable: true },
@@ -194,7 +200,8 @@ const filteredTuntutan = computed(() => {
       (i) =>
         i.noTuntutan.toLowerCase().includes(q) ||
         i.namaPemohon.toLowerCase().includes(q) ||
-        i.noGL.toLowerCase().includes(q)
+        i.noGL.toLowerCase().includes(q) ||
+        (i.maklumatBantuan && i.maklumatBantuan.toLowerCase().includes(q))
     )
   }
   if (filters.value.status) {

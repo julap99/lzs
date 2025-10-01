@@ -27,8 +27,9 @@
             <div
               v-for="step in steps"
               :key="step.id"
-              class="text-center flex-1 relative group"
+              class="text-center flex-1 relative group cursor-pointer flex items-center justify-center gap-1"
               :class="{ 'font-semibold': currentStep >= step.id }"
+              @click="goToStep(step.id)"
             >
               <span class="cursor-default" :title="step.tooltip">
                 {{ step.label }}
@@ -170,22 +171,34 @@
                   </div>
                 </div> -->
 
-                <div class="md:col-span-2">
+                <!-- Maklumat Peribadi Section -->
+                <div class="mb-6">
                   <h4 class="text-md font-medium mb-3">Maklumat Peribadi</h4>
-                </div>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormKit
+                      type="select"
+                      name="idValue"
+                      label="Jenis ID"
+                      placeholder="Pilih jenis ID"
+                      validation="required"
+                      :options="idTypeOptions"
+                      v-model="formData.personalInfo.idValue"
+                      :validation-messages="{
+                        required: 'Jenis ID adalah wajib',
+                      }"
+                    />
 
-                <FormKit
-                  type="select"
-                  name="idValue"
-                  label="Jenis ID"
-                  placeholder="Pilih jenis ID"
-                  validation="required"
-                  :options="idTypeOptions"
-                  v-model="formData.personalInfo.idValue"
-                  :validation-messages="{
-                    required: 'Jenis ID adalah wajib',
-                  }"
-                />
+                    <FormKit
+                      type="text"
+                      name="idNumber"
+                      :label="getIdLabel()"
+                      validation="required"
+                      v-model="formData.personalInfo.idNumber"
+                      :validation-messages="{
+                        required: 'Nombor ID adalah wajib',
+                      }"
+                      :placeholder="getPlaceholder()"
+                    />
 
                 <FormKit
                   v-if="formData.personalInfo.idValue"
@@ -201,28 +214,29 @@
                   }"
                 />
 
-                <FormKit
-                  type="text"
-                  name="idNumber"
-                  label="Nombor ID"
-                  validation="required"
-                  v-model="formData.personalInfo.idNumber"
-                  :validation-messages="{
-                    required: 'Nombor ID adalah wajib',
-                  }"
-                  :placeholder="getPlaceholder()"
-                />
+                    <FormKit
+                      type="text"
+                      name="name"
+                      label="Nama"
+                      validation="required"
+                      v-model="formData.personalInfo.name"
+                      :validation-messages="{
+                        required: 'Nama adalah wajib',
+                      }"
+                    />
 
-                <FormKit
-                  type="text"
-                  name="name"
-                  label="Nama"
-                  validation="required"
-                  v-model="formData.personalInfo.name"
-                  :validation-messages="{
-                    required: 'Nama adalah wajib',
-                  }"
-                />
+                    <FormKit
+                      type="select"
+                      name="citizenship"
+                      label="Warganegara"
+                      validation="required"
+                      :options="citizenshipOptions"
+                      placeholder="Pilih status warganegara"
+                      v-model="formData.personalInfo.citizenship"
+                      :validation-messages="{
+                        required: 'Status warganegara adalah wajib',
+                      }"
+                    />
 
                 <FormKit type="text" name="nopassport" label="No Passport" />
 
@@ -233,23 +247,68 @@
                   v-model="formData.personalInfo.passportStartDate"
                 />
 
-                <FormKit
-                  type="date"
-                  name="passportEndDate"
-                  label="Tarikh tamat passport"
-                  v-model="formData.personalInfo.passportEndDate"
-                />
+                      <FormKit
+                        type="date"
+                        name="passportEndDate"
+                        label="Tarikh Tamat Passport"
+                        validation="required"
+                        v-model="formData.personalInfo.passportEndDate"
+                        :validation-messages="{
+                          required: 'Tarikh tamat passport adalah wajib',
+                        }"
+                      />
 
-                <FormKit
-                  type="date"
-                  name="dateOfBirth"
-                  label="Tarikh Lahir"
-                  validation="required"
-                  v-model="formData.personalInfo.dateOfBirth"
-                  :validation-messages="{
-                    required: 'Tarikh lahir adalah wajib',
-                  }"
-                />
+                      <FormKit
+                        type="text"
+                        name="passportNumber"
+                        label="No Passport"
+                        validation="required"
+                        v-model="formData.personalInfo.passportNumber"
+                        :validation-messages="{
+                          required: 'No passport adalah wajib',
+                        }"
+                      />
+                    </template>
+
+                    <FormKit
+                      type="tel"
+                      name="phone"
+                      label="No Telefon Bimbit"
+                      validation="required"
+                      v-model="formData.personalInfo.phone"
+                      :validation-messages="{
+                        required: 'No Telefon Bimbit adalah wajib',
+                      }"
+                    />
+
+                    <FormKit
+                      type="email"
+                      name="email"
+                      label="Emel"
+                      validation="required|email"
+                      v-model="formData.personalInfo.email"
+                      :validation-messages="{
+                        required: 'Emel adalah wajib',
+                        email: 'Sila masukkan emel yang sah'
+                      }"
+                    />
+                  </div>
+                </div>
+
+                <!-- Butiran Peribadi Section -->
+                <div class="mb-6">
+                  <h4 class="text-md font-medium mb-3">Butiran Peribadi</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormKit
+                      type="date"
+                      name="dateOfBirth"
+                      label="Tarikh Lahir"
+                      validation="required"
+                      v-model="formData.personalInfo.dateOfBirth"
+                      :validation-messages="{
+                        required: 'Tarikh lahir adalah wajib',
+                      }"
+                    />
 
                 <FormKit
                   type="select"
@@ -301,22 +360,35 @@
                   }"
                 />
 
-                <FormKit
-                  type="email"
-                  name="email"
-                  label="Emel"
-                  validation="required|email"
-                  v-model="formData.personalInfo.email"
-                  :validation-messages="{
-                    required: 'Emel adalah wajib',
-                    email: 'Sila masukkan emel yang sah'
-                  }"
-                /> -->
+                    <!-- Tarikh Masuk Islam - Show when Muallaf = Ya -->
+                    <div v-if="formData.personalInfo.adakah_muallaf === 'Y'">
+                      <FormKit
+                        type="date"
+                        name="tarikh_masuk_islam"
+                        label="Tarikh Masuk Islam"
+                        placeholder="DD/MM/YYYY"
+                        validation="required"
+                        v-model="formData.personalInfo.tarikh_masuk_islam"
+                        :validation-messages="{
+                          required: 'Sila masukkan tarikh masuk Islam',
+                        }"
+                      />
+                    </div>
 
-                <!-- Islamic Information Section -->
-                <div class="md:col-span-2">
-                  <h4 class="text-md font-medium mb-3">Maklumat Islam</h4>
-                </div>
+                    <!-- Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM) - Show when Muallaf = Ya -->
+                    <div v-if="formData.personalInfo.adakah_muallaf === 'Y'">
+                      <FormKit
+                        type="date"
+                        name="tarikh_masuk_kfam"
+                        label="Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM)"
+                        placeholder="DD/MM/YYYY"
+                        validation="required"
+                        v-model="formData.personalInfo.tarikh_masuk_kfam"
+                        :validation-messages="{
+                          required: 'Sila masukkan tarikh masuk Kelas Fardu Ain Muallaf (KFAM)',
+                        }"
+                      />
+                    </div>
 
                 <FormKit
                   type="text"
@@ -467,7 +539,7 @@
                       <FormKit
                         type="text"
                         :name="`spouseIdNumber_${index}`"
-                        label="No ID"
+                        label="ID Pengenalan"
                         validation="required"
                         v-model="spouse.spouseIdNumber"
                         :validation-messages="{
@@ -607,7 +679,6 @@
                     help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB (Tidak wajib)"
                   />
                 </div>
-              </div>
 
               <div class="flex justify-end gap-3 mt-6">
                 <rs-button
@@ -625,7 +696,7 @@
 
             <!-- Step 2: Maklumat Alamat -->
             <div v-if="currentStep === 2">
-              <h3 class="text-lg font-medium mb-4">II) Maklumat Alamat</h3>
+              <h3 class="text-lg font-semibold mb-4">2. Maklumat Alamat</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Fixed Address Fields -->
                 <div class="md:col-span-2">
@@ -663,16 +734,6 @@
                 </div>
 
                 <FormKit
-                  type="select"
-                  name="district"
-                  label="Daerah"
-                  validation="required"
-                  :options="districtOptions"
-                  v-model="formData.addressInfo.district"
-                  :validation-messages="{ required: 'Daerah adalah wajib' }"
-                />
-
-                <FormKit
                   type="text"
                   name="postcode"
                   label="Poskod"
@@ -682,6 +743,24 @@
                     required: 'Poskod adalah wajib',
                     length: 'Poskod mestilah 5 digit',
                   }"
+                />
+
+                <FormKit
+                  type="text"
+                  name="state"
+                  label="Negeri"
+                  v-model="formData.addressInfo.state"
+                  disabled
+                />
+
+                <FormKit
+                  type="select"
+                  name="district"
+                  label="Daerah"
+                  validation="required"
+                  :options="districtOptions"
+                  v-model="formData.addressInfo.district"
+                  :validation-messages="{ required: 'Daerah adalah wajib' }"
                 />
 
                 <FormKit
@@ -850,7 +929,7 @@
 
             <!-- Step 3: Pengesahan -->
             <div v-if="currentStep === 3">
-              <h3 class="text-lg font-medium mb-4">III) Pengesahan</h3>
+              <h3 class="text-lg font-semibold mb-4">3. Pengesahan</h3>
 
               <div class="mb-6">
                 <h4 class="font-medium mb-3">Maklumat Perakuan Pemohon</h4>
@@ -1093,7 +1172,10 @@
               <!-- Document Information (Readonly) -->
               <div class="mb-6">
                 <h4 class="font-medium mb-3">Dokumen yang Dimuat Naik</h4>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div v-if="uploadedDocuments.length === 0" class="text-center py-8 text-gray-500">
+                  <p>Tiada dokumen yang dimuat naik</p>
+                </div>
+                <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div
                     v-for="(doc, index) in uploadedDocuments"
                     :key="index"
@@ -1124,6 +1206,7 @@
                   label="Nama"
                   validation="required"
                   v-model="formData.verification.namaPengesah"
+                  :value="getPakOfficerLabel(formData.verification.selectedPakOfficer)"
                   disabled
                 />
 
@@ -1133,6 +1216,7 @@
                   label="Jawatan"
                   validation="required"
                   v-model="formData.verification.jawatanPengesah"
+                  value="Pegawai PAK"
                   disabled
                 />
 
@@ -1142,6 +1226,7 @@
                   label="No Telefon"
                   validation="required"
                   v-model="formData.verification.noTelefonPengesah"
+                  value="012-3456789"
                   disabled
                 />
 
@@ -1151,6 +1236,7 @@
                   label="Tarikh Pengesahan"
                   validation="required"
                   v-model="formData.verification.tarikhPengesahanPermastautin"
+                  :value="new Date().toISOString().split('T')[0]"
                   disabled
                 />
 
@@ -1235,7 +1321,7 @@
                   name="tarikh_proses"
                   label="Tarikh Proses"
                   validation="required"
-                  :value="new Date().toISOString().split('T')[0]"
+                  :value="formData.pegawaiPendaftar.tarikhProses"
                   v-model="formData.pegawaiPendaftar.tarikhProses"
                   disabled
                 />
@@ -1357,7 +1443,32 @@ const formData = ref({
     incomeDocument: null,
     location: "",
     // Spouse/Family member fields - now as array
-    spouses: [],
+    spouses: [
+      {
+        relationship: "pasangan",
+        spouseIdType: "ic",
+        spouseIdNumber: "123456789",
+        spouseName: "Siti binti Mohamed",
+        spouseIdDocument: {
+          name: 'kad_pengenalan_siti.jpg',
+          size: 1456000,
+          type: 'image/jpeg',
+          lastModified: new Date('2024-01-05').getTime()
+        }
+      },
+      {
+        relationship: "anak",
+        spouseIdType: "sijil-lahir",
+        spouseIdNumber: "202012310001",
+        spouseName: "Mohd Ali bin Ahmad",
+        spouseIdDocument: {
+          name: 'sijil_lahir_ali.pdf',
+          size: 890000,
+          type: 'application/pdf',
+          lastModified: new Date('2024-01-05').getTime()
+        }
+      }
+    ],
   },
   healthInfo: {
     status: "",
@@ -1654,6 +1765,13 @@ const getDocumentLabel = () => {
   return labels[formData.value.personalInfo.idValue] || "";
 };
 
+const getIdLabel = () => {
+  if (formData.value.personalInfo.idValue === 'foreign-id') {
+    return 'Foreign ID';
+  }
+  return 'ID Pengenalan';
+};
+
 const getSpouseDocumentLabel = (index) => {
   const labels = {
     ic: "Upload Kad Pengenalan",
@@ -1683,7 +1801,8 @@ const handleSubmit = async () => {
   try {
     console.log("Form submitted:", formData.value);
     toast.success("Permohonan berjaya dihantar");
-    router.push("/BF-PRF/AS/FR/04");
+    router.push("/BF-PRF/AS/permohonan/list-semakan");
+    
   } catch (error) {
     toast.error("Ralat! Permohonan tidak berjaya dihantar");
     console.error("Submission error:", error);
@@ -1692,6 +1811,11 @@ const handleSubmit = async () => {
 
 const prevStep = () => currentStep.value--;
 const nextStep = () => currentStep.value++;
+
+// Add clickable stepper navigation
+const goToStep = (stepId) => {
+  currentStep.value = stepId;
+};
 
 // Watchers
 watch(
