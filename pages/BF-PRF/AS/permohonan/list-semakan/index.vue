@@ -172,7 +172,7 @@ const handleSemak = (jenisPendaftaran) => {
   } else if (jenisPendaftaran === "Pendaftaran Lengkap") {
     navigateTo("/BF-PRF/AS/permohonan/list-semakan/semakan-data-lengkap");
   } else if (jenisPendaftaran === "Pendaftaran Perseorangan") {
-    navigateTo("/BF-PRF/AS/permohonan/list-semakan/semakan-data-lengkap");
+    navigateTo("/BF-PRF/AS/permohonan/list-semakan/semakan-data-perseorangan");
   } else {
     // Default fallback for any other jenisPendaftaran values
     navigateTo("/BF-PRF/AS/permohonan/list-semakan/semakan-data-kemaskini");

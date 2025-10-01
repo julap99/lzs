@@ -73,6 +73,6 @@ const handleKembali = () => {
   navigateTo("/BF-PRF/AS/FR/05");
 };
 const handleSeterusnya = () => {
-  navigateTo("/BF-BTN/tugasan/bantuan/siasatan/siasatan-eoad-2/NAS-2025-0004");
+  navigateTo("/BF-BTN/mohon-bantuan");
 };
 </script>

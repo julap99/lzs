@@ -61,8 +61,7 @@
           <FormKit type="form" :actions="false" @submit="handleSubmit">
             <!-- Step 1: Maklumat Peribadi Asnaf -->
             <div v-if="currentStep === 1">
-              <h3 class="text-lg font-medium mb-4">I) Maklumat Peribadi Asnaf</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <h3 class="text-lg font-semibold mb-4">1. Maklumat Peribadi Asnaf</h3>
                 <!-- Location Information Section - Moved to top -->
                 <!-- <div class="md:col-span-2">
                   <h4 class="text-md font-medium mb-3">Maklumat Bencana</h4>
@@ -169,152 +168,141 @@
                   </div>
                 </div> -->
 
-                <div class="md:col-span-2">
+                <!-- Maklumat Peribadi Section -->
+                <div class="mb-6">
                   <h4 class="text-md font-medium mb-3">Maklumat Peribadi</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormKit
+                      type="select"
+                      name="idValue"
+                      label="Jenis ID"
+                      placeholder="Pilih jenis ID"
+                      validation="required"
+                      :options="idTypeOptions"
+                      v-model="formData.personalInfo.idValue"
+                      :validation-messages="{
+                        required: 'Jenis ID adalah wajib',
+                      }"
+                    />
+
+                    <FormKit
+                      type="text"
+                      name="idNumber"
+                      label="ID Pengenalan"
+                      validation="required"
+                      v-model="formData.personalInfo.idNumber"
+                      :validation-messages="{
+                        required: 'Nombor ID adalah wajib',
+                      }"
+                      :placeholder="getPlaceholder()"
+                    />
+
+                    <FormKit
+                      v-if="formData.personalInfo.idValue"
+                      type="file"
+                      name="idDocument"
+                      :label="getDocumentLabel()"
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      v-model="formData.personalInfo.idDocument"
+                      help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                      validation="required"
+                      :validation-messages="{
+                        required: 'Dokumen ID adalah wajib'
+                      }"
+                    />
+
+                    <FormKit
+                      type="text"
+                      name="name"
+                      label="Nama"
+                      validation="required"
+                      v-model="formData.personalInfo.name"
+                      :validation-messages="{
+                        required: 'Nama adalah wajib',
+                      }"
+                    />
+
+                    <FormKit
+                      type="select"
+                      name="citizenship"
+                      label="Warganegara"
+                      validation="required"
+                      :options="citizenshipOptions"
+                      placeholder="Pilih status warganegara"
+                      v-model="formData.personalInfo.citizenship"
+                      :validation-messages="{
+                        required: 'Status warganegara adalah wajib',
+                      }"
+                    />
+
+                    <FormKit
+                      type="tel"
+                      name="phone"
+                      label="No Telefon Bimbit"
+                      validation="required"
+                      v-model="formData.personalInfo.phone"
+                      :validation-messages="{
+                        required: 'No Telefon Bimbit adalah wajib',
+                      }"
+                    />
+
+                    <FormKit
+                      type="email"
+                      name="email"
+                      label="Emel"
+                      validation="required|email"
+                      v-model="formData.personalInfo.email"
+                      :validation-messages="{
+                        required: 'Emel adalah wajib',
+                        email: 'Sila masukkan emel yang sah'
+                      }"
+                    />
+                  </div>
                 </div>
 
-                <FormKit
-                  type="select"
-                  name="idValue"
-                  label="Jenis ID"
-                  placeholder="Pilih jenis ID"
-                  validation="required"
-                  :options="idTypeOptions"
-                  v-model="formData.personalInfo.idValue"
-                  :validation-messages="{
-                    required: 'Jenis ID adalah wajib',
-                  }"
-                />
+                <!-- Butiran Peribadi Section -->
+                <div class="mb-6">
+                  <h4 class="text-md font-medium mb-3">Butiran Peribadi</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormKit
+                      type="date"
+                      name="dateOfBirth"
+                      label="Tarikh Lahir"
+                      validation="required"
+                      v-model="formData.personalInfo.dateOfBirth"
+                      :validation-messages="{
+                        required: 'Tarikh lahir adalah wajib',
+                      }"
+                    />
 
-                  <FormKit
-                    v-if="formData.personalInfo.idValue"
-                    type="file"
-                    name="idDocument"
-                    :label="getDocumentLabel()"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    v-model="formData.personalInfo.idDocument"
-                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Dokumen ID adalah wajib'
-                    }"
-                  />
+                    <FormKit
+                      type="select"
+                      name="gender"
+                      label="Jantina"
+                      validation="required"
+                      :options="genderOptions"
+                      placeholder="Pilih jantina"
+                      v-model="formData.personalInfo.gender"
+                      :validation-messages="{
+                        required: 'Jantina adalah wajib'
+                      }"
+                    />
 
-                <FormKit
-                  type="text"
-                  name="idNumber"
-                  label="ID Pengenalan"
-                  validation="required"
-                  v-model="formData.personalInfo.idNumber"
-                  :validation-messages="{
-                    required: 'Nombor ID adalah wajib',
-                  }"
-                  :placeholder="getPlaceholder()"
-                />
+                    <FormKit
+                      type="select"
+                      name="religion"
+                      label="Agama"
+                      validation="required"
+                      :options="religionOptions"
+                      placeholder="Pilih agama"
+                      v-model="formData.personalInfo.religion"
+                      :validation-messages="{
+                        required: 'Agama adalah wajib',
+                      }"
+                    />
+                  </div>
+                </div>              
 
-                <FormKit
-                  type="text"
-                  name="name"
-                  label="Nama"
-                  validation="required"
-                  v-model="formData.personalInfo.name"
-                  :validation-messages="{
-                    required: 'Nama adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="text"
-                  name="nopassport"
-                  label="No Passport"  
-                />
-
-                <FormKit
-                  type="date"
-                  name="passportStartDate"
-                  label="Tarikh mula passport"
-                  v-model="formData.personalInfo.passportStartDate"
-                />
-
-                <FormKit
-                  type="date"
-                  name="passportEndDate"
-                  label="Tarikh tamat passport"
-                  v-model="formData.personalInfo.passportEndDate"
-                />
-
-                <FormKit
-                  type="date"
-                  name="dateOfBirth"
-                  label="Tarikh Lahir"
-                  validation="required"
-                  v-model="formData.personalInfo.dateOfBirth"
-                  :validation-messages="{
-                    required: 'Tarikh lahir adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="select"
-                  name="gender"
-                  label="Jantina"
-                  validation="required"
-                  :options="genderOptions"
-                  placeholder="Pilih jantina"
-                  v-model="formData.personalInfo.gender"
-                  :validation-messages="{
-                    required: 'Jantina adalah wajib'
-                  }"
-                />
-
-                <FormKit
-                  type="select"
-                  name="citizenship"
-                  label="Warganegara"
-                  validation="required"
-                  :options="citizenshipOptions"
-                  placeholder="Pilih status warganegara"
-                  v-model="formData.personalInfo.citizenship"
-                  :validation-messages="{
-                    required: 'Status warganegara adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="select"
-                  name="religion"
-                  label="Agama"
-                  validation="required"
-                  :options="religionOptions"
-                  placeholder="Pilih agama"
-                  v-model="formData.personalInfo.religion"
-                  :validation-messages="{
-                    required: 'Agama adalah wajib',
-                  }"
-                />              
-
-                <!-- <FormKit
-                  type="tel"
-                  name="phone"
-                  label="No Telefon"
-                  validation="required"
-                  v-model="formData.personalInfo.phone"
-                  :validation-messages="{
-                    required: 'No Telefon adalah wajib',
-                  }"
-                />
-
-                <FormKit
-                  type="email"
-                  name="email"
-                  label="Emel"
-                  validation="required|email"
-                  v-model="formData.personalInfo.email"
-                  :validation-messages="{
-                    required: 'Emel adalah wajib',
-                    email: 'Sila masukkan emel yang sah'
-                  }"
-                /> -->
 
                 <!-- Islamic Information Section -->
                 <div class="md:col-span-2">
@@ -584,7 +572,6 @@
                     help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB (Tidak wajib)"
                   />
                 </div>
-              </div>
 
               <div class="flex justify-between gap-3 mt-6">
                 <rs-button
@@ -610,7 +597,7 @@
 
             <!-- Step 2: Maklumat Alamat -->
             <div v-if="currentStep === 2">
-              <h3 class="text-lg font-medium mb-4">II) Maklumat Alamat</h3>
+              <h3 class="text-lg font-semibold mb-4">2. Maklumat Alamat</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Fixed Address Fields -->
                 <div class="md:col-span-2">
@@ -648,16 +635,6 @@
                 </div>
 
                 <FormKit
-                  type="select"
-                  name="district"
-                  label="Daerah"
-                  validation="required"
-                  :options="districtOptions"
-                  v-model="formData.addressInfo.district"
-                  :validation-messages="{ required: 'Daerah adalah wajib' }"
-                />
-
-                <FormKit
                   type="text"
                   name="postcode"
                   label="Poskod"
@@ -667,6 +644,24 @@
                     required: 'Poskod adalah wajib',
                     length: 'Poskod mestilah 5 digit',
                   }"
+                />
+
+                <FormKit
+                  type="text"
+                  name="state"
+                  label="Negeri"
+                  v-model="formData.addressInfo.state"
+                  disabled
+                />
+
+                <FormKit
+                  type="select"
+                  name="district"
+                  label="Daerah"
+                  validation="required"
+                  :options="districtOptions"
+                  v-model="formData.addressInfo.district"
+                  :validation-messages="{ required: 'Daerah adalah wajib' }"
                 />
 
                 <FormKit
@@ -691,14 +686,6 @@
                     min: 'Tempoh Bermastautin tidak boleh kurang daripada 0',
                     max: 'Tempoh Bermastautin tidak boleh melebihi 99'
                   }"
-                />
-
-                <FormKit
-                  type="text"
-                  name="state"
-                  label="Negeri"
-                  v-model="formData.addressInfo.state"
-                  disabled
                 />
 
                 <div class="md:col-span-2">
@@ -835,7 +822,7 @@
 
             <!-- Step 3: Pengesahan -->
             <div v-if="currentStep === 3">
-              <h3 class="text-lg font-medium mb-4">III) Pengesahan</h3>
+              <h3 class="text-lg font-semibold mb-4">3. Pengesahan</h3>
 
               <div class="mb-6">
                 <h4 class="font-medium mb-3"> Maklumat Perakuan Pemohon</h4>
@@ -1014,7 +1001,7 @@
 
             <!-- Step 4: Maklumat Pengesah Bermastautin -->
             <div v-if="currentStep === 4">
-              <h3 class="text-lg font-medium mb-4">IV) Maklumat Pengesah Bermastautin</h3>
+              <h3 class="text-lg font-semibold mb-4">4. Maklumat Pengesah Bermastautin</h3>
               <!-- <p class="text-sm text-gray-600 mb-4">
                 *(Wakil Rakyat/Penghulu/Ketua Kampung/Ketua Penduduk/Nazir Masjid/Pengerusi Surau/Penolong Amil/Guru Pembimbing Asnaf Muallaf/Eksekutif LZS/Ketua Operasi Agihan Daerah LZS/Ketua Jabatan LZS/Pengurus LZS/Ketua Cawangan LZS.)
               </p> -->
@@ -1152,7 +1139,7 @@
 
             <!-- Step 5: Pegawai Pendaftar -->
             <div v-if="currentStep === 5">
-              <h3 class="text-lg font-medium mb-4">V) Maklumat Pegawai Pendaftar</h3>
+              <h3 class="text-lg font-semibold mb-4">5. Maklumat Pegawai Pendaftar</h3>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
