@@ -1171,47 +1171,18 @@
               </p> -->
 
               <!-- PAK Officer Information (Readonly) -->
-              <div class="mb-6">
                 <h4 class="font-medium mb-3">
                   Maklumat Pegawai PAK yang Mengesahkan
                 </h4>
-                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label
-                        class="block text-sm font-medium text-gray-700 mb-1"
-                        >Kariah</label
-                      >
-                      <div
-                        class="text-sm text-gray-900 bg-white px-3 py-2 border border-gray-300 rounded"
-                      >
-                        {{
-                          getKariahLabel(
-                            formData.verification.selectedKariah
-                          ) || "Belum dipilih"
-                        }}
-                      </div>
-                    </div>
-
-                    <div>
-                      <label
-                        class="block text-sm font-medium text-gray-700 mb-1"
-                        >Nama Pegawai PAK</label
-                      >
-                      <div
-                        class="text-sm text-gray-900 bg-white px-3 py-2 border border-gray-300 rounded"
-                      >
-                        {{
-                          getPakOfficerLabel(
-                            formData.verification.selectedPakOfficer
-                          ) || "Belum dipilih"
-                        }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormKit
+                  type="text"
+                  name="selected_kariah"
+                  label="Kariah"
+                  v-model="formData.verification.selectedKariah"
+                  disabled
+                />
+                
               <!-- Document Information (Readonly) -->
               <!-- <div class="mb-6">
                 <h4 class="font-medium mb-3">Dokumen yang Dimuat Naik</h4>
@@ -1245,7 +1216,7 @@
               </div> -->
 
               <!-- Original Form Fields (Hidden/Readonly) -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+             
                 <FormKit
                   type="text"
                   name="nama_pengesah"
