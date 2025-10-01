@@ -172,12 +172,54 @@
           <FormKit v-if="isIPT" v-model="newInvoice.semester" type="select" label="Semester" :options="semesterOptions" validation="required" :validation-messages="{ required: 'Sila pilih Semester' }" />
           <FormKit v-model="newInvoice.tajuk" type="text" label="Tajuk" required />
           <FormKit v-if="isIPT" v-model="newInvoice.cgpa" type="number" label="CGPA" validation="required|number|min:0|max:4" :validation-messages="{ required: 'Sila masukkan CGPA', number: 'Sila masukkan nilai yang sah', min: 'CGPA tidak boleh kurang dari 0', max: 'CGPA tidak boleh lebih dari 4' }" step="0.01" min="0" max="4" />
-          <FormKit v-model="newInvoice.penerimaBayaran" type="text" label="Penerima Bayaran" readonly />
-          <FormKit v-model="newInvoice.mop" type="text" label="MOP" readonly />
-          <FormKit v-model="newInvoice.namaPenerima" type="text" label="Nama Penerima" readonly />
+          <FormKit
+            v-if="isSpecificAsnafId"
+            v-model="newInvoice.penerimaBayaran"
+            type="select"
+            label="Penerima Bayaran"
+            :options="penerimaBayaranOptions"
+            validation="required"
+            :validation-messages="{ required: 'Sila pilih Penerima Bayaran' }"
+          />
+          <FormKit
+            v-else
+            v-model="newInvoice.penerimaBayaran"
+            type="text"
+            label="Penerima Bayaran"
+            readonly
+          />
+          <FormKit
+            v-if="isSpecificAsnafId"
+            v-model="newInvoice.mop"
+            type="select"
+            label="MOP"
+            :options="mopOptions"
+            validation="required"
+            :validation-messages="{ required: 'Sila pilih MOP' }"
+          />
+          <FormKit v-else v-model="newInvoice.mop" type="text" label="MOP" readonly />
+          <FormKit
+            v-if="isSpecificAsnafId"
+            v-model="newInvoice.namaPenerima"
+            type="select"
+            label="Nama Penerima"
+            :options="namaPenerimaOptions"
+            validation="required"
+            :validation-messages="{ required: 'Sila pilih Nama Penerima' }"
+          />
+          <FormKit v-else v-model="newInvoice.namaPenerima" type="text" label="Nama Penerima" readonly />
+
           <FormKit v-model="newInvoice.bank" type="text" label="Bank" readonly />
-          <FormKit v-model="newInvoice.noAkaun" type="text" label="No. Akaun" readonly />
-          <FormKit v-model="newInvoice.tarikhJangkaanPembayaran" type="date" label="Expected Payment Date" />
+
+          <FormKit
+            v-if="isSpecificAsnafId"
+            v-model="newInvoice.noAkaun"
+            type="text"
+            label="No. Akaun"
+            validation="required|length:5,20"
+            :validation-messages="{ required: 'Sila masukkan No. Akaun' }"
+          />
+          <FormKit v-else v-model="newInvoice.noAkaun" type="text" label="No. Akaun" readonly />
           <FormKit v-model="newInvoice.amaun" type="number" label="Amaun (RM)" validation="required|number|min:0" :validation-messages="{ required: 'Sila masukkan amaun', number: 'Sila masukkan nilai yang sah', min: 'Amaun tidak boleh negatif' }" step="0.01" min="0" />
           <div v-if="amountExceedsLimit && newInvoice.amaun" class="text-sm text-red-600 -mt-2">
             <span v-if="isEditingInvoice">
@@ -239,6 +281,20 @@ const breadcrumb = ref([
 
 const route = useRoute()
 
+// Specific behavior for APP-2025-001490
+const isSpecificAsnafId = computed(() => String(route.params.id || '') === 'APP-2025-001490')
+const penerimaBayaranOptions = [
+  { label: 'Receipient', value: 'Receipient' },
+  { label: 'Asnaf', value: 'Asnaf' },
+]
+const namaPenerimaOptions = [
+  { label: 'IPTA', value: 'IPTA' },
+]
+const mopOptions = [
+  { label: 'EFT', value: 'EFT' },
+  { label: 'Tunai', value: 'Tunai' },
+]
+
 const formData = ref({
   namaPemohon: 'Ahmad bin Abdullah',
   noPengenalan: '800101-10-1111',
@@ -267,7 +323,6 @@ const formData = ref({
   namaPenerima: '',
   bank: '',
   noAkaun: '',
-  tarikhJangkaanPembayaran: '',
   tarikhDicipta: '04/04/2025 03:45 PM'
 })
 
@@ -380,7 +435,6 @@ const newInvoice = ref({
   namaPenerima: 'IPTA',
   bank: 'CIMB',
   noAkaun: '8001234567',
-  tarikhJangkaanPembayaran: '',
   amaun: '',
   lampiran: [],
   catatan: ''
@@ -643,7 +697,6 @@ const editInvoice = (invoice) => {
       namaPenerima: 'IPTA',
       bank: 'CIMB',
       noAkaun: '8001234567',
-      tarikhJangkaanPembayaran: '',
       amaun: invoice.amaun,
       lampiran: [],
       catatan: ''

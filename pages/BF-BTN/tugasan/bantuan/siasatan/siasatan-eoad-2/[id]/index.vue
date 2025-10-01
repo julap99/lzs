@@ -1,5 +1,3 @@
-																	  
-
 <template>
     <div>
         <LayoutsBreadcrumb :items="breadcrumb" />
@@ -128,6 +126,7 @@
                   </div>
                 </div>
               </rs-collapse-item>
+              
 
               <!-- Maklumat Perhubungan -->
               <rs-collapse-item type="card" title="Maklumat Perhubungan">
@@ -812,15 +811,15 @@
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div>
                       <label class="block text-xs uppercase tracking-wide font-bold">Peratusan Perbezaan</label>
-                      <p class="text-gray-900 font-medium">{{ profilingData.peratusanPerbezaan }}</p>
+                      <p class="text-gray-900 font-medium">50.81%</p>
                     </div>
                     <div>
                       <label class="block text-xs uppercase tracking-wide font-bold">Kategori Keluarga Asnaf</label>
-                      <p class="text-gray-900 font-medium">{{ profilingData.kategoriKeluargaAsnaf }}</p>
+                      <p class="text-gray-900 font-medium">Miskin</p>
                     </div>
                     <div>
                       <label class="block text-xs uppercase tracking-wide font-bold">Kategori Asnaf</label>
-                      <p class="text-gray-900 font-medium">{{ profilingData.kategoriAsnaf }}</p>
+                      <p class="text-gray-900 font-medium">Miskin</p>
                     </div>
                   </div>
 
@@ -840,19 +839,54 @@
                   <!-- Ringkasan Keluarga (Syor) -->
                   <div class="mt-4">
                     <label class="block text-xs uppercase tracking-wide font-bold">Merit Keluarga(Syor)</label>
-                    <p class="text-gray-900 font-medium">{{ profilingData.meritKeluargaSyor }}</p>
+                    <p class="text-gray-900 font-medium">0.55</p>
 
                     <label class="block text-xs uppercase tracking-wide mt-4 font-bold">Status Multidimensi Keluarga(Syor)</label>
-                    <p class="text-gray-900 font-medium">{{ profilingData.statusMultidimensiKeluargaSyor }}</p>
+                    <p class="text-gray-900 font-medium">Producktif C</p>
 
                     <label class="block text-xs uppercase tracking-wide mt-4 font-bold">Quadrant Multidimensi Keluarga(Syor)</label>
-                    <p class="text-gray-900 font-medium">{{ profilingData.quadrantMultidimensiKeluargaSyor }}</p>
+                    <p class="text-gray-900 font-medium">Asnaf Produktif Sementara</p>
                   </div>
                 </div>
               </rs-collapse-item>
 
               <!-- Pengesahan Status (relocated to Maklumat Pemohon) -->
               <rs-collapse-item type="card" title="Pengesahan Status">
+                <!-- Summary Information -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <div>
+                    <label
+                      class="block text-xs uppercase tracking-wide font-bold">
+                      Peratusan Perbezaan
+                    </label>
+                    <p class="text-gray-900 font-medium">
+                      50.81%
+                    </p>
+                  </div>
+                  <FormKit
+                      type="select"
+                      name="kategoriKeluargaAsnaf"
+                      label="Kategori Keluarga Asnaf"
+                      :options="[
+                        { label: 'Fakir', value: 'fakir' },
+                        { label: 'Miskin', value: 'miskin' },
+                        { label: 'Non Fakir Miskin', value: 'non_fakir_miskin' },
+                        { label: 'Fakir Miskin', value: 'fakir_miskin' }
+                      ]"
+                      v-model="kategoriKeluargaAsnaf"
+                      placeholder="Pilih kategori"
+                      :classes="{ input: '!py-2.5' }"
+                    />
+                  <div>
+                    <label
+                      class="block text-xs uppercase tracking-wide font-bold">
+                      Kategori Asnaf
+                    </label>
+                    <p class="text-gray-900 font-medium">
+                      Miskin
+                    </p>
+                  </div>
+                </div>
                 <div class="p-4">
                   <rs-table
                     :data="pengesahanRows"
@@ -868,9 +902,6 @@
                     <template v-slot:kategori="{ value }">
                       <FormKit type="select" :options="kategoriIndividuOptions" v-model="value.kategori" outer-class="mb-0" />
                     </template>
-                    <template v-slot:meritIndividu="{ value }">
-                      <FormKit type="text" v-model="value.meritIndividu" outer-class="mb-0" />
-                    </template>
                     <template v-slot:statusMultidimensi="{ value }">
                       <FormKit type="select" :options="statusMultidimensiOptions" v-model="value.statusMultidimensi" outer-class="mb-0" />
                     </template>
@@ -879,6 +910,18 @@
                     </template>
                   </rs-table>
                 </div>
+
+                <!-- Ringkasan Keluarga (Syor) -->
+                  <div class="mt-4">
+                    <label class="block text-xs uppercase tracking-wide font-bold">Merit Keluarga(Syor)</label>
+                    <p class="text-gray-900 font-medium">0.55</p>
+
+                    <label class="block text-xs uppercase tracking-wide mt-4 font-bold">Status Multidimensi Keluarga(Syor)</label>
+                    <p class="text-gray-900 font-medium">Producktif C</p>
+
+                    <label class="block text-xs uppercase tracking-wide mt-4 font-bold">Quadrant Multidimensi Keluarga(Syor)</label>
+                    <p class="text-gray-900 font-medium">Asnaf Produktif Sementara</p>
+                  </div>
               </rs-collapse-item>
 
               <!-- Had Kifayah & Multidimensi (relocated to Maklumat Pemohon) -->
@@ -901,6 +944,69 @@
                       <div class="mb-2">Status Multidimensi: <span class="font-bold">Produktif C</span></div>
                       <div class="mb-2">Quadrant: <span class="font-bold">Asnaf Produktif Sementara</span></div>
                     </div>
+                  </div>
+                </div>
+              </rs-collapse-item>
+
+              <!-- Personaliti Asnaf -->
+              <rs-collapse-item type="card" title="Personaliti Asnaf">
+                <div class="p-4">
+                  <!-- Sejarah Tingkah Laku Asnaf -->
+                  <div v-if="!shouldHideSections">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">
+                      Personaliti Asnaf
+                    </label>
+                    
+                    <div class="overflow-x-auto">
+                      <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                        <thead class="bg-gray-50">
+                          <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                              Tingkah Laku Asnaf
+                            </th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                              Nama Pegawai
+                            </th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                              Masa
+                            </th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                              Tarikh
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                          <tr v-for="(record, index) in asnafHistoryData" :key="index" class="hover:bg-gray-50">
+                            <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200">
+                              {{ record.tingkahLaku }}
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-600 border-b border-gray-200">
+                              {{ record.namaPegawai }}
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-600 border-b border-gray-200">
+                              {{ record.masa }}
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-600 border-b border-gray-200">
+                              {{ record.tarikh }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- Tingkah Laku Asnaf -->
+                  <div v-if="!shouldHideSections" class="mt-6">
+                    <FormKit
+                      type="text"
+                      name="tingkahLakuAsnaf"
+                      label="Tingkah Laku Asnaf"
+                      placeholder="Masukkan tingkah laku asnaf..."
+                      validation="required"
+                      :validation-messages="{
+                        required: 'Sila masukkan tingkah laku asnaf untuk meneruskan',
+                      }"
+                    />
                   </div>
                 </div>
               </rs-collapse-item>
@@ -1165,6 +1271,10 @@
                               <rs-button variant="primary" @click="editAssistance(value)">Edit</rs-button>
                             </template>
                           </rs-table>
+                          <!-- Add a new button and align it to the right -->
+                          <div class="flex justify-end mt-4">
+                            <rs-button variant="secondary" @click="goToMohonBantuan">Tambah Bantuan</rs-button>
+                          </div>
                         </div>
                         </template>
                       </rs-card>
@@ -1335,7 +1445,7 @@
                         type="button"
                                   title="Preview"
                                 >
-                                  <Icon name="ph:eye" class="w-4 h-4" />
+                                  <Icon name="ph:eye" class="w-4 h-4 mr-1" />
                       </button>
                                 <button
                                   @click.stop="removeImage(index)"
@@ -1415,57 +1525,7 @@
                     </div>
                   </div>
 
-                  <!-- Sejarah Tingkah Laku Asnaf -->
-                  <div v-if="!shouldHideSections">
-                    <label class="block text-sm font-medium text-gray-700 mb-3">
-                      Sejarah Tingkah Laku Asnaf
-                    </label>
-                    
-                    <div class="overflow-x-auto">
-                      <table class="min-w-full bg-white border border-gray-200 rounded-lg">
-                        <thead class="bg-gray-50">
-                          <tr>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-                              Tingkah Laku Asnaf
-                            </th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-                              Masa
-                            </th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
-                              Tarikh
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200">
-                          <tr v-for="(record, index) in asnafHistoryData" :key="index" class="hover:bg-gray-50">
-                            <td class="px-4 py-3 text-sm text-gray-900 border-b border-gray-200">
-                              {{ record.tingkahLaku }}
-                            </td>
-                            <td class="px-4 py-3 text-sm text-gray-600 border-b border-gray-200">
-                              {{ record.masa }}
-                            </td>
-                            <td class="px-4 py-3 text-sm text-gray-600 border-b border-gray-200">
-                              {{ record.tarikh }}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
 
-                  <!-- Tingkah Laku Asnaf -->
-                  <div v-if="!shouldHideSections">
-                    <FormKit
-                      type="text"
-                      name="tingkahLakuAsnaf"
-                      label="Tingkah Laku Asnaf"
-                      placeholder="Masukkan tingkah laku asnaf..."
-                      validation="required"
-                      :validation-messages="{
-                        required: 'Sila masukkan tingkah laku asnaf untuk meneruskan',
-                      }"
-                    />
-                  </div>
   
   
                   <!-- Catatan Penilaian Awal -->
@@ -1534,8 +1594,8 @@
                   variant="success"
                   @click="handleSimpan"
                   :disabled="processing"
-                      :loading="processing && actionType === 'save'"
-                      class="flex-1 !py-3 text-sm font-medium"
+                  :loading="processing && actionType === 'save'"
+                  class="flex-1 !py-3 text-sm font-medium"
                 >
                       <Icon name="ph:floppy-disk" class="w-5 h-5 mr-2" />
                   Simpan
@@ -1957,8 +2017,8 @@
                       multiple="true"
                       accept=".pdf,.jpg,.jpeg,.png"
                       help="Format yang diterima: PDF, JPG, JPEG, PNG"
-                      value="sijil_pendidikan_sample.pdf"
-                    />
+                      v-model="formDataPRF.sijil_pendidikan"
+                        />
                   </div>
                 </div>
   
@@ -2363,9 +2423,9 @@
                         type="file"
                         name="dokumen_perjanjian_pinjaman"
                         label="Dokumen Perjanjian Pinjaman"
-                        help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                         accept=".pdf,.jpg,.jpeg,.png"
-                        value="dokumen_pinjaman.pdf"
+                        help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                        v-model="formDataPRF.dokumen_perjanjian_pinjaman"
                       />
                     </div>
                   </div>
@@ -2686,6 +2746,8 @@
   //const isPerubahanBantuanOpen = ref(false);
   const isBantuanBaruOpen = ref(true); // Always open
   
+  const kategoriKeluargaAsnaf = ref('miskin');
+
   // Prevent infinite loops with a flag
   let isUpdatingAccordions = false;
 
@@ -3075,7 +3137,6 @@
     { key: 'pengenalanId', label: 'Pengenalan Id' },
     { key: 'nama', label: 'Nama' },
     { key: 'kategori', label: 'Kategori Asnaf(Syor)' },
-    { key: 'meritIndividu', label: 'Merit Individu(Syor)' },
     { key: 'statusMultidimensi', label: 'Status Multidimensi(Syor)' },
   ];
   const tableData = [
@@ -3083,28 +3144,24 @@
       pengenalanId: '060802030272',
       nama: 'NUR NAJWA BINTI ADNAN',
       kategori: 'Miskin',
-      meritIndividu: '0.38',
       statusMultidimensi: 'Tidak Produktif',
     },
     {
       pengenalanId: '091108030442',
       nama: 'NUR QISTINA BINTI ADNAN',
       kategori: 'Miskin',
-      meritIndividu: '0.40',
       statusMultidimensi: 'Tidak Produktif',
     },
     {
       pengenalanId: '770319035991',
       nama: 'Adnan bin Abu',
       kategori: 'Miskin',
-      meritIndividu: '0.69',
       statusMultidimensi: 'Produktif C',
     },
     {
       pengenalanId: '801004035672',
       nama: 'ROHANA BINTI AHMAD',
       kategori: 'Miskin',
-      meritIndividu: '0.64',
       statusMultidimensi: 'Produktif C',
     },
   ];
@@ -3114,15 +3171,14 @@
     { key: 'pengenalanId', label: 'Pengenalan ID' },
     { key: 'nama', label: 'Nama' },
     { key: 'kategori', label: 'Kategori' },
-    { key: 'meritIndividu', label: 'Merit Individu' },
     { key: 'statusMultidimensi', label: 'Status Multidimensi' },
     { key: 'pelarasan', label: 'Pelarasan' },
   ];
   const pengesahanRows = [
-    { pengenalanId: '060802030272', nama: 'NUR NAJWA BINTI ADNAN', kategori: 'Miskin', meritIndividu: '0.38', statusMultidimensi: 'Tidak Produktif', pelarasan: false },
-    { pengenalanId: '091108030442', nama: 'NUR QISTINA BINTI ADNAN', kategori: 'Miskin', meritIndividu: '0.40', statusMultidimensi: 'Tidak Produktif', pelarasan: false },
-    { pengenalanId: '770319035991', nama: 'Adnan bin Abu', kategori: 'Miskin', meritIndividu: '0.69', statusMultidimensi: 'Produktif C', pelarasan: false },
-    { pengenalanId: '801004035672', nama: 'ROHANA BINTI AHMAD', kategori: 'Miskin', meritIndividu: '0.64', statusMultidimensi: 'Produktif C', pelarasan: false },
+    { pengenalanId: '060802030272', nama: 'NUR NAJWA BINTI ADNAN', kategori: 'Miskin', statusMultidimensi: 'Tidak Produktif', pelarasan: false },
+    { pengenalanId: '091108030442', nama: 'NUR QISTINA BINTI ADNAN', kategori: 'Miskin', statusMultidimensi: 'Tidak Produktif', pelarasan: false },
+    { pengenalanId: '770319035991', nama: 'Adnan bin Abu', kategori: 'Miskin', statusMultidimensi: 'Produktif C', pelarasan: false },
+    { pengenalanId: '801004035672', nama: 'ROHANA BINTI AHMAD', kategori: 'Miskin', statusMultidimensi: 'Produktif C', pelarasan: false },
   ];
   const getLocation = () => {};
   
@@ -3262,7 +3318,7 @@
       noBantuan: "NAS-2025-0005",
       nama: "Faridah binti Rahman",
       alamat: "Jalan Seri Melati, Kampung Baru, 45800 Kuala Selangor",
-      kariah: "Masjid At-Taqwa",
+      kariah: "Masjid Al-Taqwa",
       daerah: "Kuala Selangor",
       jenisPengenalan: "MyKad",
       noPengenalan: "881015127890",
@@ -3296,7 +3352,7 @@
       masaLawatan: "",
       StatusPengesahanLawatan: "belum_sah",
       catatanPenilaianAwal: "Pemohon telah menceritakan masalah mengenai keadaan rumahnya yang semakin uzur akibat dimakan anai-anai dan keadaan bumbung yang bocor. Dipanjangkan kepada pegawai untuk siasat dan mempertimbangkan permohonan ini",
-      gambarLokasi: [],
+      gambarLokasi: null,
       catatanLawatanETD: "",
       statusLawatan: "",
       assistanceApplications: [
@@ -3320,6 +3376,7 @@
       masaLawatan: "",
       StatusPengesahanLawatan: "belum_sah",
       catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
+      gambarLokasi: null,
       gambarLokasi: [],
       catatanLawatanETD: "",
       statusLawatan: "",
@@ -3351,7 +3408,7 @@
       masaLawatan: "",
       StatusPengesahanLawatan: "belum_sah",
       catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
-      gambarLokasi: [],
+      gambarLokasi: null,
       catatanLawatanETD: "",
       statusLawatan: "",
       assistanceApplications: [
@@ -3382,7 +3439,7 @@
       masaLawatan: "",
       StatusPengesahanLawatan: "belum_sah",
       catatanPenilaianAwal: "Pemohon memerlukan bantuan untuk kos perubatan anak yang menghidap penyakit kronik. Keadaan kewangan keluarga sangat teruk dan memerlukan bantuan segera.",
-      gambarLokasi: [],
+      gambarLokasi: null,
       catatanLawatanETD: "",
       statusLawatan: "",
       assistanceApplications: [
@@ -3413,7 +3470,7 @@
       masaLawatan: "",
       StatusPengesahanLawatan: "belum_sah",
       catatanPenilaianAwal: "Permohonan bantuan untuk pembinaan/baik pulih institusi agama. Pemohon memerlukan bantuan untuk masjid tempatan yang memerlukan penyelenggaraan.",
-      gambarLokasi: [],
+      gambarLokasi: null,
       catatanLawatanETD: "",
       statusLawatan: "",
       assistanceApplications: [
@@ -3611,7 +3668,7 @@
     const variants = {
       baru: "info",
       "tidak lengkap": "danger",
-      "untuk siasatan": "secondary",
+      "untuk siasatan": "warning",
       "menunggu siasatan": "warning",
       "selesai siasatan": "success",
       "menunggu pengesahan": "info",
@@ -3725,16 +3782,19 @@
   const asnafHistoryData = ref([
     {
       tingkahLaku: "Sangat Sopan - Bersikap hormat, menjawab soalan dengan jelas dan membawa dokumen lengkap",
+      namaPegawai: "Ahmad Firdaus Bin Azman",
       masa: "10:30 AM",
       tarikh: "15/01/2024"
     },
     {
       tingkahLaku: "Baik - Kooperatif semasa temuduga, memberikan maklumat yang diperlukan dengan jujur",
+      namaPegawai: "Siti Khadijah Binti Othman",
       masa: "02:15 PM", 
       tarikh: "08/12/2023"
     },
     {
       tingkahLaku: "Agak Gelisah - Nampak nervous tetapi masih dapat menjawab soalan dengan baik",
+      namaPegawai: "Khalid Bin Zainal",
       masa: "09:45 AM",
       tarikh: "22/10/2023"
     }
@@ -4755,9 +4815,9 @@
       }
     }
   });
-  </script>
-  
-  <style lang="scss" scoped>
+</script>
+
+<style lang="scss" scoped>
   /* Table responsive enhancements */
   .scrollbar-thin {
     scrollbar-width: thin;
@@ -4868,5 +4928,4 @@
     outline: none;
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
   }
-  </style>
-  
+</style>
