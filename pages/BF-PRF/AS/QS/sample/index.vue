@@ -27,11 +27,11 @@
             <div
               v-for="step in steps"
               :key="step.id"
-              class="text-center flex-1 relative group"
+              class="text-center flex-1 relative group cursor-pointer flex items-center justify-center gap-1"
               :class="{ 'font-semibold': currentStep >= step.id }"
+              @click="goToStep(step.id)"
             >
               <span 
-                class="cursor-default"
                 :title="step.tooltip"
               >
                 {{ step.label }}
@@ -203,7 +203,7 @@
                 <FormKit
                   type="text"
                   name="idNumber"
-                  label="Nombor ID"
+                  label="ID Pengenalan"
                   validation="required"
                   v-model="formData.personalInfo.idNumber"
                   :validation-messages="{
@@ -445,7 +445,7 @@
                       <FormKit
                         type="text"
                         :name="`spouseIdNumber_${index}`"
-                        label="No ID"
+                        label="ID Pengenalan"
                         validation="required"
                         v-model="spouse.spouseIdNumber"
                         :validation-messages="{
@@ -1438,9 +1438,8 @@ const bankOptions = [
 ];
 
 const idTypeOptions = [
-  { label: 'Kad Pengenalan', value: 'ic' },
-  { label: 'Foreign ID', value: 'foreign-id' },
-  { label: 'Sijil Lahir', value: 'sijil-lahir' }
+  { label: 'MyKad', value: 'ic' },
+  { label: 'Foreign ID', value: 'foreign-id' }
 ];
 
 const genderOptions = [
@@ -1680,18 +1679,16 @@ const getPlaceholder = () => {
 
 const getDocumentLabel = () => {
   const labels = {
-    "ic": "Upload Kad Pengenalan",
-    "foreign-id": "Upload Foreign ID",
-    "sijil-lahir": "Upload Sijil Lahir"
+    "ic": "Upload Dokumen MyKad",
+    "foreign-id": "Upload Dokumen Foreign ID"
   };
   return labels[formData.value.personalInfo.idValue] || "";
 };
 
 const getSpouseDocumentLabel = (index) => {
   const labels = {
-    "ic": "Upload Kad Pengenalan",
-    "foreign-id": "Upload Foreign ID",
-    "sijil-lahir": "Upload Sijil Lahir"
+    "ic": "Upload Dokumen MyKad",
+    "foreign-id": "Upload Dokumen Foreign ID"
   };
   return labels[formData.value.personalInfo.spouses[index]?.spouseIdType] || "";
 };
@@ -1724,6 +1721,11 @@ const handleSubmit = async () => {
 
 const prevStep = () => currentStep.value--;
 const nextStep = () => currentStep.value++;
+
+// Add clickable stepper navigation
+const goToStep = (stepId) => {
+  currentStep.value = stepId;
+};
 
 // Watchers
 watch(() => formData.value.personalInfo.wivesCount, (newVal) => {
