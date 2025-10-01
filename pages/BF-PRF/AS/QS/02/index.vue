@@ -27,11 +27,11 @@
             <div
               v-for="step in steps"
               :key="step.id"
-              class="text-center flex-1 relative group"
+              class="text-center flex-1 relative group cursor-pointer flex items-center justify-center gap-1"
               :class="{ 'font-semibold': currentStep >= step.id }"
+              @click="goToStep(step.id)"
             >
               <span 
-                class="cursor-default"
                 :title="step.tooltip"
               >
                 {{ step.label }}
@@ -62,7 +62,7 @@
 
             <!-- Step 1: Maklumat Peribadi Asnaf -->
             <div v-if="currentStep === 1">
-              <h3 class="text-lg font-medium mb-4">I) Maklumat Peribadi Asnaf</h3>
+              <h3 class="text-lg font-semibold mb-4">1. Maklumat Peribadi Asnaf</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Location Information Section - Moved to top -->
                 <!-- <div class="md:col-span-2">
@@ -446,11 +446,11 @@
                       <FormKit
                         type="text"
                         :name="`spouseIdNumber_${index}`"
-                        label="No ID"
+                        label="ID Pengenalan"
                         validation="required"
                         v-model="spouse.spouseIdNumber"
                         :validation-messages="{
-                          required: 'No ID adalah wajib'
+                          required: 'ID Pengenalan adalah wajib'
                         }"
                         :placeholder="getSpousePlaceholder(index)"
                       />
@@ -603,7 +603,7 @@
 
             <!-- Step 2: Maklumat Alamat -->
             <div v-if="currentStep === 2">
-              <h3 class="text-lg font-medium mb-4">II) Maklumat Alamat</h3>
+              <h3 class="text-lg font-semibold mb-4">2. Maklumat Alamat</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Fixed Address Fields -->
                 <div class="md:col-span-2">
@@ -828,7 +828,7 @@
 
             <!-- Step 3: Pengesahan -->
             <div v-if="currentStep === 3">
-              <h3 class="text-lg font-medium mb-4">III) Pengesahan</h3>
+              <h3 class="text-lg font-semibold mb-4">3. Pengesahan</h3>
 
               <div class="mb-6">
                 <h4 class="font-medium mb-3"> Maklumat Perakuan Pemohon</h4>
@@ -1007,7 +1007,7 @@
 
             <!-- Step 4: Maklumat Pengesah Bermastautin -->
             <div v-if="currentStep === 4">
-              <h3 class="text-lg font-medium mb-4">IV) Maklumat Pengesah Bermastautin</h3>
+              <h3 class="text-lg font-semibold mb-4">4. Maklumat Pengesah Bermastautin</h3>
               <!-- <p class="text-sm text-gray-600 mb-4">
                 *(Wakil Rakyat/Penghulu/Ketua Kampung/Ketua Penduduk/Nazir Masjid/Pengerusi Surau/Penolong Amil/Guru Pembimbing Asnaf Muallaf/Eksekutif LZS/Ketua Operasi Agihan Daerah LZS/Ketua Jabatan LZS/Pengurus LZS/Ketua Cawangan LZS.)
               </p> -->
@@ -1138,7 +1138,7 @@
 
             <!-- Step 5: Pegawai Pendaftar -->
             <div v-if="currentStep === 5">
-              <h3 class="text-lg font-medium mb-4">V) Maklumat Pegawai Pendaftar</h3>
+              <h3 class="text-lg font-semibold mb-4">5. Maklumat Pegawai Pendaftar</h3>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
@@ -1155,7 +1155,7 @@
                   type="text"
                   name="jenis_permohonan"
                   label="Jenis Permohonan"
-                  value="Baru"
+                  value="Pendaftaran Pantas Perseorangan"
                   validation="required"
                   v-model="formData.pegawaiPendaftar.jenisPermohonan"
                   disabled
@@ -1288,7 +1288,7 @@ const formData = ref({
   },
   pegawaiPendaftar: {
     nama: "Ahmad bin Abi",
-    jenisPermohonan: "Baru",
+    jenisPermohonan: "Pendaftaran Pantas Perseorangan",
     kategori: "kaunter",
     tarikhProses: new Date().toISOString().split('T')[0]
   },
@@ -1316,7 +1316,6 @@ const bankOptions = [
 const idTypeOptions = [
   { label: 'Kad Pengenalan', value: 'ic' },
   { label: 'Foreign ID', value: 'foreign-id' },
-  { label: 'Sijil Lahir', value: 'sijil-lahir' }
 ];
 
 const genderOptions = [
@@ -1518,7 +1517,6 @@ const getDocumentLabel = () => {
   const labels = {
     "ic": "Upload Kad Pengenalan",
     "foreign-id": "Upload Foreign ID",
-    "sijil-lahir": "Upload Sijil Lahir"
   };
   return labels[formData.value.personalInfo.idValue] || "";
 };
@@ -1527,7 +1525,6 @@ const getSpouseDocumentLabel = (index) => {
   const labels = {
     "ic": "Upload Kad Pengenalan",
     "foreign-id": "Upload Foreign ID",
-    "sijil-lahir": "Upload Sijil Lahir"
   };
   return labels[formData.value.personalInfo.spouses[index]?.spouseIdType] || "";
 };
@@ -1550,7 +1547,7 @@ const handleSubmit = async () => {
   try {
     console.log("Form submitted:", formData.value);
     toast.success("Permohonan berjaya dihantar");
-    router.push("/BF-PRF/AS/FR/04");
+    router.push("/BF-PRF/AS/permohonan/list-semakan");
   } catch (error) {
     toast.error("Ralat! Permohonan tidak berjaya dihantar");
     console.error("Submission error:", error);
