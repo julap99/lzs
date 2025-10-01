@@ -188,7 +188,7 @@
                     <FormKit
                       type="text"
                       name="idNumber"
-                      label="ID Pengenalan"
+                      :label="getIdLabel()"
                       validation="required"
                       v-model="formData.personalInfo.idNumber"
                       :validation-messages="{
@@ -1806,6 +1806,13 @@ const getDocumentLabel = () => {
     "foreign-id": "Upload Dokumen Foreign ID"
   };
   return labels[formData.value.personalInfo.idValue] || "";
+};
+
+const getIdLabel = () => {
+  if (formData.value.personalInfo.idType === 'foreign-id') {
+    return 'Foreign ID';
+  }
+  return 'ID Pengenalan';
 };
 
 const getSpouseDocumentLabel = (index) => {

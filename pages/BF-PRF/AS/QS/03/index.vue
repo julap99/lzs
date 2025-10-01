@@ -188,7 +188,7 @@
                     <FormKit
                       type="text"
                       name="idNumber"
-                      label="ID Pengenalan"
+                      :label="getIdLabel()"
                       validation="required"
                       v-model="formData.personalInfo.idNumber"
                       :validation-messages="{
@@ -1661,6 +1661,13 @@ const getPlaceholder = () => {
     "foreign-id": "Contoh: A12345678"
   };
   return placeholders[formData.value.personalInfo.idValue] || "";
+};
+
+const getIdLabel = () => {
+  if (formData.value.personalInfo.idType === 'foreign-id') {
+    return 'Foreign ID';
+  }
+  return 'ID Pengenalan';
 };
 
 const getDocumentLabel = () => {
