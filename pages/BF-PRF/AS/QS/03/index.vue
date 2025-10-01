@@ -1135,7 +1135,7 @@
               </div>
 
               <!-- Document Information (Readonly) -->
-              <div class="mb-6">
+              <!-- <div class="mb-6">
                 <h4 class="font-medium mb-3">Dokumen yang Dimuat Naik</h4>
                 <div v-if="uploadedDocuments.length === 0" class="text-center py-8 text-gray-500">
                   <p>Tiada dokumen yang dimuat naik</p>
@@ -1161,7 +1161,7 @@
                     </rs-button>
                   </div>
                 </div>
-              </div>
+              </div> -->
 
               <!-- Original Form Fields (Hidden/Readonly) -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1170,9 +1170,6 @@
                   name="nama_pengesah"
                   label="Nama"
                   validation="required"
-                  v-model="formData.verification.namaPengesah"
-                  :value="getPakOfficerLabel(formData.verification.selectedPakOfficer)"
-                  disabled
                 />
 
                 <FormKit
