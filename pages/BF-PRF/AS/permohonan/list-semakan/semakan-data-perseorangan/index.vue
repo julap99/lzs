@@ -68,12 +68,11 @@
                 <h4 class="text-md font-medium mb-3">Maklumat Peribadi</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormKit
-                    type="select"
+                    type="text"
                     name="idValue"
                     label="Jenis ID"
-                    :options="idTypeOptions"
                     v-model="mockData.personalInfo.idValue"
-                    :disabled="true"
+                    :readonly="true"
                   />
 
                   <FormKit
@@ -93,12 +92,11 @@
                   />
 
                   <FormKit
-                    type="select"
+                    type="text"
                     name="citizenship"
                     label="Warganegara"
-                    :options="citizenshipOptions"
                     v-model="mockData.personalInfo.citizenship"
-                    :disabled="true"
+                    :readonly="true"
                   />
 
                   <FormKit
@@ -132,21 +130,19 @@
                   />
 
                   <FormKit
-                    type="select"
+                    type="text"
                     name="gender"
                     label="Jantina"
-                    :options="genderOptions"
                     v-model="mockData.personalInfo.gender"
-                    :disabled="true"
+                    :readonly="true"
                   />
 
                   <FormKit
-                    type="select"
+                    type="text"
                     name="religion"
                     label="Agama"
-                    :options="religionOptions"
                     v-model="mockData.personalInfo.religion"
-                    :disabled="true"
+                    :readonly="true"
                   />
                 </div>
               </div>
@@ -178,12 +174,11 @@
                 <h4 class="text-md font-medium mb-3">Maklumat Perkahwinan</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormKit
-                    type="select"
+                    type="text"
                     name="maritalStatus"
                     label="Status Perkahwinan"
-                    :options="maritalStatusOptions"
                     v-model="mockData.personalInfo.maritalStatus"
-                    :disabled="true"
+                    :readonly="true"
                   />
                   
                   <FormKit
@@ -201,12 +196,11 @@
                 <h4 class="text-md font-medium mb-3">Maklumat Bank</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormKit
-                    type="select"
+                    type="text"
                     name="bankName"
                     label="Nama Bank"
-                    :options="bankOptions"
                     v-model="mockData.personalInfo.bankName"
-                    :disabled="true"
+                    :readonly="true"
                   />
                   
                   <FormKit
@@ -234,12 +228,11 @@
                   />
 
                   <FormKit
-                    type="select"
+                    type="text"
                     name="paymentMethod"
                     label="Kaedah Pembayaran"
-                    :options="paymentMethodOptions"
                     v-model="mockData.personalInfo.paymentMethod"
-                    :disabled="true"
+                    :readonly="true"
                   />
                 </div>
               </div>
@@ -379,21 +372,19 @@
                 />
 
                 <FormKit
-                  type="select"
+                  type="text"
                   name="district"
                   label="Daerah"
-                  :options="districtOptions"
                   v-model="mockData.addressInfo.district"
-                  :disabled="true"
+                  :readonly="true"
                 />
 
                 <FormKit
-                  type="select"
+                  type="text"
                   name="kariah"
                   label="Kariah"
-                  :options="kariahOptions"
                   v-model="mockData.addressInfo.kariah"
-                  :disabled="true"
+                  :readonly="true"
                 />
 
                 <FormKit
@@ -406,12 +397,11 @@
 
                 <div class="md:col-span-2">
                   <FormKit
-                    type="select"
+                    type="text"
                     name="residenceStatus"
                     label="Status Kediaman"
-                    :options="residenceStatusOptions"
                     v-model="mockData.addressInfo.residenceStatus"
-                    :disabled="true"
+                    :readonly="true"
                   />
                 </div>
 
@@ -638,21 +628,19 @@
                 <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormKit
-                      type="select"
+                      type="text"
                       name="selected_kariah"
                       label="Kariah"
-                      :options="kariahOptions"
                       v-model="mockData.verification.selectedKariah"
-                      :disabled="true"
+                      :readonly="true"
                     />
                     
                     <FormKit
-                      type="select"
+                      type="text"
                       name="selected_pak_officer"
                       label="Nama Pegawai PAK"
-                      :options="pakOfficersOptions"
                       v-model="mockData.verification.selectedPakOfficer"
-                      :disabled="true"
+                      :readonly="true"
                     />
                   </div>
                 </div>
@@ -991,24 +979,24 @@ const steps = [
 // Mock Data Structure
 const mockData = ref({
   personalInfo: {
-    idValue: "ic",
+    idValue: "MyKad",
     idNumber: "123456789",
     name: "Ahmad bin Abdullah",
-    citizenship: "warganegara",
+    citizenship: "Warganegara",
     phone: "0123456789",
     email: "ahmad.abdullah@email.com",
     dateOfBirth: "1990-12-31",
-    gender: "L",
-    religion: "islam",
+    gender: "Lelaki",
+    religion: "Islam",
     islamName: "Ahmad bin Abdullah",
     islamDate: "2020-06-15",
-    maritalStatus: "berkahwin",
+    maritalStatus: "Berkahwin",
     dependentsCount: "3",
-    bankName: "maybank",
+    bankName: "Maybank",
     swiftCode: "MBBEMYKL",
     bankAccount: "123456789",
     bankAccountHolder: "Ahmad bin Abdullah",
-    paymentMethod: "akaun",
+    paymentMethod: "Akaun",
     grossIncome: "2500"
   },
   addressInfo: {
@@ -1017,10 +1005,10 @@ const mockData = ref({
     alamat3: "Seksyen 15",
     postcode: "40000",
     state: "Selangor",
-    district: "shah-alam",
-    kariah: "masjid-negeri",
+    district: "Shah Alam",
+    kariah: "Masjid Negeri",
     residenceYears: "5",
-    residenceStatus: "sewa",
+    residenceStatus: "Sewa",
     rentAmount: "800",
     location: "Shah Alam, Selangor"
   },
@@ -1029,13 +1017,13 @@ const mockData = ref({
     pakAssistance: "Ya",
     hubunganPAK: "Tidak",
     pdpaConsent: true,
-    selectedKariah: "masjid-negeri",
-    selectedPakOfficer: "ustaz-ahmad-abdullah"
+    selectedKariah: "Masjid Negeri",
+    selectedPakOfficer: "Ustaz Ahmad bin Abdullah"
   },
   pegawaiPendaftar: {
     nama: "Ahmad bin Abi",
     jenisPermohonan: "Baru",
-    kategori: "kaunter",
+    kategori: "Kaunter",
     tarikhProses: "2024-01-15"
   }
 });
