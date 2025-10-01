@@ -533,8 +533,8 @@
                       name="pdpa_consent"
                       label=""
                       :options="[
-                        { label: 'Setuju', value: true },
-                        { label: 'Tidak Setuju', value: false }
+                        { label: 'Setuju', value: 'Setuju' },
+                        { label: 'Tidak Setuju', value: 'Tidak Setuju' }
                       ]"
                       v-model="mockData.verification.pdpaConsent"
                       :disabled="true"
@@ -1016,7 +1016,7 @@ const mockData = ref({
     hubunganKakitanganLZS: "Tidak",
     pakAssistance: "Ya",
     hubunganPAK: "Tidak",
-    pdpaConsent: true,
+    pdpaConsent: "Setuju",
     selectedKariah: "Masjid Negeri",
     selectedPakOfficer: "Ustaz Ahmad bin Abdullah"
   },
