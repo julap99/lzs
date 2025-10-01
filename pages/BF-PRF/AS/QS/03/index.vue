@@ -203,6 +203,7 @@
                       name="idDocument"
                       :label="getDocumentLabel()"
                       accept=".pdf,.jpg,.jpeg,.png"
+                      multiple
                       v-model="formData.personalInfo.idDocument"
                       help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                       validation="required"
@@ -565,6 +566,7 @@
                           :name="`spouseIdDocument_${index}`"
                           :label="getSpouseDocumentLabel(index)"
                           accept=".pdf,.jpg,.jpeg,.png"
+                          multiple
                           v-model="spouse.spouseIdDocument"
                           help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB (Tidak wajib)"
                         />
@@ -669,14 +671,15 @@
                 />
 
                 <div class="md:col-span-2">
-                  <FormKit
-                    type="file"
-                    name="incomeDocument"
-                    label="Upload dokumen pengesahan pendapatan/slip gaji"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    v-model="formData.personalInfo.incomeDocument"
-                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB (Tidak wajib)"
-                  />
+                <FormKit
+                  type="file"
+                  name="incomeDocument"
+                  label="Upload dokumen pengesahan pendapatan/slip gaji"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  multiple
+                  v-model="formData.personalInfo.incomeDocument"
+                  help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB (Tidak wajib)"
+                />
                 </div>
 
               <div class="flex justify-between gap-3 mt-6">
@@ -878,9 +881,9 @@
                   name="addressSupportDoc"
                   label="Muat naik dokumen sokongan sokongan"
                   accept=".pdf,.jpg,.jpeg,.png"
+                  multiple
                   v-model="formData.addressInfo.addressSupportDoc"
                   help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                  mul
                 />
 
                 <div class="flex gap-2">
@@ -1195,6 +1198,7 @@
                     name="dokumen_pengesahan_permastautin"
                     label="Muat naik dokumen pengesahan bermastautin"
                     accept=".pdf,.jpg,.jpeg,.png"
+                    multiple
                     v-model="formData.verification.dokumenPengesahanPermastautin"
                     help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
                     validation="required"
