@@ -138,7 +138,7 @@ const breadcrumb = ref([
     path: "/BF-BTN/bantuan-bulk",
   },
   {
-    name: "Kelulusan",
+    name: "Senarai Bulk Processing Kelulusan",
     type: "current",
     path: "/BF-BTN/bantuan-bulk/senarai-bulk-processing-kelulusan",
   },

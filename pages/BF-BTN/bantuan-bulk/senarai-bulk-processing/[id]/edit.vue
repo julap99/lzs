@@ -6,16 +6,21 @@
       <!-- Maklumat Umum Section -->
       <rs-card>
         <template #header>
-          <div class="flex items-center space-x-3">
-            <div class="flex-shrink-0">
-              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Icon name="material-symbols:info" class="w-6 h-6 text-blue-600" />
+          <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+              <div class="flex-shrink-0">
+                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Icon name="material-symbols:info" class="w-6 h-6 text-blue-600" />
+                </div>
+              </div>
+              <div>
+                <h2 class="text-xl font-semibold text-gray-900">Maklumat Umum</h2>
+                <p class="text-sm text-gray-500">Maklumat asas bantuan</p>
               </div>
             </div>
-            <div>
-              <h2 class="text-xl font-semibold text-gray-900">Maklumat Umum</h2>
-              <p class="text-sm text-gray-500">Maklumat asas bantuan</p>
-            </div>
+            <rs-button variant="primary" @click="navigateTo('senarai-bulk-processing/[id]/edit')">
+              <Icon name="ph:paper-plane-tilt" class="mr-1" /> Agih Tugas
+            </rs-button>
           </div>
         </template>
         <template #body>
@@ -821,26 +826,6 @@
           validation="required"
         />
 
-        <!-- Asnaf -->
-        <FormKit
-          type="select"
-          name="asnaf"
-          label="Asnaf"
-          v-model="paymentForm.asnaf"
-          :options="kategoriAsnafOptions"
-          placeholder="Pilih asnaf"
-          validation="required"
-        />
-
-        <!-- Contributor -->
-        <FormKit
-          type="text"
-          name="contributor"
-          label="Contributor"
-          v-model="paymentForm.contributor"
-          placeholder="Masukkan contributor"
-        />
-
         <!-- Recipient -->
         <FormKit
           type="text"
@@ -848,15 +833,6 @@
           label="Recipient"
           v-model="paymentForm.recipient"
           placeholder="Masukkan recipient"
-        />
-
-        <!-- Organization -->
-        <FormKit
-          type="text"
-          name="organization"
-          label="Organization"
-          v-model="paymentForm.organization"
-          placeholder="Masukkan organization"
         />
 
         <!-- Amaun -->
@@ -870,28 +846,32 @@
           validation="required|min:0"
         />
 
-        <!-- Tarikh Bayaran -->
-        <FormKit
-          type="radio"
-          name="modeOfPayment"
-          label="Mode Of Payment"
-          v-model="paymentForm.modeOfPayment"
-          :options="[
-            { label: 'Tunai', value: 'Tunai' },
-            { label: 'Akaun', value: 'Akaun' },
-          ]"
-          validation="required"
-        />
-
-        <!-- ID Permohonan -->
-        <FormKit
-          type="text"
-          name="idPermohonan"
-          label="ID Permohonan"
-          v-model="paymentForm.idPermohonan"
-          placeholder="PRM-2025-00001"
-          validation="required"
-        />
+         <!-- Mode Of Payment -->
+        <div class="space-y-1">
+          <label class="text-sm font-medium text-gray-700">Mode Of Payment</label>
+          <div class="mt-2 space-y-2">
+            <div
+              v-for="opt in [
+                { label: 'Tunai', value: 'Tunai' },
+                { label: 'Profile', value: 'Profile' }
+              ]"
+              :key="opt.value"
+              class="flex items-center"
+            >
+              <input
+                :id="`mode-${opt.value}`"
+                type="radio"
+                name="modeOfPayment"
+                :value="opt.value"
+                v-model="paymentForm.modeOfPayment"
+                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+              />
+              <label :for="`mode-${opt.value}`" class="ml-2 text-sm text-gray-700 cursor-pointer">
+                {{ opt.label }}
+              </label>
+            </div>
+          </div>
+        </div>
 
         <!-- Bank Name -->
         <FormKit
