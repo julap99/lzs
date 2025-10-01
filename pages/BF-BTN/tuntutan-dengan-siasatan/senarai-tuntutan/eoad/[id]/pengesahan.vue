@@ -268,7 +268,7 @@ const detailsById: Record<string, TuntutanDetail> = {
   statusIndividu: 'Produktif Sementara',
   statusMultidimensi: 'Produktif',
     },
-    bantuan: { noBantuan: 'B705', noGL: 'GL-004-2024', aid: 'BANTUAN PERALATAN SURAU', aidProduct: 'SISTEM PA', productPackage: 'PAKEJ PA SURAU', entitlementProduct: 'ENTITLEMENT PERALATAN' },
+    bantuan: { noBantuan: 'B134', noGL: 'GL-004-2024', aid: 'BANTUAN PROGRAM PENERAPAN NILAI ISLAM', aidProduct: 'JAIS / MAIS - HONORARIUM', productPackage: 'MODERATOR (MUKIM) - JAIS / MAIS - HONORARIUM', entitlementProduct: 'MODERATOR (MUKIM) - JAIS / MAIS - HONORARIUM' },
     tuntutan: { noInvois: 'INV-2024-004', noInvoisPelanggan: 'CUST-INV-5566', tajuk: 'Pembekalan Sistem PA', tarikh: '05/2024', catatan: 'Ujian bunyi selesai.', penerimaBayaran: 'Audio Harmoni Sdn Bhd', mop: 'EFT', namaPenerima: 'AUDIO HARMONI SDN BHD', bank: 'Bank Islam', noAkaun: '1200 5566 7788', tarikhJangkaan: '2025-06-30', tarikhCipta: new Date(Date.now() - 259200000).toISOString(), amaunRm: 3500, amaunGL: 4000, bakiAmaun: 500 },
     dokumenSokongan: [{ id: 'DOC-301', nama: 'GL_004_2024.pdf', url: '/documents/gl_004.pdf' }, { id: 'DOC-302', nama: 'Invoice_INV-2024-004.pdf', url: '/documents/inv_004.pdf' }, { id: 'DOC-303', nama: 'Picture_Setup_PA.jpg', url: '/documents/setup_pa.jpg' }],
   },
