@@ -235,6 +235,74 @@
                       }"
                     />
 
+                    <!-- Country Selection - Show when citizenship is 'Lain-lain' -->
+                    <FormKit
+                      v-if="formData.personalInfo.citizenship === 'lain-lain'"
+                      type="select"
+                      name="country"
+                      label="Negara"
+                      validation="required"
+                      :options="countryOptions"
+                      placeholder="Pilih negara"
+                      v-model="formData.personalInfo.country"
+                      :validation-messages="{
+                        required: 'Negara adalah wajib',
+                      }"
+                    />
+
+                    <!-- Taraf Penduduk Tetap - Show when citizenship is 'Lain-lain' -->
+                    <FormKit
+                      v-if="formData.personalInfo.citizenship === 'lain-lain'"
+                      type="radio"
+                      name="residentStatus"
+                      label="Taraf Penduduk Tetap"
+                      validation="required"
+                      :options="[
+                        { label: 'Ya', value: 'Y' },
+                        { label: 'Tidak', value: 'N' }
+                      ]"
+                      v-model="formData.personalInfo.residentStatus"
+                      :validation-messages="{
+                        required: 'Taraf penduduk tetap adalah wajib',
+                      }"
+                    />
+
+                    <!-- Passport Fields - Show when jenis_id is 'foreign-id' AND citizenship is 'Lain-lain' -->
+                    <template v-if="formData.personalInfo.citizenship === 'lain-lain' && formData.personalInfo.idType === 'foreign-id'">
+                      <FormKit
+                        type="date"
+                        name="passportStartDate"
+                        label="Tarikh Mula Passport"
+                        validation="required"
+                        v-model="formData.personalInfo.passportStartDate"
+                        :validation-messages="{
+                          required: 'Tarikh mula passport adalah wajib',
+                        }"
+                      />
+
+                      <FormKit
+                        type="date"
+                        name="passportEndDate"
+                        label="Tarikh Tamat Passport"
+                        validation="required"
+                        v-model="formData.personalInfo.passportEndDate"
+                        :validation-messages="{
+                          required: 'Tarikh tamat passport adalah wajib',
+                        }"
+                      />
+
+                      <FormKit
+                        type="text"
+                        name="passportNumber"
+                        label="No Passport"
+                        validation="required"
+                        v-model="formData.personalInfo.passportNumber"
+                        :validation-messages="{
+                          required: 'No passport adalah wajib',
+                        }"
+                      />
+                    </template>
+
                     <FormKit
                       type="tel"
                       name="phone"
@@ -1257,6 +1325,7 @@ const steps = [
 const formData = ref({
   personalInfo: {
     idValue: "ic", 
+    idType: "ic",
     idNumber: "123456789", 
     idDocument: {
       name: 'kad_pengenalan_ahmad.jpg',
@@ -1288,7 +1357,12 @@ const formData = ref({
     }, 
     kfamDate: "2020-07-01", 
     email: "ahmad.abdullah@email.com",
-    citizenship: "warganegara", 
+    citizenship: "malaysia",
+    country: "",
+    residentStatus: "",
+    passportNumber: "",
+    passportStartDate: "",
+    passportEndDate: "", 
     dateOfBirth: "1990-12-31", 
     gender: "L", 
     assistanceType: "bantuan_rumah", 
@@ -1435,8 +1509,70 @@ const genderOptions = [
 ];
 
 const citizenshipOptions = [
-  { label: 'Warganegara', value: 'warganegara' },
-  { label: 'Bukan Warganegara', value: 'bukan-warganegara' }
+  { label: 'Malaysia', value: 'malaysia' },
+  { label: 'Lain-lain', value: 'lain-lain' }
+];
+
+const countryOptions = [
+  { label: 'Afghanistan', value: 'afghanistan' },
+  { label: 'Albania', value: 'albania' },
+  { label: 'Algeria', value: 'algeria' },
+  { label: 'Argentina', value: 'argentina' },
+  { label: 'Australia', value: 'australia' },
+  { label: 'Austria', value: 'austria' },
+  { label: 'Bangladesh', value: 'bangladesh' },
+  { label: 'Belgium', value: 'belgium' },
+  { label: 'Brazil', value: 'brazil' },
+  { label: 'Brunei', value: 'brunei' },
+  { label: 'Cambodia', value: 'cambodia' },
+  { label: 'Canada', value: 'canada' },
+  { label: 'Chile', value: 'chile' },
+  { label: 'China', value: 'china' },
+  { label: 'Colombia', value: 'colombia' },
+  { label: 'Denmark', value: 'denmark' },
+  { label: 'Egypt', value: 'egypt' },
+  { label: 'Finland', value: 'finland' },
+  { label: 'France', value: 'france' },
+  { label: 'Germany', value: 'germany' },
+  { label: 'India', value: 'india' },
+  { label: 'Indonesia', value: 'indonesia' },
+  { label: 'Iran', value: 'iran' },
+  { label: 'Iraq', value: 'iraq' },
+  { label: 'Ireland', value: 'ireland' },
+  { label: 'Israel', value: 'israel' },
+  { label: 'Italy', value: 'italy' },
+  { label: 'Japan', value: 'japan' },
+  { label: 'Jordan', value: 'jordan' },
+  { label: 'Kuwait', value: 'kuwait' },
+  { label: 'Lebanon', value: 'lebanon' },
+  { label: 'Libya', value: 'libya' },
+  { label: 'Luxembourg', value: 'luxembourg' },
+  { label: 'Morocco', value: 'morocco' },
+  { label: 'Netherlands', value: 'netherlands' },
+  { label: 'New Zealand', value: 'new_zealand' },
+  { label: 'Norway', value: 'norway' },
+  { label: 'Pakistan', value: 'pakistan' },
+  { label: 'Philippines', value: 'philippines' },
+  { label: 'Poland', value: 'poland' },
+  { label: 'Portugal', value: 'portugal' },
+  { label: 'Qatar', value: 'qatar' },
+  { label: 'Russia', value: 'russia' },
+  { label: 'Saudi Arabia', value: 'saudi_arabia' },
+  { label: 'Singapore', value: 'singapore' },
+  { label: 'South Africa', value: 'south_africa' },
+  { label: 'South Korea', value: 'south_korea' },
+  { label: 'Spain', value: 'spain' },
+  { label: 'Sri Lanka', value: 'sri_lanka' },
+  { label: 'Sweden', value: 'sweden' },
+  { label: 'Switzerland', value: 'switzerland' },
+  { label: 'Syria', value: 'syria' },
+  { label: 'Thailand', value: 'thailand' },
+  { label: 'Turkey', value: 'turkey' },
+  { label: 'United Arab Emirates', value: 'uae' },
+  { label: 'United Kingdom', value: 'uk' },
+  { label: 'United States', value: 'usa' },
+  { label: 'Vietnam', value: 'vietnam' },
+  { label: 'Yemen', value: 'yemen' }
 ];
 
 const religionOptions = [
