@@ -151,7 +151,7 @@ const breadcrumb = ref([
 const baseList = ref<TuntutanListItem[]>([
   { noTuntutan: 'TUN-2024-001', noGL: 'GL-001-2024', namaPemohon: 'Masjid Al-Fatonah', tarikhTuntutan: new Date().toISOString(), amaunTuntutan: 5000.0, statusPermohonan: 'Dalam Semakan' },
   { noTuntutan: 'TUN-2024-002', noGL: 'GL-002-2024', namaPemohon: 'Masjid Al-Hidayah', tarikhTuntutan: new Date(Date.now() - 86400000).toISOString(), amaunTuntutan: 8000.0, statusPermohonan: 'Dalam Semakan' },
-  { noTuntutan: 'TUN-2024-003', noGL: 'GL-003-2024', namaPemohon: '(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR) (B103)', tarikhTuntutan: new Date(Date.now() - 172800000).toISOString(), amaunTuntutan: 12000.0, statusPermohonan: 'Dalam Semakan' },
+  { noTuntutan: 'TUN-2024-003', noGL: 'GL-003-2024', namaPemohon: 'PUSAT HEMODIALISIS PERMATA SDN. BHD.', tarikhTuntutan: new Date(Date.now() - 172800000).toISOString(), amaunTuntutan: 12000.0, statusPermohonan: 'Dalam Semakan' },
   { noTuntutan: 'TUN-2024-004', noGL: 'GL-004-2024', namaPemohon: 'Surau Kampung Baru', tarikhTuntutan: new Date(Date.now() - 259200000).toISOString(), amaunTuntutan: 3500.0, statusPermohonan: 'Dalam Semakan' },
   { noTuntutan: 'TUN-2024-005', noGL: 'GL-005-2024', namaPemohon: 'Pusat Tahfiz Al-Quran', tarikhTuntutan: new Date(Date.now() - 345600000).toISOString(), amaunTuntutan: 15000.0, statusPermohonan: 'Dalam Semakan' },
 ])
@@ -163,7 +163,7 @@ const tuntutanList = ref<Row[]>(
       r.noTuntutan === 'TUN-2024-002'
         ? '(HQ) BANTUAN SUMBANGAN PERALATAN & BINA/BAIKPULIH INSTITUSI AGAMA (B400)'
         : r.noTuntutan === 'TUN-2024-003'
-        ? 'PUSAT HEMODIALISIS PERMATA SDN. BHD.'
+        ? '(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR) (B103)'
         : r.noTuntutan === 'TUN-2024-004'
         ? 'BANTUAN PROGRAM PENERAPAN NILAI ISLAM (B134)'
         : idx % 2 === 0
