@@ -809,27 +809,92 @@
         size="lg"
       >
         <div class="space-y-4">
-          <FormKit type="text" name="kod" label="Kod" v-model="paymentForm.kod" disabled />
-          <FormKit type="text" name="bayaranKepada" label="Bayaran Kepada" v-model="paymentForm.bayaranKepada" placeholder="Masukkan bayaran kepada" validation="required" />
-          <FormKit type="select" name="asnaf" label="Asnaf" v-model="paymentForm.asnaf" :options="kategoriAsnafOptions" placeholder="Pilih asnaf" validation="required" />
-          <FormKit type="text" name="contributor" label="Contributor" v-model="paymentForm.contributor" placeholder="Masukkan contributor" />
-          <FormKit type="text" name="recipient" label="Recipient" v-model="paymentForm.recipient" placeholder="Masukkan recipient" />
-          <FormKit type="text" name="organization" label="Organization" v-model="paymentForm.organization" placeholder="Masukkan organization" />
-          <FormKit type="number" name="amaun" label="Amaun (RM)" v-model="paymentForm.amaun" placeholder="0.00" step="0.01" validation="required|min:0" />
+          <!-- Kod BP -->
           <FormKit
-            type="radio"
-            name="modeOfPayment"
-            label="Mode Of Payment"
-            v-model="paymentForm.modeOfPayment"
-            :options="[
-              { label: 'Tunai', value: 'Tunai' },
-              { label: 'Akaun', value: 'Akaun' }
-            ]"
+            type="text"
+            name="kod"
+            label="Kod"
+            v-model="paymentForm.kod"
+            disabled
+          />
+
+          <!-- Bayaran Kepada -->
+          <FormKit
+            type="text"
+            name="bayaranKepada"
+            label="Bayaran Kepada"
+            v-model="paymentForm.bayaranKepada"
+            placeholder="Masukkan bayaran kepada"
             validation="required"
           />
-          <FormKit type="text" name="idPermohonan" label="ID Permohonan" v-model="paymentForm.idPermohonan" placeholder="PRM-2025-00001" validation="required" />
-          <FormKit type="select" name="bankName" label="Bank" v-model="paymentForm.bankName" :options="allowedBanks.map(bank => ({ label: bank, value: bank }))" placeholder="Pilih bank" validation="required" />
-          <FormKit type="text" name="bankAccount" label="No. Akaun" v-model="paymentForm.bankAccount" placeholder="1234-56-789012" validation="required" />
+
+          <!-- Recipient -->
+          <FormKit
+            type="text"
+            name="recipient"
+            label="Recipient"
+            v-model="paymentForm.recipient"
+            placeholder="Masukkan recipient"
+          />
+
+          <!-- Amaun -->
+          <FormKit
+            type="number"
+            name="amaun"
+            label="Amaun (RM)"
+            v-model="paymentForm.amaun"
+            placeholder="0.00"
+            step="0.01"
+            validation="required|min:0"
+          />
+
+           <!-- Mode Of Payment -->
+          <div class="space-y-1">
+            <label class="text-sm font-medium text-gray-700">Mode Of Payment</label>
+            <div class="mt-2 space-y-2">
+              <div
+                v-for="opt in [
+                  { label: 'Tunai', value: 'Tunai' },
+                  { label: 'Profile', value: 'Profile' }
+                ]"
+                :key="opt.value"
+                class="flex items-center"
+              >
+                <input
+                  :id="`mode-${opt.value}`"
+                  type="radio"
+                  name="modeOfPayment"
+                  :value="opt.value"
+                  v-model="paymentForm.modeOfPayment"
+                  class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                />
+                <label :for="`mode-${opt.value}`" class="ml-2 text-sm text-gray-700 cursor-pointer">
+                  {{ opt.label }}
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bank Name -->
+          <FormKit
+            type="select"
+            name="bankName"
+            label="Bank"
+            v-model="paymentForm.bankName"
+            :options="allowedBanks.map(bank => ({ label: bank, value: bank }))"
+            placeholder="Pilih bank"
+            validation="required"
+          />
+
+          <!-- Bank Account -->
+          <FormKit
+            type="text"
+            name="bankAccount"
+            label="No. Akaun"
+            v-model="paymentForm.bankAccount"
+            placeholder="1234-56-789012"
+            validation="required"
+          />
         </div>
 
         <template #footer>

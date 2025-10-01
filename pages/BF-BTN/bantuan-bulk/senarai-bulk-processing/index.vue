@@ -16,9 +16,9 @@
               <p class="text-sm text-gray-500">Senarai bantuan bulk processing</p>
             </div>
           </div>
-          <rs-button variant="primary" @click="navigateTo('cipta-bantuan-bulk/tambah')">
+          <!-- <rs-button variant="primary" @click="navigateTo('cipta-bantuan-bulk/tambah')">
             <Icon name="material-symbols:add" class="mr-1" /> Tambah
-          </rs-button>
+          </rs-button> -->
         </div>
       </template>
 
