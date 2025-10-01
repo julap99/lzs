@@ -59,127 +59,9 @@
         <!-- Form Section -->
         <div class="mb-6">
           <FormKit type="form" :actions="false" @submit="handleSubmit">
-            <!-- Step 1: Penilaian Awal -->
+            <!-- Step 1: Maklumat Peribadi Asnaf -->
             <div v-if="currentStep === 1">
-              <h3 class="text-lg font-medium mb-4">I) Penilaian Awal</h3>
-              <div class="space-y-6">
-                <!-- Question 1 -->
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-700">
-                    1. Adakah tuan/puan mempunyai komitmen dan pembiayaan melibatkan kos yang tinggi?*
-                  </label>
-                  <FormKit
-                    type="radio"
-                    v-model="formData.penilaianAwal.komitmenTinggi"
-                    :options="[
-                      { label: 'Ya', value: 'Y' },
-                      { label: 'Tidak', value: 'T' }
-                    ]"
-                    validation="required"
-                    validation-label="Jawapan"
-                  />
-                </div>
-
-                <!-- Question 2 -->
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-700">
-                    2. Apakah keperluan tuan/puan mendesak sekarang ini?*
-                  </label>
-                  <FormKit
-                    type="checkbox"
-                    v-model="formData.penilaianAwal.keperluanMendesak"
-                    :options="[
-                      { label: 'Perubatan Kritikal', value: 'perubatan', disabled: isTidakMendesakSelected },
-                      { label: 'Bencana', value: 'bencana', disabled: isTidakMendesakSelected },
-                      { label: 'Kematian', value: 'kematian', disabled: isTidakMendesakSelected },
-                      { label: 'Konflik Keluarga (tiada tempat bergantung)', value: 'konflik', disabled: isTidakMendesakSelected },
-                      { label: 'Tiada Tempat Tinggal', value: 'tiadaRumah', disabled: isTidakMendesakSelected },
-                      { label: 'Tunggakan Bil Utiliti', value: 'tunggakanUtiliti', disabled: isTidakMendesakSelected },
-                      { label: 'Selain dari di atas', value: 'lain', disabled: isTidakMendesakSelected },
-                      { label: 'Tidak mendesak', value: 'tidakMendesak' }
-                    ]"
-                    validation="required|min:1"
-                    validation-label="Jawapan"
-                    validation-messages="{
-                      required: 'Sila pilih sekurang-kurangnya satu jawapan',
-                      min: 'Sila pilih sekurang-kurangnya satu jawapan'
-                    }"
-                    @input="handleKeperluanChange"
-                  />
-
-                  <!-- Additional input for "Selain dari di atas" -->
-                  <div v-if="showLainInput" class="mt-4">
-                    <FormKit
-                      type="text"
-                      v-model="formData.penilaianAwal.lainKeperluan"
-                      label="Sila nyatakan keperluan lain:"
-                      validation="required"
-                      validation-label="Keperluan lain"
-                      validation-messages="{
-                        required: 'Sila nyatakan keperluan lain'
-                      }"
-                    />
-                  </div>
-                </div>
-
-                <!-- File Upload Section -->
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-700">
-                    3. Muat naik dokumen sokongan (PDF, JPG, PNG)*
-                  </label>
-                  <FormKit
-                    type="file"
-                    v-model="formData.penilaianAwal.documents"
-                    multiple
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB setiap fail"
-                    validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
-                    validation-label="Dokumen"
-                    validation-messages="{
-                      required: 'Sila muat naik sekurang-kurangnya satu dokumen',
-                      max: 'Saiz fail tidak boleh melebihi 5MB',
-                      mime: 'Format fail tidak dibenarkan'
-                    }"
-                  />
-                </div>
-
-                <div class="space-y-2">
-                  <FormKit
-                    type="textarea"
-                    v-model="formData.penilaianAwal.additionalNotes"
-                    label="Catatan Tambahan"
-                    placeholder="Sila masukkan sebarang catatan tambahan yang berkaitan dengan permohonan ini"
-                    validation-label="Catatan tambahan"
-                    validation-messages="{
-                      required: 'Sila masukkan catatan tambahan'
-                    }"
-                  />
-                </div>
-              </div>
-
-              <div class="flex justify-between gap-3 mt-6">
-                <!-- <rs-button
-                  type="button"
-                  variant="primary-outline"
-                  @click="goBack"
-                  >Kembali</rs-button
-                > -->
-                  <rs-button 
-                    type="button" 
-                    variant="secondary" 
-                    @click="handleSaveStep1"
-                  >
-                    Simpan
-                  </rs-button>
-                  <rs-button type="submit" variant="primary" @click="nextStep"
-                    >Seterusnya ke Maklumat Peribadi</rs-button
-                  >
-              </div>
-            </div>
-
-            <!-- Step 2: Maklumat Peribadi Asnaf -->
-            <div v-if="currentStep === 2">
-              <h3 class="text-lg font-medium mb-4">II) Maklumat Peribadi Asnaf</h3>
+              <h3 class="text-lg font-medium mb-4">I) Maklumat Peribadi Asnaf</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Location Information Section - Moved to top -->
                 <!-- <div class="md:col-span-2">
@@ -715,7 +597,7 @@
                   <rs-button 
                     type="button" 
                     variant="secondary" 
-                    @click="handleSaveStep2"
+                    @click="handleSaveStep1"
                   >
                     Simpan
                   </rs-button>
@@ -726,9 +608,9 @@
               </div>
             </div>
 
-            <!-- Step 3: Maklumat Alamat -->
-            <div v-if="currentStep === 3">
-              <h3 class="text-lg font-medium mb-4">III) Maklumat Alamat</h3>
+            <!-- Step 2: Maklumat Alamat -->
+            <div v-if="currentStep === 2">
+              <h3 class="text-lg font-medium mb-4">II) Maklumat Alamat</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Fixed Address Fields -->
                 <div class="md:col-span-2">
@@ -940,7 +822,7 @@
                   <rs-button 
                     type="button" 
                     variant="secondary" 
-                    @click="handleSaveStep3"
+                    @click="handleSaveStep2"
                   >
                     Simpan
                   </rs-button>
@@ -951,9 +833,9 @@
               </div>
             </div>
 
-            <!-- Step 4: Pengesahan -->
-            <div v-if="currentStep === 4">
-              <h3 class="text-lg font-medium mb-4">IV) Pengesahan</h3>
+            <!-- Step 3: Pengesahan -->
+            <div v-if="currentStep === 3">
+              <h3 class="text-lg font-medium mb-4">III) Pengesahan</h3>
 
               <div class="mb-6">
                 <h4 class="font-medium mb-3"> Maklumat Perakuan Pemohon</h4>
@@ -1119,7 +1001,7 @@
                   <rs-button 
                     type="button" 
                     variant="secondary" 
-                    @click="handleSaveStep4"
+                    @click="handleSaveStep3"
                   >
                     Simpan
                   </rs-button>
@@ -1130,9 +1012,9 @@
               </div>
             </div>
 
-            <!-- Step 5: Maklumat Pengesah Bermastautin -->
-            <div v-if="currentStep === 5">
-              <h3 class="text-lg font-medium mb-4">V) Maklumat Pengesah Bermastautin</h3>
+            <!-- Step 4: Maklumat Pengesah Bermastautin -->
+            <div v-if="currentStep === 4">
+              <h3 class="text-lg font-medium mb-4">IV) Maklumat Pengesah Bermastautin</h3>
               <!-- <p class="text-sm text-gray-600 mb-4">
                 *(Wakil Rakyat/Penghulu/Ketua Kampung/Ketua Penduduk/Nazir Masjid/Pengerusi Surau/Penolong Amil/Guru Pembimbing Asnaf Muallaf/Eksekutif LZS/Ketua Operasi Agihan Daerah LZS/Ketua Jabatan LZS/Pengurus LZS/Ketua Cawangan LZS.)
               </p> -->
@@ -1257,7 +1139,7 @@
                   <rs-button 
                     type="button" 
                     variant="secondary" 
-                    @click="handleSaveStep5"
+                    @click="handleSaveStep4"
                   >
                     Simpan
                   </rs-button>
@@ -1268,9 +1150,9 @@
               </div>
             </div>
 
-            <!-- Step 6: Pegawai Pendaftar -->
-            <div v-if="currentStep === 6">
-              <h3 class="text-lg font-medium mb-4">VI) Maklumat Pegawai Pendaftar</h3>
+            <!-- Step 5: Pegawai Pendaftar -->
+            <div v-if="currentStep === 5">
+              <h3 class="text-lg font-medium mb-4">V) Maklumat Pegawai Pendaftar</h3>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
@@ -1324,7 +1206,7 @@
                   <rs-button 
                     type="button" 
                     variant="secondary" 
-                    @click="handleSaveStep6"
+                    @click="handleSaveStep5"
                   >
                     Simpan
                   </rs-button>
@@ -1368,7 +1250,7 @@ onMounted(() => {
 
 // Reactive State
 const currentStep = ref(1);
-const totalStep = 6;
+const totalStep = 5;
 
 const breadcrumb = ref([{
   name: "Borang Permohonan Perseorangan",
@@ -1377,36 +1259,15 @@ const breadcrumb = ref([{
 }]);
 
 const steps = [
-  { id: 1, label: "Penilaian Awal" },
-  { id: 2, label: "Peribadi" },
-  { id: 3, label: "Alamat" },
-  { id: 4, label: "Pengesahan" },
-  { id: 5, label: "Bermastautin", tooltip: "*(Wakil Rakyat/Penghulu/Ketua Kampung/Ketua Penduduk/Nazir Masjid/Pengerusi Surau/Penolong Amil/Guru Pembimbing Asnaf Muallaf/Eksekutif LZS/Ketua Operasi Agihan Daerah LZS/Ketua Jabatan LZS/Pengurus LZS/Ketua Cawangan LZS.)" },
-  { id: 6, label: "Pegawai Pendaftar" }
+  { id: 1, label: "Peribadi" },
+  { id: 2, label: "Alamat" },
+  { id: 3, label: "Pengesahan" },
+  { id: 4, label: "Bermastautin", tooltip: "*(Wakil Rakyat/Penghulu/Ketua Kampung/Ketua Penduduk/Nazir Masjid/Pengerusi Surau/Penolong Amil/Guru Pembimbing Asnaf Muallaf/Eksekutif LZS/Ketua Operasi Agihan Daerah LZS/Ketua Jabatan LZS/Pengurus LZS/Ketua Cawangan LZS.)" },
+  { id: 5, label: "Pegawai Pendaftar" }
 ];
 
 // Form Data
 const formData = ref({
-  penilaianAwal: {
-    komitmenTinggi: 'Y',
-    keperluanMendesak: ['perubatan', 'tunggakanUtiliti'],
-    lainKeperluan: 'Keperluan untuk pembedahan jantung',
-    documents: [
-      {
-        name: 'surat_doktor.pdf',
-        size: 2048576,
-        type: 'application/pdf',
-        lastModified: new Date('2024-01-10').getTime()
-      },
-      {
-        name: 'bil_electric.jpg',
-        size: 1048576,
-        type: 'image/jpeg',
-        lastModified: new Date('2024-01-12').getTime()
-      }
-    ],
-    additionalNotes: 'Pesakit memerlukan pembedahan segera dan menghadapi masalah kewangan untuk membayar bil elektrik yang tertunggak.',
-  },
   personalInfo: {
     idValue: "ic", 
     idNumber: "123456789", 
@@ -1726,18 +1587,6 @@ const pakOfficersOptionsAssistance = computed(() => {
 const uploadedDocuments = computed(() => {
   const documents = [];
   
-  // Add documents from penilaian awal
-  if (formData.value.penilaianAwal.documents && formData.value.penilaianAwal.documents.length > 0) {
-    formData.value.penilaianAwal.documents.forEach(doc => {
-      documents.push({
-        name: getDocumentName(doc),
-        type: getDocumentType(doc),
-        size: getDocumentSize(doc),
-        url: '#'
-      });
-    });
-  }
-  
   // Add personal info documents
   if (formData.value.personalInfo.idDocument) {
     const doc = formData.value.personalInfo.idDocument;
@@ -1865,7 +1714,8 @@ const handleSubmit = async () => {
   try {
     console.log("Form submitted:", formData.value);
     toast.success("Permohonan berjaya dihantar");
-    router.push("/BF-PRF/AS/FR/04");
+    router.push("/BF-PRF/AS/permohonan/list-semakan");
+    
   } catch (error) {
     toast.error("Ralat! Permohonan tidak berjaya dihantar");
     console.error("Submission error:", error);
@@ -2051,13 +1901,7 @@ const downloadDocument = (doc) => {
 };
 
 const goBack = () => {
-  // If we're on step 2 (Maklumat Peribadi), go back to step 1 (Penilaian Awal)
-  if (currentStep.value === 2) {
-    currentStep.value = 1;
-    return;
-  }
-  
-  // For other steps, go back to previous step
+  // For all steps, go back to previous step
   if (currentStep.value > 1) {
     currentStep.value--;
   } else {
@@ -2068,16 +1912,17 @@ const goBack = () => {
 
 const handleSaveStep1 = async () => {
   try {
-    // Save penilaian awal data
+    // Save personal information data
     const step1Data = {
-      penilaianAwal: formData.value.penilaianAwal
+      personalInfo: formData.value.personalInfo,
+      healthInfo: formData.value.healthInfo
     };
     
     // Here you would typically send this data to your backend
-    console.log("Langkah 1 (Penilaian Awal) disimpan:", step1Data);
+    console.log("Langkah 1 (Peribadi) disimpan:", step1Data);
     
     // Show success message
-    toast.success("Maklumat Penilaian Awal berjaya disimpan");
+    toast.success("Maklumat Peribadi berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step 1 error:", error);
@@ -2086,17 +1931,16 @@ const handleSaveStep1 = async () => {
 
 const handleSaveStep2 = async () => {
   try {
-    // Save personal information data
+    // Save address information data
     const step2Data = {
-      personalInfo: formData.value.personalInfo,
-      healthInfo: formData.value.healthInfo
+      addressInfo: formData.value.addressInfo
     };
     
     // Here you would typically send this data to your backend
-    console.log("Langkah 2 (Peribadi) disimpan:", step2Data);
+    console.log("Langkah 2 (Alamat) disimpan:", step2Data);
     
     // Show success message
-    toast.success("Maklumat Peribadi berjaya disimpan");
+    toast.success("Maklumat Alamat berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step 2 error:", error);
@@ -2105,26 +1949,8 @@ const handleSaveStep2 = async () => {
 
 const handleSaveStep3 = async () => {
   try {
-    // Save address information data
-    const step3Data = {
-      addressInfo: formData.value.addressInfo
-    };
-    
-    // Here you would typically send this data to your backend
-    console.log("Langkah 3 (Alamat) disimpan:", step3Data);
-    
-    // Show success message
-    toast.success("Maklumat Alamat berjaya disimpan");
-  } catch (error) {
-    toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step 3 error:", error);
-  }
-};
-
-const handleSaveStep4 = async () => {
-  try {
     // Save verification information data
-    const step4Data = {
+    const step3Data = {
       verification: {
         hubunganKakitanganLZS: formData.value.verification.hubunganKakitanganLZS,
         selectedKariah: formData.value.verification.selectedKariah,
@@ -2140,20 +1966,20 @@ const handleSaveStep4 = async () => {
     };
     
     // Here you would typically send this data to your backend
-    console.log("Langkah 4 (Pengesahan) disimpan:", step4Data);
+    console.log("Langkah 3 (Pengesahan) disimpan:", step3Data);
     
     // Show success message
     toast.success("Maklumat Pengesahan berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step 4 error:", error);
+    console.error("Save Step 3 error:", error);
   }
 };
 
-const handleSaveStep5 = async () => {
+const handleSaveStep4 = async () => {
   try {
     // Save final verification data
-    const step5Data = {
+    const step4Data = {
       verification: {
         namaPengesah: formData.value.verification.namaPengesah,
         jawatanPengesah: formData.value.verification.jawatanPengesah,
@@ -2164,51 +1990,33 @@ const handleSaveStep5 = async () => {
     };
     
     // Here you would typically send this data to your backend
-    console.log("Langkah 5 (Bermastautin) disimpan:", step5Data);
+    console.log("Langkah 4 (Bermastautin) disimpan:", step4Data);
     
     // Show success message
     toast.success("Maklumat Pengesah Bermastautin berjaya disimpan");
+  } catch (error) {
+    toast.error("Ralat! Maklumat tidak berjaya disimpan");
+    console.error("Save Step 4 error:", error);
+  }
+};
+
+const handleSaveStep5 = async () => {
+  try {
+    // Save pegawai pendaftar data
+    const step5Data = {
+      pegawaiPendaftar: formData.value.pegawaiPendaftar
+    };
+    
+    // Here you would typically send this data to your backend
+    console.log("Langkah 5 (Pegawai Pendaftar) disimpan:", step5Data);
+    
+    // Show success message
+    toast.success("Maklumat Pegawai Pendaftar berjaya disimpan");
   } catch (error) {
     toast.error("Ralat! Maklumat tidak berjaya disimpan");
     console.error("Save Step 5 error:", error);
   }
 };
 
-const handleSaveStep6 = async () => {
-  try {
-    // Save pegawai pendaftar data
-    const step6Data = {
-      pegawaiPendaftar: formData.value.pegawaiPendaftar
-    };
-    
-    // Here you would typically send this data to your backend
-    console.log("Langkah 6 (Pegawai Pendaftar) disimpan:", step6Data);
-    
-    // Show success message
-    toast.success("Maklumat Pegawai Pendaftar berjaya disimpan");
-  } catch (error) {
-    toast.error("Ralat! Maklumat tidak berjaya disimpan");
-    console.error("Save Step 6 error:", error);
-  }
-};
 
-// Penilaian Awal Computed Properties
-const isTidakMendesakSelected = computed(() => {
-  return formData.value.penilaianAwal.keperluanMendesak.includes('tidakMendesak');
-});
-
-const showLainInput = computed(() => {
-  return formData.value.penilaianAwal.keperluanMendesak.includes('lain');
-});
-
-// Penilaian Awal Methods
-const handleKeperluanChange = (value) => {
-  if (value.includes('tidakMendesak')) {
-    formData.value.penilaianAwal.keperluanMendesak = ['tidakMendesak'];
-  }
-  
-  if (!value.includes('lain')) {
-    formData.value.penilaianAwal.lainKeperluan = '';
-  }
-};
 </script>

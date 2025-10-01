@@ -118,7 +118,7 @@ const currentPage = ref(1);
 const applications = ref([
   {
     nama: "Adnan bin Abu",
-    tarikhMohon: "2024-03-20",
+    tarikhMohon: "2024-03-17",
     jenisPendaftaran: "Kemaskini",
     status: "Menunggu Kelulusan",
     tindakan: "PRF-2024-001",
@@ -129,6 +129,13 @@ const applications = ref([
     jenisPendaftaran: "Pendaftaran Lengkap",
     status: "Menunggu Kelulusan",
     tindakan: "PRF-2024-003",
+  },
+  {
+    nama: "Zamir bin Kamil",
+    tarikhMohon: "2024-03-19",
+    jenisPendaftaran: "Pendaftaran Perseorangan",
+    status: "Menunggu Kelulusan",
+    tindakan: "PRF-2024-004",
   },
 ]);
 
@@ -160,10 +167,15 @@ const getStatusVariant = (status) => {
 };
 
 const handleSemak = (jenisPendaftaran) => {
-  navigateTo(
-    jenisPendaftaran === "Pendaftaran Lengkap"
-      ? "/BF-PRF/AS/permohonan/list-semakan/semakan-data-lengkap"
-      : "/BF-PRF/AS/permohonan/list-semakan/semakan-data-kemaskini"
-  );
+  if (jenisPendaftaran === "Kemaskini") {
+    navigateTo("/BF-PRF/AS/permohonan/list-semakan/semakan-data-kemaskini");
+  } else if (jenisPendaftaran === "Pendaftaran Lengkap") {
+    navigateTo("/BF-PRF/AS/permohonan/list-semakan/semakan-data-lengkap");
+  } else if (jenisPendaftaran === "Pendaftaran Perseorangan") {
+    navigateTo("/BF-PRF/AS/permohonan/list-semakan/semakan-data-lengkap");
+  } else {
+    // Default fallback for any other jenisPendaftaran values
+    navigateTo("/BF-PRF/AS/permohonan/list-semakan/semakan-data-kemaskini");
+  }
 };
 </script>

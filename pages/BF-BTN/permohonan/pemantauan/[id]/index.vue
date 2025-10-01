@@ -446,7 +446,7 @@
                 <rs-collapse>
                   <rs-collapse-item
                     v-for="(kad, index) in sortedKadPemantauan"
-                    :key="`kad-${kad.id}`"
+                    :key="kad.id"
                     type="card"
                     :model-value="openAccordions.has(kad.id)"
                     @update:model-value="
@@ -829,9 +829,28 @@
                           </h3>
 
                           <div class="space-y-6">
+                            <!-- Checkbox Ya -->
+                            <div class="mb-4">
+                              <div class="flex items-center space-x-3">
+                                <input
+                                  type="checkbox"
+                                  :id="`tuntutan-${kad.id}`"
+                                  v-model="tuntutanCheckboxStates[kad.id]"
+                                  @change="toggleTuntutanBolehDibuat(kad.id, $event.target.checked)"
+                                  class="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500 focus:ring-2 accent-blue-600"
+                                />
+                                <label 
+                                  :for="`tuntutan-${kad.id}`" 
+                                  class="text-sm font-medium text-gray-700 cursor-pointer"
+                                >
+                                  Ya
+                                </label>
+                              </div>
+                            </div>
 
                             <!-- Kelulusan Tuntutan -->
                             <div
+                              v-if="tuntutanCheckboxStates[kad.id]"
                               class="mt-6 p-4 bg-purple-50 rounded-lg border border-purple-200"
                             >
                               <h4
@@ -1315,6 +1334,9 @@ const selectedDocumentType = ref("");
 const selectedDocumentForKad = ref({});
 const selectedDocumentsForKad = ref({});
 
+// Separate state for tuntutan checkboxes to prevent accordion re-rendering
+const tuntutanCheckboxStates = ref({});
+
 // Accordion state management
 const openAccordions = ref(new Set());
 
@@ -1573,10 +1595,10 @@ const kadPemantauanList = ref([
       },
     ],
     serahKepadaKontraktor: true,
-    tuntutanBolehDibuat: true,
-    peratusanBolehDituntut: "50%",
-    jumlahBolehDituntut: "RM 25,000.00",
-    statusKelulusanTuntutan: "dalam-semakan",
+    tuntutanBolehDibuat: false,
+    peratusanBolehDituntut: "0%",
+    jumlahBolehDituntut: "RM 0.00",
+    statusKelulusanTuntutan: "ditolak",
     catatan: "Sila muat naik dokumen invois",
     dokumenDariKontraktor: [
       { id: 1, namaDokumen: "Invoice", tarikhDicipta: "2024-01-10T10:00" },
@@ -1687,6 +1709,7 @@ const canMakeClaim = computed(() => {
   );
 });
 
+
 // Calculate total of Jumlah (RM) column
 const totalJumlahKuantitiDiterima = computed(() => {
   return workItems.value.reduce((total, item) => {
@@ -1774,6 +1797,7 @@ const addNewKadPemantauan = () => {
   // Initialize document selection tracking for new kad
   selectedDocumentForKad.value[newKad.id] = null;
   selectedDocumentsForKad.value[newKad.id] = [];
+  tuntutanCheckboxStates.value[newKad.id] = false;
 
   // Open the new accordion by default
   nextTick(() => {
@@ -1992,19 +2016,32 @@ const isDocumentSelected = (kadId, docId) => {
   );
 };
 
-const toggleTuntutanBolehDibuat = (kadId, event) => {
+const toggleTuntutanBolehDibuat = (kadId, isChecked) => {
+  console.log('toggleTuntutanBolehDibuat called:', { kadId, isChecked });
+  
   const kad = kadPemantauanList.value.find((k) => k.id === kadId);
-  if (!kad) return;
+  if (!kad) {
+    console.log('Kad not found for ID:', kadId);
+    return;
+  }
 
-  if (event) {
-    kad.tuntutanBolehDibuat = true;
+  // Update the separate checkbox state (this won't trigger accordion re-render)
+  tuntutanCheckboxStates.value[kadId] = isChecked;
+  
+  // Also update the kad object for data consistency
+  kad.tuntutanBolehDibuat = isChecked;
+  console.log('Updated tuntutanCheckboxStates and kad.tuntutanBolehDibuat to:', isChecked);
+  
+  if (isChecked) {
     // Initialize default values when enabling claims
-    if (!kad.statusKelulusanTuntutan) {
-      kad.statusKelulusanTuntutan = "dalam-semakan";
-    }
+    kad.statusKelulusanTuntutan = "dalam-semakan";
+    kad.jumlahBolehDituntut = "RM 0.00";
+    console.log('Enabled claims - set default values');
   } else {
-    kad.tuntutanBolehDibuat = false;
+    // Reset values when disabling claims
     kad.statusKelulusanTuntutan = "ditolak";
+    kad.jumlahBolehDituntut = "RM 0.00";
+    console.log('Disabled claims - reset values');
   }
 };
 
@@ -2165,6 +2202,8 @@ onMounted(() => {
   kadPemantauanList.value.forEach((kad) => {
     selectedDocumentForKad.value[kad.id] = null;
     selectedDocumentsForKad.value[kad.id] = [];
+    // Initialize checkbox states
+    tuntutanCheckboxStates.value[kad.id] = kad.tuntutanBolehDibuat;
   });
 
   // Initialize accordion state - optionally open the first accordion
@@ -2183,6 +2222,9 @@ watch(
       }
       if (!selectedDocumentsForKad.value.hasOwnProperty(kad.id)) {
         selectedDocumentsForKad.value[kad.id] = [];
+      }
+      if (!tuntutanCheckboxStates.value.hasOwnProperty(kad.id)) {
+        tuntutanCheckboxStates.value[kad.id] = kad.tuntutanBolehDibuat;
       }
     });
   },
