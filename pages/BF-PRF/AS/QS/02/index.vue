@@ -253,7 +253,7 @@
                     <!-- Taraf Penduduk Tetap - Show when citizenship is 'Lain-lain' -->
                     <FormKit
                       v-if="formData.personalInfo.citizenship === 'lain-lain'"
-                      type="radio"
+                      type="select"
                       name="residentStatus"
                       label="Taraf Penduduk Tetap"
                       validation="required"
@@ -1809,7 +1809,7 @@ const getDocumentLabel = () => {
 };
 
 const getIdLabel = () => {
-  if (formData.value.personalInfo.idType === 'foreign-id') {
+  if (formData.value.personalInfo.idValue === 'foreign-id') {
     return 'Foreign ID';
   }
   return 'ID Pengenalan';
