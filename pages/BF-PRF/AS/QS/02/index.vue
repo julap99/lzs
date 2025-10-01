@@ -1242,7 +1242,7 @@ const totalStep = 5;
 const breadcrumb = ref([{
   name: "Borang Permohonan Perseorangan",
   type: "current",
-  path: "/BF-PRF/AS/QS/sample",
+  path: "/BF-PRF/AS/QS/02",
 }]);
 
 const steps = [
