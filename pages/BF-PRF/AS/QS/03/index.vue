@@ -373,53 +373,91 @@
 
 
                 <!-- Islamic Information Section -->
-                <div class="md:col-span-2">
+                <div class="mb-6">
                   <h4 class="text-md font-medium mb-3">Maklumat Islam</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Adakah anda seorang Muallaf? -->
+                    <div class="md:col-span-2">
+                      <FormKit
+                        type="select"
+                        name="adakah_muallaf"
+                        label="Adakah anda seorang Muallaf?"
+                        validation="required"
+                        :options="[
+                          { label: 'Ya', value: 'Y' },
+                          { label: 'Tidak', value: 'T' }
+                        ]"
+                        v-model="formData.personalInfo.adakah_muallaf"
+                        :validation-messages="{
+                          required: 'Sila pilih sama ada anda seorang muallaf atau tidak',
+                        }"
+                      />
+                    </div>
+
+                    <!-- Tarikh Masuk Islam - Show when Muallaf = Ya -->
+                    <div v-if="formData.personalInfo.adakah_muallaf === 'Y'">
+                      <FormKit
+                        type="date"
+                        name="tarikh_masuk_islam"
+                        label="Tarikh Masuk Islam"
+                        placeholder="DD/MM/YYYY"
+                        validation="required"
+                        v-model="formData.personalInfo.tarikh_masuk_islam"
+                        :validation-messages="{
+                          required: 'Sila masukkan tarikh masuk Islam',
+                        }"
+                      />
+                    </div>
+
+                    <!-- Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM) - Show when Muallaf = Ya -->
+                    <div v-if="formData.personalInfo.adakah_muallaf === 'Y'">
+                      <FormKit
+                        type="date"
+                        name="tarikh_masuk_kfam"
+                        label="Tarikh Masuk Kelas Fardu Ain Muallaf (KFAM)"
+                        placeholder="DD/MM/YYYY"
+                        validation="required"
+                        v-model="formData.personalInfo.tarikh_masuk_kfam"
+                        :validation-messages="{
+                          required: 'Sila masukkan tarikh masuk Kelas Fardu Ain Muallaf (KFAM)',
+                        }"
+                      />
+                    </div>
+
+                    <!-- Nama Selepas Islam(Mualaf) - Show when Muallaf = Ya -->
+                    <div v-if="formData.personalInfo.adakah_muallaf === 'Y'">
+                      <FormKit
+                        type="text"
+                        name="islamName"
+                        label="Nama Selepas Islam(Mualaf)"
+                        validation="required"
+                        v-model="formData.personalInfo.islamName"
+                        :validation-messages="{
+                          required: 'Sila masukkan nama selepas Islam',
+                        }"
+                      />
+                    </div>
+
+                    <!-- Dokumen Pengislaman - Show when Muallaf = Ya -->
+                    <div v-if="formData.personalInfo.adakah_muallaf === 'Y'" class="md:col-span-2">
+                      <FormKit
+                        type="file"
+                        name="dokumen_pengislaman"
+                        label="Dokumen Pengislaman"
+                        help="Salinan dokumen rasmi pengislaman. Format: PDF, JPG, PNG. Saiz maksimum: 5MB"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        validation="required|max:5|mime:application/pdf,image/jpeg,image/png"
+                        multiple
+                        v-model="formData.personalInfo.dokumen_pengislaman"
+                        :validation-messages="{
+                          required: 'Sila muat naik dokumen pengislaman',
+                          max: 'Saiz fail tidak boleh melebihi 5MB',
+                          mime: 'Format fail tidak sah. Sila pilih fail PDF, JPG, atau PNG',
+                        }"
+                      />
+                    </div>
+                  </div>
                 </div>
-
-                <FormKit
-                  type="text"
-                  name="islamName"
-                  label="Nama Selepas Islam(Mualaf)"
-                  v-model="formData.personalInfo.islamName"
-                  :validation-messages="{
-                    required: 'Nama selepas Islam adalah wajib',
-                  }"
-                />
-                
-                <FormKit
-                  type="date"
-                  name="islamDate"
-                  label="Tarikh Masuk Islam"
-                  v-model="formData.personalInfo.islamDate"
-                  :validation-messages="{
-                    required: 'Tarikh masuk Islam adalah wajib',
-                  }"
-                />
-
-                  <FormKit
-                  v-if="formData.personalInfo.islamDate"
-                    type="file"
-                    name="islamCertificate"
-                    label="Upload Surat Keislaman dari MAIS"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    v-model="formData.personalInfo.islamCertificate"
-                    help="Format yang dibenarkan: PDF, JPG, PNG. Saiz maksimum: 5MB"
-                    validation="required"
-                    :validation-messages="{
-                      required: 'Surat keislaman adalah wajib'
-                    }"
-                  />
-
-                <!-- <FormKit
-                  type="date"
-                  name="kfamDate"
-                  label="Tarikh Masuk KFAM"
-                  v-model="formData.personalInfo.kfamDate"
-                  :validation-messages="{
-                    required: 'Tarikh masuk KFAM adalah wajib',
-                  }"
-                /> -->
 
                 <!-- Marital Status Section -->
                 <div class="md:col-span-2">
@@ -1331,7 +1369,6 @@ const formData = ref({
     nopassport: "",
     passportStartDate: "",
     passportEndDate: "",
-    islamName: "", 
     phone: "", 
     religion: "",
     bankName: "", 
@@ -1342,9 +1379,11 @@ const formData = ref({
     noPaymentReason: [],
     maritalStatus: "", 
     healthStatus: "", 
-    islamDate: "", 
-    islamCertificate: null, 
-    kfamDate: "", 
+    adakah_muallaf: "T",
+    tarikh_masuk_islam: "",
+    tarikh_masuk_kfam: "",
+    islamName: "",
+    dokumen_pengislaman: [], 
     email: "",
     citizenship: "",
     country: "",
