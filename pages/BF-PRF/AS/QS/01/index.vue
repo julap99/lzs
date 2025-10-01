@@ -237,36 +237,24 @@
 
         <!-- Search Result Section -->
         <div v-if="searchCompleted" class="mt-6">
+          <!-- Status card only for 'not_found' -->
           <rs-card
-            :variant="profileStatus === 'found' ? 'success' : profileStatus === 'not_found' ? 'warning' : 'info'"
+            v-if="profileStatus === 'not_found'"
+            variant="warning"
             class="mb-4"
           >
             <template #body>
               <div class="flex items-center">
                 <div class="mr-4">
                   <Icon
-                    :name="
-                      profileStatus === 'found' ? 'mdi:check-circle' : profileStatus === 'not_found' ? 'mdi:alert-circle' : 'mdi:information'
-                    "
+                    name="mdi:alert-circle"
                     size="2rem"
-                    :class="profileStatus === 'found' ? 'text-green-600' : profileStatus === 'not_found' ? 'text-amber-600' : 'text-blue-600'"
+                    class="text-amber-600"
                   />
                 </div>
                 <div>
-                  <h3 class="text-lg font-medium">
-                    {{
-                      profileStatus === 'found' ? "Profil Ditemui" : profileStatus === 'not_found' ? "Profil Tidak Ditemui" : "Lengkapkan Profil"
-                    }}
-                  </h3>
-                  <p class="text-sm mt-1">
-                    {{
-                      profileStatus === 'found'
-                        ? "Profil bagi ID yang dimasukkan telah dijumpai dalam sistem."
-                        : profileStatus === 'not_found'
-                        ? "Tiada profil ditemui bagi ID yang dimasukkan."
-                        : "Profil tidak lengkap. Silakan lengkapkan profil."
-                    }}
-                  </p>
+                  <h3 class="text-lg font-medium">Profil Tidak Ditemui</h3>
+                  <p class="text-sm mt-1">Tiada profil ditemui bagi ID yang dimasukkan.</p>
                 </div>
               </div>
             </template>
@@ -276,7 +264,7 @@
                   variant="primary"
                   @click="navigateNext"
                 >
-                  {{ profileStatus === 'found' ? "Kemaskini Profil" : profileStatus === 'not_found' ? "Pendaftaran Baru" : "Lengkapkan Profil" }}
+                  Pendaftaran Baru
                 </rs-button>
               </div>
             </template>
