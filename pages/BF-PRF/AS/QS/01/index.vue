@@ -211,7 +211,7 @@ const navigateNext = () => {
     navigateTo("/BF-PRF/AS/QS/02");
   } else {
     // Navigate to new registration page
-    navigateTo("/BF-PRF/AS/QS/02");
+    navigateTo("/BF-PRF/AS/QS/03");
   }
 };
 
