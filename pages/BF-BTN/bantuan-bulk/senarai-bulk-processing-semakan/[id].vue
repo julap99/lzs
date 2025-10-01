@@ -658,6 +658,114 @@
         </template>
       </rs-card> -->
 
+      <!-- Maklumat Dokumen Sokongan Section -->
+      <rs-card>
+        <template #header>
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <Icon name="material-symbols:description" class="w-6 h-6 text-gray-600" />
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Dokumen Sokongan</h2>
+              <p class="text-sm text-gray-500">Fail dan dokumen berkaitan</p>
+            </div>
+          </div>
+        </template>
+        <template #body>
+          <div class="space-y-4" :class="{ loading: isLoading }">
+            <FormKit
+              type="file"
+              name="documentFiles"
+              label="Muat Naik Fail"
+              accept=".pdf,.doc,.docx"
+              help="Format fail: PDF, Word (.pdf, .doc, .docx)"
+              multiple
+              @change="handleDocumentUpload"
+            />
+
+            <!-- Display selected files -->
+            <div v-if="selectedDocuments.length > 0" class="mt-4">
+              <h4 class="text-sm font-medium text-gray-700 mb-2">Fail yang dipilih:</h4>
+              <div class="space-y-2">
+                <div 
+                  v-for="(file, index) in selectedDocuments" 
+                  :key="index"
+                  class="flex items-center justify-between p-2 bg-gray-50 rounded border"
+                >
+                  <div class="flex items-center">
+                    <Icon name="material-symbols:description" class="mr-2 text-blue-500" />
+                    <span class="text-sm text-gray-700">{{ file.name }}</span>
+                    <span class="text-xs text-gray-500 ml-2">({{ formatFileSize(file.size) }})</span>
+                  </div>
+                  <rs-button
+                    variant="danger-text"
+                    size="sm"
+                    @click="removeFile(index)"
+                  >
+                    <Icon name="ic:outline-close" size="16" />
+                  </rs-button>
+                </div>
+              </div>
+            </div>
+
+            <rs-button
+              variant="primary"
+              :disabled="!selectedDocuments.length || isLoading"
+              @click="handleDocumentImport"
+            >
+              <Icon name="material-symbols:upload" class="mr-1" />
+              {{ isLoading ? "Sedang Muat Naik..." : `Import ${selectedDocuments.length} Fail` }}
+            </rs-button>
+
+            <!-- Existing uploaded documents -->
+            <div v-if="documentList.length > 0" class="mt-6 space-y-3">
+              <h4 class="text-sm font-medium text-gray-700">Dokumen sedia ada:</h4>
+              <h4 class="text-sm font-medium text-gray-700">Dokumen yang telah dimuat naik:</h4>
+            <div
+              v-for="(document, index) in documentList"
+                :key="document.id || index"
+              class="flex items-center justify-between p-3 border rounded-lg bg-gray-50"
+            >
+              <div class="flex items-center space-x-3">
+                <Icon name="material-symbols:description" class="w-8 h-8 text-blue-500" />
+                <div>
+                  <p class="font-medium text-gray-900">{{ document.name }}</p>
+                  <p class="text-sm text-gray-500">{{ document.size }} • {{ document.uploadDate }}</p>
+                </div>
+              </div>
+                <div class="flex items-center space-x-2">
+                  <rs-button variant="info-text" size="sm" :title="'Muat turun'" aria-label="Muat turun">
+                    <Icon name="material-symbols:download" class="w-4 h-4" />
+                  </rs-button>
+                </div>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormKit
+                  type="text"
+                  name="namaPegawai"
+                  label="Nama Pegawai"
+                  v-model="formData.namaPegawai"
+                  disabled
+                  help="Auto-fill selepas simpan"
+                />
+
+                <!-- Tarikh Mohon -->
+                <FormKit
+                  type="text"
+                  name="tarikhMohon"
+                  label="Tarikh Mohon"
+                  v-model="formData.tarikhMohon"
+                  disabled
+                  help="Auto-fill selepas simpan"
+                />
+            </div>
+          </div>
+        </template>
+      </rs-card>
+      
       <!-- Maklumat Sokongan Section -->
       <rs-card>
         <template #header>
@@ -668,8 +776,8 @@
               </div>
             </div>
             <div>
-              <h2 class="text-xl font-semibold text-gray-900">Dokumen Sokongan</h2>
-              <p class="text-sm text-gray-500">Maklumat sokongan dan dokumen</p>
+              <h2 class="text-xl font-semibold text-gray-900">Maklumat Semakan</h2>
+              <p class="text-sm text-gray-500">Maklumat semakan</p>
             </div>
           </div>
         </template>
