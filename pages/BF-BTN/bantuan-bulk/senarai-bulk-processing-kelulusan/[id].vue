@@ -282,7 +282,7 @@
                 </div>
 
                 <div class="mt-4 space-y-4" v-if="product.status === 'sedang_edit'">
-                      <!-- Import Data Section -->
+                    <!-- Import Data Section -->
                       <rs-card>
                         <template #header>
                           <div class="flex items-center space-x-3">
@@ -298,64 +298,40 @@
                           </div>
                         </template>
                         <template #body>
-                          <!-- Import Data Section (one file per entitlement) -->
                           <div class="space-y-4" :class="{ loading: isLoading }">
-                            <!-- Existing file chip -->
-                            <div
-                              v-if="hasUpload(product.code)"
-                              class="flex items-center justify-between bg-purple-50 border border-purple-200 rounded p-3"
-                            >
-                              <div class="text-sm">
-                                <div class="font-medium text-gray-900">
-                                  {{ uploadsByEntitlement[product.code].name }}
-                                </div>
-                                <div class="text-gray-500">
-                                  {{ formatBytes(uploadsByEntitlement[product.code].size) }}
-                                </div>
-                              </div>
-                              <div class="flex items-center gap-2">
-                                <rs-button variant="secondary" :disabled="isLoading" @click="replaceUpload(product.code)">
-                                  Ganti Fail
-                                </rs-button>
-                                <rs-button variant="danger" :disabled="isLoading" @click="removeUpload(product.code)">
-                                  Buang
-                                </rs-button>
-                              </div>
-                            </div>
-
-                            <!-- File Upload (only if no file yet OR replacing) -->
+                            <!-- File Upload -->
                             <FormKit
-                              v-else
                               type="file"
                               name="importFile"
                               label="Muat Naik Fail"
                               accept=".xlsx,.xls,.csv"
-                              help="Format fail: .xlsx, .xls atau .csv"
-                              :disabled="isLoading || (!isReplacing && totalUploads >= maxUploads && !hasUpload(product.code))"
-                              @change="(e) => handleFileUpload(e, product.code)"
+                              help="Format fail: Excel (.xlsx, .xls, .csv)"
+                              validation="required"
+                              @change="handleFileUpload"
                             />
 
                             <div class="flex items-center gap-2">
                               <!-- Import Button -->
-                              <rs-button
-                                variant="primary"
-                                :disabled="isLoading || !selectedFile || currentImportCode !== product.code"
-                                @click="handleImport"
-                              >
-                                <Icon name="material-symbols:upload" class="mr-1" />
-                                {{ isLoading ? "Sedang Import..." : "Import" }}
-                              </rs-button>
+                            <rs-button
+                              variant="primary"
+                              :disabled="!selectedFile || isLoading"
+                              @click="handleImport"
+                            >
+                              <Icon name="material-symbols:upload" class="mr-1" />
+                              {{ isLoading ? "Sedang Import..." : "Import" }}
+                            </rs-button>
 
-                              <!-- Download Payable To CSV Template -->
-                              <rs-button
-                                variant="secondary"
-                                :disabled="isLoading"
-                                @click="downloadPayableToTemplate(product.code)"
-                              >
-                                <Icon name="material-symbols:download" class="mr-1" />
-                                Template Format Excel
-                              </rs-button>
+                            <!-- Download Payable To CSV Template -->
+                            <rs-button
+                              variant="secondary"
+                              :disabled="isLoading"
+                              @click="downloadPayableToTemplate"
+                            >
+                              <Icon name="material-symbols:download" class="mr-1" />
+                              Template Format Excel
+                            </rs-button>
                             </div>
+
                           </div>
                         </template>
                       </rs-card>
@@ -664,8 +640,8 @@
             <FormKit
               v-model="pelulusForm.statusSemakan"
               type="select"
-              label="Status Semakan "
-              :options="statusSemakanOptions"
+              label="Status Kelulusan "
+              :options="statusPelulusOptions"
               required
               :classes="{
                 input: '!py-2',
@@ -1415,6 +1391,11 @@ const statusSemakanOptions = ref([
   { label: "Sokong", value: "Sokong" },
   { label: "Tidak Sokong", value: "Tidak Sokong" },
   { label: "Perlu Semakan Lanjut", value: "Perlu Semakan Lanjut" }
+]);
+
+const statusPelulusOptions = ref([
+  { label: "Lulus", value: "Lulus" },
+  { label: "Tidak Lulus", value: "Tidak Lulus" },
 ]);
 
 
@@ -2220,58 +2201,166 @@ const getProductStatusText = (status) => {
 };
 
 /* ---------- File/Import handlers ---------- */
-function handleFileUpload(e, code) {
-  const file = (e?.target)?.files?.[0] || null
-  if (!file) return
+const handleFileUpload = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const fileName = file.name.toLowerCase();
+    const isValidExtension = fileName.endsWith('.xlsx') || fileName.endsWith('.xls') || fileName.endsWith('.csv');
+    const isValidMimeType = file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+      file.type === "application/vnd.ms-excel" ||
+      file.type === "text/csv" ||
+      file.type === "application/csv" ||
+      file.type === "text/plain" ||
+      file.type === "";
 
-  if (!isValidImportFile(file)) {
-    alert('error', 'Hanya fail .xlsx, .xls atau .csv dibenarkan.')
-    e.target.value = ''
-    return
-  }
-
-  // Enforce one per entitlement + global cap (unless replacing this code)
-  if (!isReplacing.value && hasUpload(code)) {
-    alert('error', 'Hanya satu fail dibenarkan untuk entitlement ini. Gantikan atau buang fail sedia ada.')
-    e.target.value = ''
-    return
-  }
-
-  if (!isReplacing.value && totalUploads.value >= maxUploads.value && !hasUpload(code)) {
-    alert('error', `Maksimum ${maxUploads.value} fail (satu setiap entitlement) telah dicapai.`)
-    e.target.value = ''
-    return
-  }
-
-  selectedFile.value = file
-  currentImportCode.value = code
-}
-
-async function handleImport() {
-  if (!selectedFile.value || !currentImportCode.value) return
-  try {
-    isLoading.value = true
-
-    // For now, store metadata and lock the entitlement
-    uploadsByEntitlement[currentImportCode.value] = {
-      file: selectedFile.value,
-      name: selectedFile.value.name,
-      size: selectedFile.value.size,
+    if (isValidExtension || isValidMimeType) {
+      selectedFile.value = file;
+      console.log('File selected:', file.name, 'Type:', file.type);
+    } else {
+      alert("error", "Sila pilih fail Excel yang sah (.xlsx, .xls, atau .csv)");
+      event.target.value = "";
     }
-
-    // clear temp selection
-    selectedFile.value = null
-    currentImportCode.value = null
-    isReplacing.value = false
-
-    alert('success', 'Fail berjaya diimport.')
-  } catch (err) {
-    console.error(err)
-    alert('error', 'Gagal mengimport fail.')
-  } finally {
-    isLoading.value = false
   }
-}
+};
+
+const handleImport = async () => {
+  try {
+    isLoading.value = true;
+    showImportCards.value = false; // Reset cards visibility before import
+
+    // Dummy data import (simulasi data dari Excel)
+    recipientList.value = [
+      {
+        id: generateUniqueId("RCP"),
+        namaPenuh: "Nur Hazimah Binti Mohd Hafiz",
+        amaun: 2400.0,
+        agihanSemula: "Tidak",
+        bulkProcessing: "BP-2025-00004",
+        kategoriAsnaf: "Muallaf",
+        bayaranKepada: "Asnaf",
+        negeri: "Selangor",
+        negara: "Malaysia",
+      },
+      {
+        id: generateUniqueId("RCP"),
+        namaPenuh: "Nur safiyya Binti Rosly",
+        amaun: 2400.0,
+        agihanSemula: "Tidak",
+        bulkProcessing: "BP-2025-00004",
+        kategoriAsnaf: "Fakir",
+        bayaranKepada: "Asnaf",
+        negeri: "Selangor",
+        negara: "Malaysia",
+      },
+      {
+        id: generateUniqueId("RCP"),
+        namaPenuh: "Mohd Nazrin Bin Mokhtar",
+        amaun: 2400.0,
+        agihanSemula: "Tidak",
+        bulkProcessing: "BP-2025-00004",
+        kategoriAsnaf: "Non-FM",
+        bayaranKepada: "Asnaf",
+        negeri: "Selangor",
+        negara: "Malaysia",
+      },
+      {
+        id: generateUniqueId("RCP"),
+        namaPenuh: "Intan Nadia Binti Mohd Zamri",
+        amaun: 2400.0,
+        agihanSemula: "Tidak",
+        bulkProcessing: "BP-2025-00004",
+        kategoriAsnaf: "Miskin",
+        bayaranKepada: "Asnaf",
+        negeri: "Selangor",
+        negara: "Malaysia",
+      },
+    ];
+
+    paymentList.value = [
+      {
+        kod: "PT-2025-30371",
+        idPermohonan: "PRM-2025-00001",
+        bayaranKepada: "recipient",
+        asnaf: "Muallaf",
+        recipient: "Nur Hazimah Binti Mohd Hafiz",
+        organization: "AZMIDA TECHNICAL COLLEGE",
+        amaun: 2400,
+        modeOfPayment: "Tunai",
+        bankName: "Maybank",
+        bankAccount: "1623-44-889901",
+        checkbox: '',
+      },
+      {
+        kod: "PT-2025-30372",
+        idPermohonan: "PRM-2025-00002",           // ← duplicate key
+        bayaranKepada: "recipient",
+        asnaf: "Fakir",
+        recipient: "Nur safiyya Binti Rosly",
+        organization: "AZMIDA TECHNICAL COLLEGE",
+        amaun: 2400,
+        tarikhBayaran: "Akaun",
+        bankName: "Maybank",
+        bankAccount: "16A3-44-889901",            // ← WRONG (letter)
+        checkbox: '',
+      },
+      {
+        kod: "PT-2025-30373",
+        idPermohonan: "PRM-2025-00003",
+        bayaranKepada: "recipient",
+        asnaf: "Non-FM",
+        recipient: "Mohd Nazrin Bin Mokhtar",
+        organization: "AZMIDA TECHNICAL COLLEGE",
+        amaun: 240,                               // ← WRONG amount
+        modeOfPayment: "Akaun",
+        bankName: "CIMB",
+        bankAccount: "7600-11-222222",
+        checkbox: '',
+      },
+      {
+        kod: "PT-2025-30374",
+        idPermohonan: "PRM-2025-00004",
+        bayaranKepada: "recipient",
+        asnaf: "Miskin", 
+        recipient: "Intan Nadia Binti Mohd Zamri",
+        organization: "AZMIDA TECHNICAL COLLEGE",
+        amaun: 2400,
+        modeOfPayment: "Tunai",
+        bankName: "maybnk",                       // ← WRONG spelling
+        bankAccount: "7600-11-333333",
+        checkbox: '',
+      },
+      {
+        kod: "PT-2025-30375",
+        idPermohonan: "PRM-2025-00002",           // ← duplicate of …30372
+        bayaranKepada: "recipient",
+        asnaf: "Fakir",
+        recipient: "Nur safiyya Binti Rosly",
+        organization: "AZMIDA TECHNICAL COLLEGE",
+        amaun: 2400,
+        modeOfPayment: "Akaun",
+        bankName: "Maybank",
+        bankAccount: "1623-44-889901",
+        checkbox: '',
+      }
+    ];
+
+    // Kemas kini jumlah amaun automatik
+    const jumlah = recipientList.value.reduce(
+      (sum, item) => sum + (parseFloat(item.amaun) || 0),
+      0
+    );
+    formData.value.jumlahAmaun = formatNumber(jumlah);
+
+    alert("success", "Fail berjaya diimport dan data dimasukkan.");
+    showImportCards.value = true;
+  } catch (error) {
+    console.error("Error importing file:", error);
+    alert("error", "Gagal mengimport fail");
+  } finally {
+    isLoading.value = false;
+  }
+};
+
 
 function removeUpload(code) {
   delete uploadsByEntitlement[code]
