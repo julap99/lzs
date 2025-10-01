@@ -5,9 +5,13 @@
     <!-- Header Section -->
     <div class="bg-white shadow-sm border-b">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div class="flex items-center">
-          <Icon name="mdi:account-search" size="2rem" class="text-blue-600" />
-          <div>
+        <div class="flex items-center space-x-4">
+          <div class="flex-shrink-0">
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Icon name="mdi:account-search" size="1.75rem" class="text-blue-600" />
+            </div>
+          </div>
+          <div class="flex-1">
             <h1 class="text-3xl font-bold text-gray-900">Carian Profil</h1>
           </div>
         </div>
@@ -19,7 +23,7 @@
       <rs-card class="shadow-lg border-0">
         <template #header>
           <div class="flex items-center">
-            <h2 class="text-xl font-semibold text-gray-900">Carian Profil</h2>
+            <h2 class="text-xl font-semibold text-gray-900">Kriteria Carian</h2>
           </div>
         </template>
 
@@ -179,6 +183,7 @@
                 @click="resetForm"
                 class="w-full sm:w-auto"
               >
+                <Icon name="mdi:refresh" size="1rem" class="mr-2" />
                 Reset
               </rs-button>
 
