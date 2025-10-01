@@ -287,8 +287,8 @@ const items = ref<TuntutanItem[]>([
     dokumenPerkhidmatan: [{ name: 'Surat Pengesahan.pdf', url: '#' }],
     lampiranLain: [{ name: 'Gambar Lokasi.jpg', url: '#' }],
     bantuanData: {
-      kodBantuan: 'B500',
-      jenisBantuan: '(HQ) BANTUAN PEMBINAAN RUMAH',
+      kodBantuan: 'B134',
+      jenisBantuan: 'BANTUAN PROGRAM PENERAPAN NILAI ISLAM (B134)',
       bahanBantuan: 'BAHAN BINAAN',
       pakejBantuan: 'Pakej Rumah Asnaf',
       kelayakanBantuan: 'Keluarga Asnaf Fakir Miskin',

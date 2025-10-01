@@ -1271,6 +1271,10 @@
                               <rs-button variant="primary" @click="editAssistance(value)">Edit</rs-button>
                             </template>
                           </rs-table>
+                          <!-- Add a new button and align it to the right -->
+                          <div class="flex justify-end mt-4">
+                            <rs-button variant="secondary" @click="goToMohonBantuan">Tambah Bantuan</rs-button>
+                          </div>
                         </div>
                         </template>
                       </rs-card>
