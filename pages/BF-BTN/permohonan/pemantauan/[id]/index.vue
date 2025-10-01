@@ -541,11 +541,10 @@
 
                             <!-- Peratusan Kemajuan Kerja -->
                             <FormKit
-                              type="select"
+                              type="text"
                               name="peratusanKemajuanKerja"
                               label="Peratusan Kemajuan Kerja"
                               validation="required"
-                              :options="peratusanKemajuanOptions"
                               :value="kad.peratusanKemajuanKerja"
                               v-model="kad.peratusanKemajuanKerja"
                             />

@@ -245,7 +245,6 @@
                       label="Cuaca Semasa Siasatan"
                       :options="cuacaOptions"
                       v-model="formData.cuacaSiasatan"
-                      validation="required"
                     />
 
                     <!-- Keadaan Lokasi -->
@@ -255,6 +254,15 @@
                       label="Keadaan Lokasi"
                       :options="keadaanLokasiOptions"
                       v-model="formData.keadaanLokasi"
+                      validation="required"
+                    />
+
+                    <FormKit
+                    v-if="formData.keadaanLokasi === 'lain-lain'"
+                      type="text"
+                      name="lainLainLokasi"
+                      label="Lain-lain Lokasi"
+                      v-model="formData.lainLainLokasi"
                       validation="required"
                     />
                   </div>
@@ -576,6 +584,7 @@ const keadaanLokasiOptions = ref([
   { label: "Memerlukan Kenderaan Khas", value: "kenderaan_khas" },
   { label: "Kawasan Terpencil", value: "terpencil" },
   { label: "Kawasan Bandar", value: "bandar" },
+  { label: "Lain-lain", value: "lain-lain" },
 ]);
 
 // Helper methods
