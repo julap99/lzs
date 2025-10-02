@@ -815,6 +815,10 @@
   
   const router = useRouter();
   const formData = ref({
+    aidType: 'B104_KECEMASAN', // Default to B104 BANTUAN KECEMASAN
+    aidProduct: 'BANTUAN_KECEMASAN_FISABILILLAH', // Default aid product
+    productPackage: 'BANTUAN_KECEMASAN_PACKAGE', // Default product package
+    entitlementProduct: 'BANTUAN_KECEMASAN_ENTITLEMENT', // Default entitlement product
     tarikhMula: '',
     tempoh: '',
     kadarBantuan: '',
@@ -822,8 +826,7 @@
     penerimaManfaatNama: '',
     penerimaManfaatJenisPengenalan: '',
     penerimaManfaatNoPengenalan: '',
-    penerimaManfaatHubungan: '',
-    entitlementProduct: ''
+    penerimaManfaatHubungan: ''
   });
   
   // Separate reactive variable for registration selection
