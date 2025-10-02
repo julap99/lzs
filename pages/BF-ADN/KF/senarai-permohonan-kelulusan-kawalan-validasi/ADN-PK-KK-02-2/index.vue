@@ -4,7 +4,7 @@
 
     <!-- Header + Button Kembali -->
     <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold">Semakan & Kelulusan Akses Peranan</h1>
+      <h1 class="text-2xl font-bold">Semakan & Kelulusan Kawalan Validasi</h1>
 
       <rs-button variant="secondary" @click="goBack" class="whitespace-nowrap">
         <Icon name="ic:round-arrow-back" class="mr-1" />
@@ -57,7 +57,7 @@
         <!-- Permohonan Baharu (READ TEXT ONLY) -->
         <rs-card>
           <template #header>
-            <div class="text-lg font-semibold">Permohonan Baharu</div>
+            <div class="text-lg font-semibold">Butiran Permohonan</div>
           </template>
           <template #body>
             <div class="grid md:grid-cols-2 gap-4">
