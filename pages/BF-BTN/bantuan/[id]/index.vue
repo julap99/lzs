@@ -112,7 +112,7 @@
     </rs-card>
 
     <!-- Tabbed Interface for Maklumat Bantuan -->
-    <rs-card>
+    <rs-card id="maklumat-bantuan">
       <template #header>
         <div class="flex justify-between items-center">
           <!-- <h3 class="text-lg font-semibold text-gray-900">
@@ -171,175 +171,241 @@
               <!-- <p class="text-gray-600">This tab displays the aid distribution information.</p> -->
 
               <!-- Maklumat Agihan Bantuan -->
-              <div class="mb-6">
-                <h4 class="text-md font-semibold text-gray-800 mb-4">
-                  Maklumat Agihan Bantuan
-                </h4>
+              <rs-card class="mb-6">
+                <template #header>
+                  <h3 class="text-lg font-semibold text-gray-900">Maklumat Agihan Bantuan</h3>
+                </template>
+                <template #body>
+                  <div class="p-6">
+                    <!-- Maklumat Bantuan Section -->
+                    <div class="mb-6">
+                      <h4 class="text-sm font-semibold text-teal-600 mb-3 uppercase tracking-wide border-b border-teal-200 pb-2">
+                        Maklumat Bantuan
+                      </h4>
+                      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div>
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            Aid
+                          </label>
+                          <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                            <p class="text-sm text-gray-900 font-medium">{{ aidInfo.aid }}</p>
+                          </div>
+                        </div>
 
-                <div
-                  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                >
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Aid
-                    </label>
-                    <p class="text-gray-900">{{ aidInfo.aid }}</p>
-                  </div>
+                        <div class="lg:col-span-2">
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            Aid Product
+                          </label>
+                          <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                            <p class="text-sm text-gray-900 font-medium">{{ aidInfo.aidProduct }}</p>
+                          </div>
+                        </div>
 
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Aid Product
-                    </label>
-                    <p class="text-gray-900">{{ aidInfo.aidProduct }}</p>
-                  </div>
+                        <div>
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            Product Package
+                          </label>
+                          <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                            <p class="text-sm text-gray-900 font-medium">{{ aidInfo.productPackage }}</p>
+                          </div>
+                        </div>
 
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Product Package
-                    </label>
-                    <p class="text-gray-900">{{ aidInfo.productPackage }}</p>
-                  </div>
+                        <div>
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            Entitlement Product
+                          </label>
+                          <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                            <p class="text-sm text-gray-900 font-medium">{{ aidInfo.entitlementProduct }}</p>
+                          </div>
+                        </div>
 
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Entitlement Product
-                    </label>
-                    <p class="text-gray-900">
-                      {{ aidInfo.entitlementProduct }}
-                    </p>
-                  </div>
+                        <div class="lg:col-span-3">
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            Catatan Sebab Memohon Bantuan
+                          </label>
+                          <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                            <p class="text-sm text-gray-900">{{ aidInfo.catatanSebabMemohon }}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Catatan Sebab Memohon Bantuan
-                    </label>
-                    <p class="text-gray-900">
-                      {{ aidInfo.catatanSebabMemohon }}
-                    </p>
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Info Status Bantuan
-                    </label>
-                    <rs-badge variant="danger">Tidak Aktif</rs-badge>
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Justifikasi Pembatalan
-                    </label>
-                    <p class="text-gray-900">Dibatalkan</p>
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Tarikh Pembatalan
-                    </label>
-                    <p class="text-gray-900">30/09/2025</p>
-                  </div>
+                    <!-- Status Bantuan Section -->
+                    <div class="mb-6">
+                      <h4 class="text-sm font-semibold text-orange-600 mb-3 uppercase tracking-wide border-b border-orange-200 pb-2">
+                        Status Bantuan
+                      </h4>
+                      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div>
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            Info Status Bantuan
+                          </label>
+                          <div class="bg-orange-50 p-3 rounded-lg border border-orange-200">
+                            <rs-badge variant="danger">Tidak Aktif</rs-badge>
+                          </div>
+                        </div>
 
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Kadar Bantuan
-                    </label>
-                    <p class="text-gray-900 font-semibold">
-                      RM {{ aidInfo.kadarBantuan }}
-                    </p>
-                  </div>
+                        <div>
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            Justifikasi Pembatalan
+                          </label>
+                          <div class="bg-orange-50 p-3 rounded-lg border border-orange-200">
+                            <p class="text-sm text-gray-900">Dibatalkan</p>
+                          </div>
+                        </div>
 
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Tempoh / Kekerapan Bantuan
-                    </label>
-                    <p class="text-gray-900">{{ aidInfo.tempohKekerapan }}</p>
-                  </div>
+                        <div>
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            Tarikh Pembatalan
+                          </label>
+                          <div class="bg-orange-50 p-3 rounded-lg border border-orange-200">
+                            <p class="text-sm text-gray-900">30/09/2025</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Tarikh Mula
-                    </label>
-                    <p class="text-gray-900">
-                      {{ formatDate(aidInfo.tarikhMula) }}
-                    </p>
-                  </div>
+                    <!-- Maklumat Kadar Section -->
+                    <div class="mb-6">
+                      <h4 class="text-sm font-semibold text-green-600 mb-3 uppercase tracking-wide border-b border-green-200 pb-2">
+                        Maklumat Kadar
+                      </h4>
+                      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div>
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            Kadar Bantuan
+                          </label>
+                          <div class="bg-green-50 p-3 rounded-lg border border-green-200">
+                            <p class="text-lg text-green-700 font-bold">
+                              RM {{ aidInfo.kadarBantuan }}
+                            </p>
+                          </div>
+                        </div>
 
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Tarikh Tamat
-                    </label>
-                    <p class="text-gray-900">
-                      {{ formatDate(aidInfo.tarikhTamat) }}
-                    </p>
-                  </div>
+                        <div>
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            Tempoh / Kekerapan Bantuan
+                          </label>
+                          <div class="bg-green-50 p-3 rounded-lg border border-green-200">
+                            <p class="text-sm text-gray-900 font-medium">{{ aidInfo.tempohKekerapan }}</p>
+                          </div>
+                        </div>
 
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Jumlah Keseluruhan Bantuan Diterima
-                    </label>
-                    <p class="text-gray-900 font-semibold text-lg">
-                      RM {{ aidInfo.jumlahKeseluruhan }}
-                    </p>
-                  </div>
+                        <div>
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            Kod Bajet
+                          </label>
+                          <div class="bg-green-50 p-3 rounded-lg border border-green-200">
+                            <p class="text-sm text-gray-900 font-medium">{{ aidInfo.kodBajet }}</p>
+                          </div>
+                        </div>
 
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Kod Bajet
-                    </label>
-                    <p class="text-gray-900">{{ aidInfo.kodBajet }}</p>
-                  </div>
+                        <div>
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            Tarikh Mula
+                          </label>
+                          <div class="bg-green-50 p-3 rounded-lg border border-green-200">
+                            <p class="text-sm text-gray-900 font-medium">{{ formatDate(aidInfo.tarikhMula) }}</p>
+                          </div>
+                        </div>
 
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Penerima
-                    </label>
-                    <rs-badge :variant="getRecipientVariant(aidInfo.penerima)">
-                      {{ aidInfo.penerima }}
-                    </rs-badge>
-                  </div>
+                        <div>
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            Tarikh Tamat
+                          </label>
+                          <div class="bg-green-50 p-3 rounded-lg border border-green-200">
+                            <p class="text-sm text-gray-900 font-medium">{{ formatDate(aidInfo.tarikhTamat) }}</p>
+                          </div>
+                        </div>
 
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Nama Penerima
-                    </label>
-                    <p class="text-gray-900">{{ aidInfo.namaPenerima }}</p>
-                  </div>
+                        <div>
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            Jumlah Keseluruhan Bantuan Diterima
+                          </label>
+                          <div class="bg-green-100 p-3 rounded-lg border-2 border-green-400">
+                            <p class="text-xl text-green-700 font-bold">
+                              RM {{ aidInfo.jumlahKeseluruhan }}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
-                  <!-- Conditional fields based on payment method -->
-                  <div v-if="aidInfo.kaedahPembayaran !== 'Tunai'">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Nama Pemegang Akaun
-                    </label>
-                    <p class="text-gray-900">{{ aidInfo.namaPemegangAkaun }}</p>
-                  </div>
+                    <!-- Maklumat Penerima Section -->
+                    <div class="mb-0">
+                      <h4 class="text-sm font-semibold text-blue-600 mb-3 uppercase tracking-wide border-b border-blue-200 pb-2">
+                        Maklumat Penerima
+                      </h4>
+                      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div>
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            Penerima
+                          </label>
+                          <div class="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                            <rs-badge :variant="getRecipientVariant(aidInfo.penerima)">
+                              {{ aidInfo.penerima }}
+                            </rs-badge>
+                          </div>
+                        </div>
 
-                  <div v-if="aidInfo.kaedahPembayaran !== 'Tunai'">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Bank
-                    </label>
-                    <p class="text-gray-900">{{ aidInfo.bank }}</p>
-                  </div>
+                        <div>
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            Nama Penerima
+                          </label>
+                          <div class="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                            <p class="text-sm text-gray-900 font-medium">{{ aidInfo.namaPenerima }}</p>
+                          </div>
+                        </div>
 
-                  <div v-if="aidInfo.kaedahPembayaran !== 'Tunai'">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      No. Akaun Bank
-                    </label>
-                    <p class="text-gray-900">{{ aidInfo.noAkaunBank }}</p>
-                  </div>
+                        <div>
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            SAP Code
+                          </label>
+                          <div class="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                            <p class="text-sm text-gray-900 font-medium">{{ aidInfo.sapCode }}</p>
+                          </div>
+                        </div>
 
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      SAP Code
-                    </label>
-                    <p class="text-gray-900">{{ aidInfo.sapCode }}</p>
+                        <!-- Conditional fields based on payment method -->
+                        <div v-if="aidInfo.kaedahPembayaran !== 'Tunai'">
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            Nama Pemegang Akaun
+                          </label>
+                          <div class="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                            <p class="text-sm text-gray-900 font-medium">{{ aidInfo.namaPemegangAkaun }}</p>
+                          </div>
+                        </div>
+
+                        <div v-if="aidInfo.kaedahPembayaran !== 'Tunai'">
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            Bank
+                          </label>
+                          <div class="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                            <p class="text-sm text-gray-900 font-medium">{{ aidInfo.bank }}</p>
+                          </div>
+                        </div>
+
+                        <div v-if="aidInfo.kaedahPembayaran !== 'Tunai'">
+                          <label class="block text-xs font-semibold text-gray-700 mb-2">
+                            No. Akaun Bank
+                          </label>
+                          <div class="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                            <p class="text-sm text-gray-900 font-medium">{{ aidInfo.noAkaunBank }}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                </template>
+              </rs-card>
 
               <!-- Distribution Item List -->
-              <div>
-                <h4 class="text-md font-semibold text-gray-800 mb-4">
-                  Senarai Distribution Item
-                </h4>
-
-                <rs-table
+              <rs-card>
+                <template #header>
+                  <h3 class="text-lg font-semibold text-gray-900">Senarai Distribution Item</h3>
+                </template>
+                <template #body>
+                  <rs-table
                   :key="`distribution-table-${distributionItems.length}`"
                   :data="distributionItems"
                   :field="distributionItemFieldKeys"
@@ -482,7 +548,8 @@
                     </div>
                   </div>
                 </div> -->
-              </div>
+                </template>
+              </rs-card>
             </div>
 
             <!-- Tuntutan Tab -->
@@ -1387,6 +1454,28 @@ onMounted(async () => {
     // aidInfo.value = response.aidInfo
     // distributionItems.value = response.distributionItems
     // processFlow.value = response.processFlow
+
+    // Check if user came from bantuan-pegawai page and scroll to maklumat bantuan section
+    if (route.query.from === 'bantuan-pegawai') {
+      // Set active tab based on the tab parameter, default to agihan if not specified
+      if (route.query.tab === 'payment') {
+        activeTab.value = 'payment';
+      } else if (route.query.tab === 'tuntutan') {
+        activeTab.value = 'tuntutan';
+      } else if (route.query.tab === 'cash') {
+        activeTab.value = 'cash';
+      }
+      
+      // Use nextTick to ensure DOM is fully rendered
+      await nextTick();
+      const maklumatSection = document.getElementById('maklumat-bantuan');
+      if (maklumatSection) {
+        maklumatSection.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }
+    }
   } catch (error) {
     console.error("Error fetching aid information:", error);
   }
