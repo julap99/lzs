@@ -401,6 +401,7 @@
                           class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="">-- Pilih Nama Asnaf --</option>
+                          <option value="Muhammad Ali bin Abu">Muhammad Ali bin Abu</option>
                           <option value="Ali Natasha binti Hussain">Ali Natasha binti Hussain</option>
                           <option value="Ahmad bin Abdullah">Ahmad bin Abdullah</option>
                           <option value="Siti binti Rahman">Siti binti Rahman</option>
@@ -819,6 +820,10 @@
     aidProduct: 'BANTUAN_KECEMASAN_FISABILILLAH', // Default aid product
     productPackage: 'BANTUAN_KECEMASAN_PACKAGE', // Default product package
     entitlementProduct: 'BANTUAN_KECEMASAN_ENTITLEMENT', // Default entitlement product
+    kategoriPenerimaBayaran: 'ASNAF', // Default to Asnaf
+    kaedahPembayaran: 'TUNAI_KAUNTER', // Default to Tunai (Kaunter Ekspres)
+    namaPenerimaBayaran: 'Muhammad Ali bin Abu', // Default Asnaf name
+    noPengenalanPenerima: '901231012345', // Default No Kad Pengenalan
     tarikhMula: '',
     tempoh: '',
     kadarBantuan: '',
@@ -1531,6 +1536,7 @@
   // Asnaf name options for dropdown
   const asnafNameOptions = [
     { label: "-- Pilih Nama Asnaf --", value: "", disabled: true },
+    { label: "Muhammad Ali bin Abu", value: "Muhammad Ali bin Abu" },
     { label: "Ali Natasha binti Hussain", value: "Ali Natasha binti Hussain" },
     { label: "Ahmad bin Abdullah", value: "Ahmad bin Abdullah" },
     { label: "Siti binti Rahman", value: "Siti binti Rahman" },
