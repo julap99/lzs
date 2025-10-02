@@ -18,9 +18,9 @@
                 <p class="text-sm text-gray-500">Maklumat asas bantuan</p>
               </div>
             </div>
-            <rs-button variant="primary" @click="navigateTo('senarai-bulk-processing/[id]/edit')">
+            <!-- <rs-button variant="primary" @click="navigateTo('senarai-bulk-processing/[id]/edit')">
               <Icon name="ph:paper-plane-tilt" class="mr-1" /> Agih Tugas
-            </rs-button>
+            </rs-button> -->
           </div>
         </template>
         <template #body>
