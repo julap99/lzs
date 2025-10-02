@@ -1116,9 +1116,12 @@
               </p> -->
 
               <!-- Document Information (Readonly) -->
-              <!-- <div class="mb-6">
+              <div class="mb-6">
                 <h4 class="font-medium mb-3">Dokumen yang Dimuat Naik</h4>
-                <div v-if="uploadedDocuments.length === 0" class="text-center py-8 text-gray-500">
+                <div
+                  v-if="uploadedDocuments.length === 0"
+                  class="text-center py-8 text-gray-500"
+                >
                   <p>Tiada dokumen yang dimuat naik</p>
                 </div>
                 <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1137,12 +1140,11 @@
                       size="sm"
                       @click="downloadDocument(doc)"
                     >
-                      <Icon name="mdi:download" class="mr-1" />
                       Muat Turun
                     </rs-button>
                   </div>
                 </div>
-              </div> -->
+              </div>
 
               <!-- Original Form Fields (Hidden/Readonly) -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1692,10 +1694,6 @@ const pakOfficersOptionsAssistance = computed(() => {
   return selectedKariah ? pakOfficersByKariah[selectedKariah] || [] : [];
 });
 
-const uploadedDocuments = computed(() => {
-  // For new registration, return empty array as no documents are pre-loaded
-  return [];
-});
 
 // Methods
 const getPlaceholder = () => {
@@ -1941,6 +1939,138 @@ const getDocumentUploadDate = (file) => {
   }
   return new Date().toLocaleDateString('ms-MY');
 };
+
+const uploadedDocuments = computed(() => {
+  const documents = [];
+
+  // Add personal info documents
+  if (formData.value.personalInfo.idDocument) {
+    const docs = Array.isArray(formData.value.personalInfo.idDocument)
+      ? formData.value.personalInfo.idDocument
+      : [formData.value.personalInfo.idDocument];
+    docs.forEach((doc) => {
+      documents.push({
+        name: getDocumentName(doc),
+        type: getDocumentType(doc),
+        size: getDocumentSize(doc),
+        url: "#",
+      });
+    });
+  }
+
+  if (
+    formData.value.personalInfo.dokumen_pengislaman &&
+    formData.value.personalInfo.dokumen_pengislaman.length > 0
+  ) {
+    formData.value.personalInfo.dokumen_pengislaman.forEach((doc) => {
+      documents.push({
+        name: getDocumentName(doc),
+        type: getDocumentType(doc),
+        size: getDocumentSize(doc),
+        url: "#",
+      });
+    });
+  }
+
+  if (formData.value.personalInfo.incomeDocument) {
+    const incomeDocs = Array.isArray(formData.value.personalInfo.incomeDocument)
+      ? formData.value.personalInfo.incomeDocument
+      : [formData.value.personalInfo.incomeDocument];
+    incomeDocs.forEach((doc) => {
+      documents.push({
+        name: getDocumentName(doc),
+        type: getDocumentType(doc),
+        size: getDocumentSize(doc),
+        url: "#",
+      });
+    });
+  }
+
+  // Add spouse documents
+  if (
+    formData.value.personalInfo.spouses &&
+    formData.value.personalInfo.spouses.length > 0
+  ) {
+    formData.value.personalInfo.spouses.forEach((spouse) => {
+      if (spouse.spouseIdDocument) {
+        const spouseDocs = Array.isArray(spouse.spouseIdDocument)
+          ? spouse.spouseIdDocument
+          : [spouse.spouseIdDocument];
+        spouseDocs.forEach((doc) => {
+          documents.push({
+            name: getDocumentName(doc),
+            type: getDocumentType(doc),
+            size: getDocumentSize(doc),
+            url: "#",
+          });
+        });
+      }
+    });
+  }
+
+  // Add health info documents
+  if (formData.value.healthInfo.disasterDocument) {
+    const disasterDocs = Array.isArray(formData.value.healthInfo.disasterDocument)
+      ? formData.value.healthInfo.disasterDocument
+      : [formData.value.healthInfo.disasterDocument];
+    disasterDocs.forEach((doc) => {
+      documents.push({
+        name: getDocumentName(doc),
+        type: getDocumentType(doc),
+        size: getDocumentSize(doc),
+        url: "#",
+      });
+    });
+  }
+
+  if (formData.value.healthInfo.noDisasterDocument) {
+    const noDisasterDocs = Array.isArray(formData.value.healthInfo.noDisasterDocument)
+      ? formData.value.healthInfo.noDisasterDocument
+      : [formData.value.healthInfo.noDisasterDocument];
+    noDisasterDocs.forEach((doc) => {
+      documents.push({
+        name: getDocumentName(doc),
+        type: getDocumentType(doc),
+        size: getDocumentSize(doc),
+        url: "#",
+      });
+    });
+  }
+
+  // Add address documents
+  if (formData.value.addressInfo.addressSupportDoc) {
+    const addrDocs = Array.isArray(formData.value.addressInfo.addressSupportDoc)
+      ? formData.value.addressInfo.addressSupportDoc
+      : [formData.value.addressInfo.addressSupportDoc];
+    addrDocs.forEach((doc) => {
+      documents.push({
+        name: getDocumentName(doc),
+        type: getDocumentType(doc),
+        size: getDocumentSize(doc),
+        url: "#",
+      });
+    });
+  }
+
+  // Add the main verification document if it exists
+  if (formData.value.verification.dokumenPengesahanPermastautin) {
+    const verifyDocs = Array.isArray(
+      formData.value.verification.dokumenPengesahanPermastautin
+    )
+      ? formData.value.verification.dokumenPengesahanPermastautin
+      : [formData.value.verification.dokumenPengesahanPermastautin];
+    verifyDocs.forEach((doc) => {
+      documents.push({
+        name: getDocumentName(doc),
+        type: getDocumentType(doc),
+        size: getDocumentSize(doc),
+        url: "#",
+      });
+    });
+  }
+
+  return documents;
+});
 
 const downloadDocument = (doc) => {
   // For demo, just log the document info
