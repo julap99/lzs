@@ -815,6 +815,10 @@
   
   const router = useRouter();
   const formData = ref({
+    aidType: 'B102', // Default to B102 BANTUAN BINAAN RUMAH
+    aidProduct: 'HQ_BINAAN_RUMAH', // Default aid product
+    productPackage: 'PEROLEHAN_BINA_RUMAH', // Default product package
+    entitlementProduct: 'PEROLEHAN_BINA_RUMAH_ENTITLEMENT', // Default entitlement product
     tarikhMula: '',
     tempoh: '',
     kadarBantuan: '',
@@ -822,8 +826,7 @@
     penerimaManfaatNama: '',
     penerimaManfaatJenisPengenalan: '',
     penerimaManfaatNoPengenalan: '',
-    penerimaManfaatHubungan: '',
-    entitlementProduct: ''
+    penerimaManfaatHubungan: ''
   });
   
   // Separate reactive variable for registration selection
