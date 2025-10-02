@@ -77,7 +77,7 @@
             type="text"
             label="Tahun"
             placeholder="cth: 2025"
-            validation="matches:/^\d{4}$/"
+            validation="matches:/^\\d{4}$/"
             :validation-messages="{ matches: 'Masukkan 4 digit tahun.' }"
             validation-visibility="live"
             inputmode="numeric"
@@ -119,45 +119,37 @@
               <table class="min-w-full table-fixed border-collapse">
                 <thead>
                   <tr class="bg-slate-50 text-left text-sm text-slate-600">
-                    <th class="px-3 py-2 font-medium border w-14">Bil</th>
+                    <th class="px-3 py-2 font-medium border">Bil</th>
+                    <th class="px-3 py-2 font-medium border">ID Bantuan</th>
                     <th class="px-3 py-2 font-medium border">ID Asnaf</th>
                     <th class="px-3 py-2 font-medium border">Nama</th>
-                    <th class="px-3 py-2 font-medium border">Jantina</th>
-                    <th class="px-3 py-2 font-medium border">Umur</th>
-                    <th class="px-3 py-2 font-medium border">Bilangan Tanggungan</th>
-                    <th class="px-3 py-2 font-medium border">Total Distribution</th>
-                    <th class="px-3 py-2 font-medium border">Daerah</th>
-                    <th class="px-3 py-2 font-medium border">Kariah</th>
                     <th class="px-3 py-2 font-medium border">Aid Code</th>
                     <th class="px-3 py-2 font-medium border">Aid Name</th>
-                    <th class="px-3 py-2 font-medium border">Aid Product</th>
-                    <th class="px-3 py-2 font-medium border">Product Package</th>
-                    <th class="px-3 py-2 font-medium border">Entitlement Product</th>
-                    <th class="px-3 py-2 font-medium border">Start Date</th>
-                    <th class="px-3 py-2 font-medium border">Nama Organisasi (Masjid/Surau)</th>
+                    <th class="px-3 py-2 font-medium border">Tarikh Mula</th>
+                    <th class="px-3 py-2 font-medium border">Tarikh Tamat</th>
+                    <th class="px-3 py-2 font-medium border">Aging (Hari)</th>
+                    <th class="px-3 py-2 font-medium border">Status Bantuan</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(r, i) in rows" :key="r.idAsnaf + '-' + i" class="text-sm">
+                  <tr v-for="(r, i) in rows" :key="r.idBantuan" class="text-sm">
                     <td class="px-3 py-2 border whitespace-nowrap">{{ i + 1 }}</td>
+                    <td class="px-3 py-2 border whitespace-nowrap">{{ r.idBantuan }}</td>
                     <td class="px-3 py-2 border whitespace-nowrap">{{ r.idAsnaf }}</td>
                     <td class="px-3 py-2 border whitespace-nowrap">{{ r.nama }}</td>
-                    <td class="px-3 py-2 border whitespace-nowrap">{{ r.jantina }}</td>
-                    <td class="px-3 py-2 border whitespace-nowrap text-right">{{ r.umur }}</td>
-                    <td class="px-3 py-2 border whitespace-nowrap text-right">{{ r.bilTanggungan }}</td>
-                    <td class="px-3 py-2 border whitespace-nowrap text-right">{{ r.totalDistribution }}</td>
-                    <td class="px-3 py-2 border whitespace-nowrap">{{ r.daerah }}</td>
-                    <td class="px-3 py-2 border whitespace-nowrap">{{ r.kariah }}</td>
                     <td class="px-3 py-2 border whitespace-nowrap">{{ r.aidCode }}</td>
                     <td class="px-3 py-2 border whitespace-nowrap">{{ r.aidName }}</td>
-                    <td class="px-3 py-2 border whitespace-nowrap">{{ r.aidProduct }}</td>
-                    <td class="px-3 py-2 border whitespace-nowrap">{{ r.productPackage }}</td>
-                    <td class="px-3 py-2 border whitespace-nowrap">{{ r.entitlementProduct }}</td>
-                    <td class="px-3 py-2 border whitespace-nowrap">{{ formatDate(r.startDate) }}</td>
-                    <td class="px-3 py-2 border whitespace-nowrap">{{ r.namaOrganisasi }}</td>
+                    <td class="px-3 py-2 border whitespace-nowrap">{{ formatDate(r.tarikhMula) }}</td>
+                    <td class="px-3 py-2 border whitespace-nowrap">{{ r.tarikhTamat ? formatDate(r.tarikhTamat) : '—' }}</td>
+                    <td class="px-3 py-2 border whitespace-nowrap text-right">{{ r.agingHari }}</td>
+                    <td class="px-3 py-2 border">
+                      <span class="px-2 py-0.5 rounded-full text-xs font-medium" :class="statusClass(r.statusBantuan)">
+                        {{ r.statusBantuan }}
+                      </span>
+                    </td>
                   </tr>
                   <tr v-if="rows.length === 0">
-                    <td colspan="16" class="px-3 py-6 text-center text-slate-500 border">
+                    <td colspan="10" class="px-3 py-6 text-center text-slate-500 border">
                       Tiada rekod mengikut kriteria carian.
                     </td>
                   </tr>
@@ -179,33 +171,21 @@ import { reactive, ref, computed, watch } from 'vue'
 const jenisLaporan = 'DOAA'
 const namaLaporan  = 'Laporan Penerima Bantuan Semasa'
 
-/* === Dataset: ikut jadual yang diberi === */
-const DATA_PENERIMA = [
-  { idAsnaf:'A100', nama:'Ahmad Ali', jantina:'Lelaki', umur:64, bilTanggungan:2, totalDistribution:9,  daerah:'Petaling', kariah:'MASJID NURUL EHSAN TAMAN MEDAN', aidCode:'B105', aidName:'BANTUAN KEWANGAN BULANAN (FAKIR)', aidProduct:'BANTUAN KEWANGAN BULANAN (FAKIR)', productPackage:'KEWANGAN BULANAN (FAKIR) - T2', entitlementProduct:'KEWANGAN BULANAN (FAKIR) - T2', startDate:'2025-10-12', namaOrganisasi:'Surau Al-Mawaddah' },
-  { idAsnaf:'A101', nama:'Siti Aminah', jantina:'Perempuan', umur:25, bilTanggungan:1, totalDistribution:9, daerah:'Klang', kariah:'MASJID KAMPUNG PENDAMAR', aidCode:'B105', aidName:'BANTUAN KEWANGAN BULANAN (FAKIR)', aidProduct:'BANTUAN KEWANGAN BULANAN (FAKIR)', productPackage:'KEWANGAN BULANAN (FAKIR) - T1', entitlementProduct:'KEWANGAN BULANAN (FAKIR) - T1', startDate:'2025-08-07', namaOrganisasi:'Masjid Al-Ikhlas' },
-  { idAsnaf:'A102', nama:'Mohd Faiz', jantina:'Perempuan', umur:33, bilTanggungan:3, totalDistribution:1, daerah:'Klang', kariah:'MASJID NURUL AMIN, KAMPUNG DELEK', aidCode:'B105', aidName:'BANTUAN KEWANGAN BULANAN (FAKIR)', aidProduct:'BANTUAN KEWANGAN BULANAN (FAKIR)', productPackage:'KEWANGAN BULANAN (FAKIR) - T3', entitlementProduct:'KEWANGAN BULANAN (FAKIR) - T3', startDate:'2025-06-25', namaOrganisasi:'Masjid An-Nur' },
-  { idAsnaf:'A103', nama:'Nor Aisyah', jantina:'Perempuan', umur:42, bilTanggungan:6, totalDistribution:10, daerah:'Klang', kariah:'MASJID NURUL JANNAH, MERU', aidCode:'B105', aidName:'BANTUAN KEWANGAN BULANAN (FAKIR)', aidProduct:'BANTUAN KEWANGAN BULANAN (FAKIR)', productPackage:'KEWANGAN BULANAN (FAKIR) - T6', entitlementProduct:'KEWANGAN BULANAN (FAKIR) - T6', startDate:'2025-07-28', namaOrganisasi:'Masjid Al-Falah' },
-  { idAsnaf:'A104', nama:'Hafiz Rahman', jantina:'Perempuan', umur:43, bilTanggungan:2, totalDistribution:7, daerah:'Petaling', kariah:'MASJID SETIA ALAM', aidCode:'B105', aidName:'BANTUAN KEWANGAN BULANAN (FAKIR)', aidProduct:'BANTUAN KEWANGAN BULANAN (FAKIR)', productPackage:'KEWANGAN BULANAN (FAKIR) - T2', entitlementProduct:'KEWANGAN BULANAN (FAKIR) - T2', startDate:'2025-12-26', namaOrganisasi:'Surau Ar-Rahman' },
-  { idAsnaf:'A105', nama:'Zainab Omar', jantina:'Perempuan', umur:67, bilTanggungan:1, totalDistribution:15, daerah:'Petaling', kariah:'MASJID SETIA ALAM', aidCode:'B106', aidName:'BANTUAN MAKANAN BULANAN (MISKIN)', aidProduct:'MAKANAN BULANAN (MISKIN)', productPackage:'MAKANAN BULANAN TERAS (MISKIN) - K1', entitlementProduct:'K1 MISKIN - (5KG BERAS, 1KG TEPUNG, 1KG MINYAK, 1KG GULA, 1 BIHUN, 1 KICAP)', startDate:'2025-10-28', namaOrganisasi:'Masjid Al-Hidayah' },
-  { idAsnaf:'A106', nama:'Azlan Ismail', jantina:'Lelaki', umur:35, bilTanggungan:3, totalDistribution:9, daerah:'Gombak', kariah:'MASJID SERI MELATI', aidCode:'B106', aidName:'BANTUAN MAKANAN BULANAN (MISKIN)', aidProduct:'MAKANAN BULANAN (MISKIN)', productPackage:'MAKANAN BULANAN TERAS (MISKIN) - K2', entitlementProduct:'K2 MISKIN - (10KG BERAS, 2KG TEPUNG, 2KG MINYAK, 2KG GULA, 2 BIHUN, 1 KICAP)', startDate:'2025-11-17', namaOrganisasi:'Masjid An-Nur' },
-  { idAsnaf:'A107', nama:'Nurul Huda', jantina:'Perempuan', umur:67, bilTanggungan:7, totalDistribution:15, daerah:'Gombak', kariah:'MASJID SERI MELATI', aidCode:'B106', aidName:'BANTUAN MAKANAN BULANAN (MISKIN)', aidProduct:'MAKANAN BULANAN (MISKIN)', productPackage:'MAKANAN BULANAN TERAS (MISKIN) - K3', entitlementProduct:'K3 MISKIN - (15KG BERAS, 2KG TEPUNG, 4KG MINYAK, 2KG GULA, 2 BIHUN, 1 KICAP)', startDate:'2025-03-17', namaOrganisasi:'Masjid Al-Falah' },
-  { idAsnaf:'A108', nama:'Farid Jamal', jantina:'Lelaki', umur:56, bilTanggungan:3, totalDistribution:12, daerah:'Gombak', kariah:'MASJID SERI MELATI', aidCode:'B103', aidName:'(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)', aidProduct:'(HQ) KATEGORI HEMODIALISIS (FAKIR)', productPackage:'(GL) (HQ) HEMODIALISIS (FAKIR)', entitlementProduct:'(GL) (HQ) HEMODIALISIS (FAKIR)', startDate:'2025-10-10', namaOrganisasi:'Surau At-Taqwa' },
-  { idAsnaf:'A109', nama:'Aminah Latif', jantina:'Perempuan', umur:27, bilTanggungan:2, totalDistribution:9, daerah:'Gombak', kariah:'MASJID SAUJANA UTAMA', aidCode:'B103', aidName:'(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)', aidProduct:'(HQ) KATEGORI HEMODIALISIS (FAKIR)', productPackage:'(GL) (HQ) SUNTIKAN EPO (FAKIR)', entitlementProduct:'(GL) (HQ) SUNTIKAN EPO (FAKIR)', startDate:'2025-05-16', namaOrganisasi:'Masjid Al-Hidayah' },
-  { idAsnaf:'A110', nama:'Syafiq Zulkifli', jantina:'Perempuan', umur:59, bilTanggungan:1, totalDistribution:2, daerah:'Gombak', kariah:'MASJID SAUJANA UTAMA', aidCode:'B103', aidName:'(HQ) BANTUAN PERUBATAN DIALISIS (FAKIR)', aidProduct:'(HQ) KATEGORI HEMODIALISIS (FAKIR)', productPackage:'(GL) (HQ) HEMODIALISIS SAHAJA (FAKIR)', entitlementProduct:'(GL) (HQ) HEMODIALISIS SAHAJA (FAKIR)', startDate:'2025-05-20', namaOrganisasi:'Surau Al-Mawaddah' },
-]
+/* Opsyen lokasi (contoh) */
+const opsiDaerah = ['Petaling', 'Klang', 'Gombak']
+const petaKariah = {
+  Petaling: ['MASJID SETIA ALAM', 'Surau Ar-Rahman', 'Surau Al-Mawaddah'],
+  Klang: ['MASJID KAMPUNG PENDAMAR', 'MASJID NURUL AMIN, KAMPUNG DELEK', 'MASJID NURUL JANNAH, MERU', 'Masjid Al-Ikhlas', 'Masjid Al-Falah'],
+  Gombak: ['MASJID SERI MELATI', 'MASJID SAUJANA UTAMA', 'Surau At-Taqwa', 'Masjid Al-Hidayah']
+}
 
-/* === Opsyen lokasi: dibina dari dataset supaya konsisten === */
-const semuaDaerah = [...new Set(DATA_PENERIMA.map(r => r.daerah))].sort()
-const petaKariah = Object.fromEntries(
-  semuaDaerah.map(d => [d, [...new Set(DATA_PENERIMA.filter(r => r.daerah === d).map(r => r.kariah))].sort()])
-)
-
+/* Dropdown options (label/value) */
 const daerahOptionsWithAll = computed(() => [
   { label: 'Semua Daerah', value: '' },
-  ...semuaDaerah.map(v => ({ label: v, value: v }))
+  ...opsiDaerah.map(v => ({ label: v, value: v }))
 ])
 
-const allKariah = computed(() => [...new Set(DATA_PENERIMA.map(r => r.kariah))].sort())
+const allKariah = computed(() => [...new Set(Object.values(petaKariah).flat())])
 const kariahOptionsForDaerah = computed(() => {
   if (!criteria.daerah) return allKariah.value
   return petaKariah[criteria.daerah] || []
@@ -214,6 +194,20 @@ const kariahOptionsWithAll = computed(() => [
   { label: 'Semua Kariah', value: '' },
   ...kariahOptionsForDaerah.value.map(v => ({ label: v, value: v }))
 ])
+
+/* Dataset contoh */
+const DATA_AGING = [
+  { idBantuan:'B1001', idAsnaf:'A300', nama:'Ahmad Ali',   aidCode:'B112', aidName:'BANTUAN SEWAAN/ANSURAN RUMAH (MISKIN)',  tarikhMula:'2025-01-15', tarikhTamat:'2025-06-15',  agingHari:151, statusBantuan:'Tamat',         daerah:'Petaling', kariah:'Surau Ar-Rahman' },
+  { idBantuan:'B1002', idAsnaf:'A301', nama:'Siti Aminah', aidCode:'B112', aidName:'BANTUAN SEWAAN/ANSURAN RUMAH (MISKIN)',  tarikhMula:'2025-03-01', tarikhTamat:'',             agingHari:201, statusBantuan:'Aktif',         daerah:'Klang',    kariah:'MASJID KAMPUNG PENDAMAR' },
+  { idBantuan:'B1003', idAsnaf:'A302', nama:'Mohd Faiz',   aidCode:'B112', aidName:'BANTUAN SEWAAN/ANSURAN RUMAH (MUALLAF)', tarikhMula:'2025-04-10', tarikhTamat:'',             agingHari:161, statusBantuan:'Perlu Disemak', daerah:'Klang',    kariah:'MASJID NURUL AMIN, KAMPUNG DELEK' },
+  { idBantuan:'B1004', idAsnaf:'A303', nama:'Nor Aisyah',  aidCode:'B112', aidName:'BANTUAN SEWAAN/ANSURAN RUMAH (MUALLAF)', tarikhMula:'2025-05-20', tarikhTamat:'',             agingHari:121, statusBantuan:'Aktif',         daerah:'Klang',    kariah:'MASJID NURUL JANNAH, MERU' },
+  { idBantuan:'B1005', idAsnaf:'A304', nama:'Hafiz Rahman',aidCode:'B104', aidName:'(HQ) BANTUAN KEPERLUAN HIDUP (FAKIR)',   tarikhMula:'2025-02-12', tarikhTamat:'2025-08-15',   agingHari:184, statusBantuan:'Tamat',         daerah:'Petaling', kariah:'MASJID SETIA ALAM' },
+  { idBantuan:'B1006', idAsnaf:'A305', nama:'Zainab Omar', aidCode:'B104', aidName:'(HQ) BANTUAN KEPERLUAN HIDUP (FAKIR)',   tarikhMula:'2025-07-01', tarikhTamat:'',             agingHari:79,  statusBantuan:'Aktif',         daerah:'Klang',    kariah:'Masjid Al-Ikhlas' },
+  { idBantuan:'B1007', idAsnaf:'A306', nama:'Azlan Ismail',aidCode:'B105', aidName:'BANTUAN KEWANGAN BULANAN (MUALLAF)',     tarikhMula:'2025-06-18', tarikhTamat:'',             agingHari:92,  statusBantuan:'Aktif',         daerah:'Gombak',   kariah:'MASJID SERI MELATI' },
+  { idBantuan:'B1008', idAsnaf:'A307', nama:'Nurul Huda',  aidCode:'B105', aidName:'BANTUAN KEWANGAN BULANAN (MUALLAF)',     tarikhMula:'2025-03-25', tarikhTamat:'',             agingHari:178, statusBantuan:'Perlu Disemak', daerah:'Gombak',   kariah:'MASJID SERI MELATI' },
+  { idBantuan:'B1009', idAsnaf:'A308', nama:'Farid Jamal', aidCode:'B146', aidName:'(HQ) BANTUAN BENCANA (MISKIN)',          tarikhMula:'2025-08-20', tarikhTamat:'',             agingHari:29,  statusBantuan:'Aktif',         daerah:'Gombak',   kariah:'Surau At-Taqwa' },
+  { idBantuan:'B1010', idAsnaf:'A309', nama:'Aminah Latif',aidCode:'B146', aidName:'(HQ) BANTUAN BENCANA (MISKIN)',          tarikhMula:'2024-12-10', tarikhTamat:'2025-05-10',   agingHari:151, statusBantuan:'Tamat',         daerah:'Gombak',   kariah:'MASJID SAUJANA UTAMA' },
+]
 
 /* Criteria */
 const criteria = reactive({
@@ -261,8 +255,8 @@ function onSearch () {
   const to   = criteria.tarikhHingga ? new Date(criteria.tarikhHingga) : null
   const y    = criteria.tahun ? Number(criteria.tahun) : null
 
-  rows.value = DATA_PENERIMA.filter(r => {
-    const start = new Date(r.startDate)
+  rows.value = DATA_AGING.filter(r => {
+    const start = new Date(r.tarikhMula)
     if (criteria.daerah && r.daerah !== criteria.daerah) return false
     if (criteria.kariah && r.kariah !== criteria.kariah) return false
     if (from && start < from) return false
@@ -281,5 +275,12 @@ function formatDate (iso) {
   const d = new Date(iso)
   if (isNaN(d)) return iso
   return d.toLocaleDateString('ms-MY', { day: '2-digit', month: '2-digit', year: 'numeric' })
+}
+function statusClass (s) {
+  return {
+    'bg-emerald-100 text-emerald-700': s === 'Aktif',
+    'bg-amber-100 text-amber-700': s === 'Perlu Disemak',
+    'bg-rose-100 text-rose-700': s === 'Tamat'
+  }
 }
 </script>

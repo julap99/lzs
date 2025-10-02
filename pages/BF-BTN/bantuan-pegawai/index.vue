@@ -90,12 +90,72 @@
                 {{ text }}
               </rs-badge>
             </template>
+            
+            <!-- Make bantuan no clickable when filtering by bantuan no -->
+            <template v-if="selectedFilter === 'bantuanNo'" #[selectedFilter]="{ text }">
+              <button
+                @click="navigateToBantuan(text)"
+                class="text-blue-600 hover:text-blue-800 hover:underline font-medium cursor-pointer"
+              >
+                {{ text }}
+              </button>
+            </template>
+            
+            <!-- Make PA no clickable when filtering by PA no -->
+            <template v-if="selectedFilter === 'paNo'" #[selectedFilter]="{ text }">
+              <button
+                @click="navigateToPaymentAdvice(text)"
+                class="text-blue-600 hover:text-blue-800 hover:underline font-medium cursor-pointer"
+              >
+                {{ text }}
+              </button>
+            </template>
+            
+            <!-- Make GL no clickable when filtering by GL no -->
+            <template v-if="selectedFilter === 'glNo'" #[selectedFilter]="{ text }">
+              <button
+                @click="navigateToTuntutan(text, 'glNo')"
+                class="text-blue-600 hover:text-blue-800 hover:underline font-medium cursor-pointer"
+              >
+                {{ text }}
+              </button>
+            </template>
+            
+            <!-- Make Invoice no clickable when filtering by Invoice no -->
+            <template v-if="selectedFilter === 'invoiceNo'" #[selectedFilter]="{ text }">
+              <button
+                @click="navigateToTuntutan(text, 'invoiceNo')"
+                class="text-blue-600 hover:text-blue-800 hover:underline font-medium cursor-pointer"
+              >
+                {{ text }}
+              </button>
+            </template>
+            
+            <!-- Make CI no clickable when filtering by CI no -->
+            <template v-if="selectedFilter === 'ciNo'" #[selectedFilter]="{ text }">
+              <button
+                @click="navigateToCashIssuance(text)"
+                class="text-blue-600 hover:text-blue-800 hover:underline font-medium cursor-pointer"
+              >
+                {{ text }}
+              </button>
+            </template>
+            
+            <!-- Make No Pengenalan clickable when filtering by No Pengenalan -->
+            <template v-if="selectedFilter === 'noPengenalan'" #[selectedFilter]="{ text }">
+              <button
+                @click="navigateToBantuanListing(text)"
+                class="text-blue-600 hover:text-blue-800 hover:underline font-medium cursor-pointer"
+              >
+                {{ text }}
+              </button>
+            </template>
           </rs-table>
         </template>
       </rs-card>
 
       <!-- Senarai Bantuan Card -->
-      <rs-card class="mt-4">
+      <rs-card v-if="!showSearchResults" class="mt-4">
         <template #header>
           <div class="flex justify-between items-center">
             <!-- <h2 class="text-xl font-semibold">Senarai Bantuan</h2> -->
@@ -676,6 +736,8 @@
         noPengenalanPemohon: app.noPengenalanPemohon,
         namaPenerima: app.namaPenerima,
         status: app.status,
+        // Always include bantuan number for navigation purposes
+        noBantuan: app.noBantuan,
       }));
     }
 
@@ -707,6 +769,8 @@
       noPengenalanPemohon: app.noPengenalanPemohon,
       namaPenerima: app.namaPenerima,
       status: app.status,
+      // Always include bantuan number for navigation purposes
+      noBantuan: app.noBantuan,
     }));
   });
   
@@ -999,6 +1063,73 @@
   const handleReview = (noBantuan) => {
     console.log("Review bantuan:", noBantuan);
     navigateTo(`/BF-BTN/mohon-bantuan/${noBantuan}`);
+  };
+
+  const navigateToBantuan = (bantuanNo) => {
+    console.log("Navigate to bantuan:", bantuanNo);
+    const url = `/BF-BTN/bantuan/${bantuanNo}?from=bantuan-pegawai`;
+    console.log("Navigating to:", url);
+    navigateTo(url);
+  };
+
+  const navigateToPaymentAdvice = (paNo) => {
+    console.log("Navigate to payment advice:", paNo);
+    // Find the bantuan number that corresponds to this PA number
+    const matchingBantuan = searchResultsSampleData.value.find(item => item.paNo === paNo);
+    if (matchingBantuan) {
+      const bantuanNo = matchingBantuan.noBantuan;
+      console.log("Found matching bantuan number:", bantuanNo, "for PA:", paNo);
+      const url = `/BF-BTN/bantuan/${bantuanNo}?from=bantuan-pegawai&tab=payment`;
+      console.log("Navigating to:", url);
+      navigateTo(url);
+    } else {
+      console.error("Could not find bantuan number for PA:", paNo);
+    }
+  };
+
+  const navigateToTuntutan = (number, type) => {
+    console.log("Navigate to tuntutan:", number, "Type:", type);
+    // Find the bantuan number that corresponds to this GL/Invoice number
+    const matchingBantuan = searchResultsSampleData.value.find(item => {
+      if (type === 'glNo') {
+        return item.glNo === number;
+      } else if (type === 'invoiceNo') {
+        return item.invoiceNo === number;
+      }
+      return false;
+    });
+    
+    if (matchingBantuan) {
+      const bantuanNo = matchingBantuan.noBantuan;
+      console.log("Found matching bantuan number:", bantuanNo, "for", type, ":", number);
+      const url = `/BF-BTN/bantuan/${bantuanNo}?from=bantuan-pegawai&tab=tuntutan`;
+      console.log("Navigating to:", url);
+      navigateTo(url);
+    } else {
+      console.error("Could not find bantuan number for", type, ":", number);
+    }
+  };
+
+  const navigateToCashIssuance = (ciNo) => {
+    console.log("Navigate to cash issuance:", ciNo);
+    // Find the bantuan number that corresponds to this CI number
+    const matchingBantuan = searchResultsSampleData.value.find(item => item.ciNo === ciNo);
+    if (matchingBantuan) {
+      const bantuanNo = matchingBantuan.noBantuan;
+      console.log("Found matching bantuan number:", bantuanNo, "for CI:", ciNo);
+      const url = `/BF-BTN/bantuan/${bantuanNo}?from=bantuan-pegawai&tab=cash`;
+      console.log("Navigating to:", url);
+      navigateTo(url);
+    } else {
+      console.error("Could not find bantuan number for CI:", ciNo);
+    }
+  };
+
+  const navigateToBantuanListing = (noPengenalan) => {
+    console.log("Navigate to bantuan listing for No Pengenalan:", noPengenalan);
+    const url = `/BF-BTN/bantuan`;
+    console.log("Navigating to:", url);
+    navigateTo(url);
   };
 
   const handleCancel = (noBantuan) => {

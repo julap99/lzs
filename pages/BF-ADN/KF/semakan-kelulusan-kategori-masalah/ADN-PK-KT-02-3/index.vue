@@ -41,9 +41,9 @@
           </div>
 
           <div class="flex gap-3 items-center">
-            <div class="font-semibold min-w-[190px]">Status Konfigurasi:</div>
+            <div class="font-semibold min-w-[190px]">Status Permohonan:</div>
             <div class="flex-1">
-              <rs-badge variant="danger">Tidak Aktif</rs-badge>
+              <rs-badge variant="success">Diluluskan</rs-badge>
             </div>
           </div>
 
@@ -80,19 +80,19 @@
           <div class="flex gap-3 items-center">
             <div class="font-semibold min-w-[190px]">Status:</div>
             <div class="flex-1">
-              <rs-badge variant="success">Diluluskan</rs-badge>
+              <rs-badge variant="danger">Ditolak</rs-badge>
             </div>
           </div>
 
-          <!-- <div class="flex gap-3">
+          <div class="flex gap-3">
             <div class="font-semibold min-w-[190px]">Ditolak Oleh:</div>
             <div class="flex-1">{{ ditolakOleh }}</div>
-          </div> -->
+          </div>
 
-          <!-- <div class="flex gap-3">
+          <div class="flex gap-3">
             <div class="font-semibold min-w-[190px]">Tarikh Penolakan:</div>
             <div class="flex-1">{{ tarikhPenolakan }}</div>
-          </div> -->
+          </div>
 
           <!-- Ulasan Penolakan (blok kelabu) -->
           <div class="border-l-4 border-gray-300 bg-gray-100 px-3 py-2 rounded">

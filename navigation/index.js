@@ -1240,6 +1240,12 @@ export default [
             meta: {},
           },
           {
+            title: "Pelaporan",
+            icon: "iconamoon:arrow-right-2-duotone",
+            path: "/BF-PRF/AS/pelaporan",
+          },
+
+          {
             title: "Senarai Pre-Review",
             icon: "iconamoon:arrow-right-2-duotone",
             path: "/BF-PRF/AS/KA/senarai-preview",
@@ -1319,11 +1325,6 @@ export default [
         ],
         meta: {},
       },
-      {
-        title: "Pelaporan",
-        icon: "iconamoon:component-fill",
-        path: "/BF-PRF/AS/pelaporan",
-      }
     ],
     meta: {
       auth: {

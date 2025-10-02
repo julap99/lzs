@@ -1830,16 +1830,12 @@ const uploadedDocuments = computed(() => {
 
   // Add personal info documents
   if (formData.value.personalInfo.idDocument) {
-    const docs = Array.isArray(formData.value.personalInfo.idDocument)
-      ? formData.value.personalInfo.idDocument
-      : [formData.value.personalInfo.idDocument];
-    docs.forEach((doc) => {
-      documents.push({
-        name: getDocumentName(doc),
-        type: getDocumentType(doc),
-        size: getDocumentSize(doc),
-        url: "#",
-      });
+    const doc = formData.value.personalInfo.idDocument;
+    documents.push({
+      name: getDocumentName(doc),
+      type: getDocumentType(doc),
+      size: getDocumentSize(doc),
+      url: "#",
     });
   }
 
@@ -1858,16 +1854,12 @@ const uploadedDocuments = computed(() => {
   }
 
   if (formData.value.personalInfo.incomeDocument) {
-    const incomeDocs = Array.isArray(formData.value.personalInfo.incomeDocument)
-      ? formData.value.personalInfo.incomeDocument
-      : [formData.value.personalInfo.incomeDocument];
-    incomeDocs.forEach((doc) => {
-      documents.push({
-        name: getDocumentName(doc),
-        type: getDocumentType(doc),
-        size: getDocumentSize(doc),
-        url: "#",
-      });
+    const doc = formData.value.personalInfo.incomeDocument;
+    documents.push({
+      name: getDocumentName(doc),
+      type: getDocumentType(doc),
+      size: getDocumentSize(doc),
+      url: "#",
     });
   }
 
@@ -1876,18 +1868,14 @@ const uploadedDocuments = computed(() => {
     formData.value.personalInfo.spouses &&
     formData.value.personalInfo.spouses.length > 0
   ) {
-    formData.value.personalInfo.spouses.forEach((spouse) => {
+    formData.value.personalInfo.spouses.forEach((spouse, index) => {
       if (spouse.spouseIdDocument) {
-        const spouseDocs = Array.isArray(spouse.spouseIdDocument)
-          ? spouse.spouseIdDocument
-          : [spouse.spouseIdDocument];
-        spouseDocs.forEach((doc) => {
-          documents.push({
-            name: getDocumentName(doc),
-            type: getDocumentType(doc),
-            size: getDocumentSize(doc),
-            url: "#",
-          });
+        const doc = spouse.spouseIdDocument;
+        documents.push({
+          name: getDocumentName(doc),
+          type: getDocumentType(doc),
+          size: getDocumentSize(doc),
+          url: "#",
         });
       }
     });
@@ -1895,48 +1883,34 @@ const uploadedDocuments = computed(() => {
 
   // Add health info documents
   if (formData.value.healthInfo.noDisasterDocument) {
-    const noDisasterDocs = Array.isArray(formData.value.healthInfo.noDisasterDocument)
-      ? formData.value.healthInfo.noDisasterDocument
-      : [formData.value.healthInfo.noDisasterDocument];
-    noDisasterDocs.forEach((doc) => {
-      documents.push({
-        name: getDocumentName(doc),
-        type: getDocumentType(doc),
-        size: getDocumentSize(doc),
-        url: "#",
-      });
+    const doc = formData.value.healthInfo.noDisasterDocument;
+    documents.push({
+      name: getDocumentName(doc),
+      type: getDocumentType(doc),
+      size: getDocumentSize(doc),
+      url: "#",
     });
   }
 
   // Add address documents
   if (formData.value.addressInfo.addressSupportDoc) {
-    const addrDocs = Array.isArray(formData.value.addressInfo.addressSupportDoc)
-      ? formData.value.addressInfo.addressSupportDoc
-      : [formData.value.addressInfo.addressSupportDoc];
-    addrDocs.forEach((doc) => {
-      documents.push({
-        name: getDocumentName(doc),
-        type: getDocumentType(doc),
-        size: getDocumentSize(doc),
-        url: "#",
-      });
+    const doc = formData.value.addressInfo.addressSupportDoc;
+    documents.push({
+      name: getDocumentName(doc),
+      type: getDocumentType(doc),
+      size: getDocumentSize(doc),
+      url: "#",
     });
   }
 
   // Add the main verification document if it exists
   if (formData.value.verification.dokumenPengesahanPermastautin) {
-    const verifyDocs = Array.isArray(
-      formData.value.verification.dokumenPengesahanPermastautin
-    )
-      ? formData.value.verification.dokumenPengesahanPermastautin
-      : [formData.value.verification.dokumenPengesahanPermastautin];
-    verifyDocs.forEach((doc) => {
-      documents.push({
-        name: getDocumentName(doc),
-        type: getDocumentType(doc),
-        size: getDocumentSize(doc),
-        url: "#",
-      });
+    const doc = formData.value.verification.dokumenPengesahanPermastautin;
+    documents.push({
+      name: getDocumentName(doc),
+      type: getDocumentType(doc),
+      size: getDocumentSize(doc),
+      url: "#",
     });
   }
 
