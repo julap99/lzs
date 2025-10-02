@@ -72,6 +72,7 @@
               <template #body>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormKit
+                  v-if="false"
                   type="text"
                   name="noBantuan"
                   label="No. Bantuan"
@@ -129,24 +130,22 @@
                   v-model="formData.productPackage"
                 />
 
-                <div class="space-y-1">
-                  <label class="text-sm font-medium text-gray-700">Entitlement Product</label>
-                  <div class="mt-2 space-y-2">
-                    <div v-for="option in (entitlementProductOptions || []).filter(opt => !opt.disabled)" :key="option.value" class="flex items-center">
-                      <input
-                        :id="option.value"
-                        type="checkbox"
-                        :value="option.value"
-                        v-model="formData.entitlementProduct"
-                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                      />
-                      <label :for="option.value" class="ml-2 text-sm text-gray-700 cursor-pointer">
-                        {{ option.label }}
-                      </label>
-                    </div>
-                    <div class="text-xs text-gray-500 mt-2">Selected: {{ formData.entitlementProduct }}</div>
-                  </div>
-                </div>
+                <FormKit
+                  type="select"
+                  name="entitlementProduct"
+                  label="Entitlement Product"
+                  :options="entitlementProductOptions"
+                  searchable
+                  :search-attributes="['label']"
+                  :search-filter="(option, search) => option.label.toLowerCase().includes(search.toLowerCase())"
+                  placeholder="Pilih entitlement product..."
+                  validation="required"
+                  :validation-messages="{
+                    required: 'Sila pilih entitlement product',
+                  }"
+                  :disabled="!formData.productPackage"
+                  v-model="formData.entitlementProduct"
+                />
 
                 <CustomSelect
                   v-if="isStaff"
@@ -187,16 +186,18 @@
                   :disabled="!formData.aidProduct"
                 />
 
-                <FormKit
-                  type="textarea"
-                  name="penyataanMasalah"
-                  label="Penyataan Masalah"
-                  validation="required"
-                  :validation-messages="{
-                    required: 'Sila masukkan penyataan masalah',
-                  }"
-                  :rows="4"
-                />
+                <div class="md:col-span-2">
+                  <FormKit
+                    type="textarea"
+                    name="penyataanMasalah"
+                    label="Penyataan Masalah"
+                    validation="required"
+                    :validation-messages="{
+                      required: 'Sila masukkan penyataan masalah',
+                    }"
+                    :rows="4"
+                  />
+                </div>
                 </div>
               </template>
             </rs-card>
@@ -822,7 +823,7 @@
     penerimaManfaatJenisPengenalan: '',
     penerimaManfaatNoPengenalan: '',
     penerimaManfaatHubungan: '',
-    entitlementProduct: []
+    entitlementProduct: ''
   });
   
   // Separate reactive variable for registration selection
@@ -1092,7 +1093,8 @@
   const aidTypeOptions = [
     { label: "-- Pilih Jenis Bantuan --", value: "", disabled: true },
     { label: "B102 - (HQ) BANTUAN BINAAN RUMAH (FAKIR)", value: "B102" },
-    { label: "B104 - BANTUAN PEMBELIAN RUMAH KOS RENDAH /SEDERHANA (FAKIR)", value: "B104" },
+    { label: "B104 - BANTUAN KEPERLUAN HIDUP (FAKIR)", value: "B104" },
+    { label: "B104 - BANTUAN KECEMASAN (FISABILILLAH)", value: "B104_KECEMASAN" },
   ];
 
   // Aid Product options based on selected Aid Type
@@ -1120,6 +1122,13 @@
         { label: "KATEGORI PAKAIAN ASAS (FAKIR)", value: "KATEGORI_PAKAIAN" },
         { label: "KATEGORI PENGANGKUTAN (FAKIR)", value: "KATEGORI_PENGANGKUTAN" },
         { label: "KATEGORI TEMPAT TINGGAL/RUMAH (FAKIR)", value: "KATEGORI_TEMPAT_TINGGAL" },
+      ];
+    }
+
+    if (formData.value.aidType === "B104_KECEMASAN") {
+      return [
+        baseOption,
+        { label: "BANTUAN KECEMASAN (FISABILILLAH)", value: "BANTUAN_KECEMASAN_FISABILILLAH" },
       ];
     }
 
@@ -1205,7 +1214,7 @@
         baseOption,
         { label: "(DIRECT) KEPERLUAN PENGANGKUTAN PERUBATAN (FAKIR)", value: "DIRECT_PENGANGKUTAN_PERUBATAN" },
         { label: "(GL) KEPERLUAN PENGANGKUTAN PERUBATAN (FAKIR)", value: "GL_PENGANGKUTAN_PERUBATAN_1" },
-        { label: "(GL) KEPERLUAN PENGANGKUTAN PERUBATAN (FAKIR)", value: "GL_PENGANGKUTAN_PERUBATAN_2" },
+        { label: "KEPERLUAN PENGANGKUTAN (FAKIR)", value: "GL_PENGANGKUTAN_PERUBATAN_2" },
       ];
     }
 
@@ -1215,6 +1224,14 @@
         { label: "KATEGORI TEMPAT TINGGAL/RUMAH (FAKIR) - DEPOSIT SEWA RUMAH", value: "DEPOSIT_SEWA_RUMAH" },
         { label: "KEPERLUAN TEMPAT TINGGAL/RUMAH (FAKIR)", value: "KEPERLUAN_TEMPAT_TINGGAL" },
         { label: "KEPERLUAN TEMPAT TINGGAL/RUMAH (FAKIR) - TUNGGAKAN SEWA", value: "TUNGGAKAN_SEWA" },
+      ];
+    }
+
+    // For BANTUAN_KECEMASAN_FISABILILLAH aid product
+    if (formData.value.aidProduct === "BANTUAN_KECEMASAN_FISABILILLAH") {
+      return [
+        baseOption,
+        { label: "BANTUAN KECEMASAN", value: "BANTUAN_KECEMASAN_PACKAGE" },
       ];
     }
 
@@ -1233,7 +1250,7 @@
   watch(() => formData.value.aidProduct, (newAidProduct, oldAidProduct) => {
     if (newAidProduct !== oldAidProduct) {
       formData.value.productPackage = "";
-      formData.value.entitlementProduct = [];
+      formData.value.entitlementProduct = '';
     }
   });
 
@@ -1440,7 +1457,7 @@
 
     if (formData.value.productPackage === "GL_PENGANGKUTAN_PERUBATAN_2") {
       return [
-        { label: "(GL) KEPERLUAN PENGANGKUTAN PERUBATAN (FAKIR)", value: "GL_KEPERLUAN_PENGANGKUTAN_2" },
+        { label: "KEPERLUAN PENGANGKUTAN (FAKIR)", value: "GL_KEPERLUAN_PENGANGKUTAN_2" },
       ];
     }
 
@@ -1453,13 +1470,24 @@
 
     if (formData.value.productPackage === "KEPERLUAN_TEMPAT_TINGGAL") {
       return [
-        { label: "KEPERLUAN TEMPAT TINGGAL/RUMAH (FAKIR)", value: "KEPERLUAN_TEMPAT_TINGGAL_RUMAH" },
+        { label: "KEPERLUAN TEMPAT TINGGAL/RUMAH (FAKIR) - BIL AIR", value: "KEPERLUAN_TEMPAT_TINGGAL_BIL_AIR" },
+        { label: "KEPERLUAN TEMPAT TINGGAL/RUMAH (FAKIR) - BIL ELEKTRIK", value: "KEPERLUAN_TEMPAT_TINGGAL_BIL_ELEKTRIK" },
+        { label: "KEPERLUAN TEMPAT TINGGAL/RUMAH (FAKIR) - CUKAI PINTU", value: "KEPERLUAN_TEMPAT_TINGGAL_CUKAI_PINTU" },
+        { label: "KEPERLUAN TEMPAT TINGGAL/RUMAH (FAKIR) - CUKAI TANAH", value: "KEPERLUAN_TEMPAT_TINGGAL_CUKAI_TANAH" },
+        { label: "KEPERLUAN TEMPAT TINGGAL/RUMAH (FAKIR) - KOS PENYELENGGARAN", value: "KEPERLUAN_TEMPAT_TINGGAL_KOS_PENYELENGGARAN" },
       ];
     }
 
     if (formData.value.productPackage === "TUNGGAKAN_SEWA") {
       return [
-        { label: "KEPERLUAN TEMPAT TINGGAL/RUMAH (FAKIR) - TUNGGAKAN SEWA", value: "KEPERLUAN_TUNGGAKAN_SEWA_RUMAH" },
+        { label: "KEPERLUAN TEMPAT TINGGAL/RUMAH (FAKIR) - BANTUAN TUNGGAKAN SEWA RUMAH DAN RUMAH BERBAYAR", value: "KEPERLUAN_TUNGGAKAN_SEWA_RUMAH" },
+      ];
+    }
+
+    // For BANTUAN_KECEMASAN_PACKAGE
+    if (formData.value.productPackage === "BANTUAN_KECEMASAN_PACKAGE") {
+      return [
+        { label: "BANTUAN KECEMASAN", value: "BANTUAN_KECEMASAN_ENTITLEMENT" },
       ];
     }
 
@@ -1469,27 +1497,25 @@
   // Watch for changes in Product Package and reset Entitlement Product
   watch(() => formData.value.productPackage, (newProductPackage, oldProductPackage) => {
     if (newProductPackage !== oldProductPackage) {
-      formData.value.entitlementProduct = [];
+      formData.value.entitlementProduct = '';
     }
   });
 
-  // Selected Entitlement Products (computed from checkbox selections)
+  // Selected Entitlement Products (computed from dropdown selection)
   const selectedEntitlementProducts = computed(() => {
-    if (!Array.isArray(formData.value.entitlementProduct)) return [];
+    if (!formData.value.entitlementProduct) return [];
     
-    return formData.value.entitlementProduct.map((value, index) => {
-      // Find the option from the current entitlement options
-      const options = entitlementProductOptions.value || [];
-      const option = options.find(opt => opt.value === value);
-      const name = option ? option.label.replace('(HQ) ', '').replace('(DIRECT) ', '').replace('(GL) ', '').replace('(PTJ) ', '').replace(' (FAKIR)', '') : value;
-      
-      return {
-        code: value,
-        name: name,
-        category: formData.value.aidProduct || 'Unknown Category',
-        status: 'baru'
-      };
-    });
+    // Find the option from the current entitlement options
+    const options = entitlementProductOptions.value || [];
+    const option = options.find(opt => opt.value === formData.value.entitlementProduct);
+    const name = option ? option.label.replace('(HQ) ', '').replace('(DIRECT) ', '').replace('(GL) ', '').replace('(PTJ) ', '').replace(' (FAKIR)', '') : formData.value.entitlementProduct;
+    
+    return [{
+      code: formData.value.entitlementProduct,
+      name: name,
+      category: formData.value.aidProduct || 'Unknown Category',
+      status: 'baru'
+    }];
   });
 
   // 3.4 Maklumat Penerima Bayaran helpers
@@ -1828,8 +1854,8 @@
 
   // 3.6 Maklumat Tindakan helpers
   const showBorangSiasatanButton = computed(() => {
-    const method = (formData.value.kaedahPembayaran || '').toUpperCase();
-    return method === 'TUNAI_KAUNTER' || method === 'TUNAI_LAPANGAN';
+    // Always hide the Borang Siasatan button regardless of payment method
+    return false;
   });
   const showTindakanDropdown = computed(() => {
     // Show only if Aid exactly equals 'Bantuan Perubatan' (case-insensitive)
