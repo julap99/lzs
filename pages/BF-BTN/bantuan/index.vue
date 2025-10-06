@@ -279,14 +279,6 @@
                     >
                       Semak
                     </rs-button>
-                    <rs-button
-                      variant="danger"
-                      size="sm"
-                      class="p-1 flex gap-2"
-                      @click="handleCancel(text)"
-                    >
-                      Batal
-                    </rs-button>
                   </div>
                 </template>
               </rs-table>
@@ -457,40 +449,40 @@ const permohonanData = ref([
 // Mock data for Lulus tab - applications with status: Lulus
 const lulusData = ref([
   {
-    noBantuan: "B005",
+    noBantuan: "NAS-2025-0001",
     namaBantuan: "Bantuan BaikPulih Rumah AM (Miskin)",
     status: "Lulus",
     kekerapan: "Sekali",
     // tarikhPermohonan: "2024-01-10",
       jumlah: 12000.0,
-    aksi: "B005",
+    aksi: "NAS-2025-0001",
   },
   {
-    noBantuan: "B006",
+    noBantuan: "NAS-2025-0002",
     namaBantuan: "Bantuan Kematian",
     status: "Lulus",
     kekerapan: "Sekali",
     // tarikhPermohonan: "2024-01-12",
       jumlah: 1000.0,
-    aksi: "B006",
+    aksi: "NAS-2025-0002",
   },
   {
-    noBantuan: "B007",
+    noBantuan: "NAS-2025-0003",
     namaBantuan: "Bantuan Kelahiran",
     status: "Lulus",
     kekerapan: "Sekali",
     tarikhPermohonan: "2024-01-14",
       jumlah: 500.0,
-    aksi: "B007",
+    aksi: "NAS-2025-0003",
   },
   {
-    noBantuan: "B010",
+    noBantuan: "NAS-2025-0004",
     namaBantuan: "(HQ) BANTUAN DERMASISWA SEKOLAH ASRAMA (FAKIR)",
     status: "Lulus",
     kekerapan: "Sekali",
     // tarikhPermohonan: "2025-08-09",
       jumlah: 2500.0,
-    aksi: "B010",
+    aksi: "NAS-2025-0004",
   },
   {
     noBantuan: "B011",
@@ -656,8 +648,8 @@ const handleReview = (noBantuan) => {
 
 const handleCancel = (noBantuan) => {
   console.log("Cancel bantuan:", noBantuan);
-  // Handle cancel logic - would be replaced with actual implementation
-  // You can add confirmation modal or API call here
+  // Navigate to pembatalan page with bantuan number
+  navigateTo(`/BF-BTN/bantuan/pembatalan?noBantuan=${noBantuan}`);
 };
 
 
