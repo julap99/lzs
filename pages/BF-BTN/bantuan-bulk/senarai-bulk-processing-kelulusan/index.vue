@@ -177,6 +177,11 @@ const columns = [
     sortable: true,
   },
   {
+    key: 'peringkatSemakan',
+    label: 'Peringkat Semakan',
+    sortable: true,
+  },
+  {
     key: "tindakan",
     label: "Tindakan",
     sortable: false,
@@ -211,7 +216,7 @@ const bantuanBulkList = ref([
     amaun: 44390.00,
     tarikhHantar: '04/05/2025',
     status: "Lulus",
-  
+    peringkatSemasa:'',
     tindakan: "BP-2025-01617",
   },
   {
@@ -222,7 +227,7 @@ const bantuanBulkList = ref([
     amaun: 54710.00,
     tarikhHantar: '30/04/2025',
     status: "Lulus",
-  
+    peringkatSemasa:'',
     tindakan: "BP-2025-01589",
   },
   {
@@ -233,7 +238,7 @@ const bantuanBulkList = ref([
     amaun: 20000.00,
     tarikhHantar: '03/03/2025',
     status: "Lulus",
-    
+    peringkatSemasa:'',
     tindakan: "BP-2025-00001",
   },
 ]);

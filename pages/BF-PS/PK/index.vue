@@ -102,21 +102,6 @@
           </div>
           <div class="flex gap-2">
             <rs-button
-              variant="outline"
-              @click="refreshCategories"
-              :loading="refreshingCategories"
-            >
-              <Icon name="ic:baseline-refresh" class="mr-1" />
-              {{ refreshingCategories ? 'Memuat...' : 'Muat Semula' }}
-            </rs-button>
-            <rs-button
-              variant="success-outline"
-              @click="exportCategories"
-            >
-              <Icon name="ic:baseline-download" class="mr-1" />
-              Eksport
-            </rs-button>
-            <rs-button
               variant="primary"
               @click="addCategory"
             >
@@ -168,7 +153,7 @@
           }"
           :options-advanced="{
             sortable: true,
-            filterable: true,
+            filterable: false,
           }"
           advanced
         >
@@ -302,7 +287,7 @@
           }"
           :options-advanced="{
             sortable: true,
-            filterable: true,
+            filterable: false,
           }"
           advanced
         >

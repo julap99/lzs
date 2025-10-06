@@ -75,10 +75,10 @@
                       <rs-button
                         variant="primary"
                         size="sm"
-                        @click.stop.prevent="openReassign(row)"
-                        title="Reassign"
+                        @click="editBantuan(text)"
+                        title="Edit"
                       >
-                        <Icon name="ic:outline-person" class="w-4 h-4" />
+                        <Icon name="ic:outline-edit" class="w-4 h-4" />
                       </rs-button>
 
                       <rs-button
@@ -92,14 +92,14 @@
                       </rs-button>
 
                       <!-- Delete -->
-                      <!-- <rs-button
+                      <rs-button
                         variant="danger"
                         size="sm"
                         @click="confirmDelete(text)"
                         title="Hapus"
                       >
                         <Icon name="ic:outline-delete" class="w-4 h-4" />
-                      </rs-button> -->
+                      </rs-button>
 
                       
                     </div>
@@ -108,67 +108,31 @@
       </template>
     </rs-card>
     <!-- Delete Confirmation Modal -->
-    <!-- Re-Assign Modal -->
     <rs-modal
-      v-model="showReassignModal"
-      title="Re-Assign Tugasan"
+      v-model="showDeleteModal"
+      title="Sahkan Padam"
       size="md"
       position="center"
     >
       <template #body>
-        <div class="space-y-3">
-          <p>Sila pilih pegawai untuk ditugaskan.</p>
-
-          <!-- If your design system has rs-select -->
-          <!-- <FormKit
-            label="Nama Pegawai"
-            placeholder="Pilih pegawai…"
-            :options="pegawaiOptions"
-            v-model="selectedPegawai"
-            track-by="value"
-            label-by="label"
-            :disabled="reassignLoading"
-            required
-          /> -->
-
-         
-          <label class="block text-sm font-medium">Nama Pegawai</label>
-          <select
-            v-model="selectedPegawai"
-            class="w-full border rounded px-3 py-2"
-            :disabled="reassignLoading"
-          >
-            <option value="" disabled>Pilih pegawai…</option>
-            <option v-for="opt in pegawaiOptions" :key="opt.value" :value="opt.value">
-              {{ opt.label }}
-            </option>
-          </select>
-         
-        </div>
+        <p>Adakah anda pasti untuk hapus rekod bulk processing ini?</p>
       </template>
-
       <template #footer>
         <div class="flex justify-end space-x-2">
-          <rs-button variant="secondary" @click="showReassignModal = false" :disabled="reassignLoading">
-            Batal
+          <rs-button variant="secondary" @click="showDeleteModal = false">
+            Tidak
           </rs-button>
-          <rs-button
-            variant="primary"
-            :loading="reassignLoading"
-            :disabled="!selectedPegawai || reassignLoading"
-            @click="handleReassign"
-          >
-            Tugaskan
+          <rs-button variant="danger" @click="handleDelete">
+            Ya
           </rs-button>
         </div>
       </template>
     </rs-modal>
-
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 
 definePageMeta({
   title: 'Senarai Bulk Processing',
@@ -226,7 +190,7 @@ const columns = [
   },
   {
     key: 'status',
-    label: 'Status',
+    label: 'Status Process',
     sortable: true,
   },
   {
@@ -243,205 +207,11 @@ const columns = [
   },
 ];
 
-const reassignIndex = ref(-1);
-const showReassignModal = ref(false);
-const selectedPegawai = ref('');          // will hold the selected user id/code
-const reassignLoading = ref(false);
-
-// Static or fetched options: [{ label: 'Nama', value: 'id' }]
-const pegawaiOptions = ref([
-  { label: '— Pilih —', value: '' },
-  { label: 'Ali Bin Omar', value: 'ALI01' },
-  { label: 'Siti Nurhaliza', value: 'SITI02' },
-  { label: 'Farid Rahman', value: 'FARID03' },
-]);
-
-// Optional: preload from API
-onMounted(async () => {
-  // const list = await api.get('/pegawai'); // shape: [{id,name}]
-  // pegawaiOptions.value = [{label:'— Pilih —', value:''}, ...list.map(x => ({label:x.name, value:x.id}))];
-});
-
-// async function handleReassign() {
-//   if (!selectedPegawai.value) {
-//     console.warn('[handleReassign] No pegawai selected');
-//     return;
-//   }
-//   if (reassignIndex.value < 0) {
-//     console.warn('[handleReassign] Invalid reassignIndex');
-//     return;
-//   }
-
-//   try {
-//     reassignLoading.value = true;
-
-//     // Optional: await api.post('/bulk-processing/reassign', {...})
-
-//     const current = bantuanList.value[reassignIndex.value];
-//     const newName = pegawaiOptions.value.find(o => o.value === selectedPegawai.value)?.label || '';
-
-//     const updated = {
-//       ...current,
-//       peringkatSemasa: buildPeringkatSemasa(current.peringkatSemasa ?? '', newName),
-//     };
-
-//     // Use splice so Vue sees the change
-//     bantuanList.value.splice(reassignIndex.value, 1, updated);
-
-//     // Cleanup UI
-//     showReassignModal.value = false;
-//     selectedPegawai.value   = '';
-//     reassignIndex.value     = -1;
-//   } catch (e) {
-//     console.error('[handleReassign] error:', e);
-//   } finally {
-//     reassignLoading.value = false;
-//   }
-// }
-
-
 // Put this in <script setup> with your other helpers
 const isDrafByKod = (kod) => {
   const row = bantuanList.value.find(r => r.id === kod)
   return String(row?.status ?? '').trim().toLowerCase() === 'draf'
 }
-
-// which row are we reassigning?
-const reassignContext = ref({ id: null });
-
-// helper: get pegawai label from value
-const getPegawaiLabel = (val) => {
-  const found = pegawaiOptions.value.find(o => o.value === val);
-  return found ? found.label : '';
-};
-
-
-
-// open modal for a specific row
-// function openReassign(row) {
-//   reassignContext.value = { id: row.id };
-//   selectedPegawai.value = '';
-//   showReassignModal.value = true;
-// }
-
-// function openReassign(row) {
-//   try {
-//     console.log('[openReassign] row =', row);
-//     showReassignModal.value = true;              // ✅ open ASAP
-//     selectedPegawai.value   = '';
-
-//     // Prefer row.id; fall back to actions or text if your table sends that
-//     const id = row?.id || row?.actions || row?.text || null;
-//     if (!id) {
-//       console.warn('[openReassign] No id found on row');
-//     }
-//     reassignContext.value = { id };
-//   } catch (e) {
-//     console.error('[openReassign] error:', e);
-//     // still try to show the modal so you see the issue
-//     showReassignModal.value = true;
-//   }
-// }
-function openReassign(maybeRow) {
-  try {
-    const id = maybeRow?.id ?? maybeRow?.actions ?? maybeRow?.text ?? null;
-
-    // open the modal first so you can SEE it even if id resolution fails
-    showReassignModal.value = true;
-    selectedPegawai.value   = '';
-
-    reassignIndex.value = id
-      ? bantuanList.value.findIndex(r => r.id === id)
-      : -1;
-
-    if (reassignIndex.value < 0) {
-      console.warn('[openReassign] Could not resolve row id from:', maybeRow);
-    }
-  } catch (e) {
-    console.error('[openReassign] error:', e);
-    showReassignModal.value = true;
-  }
-}
-// build new "peringkatSemasa" by preserving (Role) and SLA from the old string
-// function buildPeringkatSemasa(oldStr, newName) {
-//   const role = /\(([^)]+)\)/.exec(oldStr)?.[1] ?? 'Pemohon'; // keeps whatever is in (…)
-//   const sla  = /SLA:\s*\d+/i.exec(oldStr)?.[0] ?? '';        // keeps "SLA: N" if any
-//   return `${newName} (${role})${sla ? ' ' + sla : ''}`;
-// }
-
-// async function handleReassign() {
-//   if (!selectedPegawai.value || !reassignContext.value.id) return;
-
-//   try {
-//     reassignLoading.value = true;
-
-//     // 1) (Optional) call your API here
-//     // await api.post('/bulk-processing/reassign', {
-//     //   recordId: reassignContext.value.id,
-//     //   pegawaiId: selectedPegawai.value
-//     // });
-
-//     // 2) Update local table row
-//     const idx = bantuanList.value.findIndex(x => x.id === reassignContext.value.id);
-//     if (idx > -1) {
-//       const row = { ...bantuanList.value[idx] };
-//       const newName = getPegawaiLabel(selectedPegawai.value);
-//       row.peringkatSemasa = buildPeringkatSemasa(row.peringkatSemasa ?? '', newName);
-//       bantuanList.value.splice(idx, 1, row);
-//     }
-
-//     // UX cleanup
-//     showReassignModal.value = false;
-//     selectedPegawai.value = '';
-//     reassignContext.value = { id: null };
-//     // showSuccess('Tugasan berjaya dikemas kini.');
-//   } catch (e) {
-//     console.error(e);
-//     // showError('Gagal menugaskan semula. Sila cuba lagi.');
-//   } finally {
-//     reassignLoading.value = false;
-//   }
-// }
-
-function buildPeringkatSemasa(oldStr, newName) {
-  const role = /\(([^)]+)\)/.exec(oldStr)?.[1] ?? 'Pemohon';
-  const sla  = /SLA:\s*\d+/i.exec(oldStr)?.[0] ?? '';
-  return `${newName} (${role})${sla ? ' ' + sla : ''}`;
-}
-async function handleReassign() {
-  if (!selectedPegawai.value) {
-    console.warn('[handleReassign] No pegawai selected');
-    return;
-  }
-  if (reassignIndex.value < 0) {
-    console.warn('[handleReassign] Invalid reassignIndex');
-    return;
-  }
-
-  try {
-    reassignLoading.value = true;
-
-    const current = bantuanList.value[reassignIndex.value];
-    const newName = pegawaiOptions.value.find(o => o.value === selectedPegawai.value)?.label || '';
-
-    const updated = {
-      ...current,
-      peringkatSemasa: buildPeringkatSemasa(current.peringkatSemasa ?? '', newName),
-    };
-
-    bantuanList.value.splice(reassignIndex.value, 1, updated);
-
-    showReassignModal.value = false;
-    selectedPegawai.value   = '';
-    reassignIndex.value     = -1;
-  } catch (e) {
-    console.error('[handleReassign] error:', e);
-  } finally {
-    reassignLoading.value = false;
-  }
-}
-
-
 
 // State management
 const searchQuery = ref('');

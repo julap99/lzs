@@ -358,7 +358,7 @@ const columns = [
   },
   {
     key: 'status',
-    label: 'Status',
+    label: 'Status Processing',
     sortable: true,
   },
   {
