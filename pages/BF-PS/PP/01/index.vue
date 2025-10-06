@@ -5,13 +5,6 @@
     <rs-card class="mt-4">
       <template #header>
         <div class="flex items-center gap-3">
-          <rs-button
-            variant="ghost"
-            @click="navigateTo('/BF-PS/PP')"
-          >
-            <Icon name="ic:baseline-arrow-back" class="mr-1" />
-            Kembali
-          </rs-button>
           <h2 class="text-xl font-semibold">{{ isEditMode ? 'Kemaskini Pengguna' : 'Daftar Pengguna Baharu' }}</h2>
           <rs-badge v-if="isEditMode" variant="warning">Mode Kemaskini</rs-badge>
           <rs-badge v-else variant="primary">Mode Pendaftaran</rs-badge>
@@ -153,15 +146,6 @@
           <div>
             <h3 class="text-lg font-semibold mb-4 text-gray-900 border-b pb-2">C. Senarai Peranan Pengguna</h3>
             
-            <!-- Debug Info (Temporary) -->
-            <div class="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-xs">
-              <p><strong>Debug Info:</strong></p>
-              <p>Selected roles: {{ perananList.filter(p => p.selected).map(p => p.nama).join(', ') }}</p>
-              <p>perananSemasa: {{ form.perananSemasa }}</p>
-              <p>Validation isValid: {{ perananSemasaValidation.isValid }}</p>
-              <p>Validation message: {{ perananSemasaValidation.message }}</p>
-            </div>
-            
             <div class="mb-4 p-3 bg-blue-50 rounded-lg">
               <p class="text-sm text-blue-800">
                 <Icon name="ic:baseline-info" class="inline mr-1" />
@@ -252,6 +236,13 @@
 
           <!-- Form Actions -->
           <div class="flex justify-end gap-3 pt-6 border-t">
+            <rs-button
+              variant="ghost"
+              @click="navigateTo('/BF-PS/PP')"
+            >
+              <Icon name="ic:baseline-arrow-back" class="mr-1" />
+              Kembali
+            </rs-button>
             <rs-button
               variant="ghost"
               @click="resetForm"
@@ -559,7 +550,7 @@ const jenisPenggunaOptions = [
   { label: 'Sila Pilih Jenis Pengguna', value: '', disabled: true },
   { label: 'AD', value: 'AD' },
   { label: 'NPS', value: 'NPS' },
-  { label: 'Awam', value: 'Awam' }
+  { label: 'Pengguna Luar', value: 'Awam' }
 ];
 
 const jenisPengenalanOptions = [
@@ -673,7 +664,7 @@ const perananList = reactive([
   { id: 3, nama: 'Pegawai Sistem', jenisPengguna: 'AD', selected: false },
   { id: 4, nama: 'Pegawai Audit', jenisPengguna: 'AD', selected: false },
   { id: 5, nama: 'Pegawai Lapangan', jenisPengguna: 'NPS', selected: false },
-  { id: 6, nama: 'Pengguna Awam', jenisPengguna: 'Awam', selected: false },
+  { id: 6, nama: 'Pengguna Luar', jenisPengguna: 'Awam', selected: false },
   { id: 7, nama: 'Pegawai Pentadbir', jenisPengguna: 'AD', selected: false },
   { id: 8, nama: 'Pegawai Khas', jenisPengguna: 'NPS', selected: false }
 ]);

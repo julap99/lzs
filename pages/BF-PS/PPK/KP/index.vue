@@ -101,21 +101,6 @@
           </div>
           <div class="flex gap-2">
             <rs-button
-              variant="outline"
-              @click="refreshRoles"
-              :loading="refreshingRoles"
-            >
-              <Icon name="ic:baseline-refresh" class="mr-1" />
-              {{ refreshingRoles ? 'Memuat...' : 'Muat Semula' }}
-            </rs-button>
-            <rs-button
-              variant="success-outline"
-              @click="exportRoles"
-            >
-              <Icon name="ic:baseline-download" class="mr-1" />
-              Eksport
-            </rs-button>
-            <rs-button
               variant="primary"
               @click="addRole"
             >
@@ -127,39 +112,60 @@
       </template>
 
       <template #body>
-        <!-- Search and Filter -->
-        <div class="mb-6">
-          <div class="flex flex-col md:flex-row gap-4">
-            <div class="flex-1">
-              <FormKit
-                v-model="searchQuery"
-                type="text"
-                placeholder="Cari peranan atau deskripsi..."
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-            </div>
-            <div class="flex gap-2">
-              <FormKit
-                v-model="statusFilter"
-                type="select"
-                :options="statusFilterOptions"
-                placeholder="Status"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <FormKit
-                v-model="moduleFilter"
-                type="select"
-                :options="moduleFilterOptions"
-                placeholder="Modul"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-            </div>
+        <!-- Search Criteria Section -->
+        <div class="mb-6 p-6 bg-gray-50 border border-gray-200 rounded-lg">
+          <h3 class="text-lg font-semibold mb-4 text-gray-900 flex items-center gap-2">
+            <Icon name="ic:baseline-search" class="text-gray-600" />
+            Kriteria Carian
+          </h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+            <FormKit
+              v-model="searchCriteria.kodPeranan"
+              type="text"
+              label="Kod Peranan"
+              placeholder="Masukkan kod peranan"
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+            
+            <FormKit
+              v-model="searchCriteria.namaPeranan"
+              type="text"
+              label="Nama Peranan"
+              placeholder="Masukkan nama peranan"
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+            
+            <FormKit
+              v-model="searchCriteria.status"
+              type="select"
+              label="Status"
+              :options="statusFilterOptions"
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+          </div>
+          
+          <div class="flex justify-end gap-3 pt-4 border-t border-gray-300">
+            <rs-button
+              variant="ghost"
+              @click="resetSearch"
+            >
+              <Icon name="ic:baseline-refresh" class="mr-1" />
+              Reset
+            </rs-button>
+            <rs-button
+              variant="primary"
+              @click="performSearch"
+            >
+              <Icon name="ic:baseline-search" class="mr-1" />
+              Cari
+            </rs-button>
           </div>
         </div>
 
@@ -176,18 +182,12 @@
           }"
           :options-advanced="{
             sortable: true,
-            filterable: true,
+            filterable: false,
           }"
           advanced
         >
           <template v-slot:status="{ text }">
             <rs-badge :variant="getStatusVariant(text)">
-              {{ text }}
-            </rs-badge>
-          </template>
-
-          <template v-slot:tahapAkses="{ text }">
-            <rs-badge :variant="getAccessLevelVariant(text)">
               {{ text }}
             </rs-badge>
           </template>
@@ -288,30 +288,70 @@
           <!-- Module Access Configuration -->
           <div class="border-t pt-4">
             <h4 class="font-medium mb-3">Akses Modul</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div v-for="module in availableModules" :key="module.code" class="flex items-center gap-2">
-                <FormKit
-                  type="checkbox"
-                  v-model="currentRole.moduleAccess"
-                  :value="module.code"
-                  :label="module.name"
-                />
-              </div>
+            <div class="border rounded-lg overflow-hidden">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <input 
+                        type="checkbox" 
+                        @change="toggleAllModules($event)"
+                        :checked="currentRole.moduleAccess.length === availableModules.length"
+                        class="rounded border-gray-300"
+                      />
+                    </th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Modul</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr v-for="module in availableModules" :key="module.code" class="hover:bg-gray-50">
+                    <td class="px-4 py-3 whitespace-nowrap">
+                      <input 
+                        type="checkbox" 
+                        v-model="currentRole.moduleAccess"
+                        :value="module.code"
+                        class="rounded border-gray-300"
+                      />
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{{ module.name }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
 
           <!-- Permission Level Configuration -->
           <div class="border-t pt-4">
             <h4 class="font-medium mb-3">Tahap Kebenaran</h4>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div v-for="permission in availablePermissions" :key="permission.code" class="flex items-center gap-2">
-                <FormKit
-                  type="checkbox"
-                  v-model="currentRole.permissions"
-                  :value="permission.code"
-                  :label="permission.name"
-                />
-              </div>
+            <div class="border rounded-lg overflow-hidden">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <input 
+                        type="checkbox" 
+                        @change="toggleAllPermissions($event)"
+                        :checked="currentRole.permissions.length === availablePermissions.length"
+                        class="rounded border-gray-300"
+                      />
+                    </th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Kebenaran</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr v-for="permission in availablePermissions" :key="permission.code" class="hover:bg-gray-50">
+                    <td class="px-4 py-3 whitespace-nowrap">
+                      <input 
+                        type="checkbox" 
+                        v-model="currentRole.permissions"
+                        :value="permission.code"
+                        class="rounded border-gray-300"
+                      />
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{{ permission.name }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -355,26 +395,46 @@
             <p class="text-gray-600">{{ selectedRole.deskripsi }}</p>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-6">
             <!-- Module Access -->
             <div>
               <h4 class="font-medium mb-3">Akses Modul</h4>
-              <div class="space-y-2">
-                <div v-for="moduleCode in selectedRole.moduleAccess" :key="moduleCode" class="flex items-center gap-2">
-                  <Icon name="ic:baseline-check-circle" class="text-green-500 w-4 h-4" />
-                  <span>{{ getModuleName(moduleCode) }}</span>
-                </div>
+              <div class="border rounded-lg overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No.</th>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Modul</th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="(moduleCode, index) in selectedRole.moduleAccess" :key="moduleCode" class="hover:bg-gray-50">
+                      <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{{ index + 1 }}</td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{{ getModuleName(moduleCode) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
 
             <!-- Permissions -->
             <div>
-              <h4 class="font-medium mb-3">Kebenaran</h4>
-              <div class="space-y-2">
-                <div v-for="permCode in selectedRole.permissions" :key="permCode" class="flex items-center gap-2">
-                  <Icon name="ic:baseline-check-circle" class="text-green-500 w-4 h-4" />
-                  <span>{{ getPermissionName(permCode) }}</span>
-                </div>
+              <h4 class="font-medium mb-3">Tahap Kebenaran</h4>
+              <div class="border rounded-lg overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No.</th>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Kebenaran</th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="(permCode, index) in selectedRole.permissions" :key="permCode" class="hover:bg-gray-50">
+                      <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{{ index + 1 }}</td>
+                      <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{{ getPermissionName(permCode) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -449,9 +509,11 @@ const breadcrumb = ref([
 ]);
 
 // State management
-const searchQuery = ref("");
-const statusFilter = ref("");
-const moduleFilter = ref("");
+const searchCriteria = ref({
+  kodPeranan: "",
+  namaPeranan: "",
+  status: "",
+});
 const pageSize = ref(10);
 const saving = ref(false);
 
@@ -623,11 +685,6 @@ const columns = [
     sortable: true,
   },
   {
-    key: "tahapAkses",
-    label: "Tahap Akses",
-    sortable: true,
-  },
-  {
     key: "jumlahPengguna",
     label: "Jumlah Pengguna",
     sortable: true,
@@ -648,21 +705,25 @@ const columns = [
 const filteredRoles = computed(() => {
   let filtered = roles.value;
 
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
+  // Filter by Kod Peranan
+  if (searchCriteria.value.kodPeranan) {
+    const query = searchCriteria.value.kodPeranan.toLowerCase();
     filtered = filtered.filter(role => 
-      role.kodPeranan.toLowerCase().includes(query) ||
-      role.namaPeranan.toLowerCase().includes(query) ||
-      role.deskripsi.toLowerCase().includes(query)
+      role.kodPeranan.toLowerCase().includes(query)
     );
   }
 
-  if (statusFilter.value) {
-    filtered = filtered.filter(role => role.status === statusFilter.value);
+  // Filter by Nama Peranan
+  if (searchCriteria.value.namaPeranan) {
+    const query = searchCriteria.value.namaPeranan.toLowerCase();
+    filtered = filtered.filter(role => 
+      role.namaPeranan.toLowerCase().includes(query)
+    );
   }
 
-  if (moduleFilter.value) {
-    filtered = filtered.filter(role => role.moduleAccess.includes(moduleFilter.value));
+  // Filter by Status
+  if (searchCriteria.value.status) {
+    filtered = filtered.filter(role => role.status === searchCriteria.value.status);
   }
 
   return filtered;
@@ -670,7 +731,11 @@ const filteredRoles = computed(() => {
 
 const tableData = computed(() => {
   return filteredRoles.value.map(role => ({
-    ...role,
+    kodPeranan: role.kodPeranan,
+    namaPeranan: role.namaPeranan,
+    deskripsi: role.deskripsi,
+    jumlahPengguna: role.jumlahPengguna,
+    status: role.status,
     tindakan: role
   }));
 });
@@ -850,6 +915,38 @@ const logAuditAction = (action, type, item) => {
   };
   
   console.log('Audit Log:', auditLog);
+};
+
+// Search methods
+const performSearch = () => {
+  // The filtering is reactive and handled by filteredRoles computed property
+  console.log('Performing search with criteria:', searchCriteria.value);
+};
+
+const resetSearch = () => {
+  searchCriteria.value = {
+    kodPeranan: "",
+    namaPeranan: "",
+    status: "",
+  };
+};
+
+// Toggle all modules
+const toggleAllModules = (event) => {
+  if (event.target.checked) {
+    currentRole.value.moduleAccess = availableModules.map(m => m.code);
+  } else {
+    currentRole.value.moduleAccess = [];
+  }
+};
+
+// Toggle all permissions
+const toggleAllPermissions = (event) => {
+  if (event.target.checked) {
+    currentRole.value.permissions = availablePermissions.map(p => p.code);
+  } else {
+    currentRole.value.permissions = [];
+  }
 };
 
 // Initialize

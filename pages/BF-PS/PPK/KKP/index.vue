@@ -22,13 +22,6 @@
           </div>
           <div class="flex gap-2">
             <rs-button
-              variant="outline"
-              @click="refreshPermissions"
-            >
-              <Icon name="ic:baseline-refresh" class="mr-1" />
-              Muat Semula
-            </rs-button>
-            <rs-button
               variant="primary"
               @click="bulkEditPermissions"
               :disabled="!selectedRole"
@@ -53,21 +46,11 @@
               validation="required"
               @change="loadRolePermissions"
             />
-            <div v-if="selectedRole" class="flex items-end">
-              <rs-button
-                variant="primary"
-                @click="showUserList"
-                class="w-full"
-              >
-                <Icon name="ic:baseline-visibility" class="mr-1" />
-                Papar
-              </rs-button>
-            </div>
           </div>
         </div>
 
         <!-- Section 2: Senarai Pengguna Bagi Kumpulan Dipilih -->
-        <div v-if="selectedRole && showUserListSection" class="mb-6">
+        <div v-if="selectedRole" class="mb-6">
           <rs-card>
             <template #header>
               <div class="flex items-center gap-2">
@@ -121,7 +104,7 @@
         </div>
 
         <!-- Section 3: Ringkasan Akses Menu -->
-        <div v-if="selectedRole && showMenuSummarySection" class="mb-6">
+        <div v-if="selectedRole" class="mb-6">
           <rs-card>
             <template #header>
               <div class="flex items-center gap-2">

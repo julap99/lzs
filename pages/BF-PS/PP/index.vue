@@ -62,23 +62,6 @@
           </div>
           <div class="flex gap-2">
             <rs-button
-              variant="outline"
-              @click="refreshData"
-              :loading="refreshing"
-            >
-              <Icon name="ic:baseline-refresh" class="mr-1" />
-              {{ refreshing ? 'Memuat...' : 'Muat Semula' }}
-            </rs-button>
-            <rs-button
-              variant="outline"
-              @click="exportToExcel"
-              :loading="exporting"
-            >
-              <Icon name="ic:baseline-table-chart" class="mr-1" />
-              {{ exporting ? 'Mengeksport...' : 'Muat Turun Excel' }}
-            </rs-button>
-
-            <rs-button
               variant="primary"
               @click="navigateTo('/BF-PS/PP/01')"
             >
@@ -90,39 +73,90 @@
       </template>
 
       <template #body>
-        <!-- Search and Filter Section -->
-        <div class="mb-6">
-          <div class="flex flex-col md:flex-row gap-4">
-            <div class="flex-1">
-              <FormKit
-                v-model="searchQuery"
-                type="text"
-                placeholder="Cari nama, No. KP, atau emel..."
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-            </div>
-            <div class="flex gap-2">
-              <FormKit
-                v-model="filters.jenisPengguna"
-                type="select"
-                :options="jenisPenggunaOptions"
-                placeholder="Jenis Pengguna"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-              <FormKit
-                v-model="filters.status"
-                type="select"
-                :options="statusOptions"
-                placeholder="Status"
-                :classes="{
-                  input: '!py-2',
-                }"
-              />
-            </div>
+        <!-- Search Criteria Section -->
+        <div class="mb-6 p-6 bg-gray-50 border border-gray-200 rounded-lg">
+          <h3 class="text-lg font-semibold mb-4 text-gray-900 flex items-center gap-2">
+            <Icon name="ic:baseline-search" class="text-gray-600" />
+            Kriteria Carian
+          </h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+            <FormKit
+              v-model="searchCriteria.jenisPengguna"
+              type="select"
+              label="Jenis Pengguna"
+              :options="jenisPenggunaSearchOptions"
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+            
+            <FormKit
+              v-model="searchCriteria.nama"
+              type="text"
+              label="Nama"
+              placeholder="Masukkan nama pengguna"
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+            
+            <FormKit
+              v-model="searchCriteria.noKp"
+              type="text"
+              label="No. Kad Pengenalan"
+              placeholder="Masukkan No. KP"
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+            
+            <FormKit
+              v-model="searchCriteria.peranan"
+              type="select"
+              label="Peranan"
+              :options="perananSearchOptions"
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+            
+            <FormKit
+              v-model="searchCriteria.jenisSumberData"
+              type="select"
+              label="Jenis Sumber Data"
+              :options="jenisSumberDataOptions"
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+            
+            <FormKit
+              v-model="searchCriteria.status"
+              type="select"
+              label="Status"
+              :options="statusSearchOptions"
+              :classes="{
+                input: '!py-2',
+              }"
+            />
+          </div>
+          
+          <div class="flex justify-end gap-3 pt-4 border-t border-gray-300">
+            <rs-button
+              variant="ghost"
+              @click="resetSearch"
+            >
+              <Icon name="ic:baseline-refresh" class="mr-1" />
+              Reset
+            </rs-button>
+            <rs-button
+              variant="primary"
+              @click="performSearch"
+            >
+              <Icon name="ic:baseline-search" class="mr-1" />
+              Cari
+            </rs-button>
           </div>
         </div>
 
@@ -139,7 +173,7 @@
           }"
           :options-advanced="{
             sortable: true,
-            filterable: true,
+            filterable: false,
           }"
           advanced
         >
@@ -403,16 +437,6 @@ const columns = [
     sortable: true,
   },
   {
-    key: "noKp",
-    label: "No. KP/Passport/Foreign ID",
-    sortable: true,
-  },
-  {
-    key: "emel",
-    label: "Emel",
-    sortable: true,
-  },
-  {
     key: "perananSemasa",
     label: "Peranan Semasa",
     sortable: true,
@@ -434,23 +458,47 @@ const columns = [
   },
 ];
 
-// Options for filters
-const jenisPenggunaOptions = [
+// Options for search criteria
+const jenisPenggunaSearchOptions = [
   { label: "Semua", value: "" },
-  { label: "Staf", value: "AD" },
-  { label: "Bukan Staf", value: "NPS" },
+  { label: "AD", value: "AD" },
+  { label: "NPS", value: "NPS" },
+  { label: "Pengguna Luar", value: "Awam" },
 ];
 
-const statusOptions = [
+const perananSearchOptions = ref([
+  { label: "Semua", value: "" },
+  { label: "Admin Sistem", value: "Admin Sistem" },
+  { label: "Pegawai Bantuan", value: "Pegawai Bantuan" },
+  { label: "Pegawai Sistem", value: "Pegawai Sistem" },
+  { label: "Pegawai Audit", value: "Pegawai Audit" },
+  { label: "Pegawai Lapangan", value: "Pegawai Lapangan" },
+  { label: "Pengguna Luar", value: "Pengguna Luar" },
+  { label: "Pegawai Pentadbir", value: "Pegawai Pentadbir" },
+  { label: "Pegawai Khas", value: "Pegawai Khas" },
+]);
+
+const jenisSumberDataOptions = [
+  { label: "Semua", value: "" },
+  { label: "NAS", value: "NAS" },
+  { label: "AD", value: "AD" },
+  { label: "NPS", value: "NPS" },
+  { label: "Awam", value: "Awam" },
+];
+
+const statusSearchOptions = [
   { label: "Semua", value: "" },
   { label: "Aktif", value: "Aktif" },
   { label: "Tidak Aktif", value: "Tidak Aktif" },
 ];
 
-// State
-const searchQuery = ref("");
-const filters = ref({
+// State - Search Criteria
+const searchCriteria = ref({
   jenisPengguna: "",
+  nama: "",
+  noKp: "",
+  peranan: "",
+  jenisSumberData: "",
   status: "",
 });
 const currentPage = ref(1);
@@ -545,7 +593,7 @@ const users = ref([
     nama: 'Ismail bin Omar',
     noKp: '840404049123',
     emel: 'ismail.omar@example.com',
-    perananSemasa: 'Pengguna Awam',
+    perananSemasa: 'Pengguna Luar',
     jenisSumberData: 'Awam',
     status: 'Tidak Aktif',
     noTel: '018-9012345'
@@ -570,7 +618,7 @@ const perananList = ref([
   { id: 3, nama: 'Pegawai Sistem', jenisPengguna: 'AD', selected: false },
   { id: 4, nama: 'Pegawai Audit', jenisPengguna: 'AD', selected: false },
   { id: 5, nama: 'Pegawai Lapangan', jenisPengguna: 'NPS', selected: false },
-  { id: 6, nama: 'Pengguna Awam', jenisPengguna: 'Awam', selected: false },
+  { id: 6, nama: 'Pengguna Luar', jenisPengguna: 'Awam', selected: false },
   { id: 7, nama: 'Pegawai Pentadbir', jenisPengguna: 'AD', selected: false },
   { id: 8, nama: 'Pegawai Khas', jenisPengguna: 'NPS', selected: false }
 ]);
@@ -579,21 +627,40 @@ const perananList = ref([
 const filteredUsers = computed(() => {
   let filtered = users.value;
 
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
+  // Filter by Jenis Pengguna
+  if (searchCriteria.value.jenisPengguna) {
+    filtered = filtered.filter(user => user.jenisPengguna === searchCriteria.value.jenisPengguna);
+  }
+
+  // Filter by Nama
+  if (searchCriteria.value.nama) {
+    const query = searchCriteria.value.nama.toLowerCase();
     filtered = filtered.filter(user => 
-      user.nama.toLowerCase().includes(query) ||
-      user.noKp.toLowerCase().includes(query) ||
-      user.emel.toLowerCase().includes(query)
+      user.nama.toLowerCase().includes(query)
     );
   }
 
-  if (filters.value.jenisPengguna) {
-    filtered = filtered.filter(user => user.jenisPengguna === filters.value.jenisPengguna);
+  // Filter by No. KP
+  if (searchCriteria.value.noKp) {
+    const query = searchCriteria.value.noKp.toLowerCase();
+    filtered = filtered.filter(user => 
+      user.noKp.toLowerCase().includes(query)
+    );
   }
 
-  if (filters.value.status) {
-    filtered = filtered.filter(user => user.status === filters.value.status);
+  // Filter by Peranan
+  if (searchCriteria.value.peranan) {
+    filtered = filtered.filter(user => user.perananSemasa === searchCriteria.value.peranan);
+  }
+
+  // Filter by Jenis Sumber Data
+  if (searchCriteria.value.jenisSumberData) {
+    filtered = filtered.filter(user => user.jenisSumberData === searchCriteria.value.jenisSumberData);
+  }
+
+  // Filter by Status
+  if (searchCriteria.value.status) {
+    filtered = filtered.filter(user => user.status === searchCriteria.value.status);
   }
 
   return filtered;
@@ -603,8 +670,6 @@ const tableData = computed(() => {
   return filteredUsers.value.map(user => ({
     jenisPengguna: getJenisPenggunaDisplay(user.jenisPengguna),
     nama: user.nama,
-    noKp: user.noKp,
-    emel: user.emel,
     perananSemasa: user.perananSemasa,
     jenisSumberData: user.jenisSumberData,
     status: user.status,
@@ -751,6 +816,29 @@ const simulateDownload = () => {
   
   // Reset progress for next use
   exportProgress.value = 0;
+};
+
+// Search methods
+const performSearch = () => {
+  // Reset to first page when performing new search
+  currentPage.value = 1;
+  
+  // The filtering is reactive and handled by filteredUsers computed property
+  console.log('Performing search with criteria:', searchCriteria.value);
+};
+
+const resetSearch = () => {
+  searchCriteria.value = {
+    jenisPengguna: "",
+    nama: "",
+    noKp: "",
+    peranan: "",
+    jenisSumberData: "",
+    status: "",
+  };
+  
+  // Reset to first page
+  currentPage.value = 1;
 };
 </script>
 
